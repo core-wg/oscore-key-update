@@ -1,0 +1,3 @@
+# Automatically generated CODEOWNERS
+# Regenerate with `make update-codeowners`
+draft-ietf-core-oscore-key-update.md rikard.hoglund@ri.se marco.tiloca@ri.se
