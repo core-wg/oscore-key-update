@@ -145,46 +145,7 @@ For the algorithms that can be used as AEAD Algorithm for OSCORE shows in {{algo
 ~~~~~~~~~~~
 {: #algorithm-limits title="Probabilities for algorithms based on chosen q, v and l values." artwork-align="center"}
 
-For the AEAD_AES_128_CCM_8 algorithm when used as AEAD Algorithm for OSCORE, larger IA and CA values are achieved, depending on the value of 'q', 'v' and 'l'. {{algorithm-limits-ccm8}} shows the resulting IA and CA probabilities enjoyed by AEAD_AES_128_CCM_8, when taking different values of 'q', 'v' and 'l' as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
-
-As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the lowest IA = 2^-54 and a good CA = 2^-70 by considering the largest possible value of the (q, v, l) triplet equal to (2^20, 2^10, 2^8), while still keeping a good security level. Note that the value of 'l' does not impact on IA, while CA displays good values for every considered value of 'l'.
-
-When AEAD_AES_128_CCM_8 is used as AEAD Algorithm for OSCORE, this document recommends to use the triplet (q, v, l) = (2^20, 2^10, 2^8) and to never use a triplet (q, v, l) such that the resulting IA and CA probabilities are higher than 2^-54.
-
-~~~~~~~~~~~
-+-----------------------+----------------+----------------+
-| 'q', 'v' and 'l'      | IA probability | CA probability |
-|-----------------------+----------------+----------------|
-| q=2^20, v=2^20, l=2^8 | 2^-44          | 2^-70          |
-| q=2^15, v=2^20, l=2^8 | 2^-44          | 2^-80          |
-| q=2^10, v=2^20, l=2^8 | 2^-44          | 2^-90          |
-| q=2^20, v=2^15, l=2^8 | 2^-49          | 2^-70          |
-| q=2^15, v=2^15, l=2^8 | 2^-49          | 2^-80          |
-| q=2^10, v=2^15, l=2^8 | 2^-49          | 2^-90          |
-| q=2^20, v=2^14, l=2^8 | 2^-50          | 2^-70          |
-| q=2^15, v=2^14, l=2^8 | 2^-50          | 2^-80          |
-| q=2^10, v=2^14, l=2^8 | 2^-50          | 2^-90          |
-| q=2^20, v=2^10, l=2^8 | 2^-54          | 2^-70          |
-| q=2^15, v=2^10, l=2^8 | 2^-54          | 2^-80          |
-| q=2^10, v=2^10, l=2^8 | 2^-54          | 2^-90          |
-|-----------------------+----------------+----------------|
-| q=2^20, v=2^20, l=2^6 | 2^-44          | 2^-74          |
-| q=2^15, v=2^20, l=2^6 | 2^-44          | 2^-84          |
-| q=2^10, v=2^20, l=2^6 | 2^-44          | 2^-94          |
-| q=2^20, v=2^15, l=2^6 | 2^-49          | 2^-74          |
-| q=2^15, v=2^15, l=2^6 | 2^-49          | 2^-84          |
-| q=2^10, v=2^15, l=2^6 | 2^-49          | 2^-94          |
-| q=2^20, v=2^14, l=2^6 | 2^-50          | 2^-74          |
-| q=2^15, v=2^14, l=2^6 | 2^-50          | 2^-84          |
-| q=2^10, v=2^14, l=2^6 | 2^-50          | 2^-94          |
-| q=2^20, v=2^10, l=2^6 | 2^-54          | 2^-74          |
-| q=2^15, v=2^10, l=2^6 | 2^-54          | 2^-84          |
-| q=2^10, v=2^10, l=2^6 | 2^-54          | 2^-94          |
-+-----------------------+----------------+----------------+
-~~~~~~~~~~~
-{: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
-
-The algorithms using AES presented in this draft all use a block size of 16 bytes (128 bits), while AEAD_CHACHA20_POLY1305 uses a block size of 64 bytes (512 bits). As 'l' is defined as the maximum size of each message in blocks, different block sizes will result in different maximum messages sizes for the same value of 'l'. {{l-values-as-bytes}} presents the resulting maximum message size in bytes for the different algorithms and values of 'l' presented in this document.
+When AEAD_AES_128_CCM_8 is used as AEAD Algorithm for OSCORE, larger values of IA and CA results from the formulas. Hence, this document recommends using the triplet (q, v, l) = (2^20, 2^14, 2^8) specifically for AEAD_AES_128_CCM_8. This value is appropriate as the CA and IA values do not become higher than the threshold value of 2^-50 defined in {{I-D.irtf-cfrg-aead-limits}}, and thus give an acceptable security level. Aiming for smaller values for CA and IA would require reducing 'q', 'v' or 'l' needlessly, and not result in a beneficial increase in security. This is further elaborated on in {{aead-aes-128-ccm-8-details}}.
 
 ~~~~~~~~~~~
 +------------------------+----------+----------+-----------+
@@ -634,4 +595,43 @@ The authors sincerely thank Christian Amsüss, John Mattsson and Göran Selander
 The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 project SIFIS-Home (Grant agreement 952652).
 
 
+# Detailed considerations for AEAD_AES_128_CCM_8 # {#aead-aes-128-ccm-8-details}
+{: numbered="no"}
+
+For the AEAD_AES_128_CCM_8 algorithm when used as AEAD Algorithm for OSCORE, larger IA and CA values are achieved, depending on the value of 'q', 'v' and 'l'. {{algorithm-limits-ccm8}} shows the resulting IA and CA probabilities enjoyed by AEAD_AES_128_CCM_8, when taking different values of 'q', 'v' and 'l' as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
+
+As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the lowest IA = 2^-50 and a good CA = 2^-70 by considering the largest possible value of the (q, v, l) triplet equal to (2^20, 2^10, 2^8), while still keeping a good security level. Note that the value of 'l' does not impact on IA, while CA displays good values for every considered value of 'l'.
+
+~~~~~~~~~~~
++-----------------------+----------------+----------------+
+| 'q', 'v' and 'l'      | IA probability | CA probability |
+|-----------------------+----------------+----------------|
+| q=2^20, v=2^20, l=2^8 | 2^-44          | 2^-70          |
+| q=2^15, v=2^20, l=2^8 | 2^-44          | 2^-80          |
+| q=2^10, v=2^20, l=2^8 | 2^-44          | 2^-90          |
+| q=2^20, v=2^15, l=2^8 | 2^-49          | 2^-70          |
+| q=2^15, v=2^15, l=2^8 | 2^-49          | 2^-80          |
+| q=2^10, v=2^15, l=2^8 | 2^-49          | 2^-90          |
+| q=2^20, v=2^14, l=2^8 | 2^-50          | 2^-70          |
+| q=2^15, v=2^14, l=2^8 | 2^-50          | 2^-80          |
+| q=2^10, v=2^14, l=2^8 | 2^-50          | 2^-90          |
+| q=2^20, v=2^10, l=2^8 | 2^-54          | 2^-70          |
+| q=2^15, v=2^10, l=2^8 | 2^-54          | 2^-80          |
+| q=2^10, v=2^10, l=2^8 | 2^-54          | 2^-90          |
+|-----------------------+----------------+----------------|
+| q=2^20, v=2^20, l=2^6 | 2^-44          | 2^-74          |
+| q=2^15, v=2^20, l=2^6 | 2^-44          | 2^-84          |
+| q=2^10, v=2^20, l=2^6 | 2^-44          | 2^-94          |
+| q=2^20, v=2^15, l=2^6 | 2^-49          | 2^-74          |
+| q=2^15, v=2^15, l=2^6 | 2^-49          | 2^-84          |
+| q=2^10, v=2^15, l=2^6 | 2^-49          | 2^-94          |
+| q=2^20, v=2^14, l=2^6 | 2^-50          | 2^-74          |
+| q=2^15, v=2^14, l=2^6 | 2^-50          | 2^-84          |
+| q=2^10, v=2^14, l=2^6 | 2^-50          | 2^-94          |
+| q=2^20, v=2^10, l=2^6 | 2^-54          | 2^-74          |
+| q=2^15, v=2^10, l=2^6 | 2^-54          | 2^-84          |
+| q=2^10, v=2^10, l=2^6 | 2^-54          | 2^-94          |
++-----------------------+----------------+----------------+
+~~~~~~~~~~~
+{: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
 
