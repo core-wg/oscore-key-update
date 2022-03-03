@@ -480,7 +480,7 @@ Note that the server achieves key confirmation only when receiving a message fro
 
 #### Avoiding In-Transit Requests During a Key Update
 
-Before sending the KUDOS message Request #1 in {{fig-message-exchange-client-init}}, the client MUST ensure that there are no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
+Before sending the KUDOS message Request #1 in {{fig-message-exchange-client-init}}, the client MUST ensure that it has no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
 
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
@@ -568,7 +568,7 @@ Note that the client achieves key confirmation only when receiving a message fro
 
 #### Avoiding In-Transit Requests During a Key Update
 
-Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-init}}, the client MUST ensure that there are no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
+Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-init}}, the client MUST ensure that it has no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
 
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
@@ -955,15 +955,15 @@ Verify CTX_B|<----------------------------------| Protect CTX_B
 
 A peer MUST NOT participate in a stand-alone OSCORE IDs update procedure with another peer, between having experienced a loss of state and having performed a full-fledged establishment/renewal of an OSCORE Security Context with the other peer (e.g., through KUDOS or EDHOC {{I-D.ietf-lake-edhoc}}).
 
-More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the pair (Master Secret, ID Context) of CTX\_OLD. This can happen, for instance, following a device reboot.
+More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt ID Context) of CTX\_OLD. This can happen, for instance, following a device reboot.
 
 Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer perform the following additional steps.
 
-* When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current pair (Master Secret, ID Context).
+* When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt ID Context).
 
-* When receiving an OSCORE ID update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current pair (Master Secret, ID Context).
+* When receiving an OSCORE ID update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current triplet (Master Secret, Master Salt ID Context).
 
-In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current pair (Master Secret, ID Context), since the latest update of OSCORE Master Secret (e.g, performed through KUDOS).
+In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt ID Context), since the latest update of OSCORE Master Secret (e.g, performed through KUDOS).
 
 # KUDOS procedure without Forward Secrecy {#no-fs-mode}
 
