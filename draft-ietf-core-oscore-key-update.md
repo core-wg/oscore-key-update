@@ -145,7 +145,7 @@ For the algorithms that can be used as AEAD Algorithm for OSCORE shows in {{algo
 ~~~~~~~~~~~
 {: #algorithm-limits title="Probabilities for algorithms based on chosen q, v and l values." artwork-align="center"}
 
-When AEAD_AES_128_CCM_8 is used as AEAD Algorithm for OSCORE, larger values of IA and CA results from the formulas. Hence, this document recommends using the triplet (q, v, l) = (2^20, 2^14, 2^8) specifically for AEAD_AES_128_CCM_8. This value is appropriate as the CA and IA values do not become higher than the threshold value of 2^-50 defined in {{I-D.irtf-cfrg-aead-limits}}, and thus give an acceptable security level. Aiming for smaller values for CA and IA would require reducing 'q', 'v' or 'l' needlessly, and not result in a beneficial increase in security. This is further elaborated on in {{aead-aes-128-ccm-8-details}}.
+When AEAD_AES_128_CCM_8 is used as AEAD Algorithm for OSCORE, the triplet (q, v, l) considered above yields larger values of IA and CA. Hence, specifically for AEAD_AES_128_CCM_8, this document recommends using the triplet (q, v, l) = (2^20, 2^14, 2^8). This is appropriate since the resulting CA and IA values are not greater than the threshold value of 2^-50 defined in {{I-D.irtf-cfrg-aead-limits}}, and thus yields an acceptable security level. Achieving smaller values of CA and IA would require to inconveniently reduce 'q', 'v' or 'l', with no corresponding increase in terms of security. This is further elaborated in {{aead-aes-128-ccm-8-details}}.
 
 ~~~~~~~~~~~
 +------------------------+----------+----------+-----------+
@@ -587,16 +587,7 @@ IANA is asked to add the following entries to the "OSCORE Flag Bits" registry wi
 
 --- back
 
-# Acknowledgments # {#acknowledgments}
-{: numbered="no"}
-
-The authors sincerely thank Christian Amsüss, John Mattsson and Göran Selander for their feedback and comments.
-
-The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 project SIFIS-Home (Grant agreement 952652).
-
-
 # Detailed considerations for AEAD_AES_128_CCM_8 # {#aead-aes-128-ccm-8-details}
-{: numbered="no"}
 
 For the AEAD_AES_128_CCM_8 algorithm when used as AEAD Algorithm for OSCORE, larger IA and CA values are achieved, depending on the value of 'q', 'v' and 'l'. {{algorithm-limits-ccm8}} shows the resulting IA and CA probabilities enjoyed by AEAD_AES_128_CCM_8, when taking different values of 'q', 'v' and 'l' as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
 
@@ -635,3 +626,9 @@ As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the 
 ~~~~~~~~~~~
 {: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
 
+# Acknowledgments # {#acknowledgments}
+{: numbered="no"}
+
+The authors sincerely thank Christian Amsüss, John Mattsson and Göran Selander for their feedback and comments.
+
+The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 project SIFIS-Home (Grant agreement 952652).
