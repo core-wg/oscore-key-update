@@ -383,7 +383,7 @@ This section defines the actual KUDOS procedure performed by two peers to update
 
 In particular, each peer contributes by generating a fresh value R1 or R2, and providing it to the other peer. The byte string concatenation of the two values, hereafter denoted as R1 \| R2, is used as input N by the updateCtx() function, in order to derive the new OSCORE Security Context CTX\_NEW. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
-Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST terminate all the ongoing observations it has with the other peer as protected with the old Security Context CTX\_OLD.
+Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages (i.e., messages where the 'd' flag bit is set to 0). Also, that peer MUST terminate all the ongoing observations it has with the other peer as protected with the old Security Context CTX\_OLD.
 
 Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
