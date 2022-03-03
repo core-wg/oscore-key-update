@@ -284,6 +284,8 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    When it is set to 1, the compressed COSE object contains an 'id detail', to be used for the steps defined in {{ssec-derive-ctx}}. In particular, the 1 byte following 'kid context' (if any) encodes the length x of 'id detail', and the following x bytes encode 'id detail'.
 
+   Hereafter, this document refers to messages where the 'd' flag is set to 0 as "non KUDOS messages", and to messages where the 'd' flag is set to 1 as "KUDOS messages".
+
 * The second-to-eighth least significant bits in the second byte of the OSCORE option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
 
 {{fig-oscore-option}} shows the OSCORE option value including also 'id detail'.
@@ -383,7 +385,7 @@ This section defines the actual KUDOS procedure performed by two peers to update
 
 In particular, each peer contributes by generating a fresh value R1 or R2, and providing it to the other peer. The byte string concatenation of the two values, hereafter denoted as R1 \| R2, is used as input N by the updateCtx() function, in order to derive the new OSCORE Security Context CTX\_NEW. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
-Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages (i.e., messages where the 'd' flag bit is set to 0). Also, that peer MUST terminate all the ongoing observations it has with the other peer as protected with the old Security Context CTX\_OLD.
+Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages. Also, that peer MUST terminate all the ongoing observations it has with the other peer as protected with the old Security Context CTX\_OLD.
 
 Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
@@ -397,7 +399,7 @@ KUDOS can be started by the client or the server, as defined in {{ssec-derive-ct
 
 The length of the nonces R1 and R2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
 
-Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message (i.e., a message where the 'd' flag bit is set to 0) to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
+Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
 
 ### Client-Initiated Key Update {#ssec-derive-ctx-client-init}
 
@@ -547,9 +549,9 @@ Applications MAY define policies that allows a peer to also temporarily keep the
 
 When enforcing such policies, the following applies.
 
-* Outgoing messages MUST be protected by using only CTX\_NEW.
+* Outgoing non KUDOS messages MUST be protected by using only CTX\_NEW.
 
-* Incoming messages MUST first be attempted to decrypt by using CTX\_NEW. If decryption fails, a second attempt can use CTX\_OLD.
+* Incoming non KUDOS messages MUST first be attempted to decrypt by using CTX\_NEW. If decryption fails, a second attempt can use CTX\_OLD.
 
 * When an amount of time defined by the policy has elapsed since the establishment of CTX\_NEW, the peer deletes CTX\_OLD.
 
