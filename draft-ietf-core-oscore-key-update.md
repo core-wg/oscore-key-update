@@ -953,7 +953,7 @@ Verify CTX_B|<----------------------------------| Protect CTX_B
 
 ### Additional Actions for Stand-Alone Execution {#id-update-additional-actions}
 
-A peer MUST NOT participate in a stand-alone OSCORE IDs update procedure with another peer, between having experienced a loss of state and having performed a full-fledged establishment/renewal of an OSCORE Security Context with the other peer (e.g., through KUDOS or EDHOC {{I-D.ietf-lake-edhoc}}).
+After having experienced a loss of state, a peer MUST NOT participate in a stand-alone OSCORE IDs update procedure with another peer, until having performed a full-fledged establishment/renewal of an OSCORE Security Context with the other peer (e.g., through KUDOS or EDHOC {{I-D.ietf-lake-edhoc}}).
 
 More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt ID Context) of CTX\_OLD. This can happen, for instance, following a device reboot.
 
