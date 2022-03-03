@@ -401,6 +401,8 @@ The length of the nonces R1 and R2 is application specific. The application need
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
 
+A client must be ready to receive a non KUDOS response protected with keying material different than that used to protect the corresponding non KUDOS request. This is the case if KUDOS is run between the transmission of a non KUDOS request and the transmission of the corresponding non KUDOS response.
+
 ### Client-Initiated Key Update {#ssec-derive-ctx-client-init}
 
 {{fig-message-exchange-client-init}} shows the KUDOS workflow with the client acting as initiator.
@@ -470,6 +472,10 @@ After that, the client can send a new OSCORE request protected with the new Secu
 From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
 
 Note that the server achieves key confirmation only when receiving a message from the client as protected with the new Security Context CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete the new Security Context CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}}.
+
+As mentioned in {{ssec-derive-ctx}}, a client must be ready to receive a non KUDOS response protected with keying material different than that used to protect the corresponding non KUDOS request. When running the client-initiated version of KUDOS as per {{fig-message-exchange-client-init}}, this can happen if the client uses NSTART > 1 (see {{Section 4.7 of RFC7252}}), and the client has outstanding interactions with the server (see {{Section 4.7 of RFC7252}}) when sending the first KUDOS message.
+
+\[NOTE: Another case would be where the client has an observation already ongoing at the server when KUDOS starts. However, this assumes that it is possible to safely preserve observations across a key update, which is not the case at the moment although under consideration.\]
 
 ### Server-Initiated Key Update {#ssec-derive-ctx-server-init}
 
@@ -542,6 +548,8 @@ After that, the server can send an OSCORE response protected with the new Securi
 From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
 
 Note that the client achieves key confirmation only when receiving a message from the server as protected with the new Security Context CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete the new Security Context CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}} in {{ssec-derive-ctx-client-init}}.
+
+As mentioned in {{ssec-derive-ctx}}, a client must be ready to receive a non KUDOS response protected with keying material different than that used to protect the corresponding non KUDOS request. When running the server-initiated version of KUDOS as per {{fig-message-exchange-server-init}}, this can happen if the client uses NSTART > 1 (see {{Section 4.7 of RFC7252}}), and one of the non KUDOS requests results in the server initiating KUDOS (i.e., yielding the first KUDOS message as response). In such a case, the other non KUDOS requests representing oustanding interactions with the server (see {{Section 4.7 of RFC7252}}) would be replied to later on, once the server has finished executing KUDOS (i.e., when the server receives the second KUDOS message, successfully verifies it, and derives the new OSCORE Security Context CTX\_NEW).
 
 ## Retention Policies # {#ssec-retention}
 
