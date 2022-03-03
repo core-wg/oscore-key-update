@@ -184,6 +184,8 @@ The Sender Context is extended to include the following parameters.
 
    The value of 'limit_q' depends on the AEAD algorithm specified in the Common Context, considering the properties of that algorithm. The value of 'limit_q' is determined according to {{limits}}.
 
+Note for implementation: it is possible to avoid storing and maintaining the counter 'count_q'. Rather, an estimated value to be compared against 'limit_q' can be computed, by leveraging the Sender Sequence Number of the peer and (an estimate of) the other peer's. A possible method to achieve this is described in {{estimation-count-q}}. While this relieves peers from storing and maintaining the precise 'count_q' value, it results in overestimating the number of encryptions performed with a Sender Key. This in turn results in approaching 'limit_q' sooner and performing a key update procedure more frequently.
+
 ### Recipient Context # {#recipient-context}
 
 The Recipient Context is extended to include the following parameters.
@@ -200,7 +202,7 @@ In order to keep track of the 'q' and 'v' values and ensure that AEAD keys are n
 
 In particular, the processing of OSCORE messages follows the steps outlined in {{Section 8 of RFC8613}}, with the additions defined below.
 
-### Protecting a Request or a Response ##
+### Protecting a Request or a Response ## {#protecting-req-resp}
 
 Before encrypting the COSE object using the Sender Key, the 'count_q' counter MUST be incremented.
 
@@ -626,6 +628,22 @@ As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the 
 ~~~~~~~~~~~
 {: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
 
+# Estimation of 'count_q' # {#estimation-count-q}
+
+This section defines a method to compute an estimate of the counter 'count_q' (see {{sender-context}}), hence not requiring a peer to store it in its own Sender Context.
+
+This method relies on the fact that, at any point in time, a peer has performed _at most_ ENC = (SSN + SSN\*) encryptions using its own Sender Key, where:
+
+* SSN is the current value of this peer's Sender Sequence Number.
+
+* SSN\* is the current value of other peer's Sender Sequence Number. That is, SSN\* is an overestimation of the responses without Partial IV that this peer has sent.
+
+Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the peer aborts the message processing if the estimated est\_q > limit\_q, where est\_q = (SSN + X) and X is determined as follows.
+
+* If the outgoing message is a response, X is the Partial IV specified in the corresponding request that this peer is responding to. Note that X < SSN\* always holds.
+
+* If the outgoing message is a request, X is the highest Partial IV value marked as received in this peer's Replay Window plus 1, or 0 if it has not accepted any protected message from the other peer yet. That is, X is the highest Partial IV specified in message received from the other peer, i.e., the highest seen Sender Sequence Number of the other peer. Note that, also in this case, X < SSN\* always holds.
+
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
@@ -633,6 +651,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -00 to -01 ## {#sec-00-01}
 
 * Recommendation on limits for CCM_8. Details in Appendix.
+
+* Appendix on method to estimate and not store 'count_q'.
 
 # Acknowledgments # {#acknowledgments}
 {: numbered="no"}
