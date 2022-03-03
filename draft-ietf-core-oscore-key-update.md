@@ -399,8 +399,6 @@ The length of the nonces R1 and R2 is application specific. The application need
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message (i.e., a message where the 'd' flag bit is set to 0) to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
 
-A peer acting as initiator (responder) MUST NOT send a non KUDOS message (i.e., a message where the 'd' flag bit is set to 0) once it has sent/received initiator
-
 ### Client-Initiated Key Update {#ssec-derive-ctx-client-init}
 
 {{fig-message-exchange-client-init}} shows the KUDOS workflow with the client acting as initiator.
