@@ -967,20 +967,21 @@ In order to fulfill the conditions above, a peer has to keep track of the OSCORE
 
 # KUDOS procedure without Forward Secrecy {#no-fs-mode}
 
-The KUDOS procedure as defined in section XXX ensures Forward Secrecy of the keying material after its completion. However, the original version of KUDOS is problematic for some devices that can not dynamically write information to persistant storage, that is, the can afford only a single writing in persistent memory when initial key material is provided (e.g., at manufacturing), but no more after that. These devices cannot perform a stateful key update procedure which practically prevents ensuring Forward Secrecy.
+The KUDOS procedure as defined in section {{sec-rekeying-method}} ensures Forward Secrecy of the keying material after the procedure has completed. However, this original version of KUDOS is problematic for some devices that can not dynamically write information to non-volatile memory. That is, they can afford only a single writing in persistent memory when initial key material is provided (e.g., at manufacturing), but not more after that. These devices cannot perform a stateful key update procedure, which practically prevents guaranteeing Forward Secrecy.
 
 Formally the requirements for running KUDOS with Forward Secrecy are the following. After KUDOS has successfully completed:
-- The Master Secret and Master Salt are updated, and keys derived from the "original" ones are not used anymore;
-- The new Master Secret and Master Salt are stored in non-volatile memory, for retrieval after loss off state (e.g. rebooting);
+- The Master Secret and Master Salt are updated (in CTX_NEW), and keys derived from the "original" one (in CTX_OLD) are not used anymore
+- The new Master Secret and Master Salt are stored in non-volatile memory, for retrieval after loss off state (e.g. rebooting)
 
-Due to the need to support also devices that cannot write to non-volatile memory it becomes neccessary to define a way of running KUDOS that no longer guarantess Forward Secrecy, but allows devices which are not capable of storing information to persistant storage to nontheless use KUDOS. This is an alternative execution of KUDOS, which sacrifices PFS but allows devices to perform a stateless key update, i.e., without writing on disk (like possible in OSCORE Appendix B.2).
-
+Due to the need to support also devices that cannot write to non-volatile memory, it becomes neccessary to define a way of running KUDOS that no longer guarantees Forward Secrecy, but allows devices which are not capable of storing information to persistant storage to nontheless use KUDOS. This is an alternative execution of KUDOS, which sacrifices PFS but allows devices to perform a stateless key update, i.e., without writing on disk (which is possible using the current OSCORE Appendix B.2). This section defines such a method which is called the non-FS mode of KUDOS. 
 
 ## Concepts
 
-Devices which are able to store information to non-volatible memory (and thus use the FS mode) are CAPABLE whichs implies the following: A device capable of writing to disk (non-volatile memory). This excludes any one-time only writing in non-volatile memory happened at manufacturing time or (re-)commissioning time, e.g., to write the Bootstrap Master Secret and Bootstrap Master Salt.
+This section introduces a number of concepts that are used when describing how the non-FS mode of KUDOS operats.
 
-This section defines the following new concepts as relevant for the alternative non-FS execution of KUDOS:
+Devices which are able to store information to non-volatible memory are CAPABLE whichs implies the following: The device is generally capable of writing to disk (non-volatile memory). This excludes any one-time only writing in non-volatile memory happening at manufacturing time or (re-)commissioning time, e.g., to write the Bootstrap Master Secret and Bootstrap Master Salt.
+
+Furthermore the following types of key material is defined:
 - Bootstrap Master Secret and Bootstrap Master Salt
     - If provisioned they are stored on disk, and they are never changed by the device.
 - Latest Master Secret and Latest Master Salt
@@ -991,10 +992,9 @@ Note that:
 - A device that has neither of the above pairs, cannot run KUDOS.
 - A device that has only one of the above pairs can attempt to run KUDOS, but that can fail due to the other peer's capabilities. (Practically, in order to use the FS mode of KUDOS both peers must be CAPABLE).
 
+## Workflow after reboot
 
-## Workflow
-
-As a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:
+This section describes the overall procedure a device should follow after it has lost state (e.g. due to a reboot). As a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:
 - should be stored on disk if the device is CAPABLE;
 - must always be stored in volatile memory for practical use with OSCORE
 
@@ -1002,60 +1002,67 @@ This is independent of how exactly such Master Secret and Master Salt have been 
 
 This enables the following sequence of event in case of rebooting:
 
-- Check if you have a (Latest Master Secret, and Latest Master Salt) on disk
+- The device checks if it has a (Latest Master Secret, and Latest Master Salt) on disk
 
 - If yes:
     - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD
-    - Note: no need to restore this pair on disk in this case!
     - Run KUDOS as initiator
         - If CAPABLE store on disk the Master Secret and Master Salt from CTX_NEW as Latest Master Secret, and Latest Master Salt
 
-- If no, check if you have a (Bootstrap Master Secret, and Bootstrap Master Salt) on disk
+- If no, the device checks if it has a (Bootstrap Master Secret, and Bootstrap Master Salt) on disk
 
     - If yes:
         - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD
-        - If CAPABLE, the device stores (Bootstrap Master Secret, and Bootstrap Master Salt) on disk as (Latest Master Secret, and Latest Master Salt); this is covering the case of a CAPABLE device that has not run KUDOS with the other peer yet.
+        - If CAPABLE, the device stores (Bootstrap Master Secret, and Bootstrap Master Salt) on disk as (Latest Master Secret, and Latest Master Salt). (This is  to support  the case of a CAPABLE device that has not run KUDOS with the other peer yet.)
         - Run KUDOS as initiator
             - If CAPABLE, store on disk the Master Secret and Master Salt from CTX_New as (Latest Master Secret, Latest Master Salt).
 
-    - If no, use other ways to establish a first OSCORE context CTX_NEW, e.g., EDHOC.
+    - If no, use alternative ways to establish a first OSCORE context CTX_NEW, e.g., EDHOC.
         - If CAPABLE, store on disk the Master Secret and Master Salt from CTX_NEW as (Latest Master Secret, Latest Master Salt).
-
 
 ## Signaling
 
-- In the OSCORE option of a KUDOS message, in the second byte of flag bits, one more bit 'p' is used. The bit must be set to 0 when using the original version of KUDOS. The bit must be set to 0 if the second byte of flag bits is present but the 'd' flag is set to 0 (the message is not a KUDOS message).
-    - The 'p' bit to indicate PFS or no-PFS mode may not be beside the 'd' bit, but rather in the 'x' field intended to signal the size of the 'id detail' field (which would still be up to 127 bytes, while 8 bytes is the common recommendation).
+In order for the devices to signal whether the FS or non-FS mode of KUDOS is being used for a specific execution, a method for signaling is needed. This section defines such a signaling method by utilizing a bit 'p' which when set to 0 indicates usage of the original version of KUDOS (with FS), and when set to 1 indicates usage of the non-FS mode of KUDOS.
+
+That is, the 'p' bit is defined and used as follows:
+
+- The 'p' bit to indicate FS or no-FS mode is an element of the 'x' field intended to signal the size of the 'id detail' field. Specifically 1 bit of the 8 bits in the 'x' field is reserved for the signaling bit 'p'. (Leaving 7 bits to indicate the size of the 'id detail' field, which still ensures more than large enough nonces R1 and R2.)
+- The bit must be set to 0 when using the original version of KUDOS. The bit must be set to 0 if the second byte of flag bits is present but the 'd' flag is set to 0 (the message is not a KUDOS message). The bit must be set to 1 when using the non-FS mode of KUDOS.
 - In a KUDOS message (i.e., the 'd' bit is set to 1), the 'p' bit indicates what material to use for CTX_OLD as the second argument of updateCtx():
-    - If the 'p' bit is set to 0, KUDOS is run in PFS mode. That is, the current Security Context CTX_OLD is used and the goal is to preserve PFS. In order to use this mode of KUDOS, a device must be CAPABLE.
+    - If the 'p' bit is set to 0, KUDOS is run in PFS mode. That is, the current Security Context CTX_OLD is used and the goal is to preserve PFS. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Latest Master Secret, and Master Salt = Latest Master Salt. In order to use this mode of KUDOS, a device must be CAPABLE.
     - If the 'p' bit is set to 1, KUDOS is run in no-PFS mode, meaning that PFS is sacrificed because a stateful execution is not possible. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Bootstrap Master Secret, and Master Salt = Bootstrap Master Salt. This means that every execution of KUDOS between these peers will always consider this same Secret/Salt pair.
         - In order to use this mode of KUDOS a peer must have Bootstrap Master Secret and Bootstrap Master Salt.
 
-## Proposed extensions
+Note that in this manner the 'x' field will also be an inut to the updateCtx() method which ensures that the content of the bit is used for deriving key material. Through these means the bit 'p' will be not be able to modify in transit successfully. Specifically, to avoid inconsistencies (e.g., N1 and N2 have different sizes), updateCtx() takes as additional input parameters both the 'x' byte from the first KUDOS message and the 'x' byte from the second KUDOS message. (In addition to CTX_OLD).
 
-If a device is non CAPABLE, it MUST NOT run KUDOS in PFS mode and MUST run KUDOS in non-PFS mode.
 
-If a device is CAPABLE, it SHOULD run KUDOS in this PFS mode as initiator and SHOULD NOT run KUDOS in no-PFS mode as initiator. An exception to this is a follow-up with a responder peer that has made evident to not support this mode. Note that such a CAPABLE device is able to store also this piece of information, so that it can take following executions of KUDOS with this peer with the 'p' bit set to 1, including after a possible reboot.
+## Selection of KUDOS mode
 
-Note: If a peer A has learned that the other peer B in fact does support running KUDOS in PFS-mode it should never run KUDOS with that peer B in non-PFS mode (meaning if the other peer B initiates KUDOS with p = 1 it should be rejected). If A is a capable device, it MUST store this information on disk, hence preventing malevolent downgrading to no-PFS mode is case of simultaneous rebooting where B is non capable.
+The following section describes instructions for how devices should choose a mode of KUDOS to use, and how they should operate.
 
-Note: If both peers reboot simultanously, the client initiated variant of KUDOS would end up being run.
+If a device is non CAPABLE, it MUST NOT run KUDOS in FS mode and MUST run KUDOS in non-FS mode.
 
-If able to run KUDOS as specified in the 'p' flag by the initiator, the responder MUST comply and do so. Otherwise:
+If a device is CAPABLE, it SHOULD run KUDOS in FS mode as initiator and SHOULD NOT run KUDOS in no-PFS mode as initiator. An exception to this is a follow-up with a responding peer that has made evident to not support this mode. Note that such a CAPABLE device is able to store the knowledge that its peer can only run the non-FS mode of KUDOS, thus it will perform following executions of KUDOS with this peer with the 'p' bit set to 1, including after a possible reboot.
 
-## Negotiation
+If a peer A has learned that the other peer B does support running KUDOS in FS-mode it should never run KUDOS with that peer B in non-FS mode (meaning if the other peer B initiates KUDOS with p = 1 it should be rejected). If A is a CAPABLE device, it MUST store this information on disk, hence preventing malevolent downgrading to no-PFS mode is case of simultaneous rebooting where B is non capable.
+
+Note that if both peers reboot simultanously, the client initiated variant of KUDOS would end up being run.
+
+If able to run KUDOS as specified in the 'p' flag by the initiator, the responder MUST comply and do so.
+
+## Negotiation and errors due to mismatched mode
+
+When running KUDOS, it must be ensured that if both peers are CAPABLE KUDOS is ran in its original FS mode. If both peers are not CAPABLE devices, the initiator will use KUDOS in non-FS mode and the KUDOS execution will be ran in non-FS mode. However, if one device is CAPABLE, and the other devices is not, specific steps are required to be taken. The following section describes what steps a device should take in case the responding devices is non-CAPABLE, and the initiating devices is CAPABLE and initiates KUDOS with the FS mode.
 
 * If the responder is the server,
 
-    * It MUST return a protected 5.03 error response to Request #1 (protected with CTX_NEW as usual), where the diagnostic payload should explain what has happened. The 'p' bit in the OSCORE option of this response MUST be set to 1. When receiving this, if 'p' was 0 in the first Request #1, the client learns that the server can run only the no-PFS mode and MAY try again, setting the 'p' bit to 1 in the new Request #1.
+    * It MUST return a protected 5.03 error response to Request #1 (protected with CTX_NEW), with an explanatory diagnostic payload. The 'p' bit in this response MUST be set to 1. When the initiating client receives this, if 'p' was 0 in the first Request #1, the client learns that the server can run only the no-FS mode and MAY try again, setting the 'p' bit to 1 in the new Request #1.
 
 * If the responder is the client,
 
-   * After receiving Response #1, the client sends a Request #2 protected with CTX_NEW as usual. The 'p' bit in the OSCORE option of this response MUST be set to 1. Then, the client can abort the current KUDOS execution, and deletes both CTX_1 and CTX_NEW.
+   * After receiving Response #1, the client sends a Request #2 protected with CTX_NEW as usual. The 'p' bit in this response MUST be set to 1. Then, the client aborts the current KUDOS execution, and deletes both CTX_1 and CTX_NEW.
 
-   * After receiving the Request #2 above (i.e., having the 'p' bit set to 1 as a follow-up to Response #1 having the 'p' bit set to 0), the server aborts the KUDOS execution, deletes both CTX_1 and CTX_NEW, and learns that the client can run only the no-PFS mode.
-
-In either case, to avoid further inconsistencies (e.g., N1 and N2 have different sizes), updateCtx() should take as additional input parameters both the 'x' byte from the first KUDOS message and the 'x' byte from the second KUDOS message.
+   * After receiving the Request #2 above (i.e., it having the 'p' bit set to 1 as a follow-up to Response #1 having the 'p' bit set to 0), the server aborts the KUDOS execution, deletes both CTX_1 and CTX_NEW, and thus learns that the client can run only the no-PFS mode.
 
 
 # Document Updates # {#sec-document-updates}
