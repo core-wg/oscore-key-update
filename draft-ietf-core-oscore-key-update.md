@@ -626,6 +626,14 @@ As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the 
 ~~~~~~~~~~~
 {: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
 
+# Document Updates # {#sec-document-updates}
+
+RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -00 to -01 ## {#sec-00-01}
+
+* Recommendation on limits for CCM_8. Details in Appendix.
+
 # Acknowledgments # {#acknowledgments}
 {: numbered="no"}
 
