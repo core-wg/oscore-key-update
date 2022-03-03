@@ -734,6 +734,8 @@ Furthermore, this procedure can be executed stand-alone, or rather seamlessly in
 
 * In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the ID update procedure.
 
+\[TODO: think about the possibility of safely preserving ongoing observations following an update of OSCORE IDs alone.\]
+
 ## The Recipient-ID Option # {#sec-recipient-id-option}
 
 The Recipient ID Option defined in this section has the properties summarized in {{fig-recipient-id-option}}, which extends Table 4 of {{RFC7252}}. That is, the option is elective, safe to forward, part of the cache key and non repeatable.
