@@ -551,6 +551,16 @@ Note that the client achieves key confirmation only when receiving a message fro
 
 As mentioned in {{ssec-derive-ctx}}, a client must be ready to receive a non KUDOS response protected with keying material different than that used to protect the corresponding non KUDOS request. When running the server-initiated version of KUDOS as per {{fig-message-exchange-server-init}}, this can happen if the client uses NSTART > 1 (see {{Section 4.7 of RFC7252}}), and one of the non KUDOS requests results in the server initiating KUDOS (i.e., yielding the first KUDOS message as response). In such a case, the other non KUDOS requests representing oustanding interactions with the server (see {{Section 4.7 of RFC7252}}) would be replied to later on, once the server has finished executing KUDOS (i.e., when the server receives the second KUDOS message, successfully verifies it, and derives the new OSCORE Security Context CTX\_NEW).
 
+When the server-initiated version of KUDOS is used, the two peers risk to run into a deadlock, if all the following conditions hold.
+
+* The client is a client-only device, i.e., it is not capable to act as CoAP server and thus does not listen for incoming requests.
+
+* The server needs to execute KUDOS, which, due to the previous point, can only be performed in its server-initiated version as per {{fig-message-exchange-server-init}}. That is, the server has to wait for an incoming non KUDOS request, in order to initiate KUDOS by replying with the first KUDOS message as a response.
+
+* The client sends only Non-confirmable CoAP requests to the server and does not expect responses sent back as reply, hence freeing up a request's Token value once the request is sent.
+
+In such a case, in order to avoid experiencing a deadlock situation where the server needs to execute KUDOS but cannot practically initiate it, a client-only device that supports KUDOS SHOULD intersperse Non-confirmable requests it sends to that server with confirmable requests.
+
 ## Retention Policies # {#ssec-retention}
 
 Applications MAY define policies that allows a peer to also temporarily keep the old Security Context CTX\_OLD, rather than simply overwriting it to become CTX\_NEW. This allows the peer to decrypt late, still on-the-fly incoming messages protected with CTX\_OLD.
