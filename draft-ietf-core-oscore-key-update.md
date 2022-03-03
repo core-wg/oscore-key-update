@@ -622,6 +622,8 @@ TODO: Add more considerations.
 
 # IANA Considerations
 
+RFC Editor: Please replace "\[this document\]" with the RFC number of this document and delete this paragraph.
+
 This document has the following actions for IANA.
 
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
@@ -633,13 +635,13 @@ IANA is asked to add the following entries to the "OSCORE Flag Bits" registry wi
 | Bit      |       Name       |      Description       | Reference |
 | Position |                  |                        |           |
 +----------+------------------+------------------------+-----------+
-|    1     | Extension-1 Flag | Set to 1 if the OSCORE | [This     |
-|          |                  | Option specifies a     | Document] |
+|    1     | Extension-1 Flag | Set to 1 if the OSCORE | [this     |
+|          |                  | Option specifies a     | document] |
 |          |                  | second byte of OSCORE  |           |
 |          |                  | flag bits              |           |
 +----------+------------------+------------------------+-----------+
-|    15    |  ID Detail Flag  | Set to 1 if the        | [This     |
-|          |                  | compressed COSE object | Document] |
+|    15    |  ID Detail Flag  | Set to 1 if the        | [this     |
+|          |                  | compressed COSE object | document] |
 |          |                  | contains 'id detail'   |           |
 +----------+------------------+------------------------+-----------+
 ~~~~~~~~~~~
