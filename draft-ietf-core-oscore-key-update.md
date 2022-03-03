@@ -626,6 +626,21 @@ RFC Editor: Please replace "\[this document\]" with the RFC number of this docum
 
 This document has the following actions for IANA.
 
+## CoAP Option Numbers Registry ## {#iana-coap-options}
+
+IANA is asked to enter the following option number to the "CoAP Option Numbers" registry within the "CoRE Parameters" registry group.
+
+~~~~~~~~~~~
++--------+--------------+-----------------+
+| Number |     Name     |    Reference    |
++--------+--------------+-----------------+
+|  TBD   | Recipient-ID | [this document] |
++--------+--------------+-----------------+
+~~~~~~~~~~~
+{: artwork-align="center"}
+
+The number suggested to IANA for the Recipient-ID option is 24.
+
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
 IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
@@ -702,6 +717,253 @@ Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the pee
 * If the outgoing message is a response, X is the Partial IV specified in the corresponding request that this peer is responding to. Note that X < SSN\* always holds.
 
 * If the outgoing message is a request, X is the highest Partial IV value marked as received in this peer's Replay Window plus 1, or 0 if it has not accepted any protected message from the other peer yet. That is, X is the highest Partial IV specified in message received from the other peer, i.e., the highest seen Sender Sequence Number of the other peer. Note that, also in this case, X < SSN\* always holds.
+
+# Update of OSCORE Sender/Recipient IDs # {#update-oscore-ids}
+
+This section defines an optional procedure that two peers can execute to update the OSCORE Sender/Recipient IDs that they use in their shared OSCORE Security Context.
+
+This procedure can be initiated by either peer. In particular, the client or the server may start it by sending the first OSCORE ID update message. When sending an OSCORE ID update message, a peer provides its new intended OSCORE Recipient ID to the other peer.
+
+Furthermore, this procedure can be executed stand-alone, or rather seamlessly integrated in an execution of KUDOS (see {{sec-rekeying-method}}).
+
+* In the former stand-alone case, updating the OSCORE Sender/Recipient IDs effectively results in updating part of the current OSCORE Security Context.
+
+   That is, a new Sender Key, Recipient Key and Common IV are derived as defined in {{Section 3.2 of RFC8613}}. Also, the Sender Sequence Number and the replay window are re-initialized accordingly, as defined in {{Section 3.2.2 of RFC8613}}. Since the same Master Secret is preserved, perfect forward secrecy is not achieved.
+
+   Finally, as defined in {{id-update-additional-actions}}, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.
+
+* In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the ID update procedure.
+
+## The Recipient-ID Option # {#sec-recipient-id-option}
+
+The Recipient ID Option defined in this section has the properties summarized in {{fig-recipient-id-option}}, which extends Table 4 of {{RFC7252}}. That is, the option is elective, safe to forward, part of the cache key and non repeatable.
+
+~~~~~~~~~~~
++------+---+---+---+---+--------------+--------+--------+---------+
+| No.  | C | U | N | R | Name         | Format | Length | Default |
++------+---+---+---+---+--------------+--------+--------+---------+
+|      |   |   |   |   |              |        |        |         |
+| TBD1 |   |   |   |   | Recipient-ID | opaque | 0-7    | (none)  |
+|      |   |   |   |   |              |        |        |         |
++------+---+---+---+---+--------------+--------+--------+---------+
+         C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
+~~~~~~~~~~~
+{: #fig-recipient-id-option title="The Recipient-ID Option." artwork-align="center"}
+
+This document particularly defines how this option is used in messages protected with OSCORE. That is, when the option is included in an outgoing message, the option value specifies the new OSCORE Recipient ID that the sender endpoint intends to use with the other endpoint sharing the OSCORE Security Context.
+
+The Recipient-ID Option is of class E in terms of OSCORE processing (see {{Section 4.1 of RFC8613}}).
+
+### Client-Initiated OSCORE IDs Update {#example-client-initiated-id-update}
+
+{{fig-id-update-client-init}} shows the stand-alone OSCORE IDs update workflow, with the client acting as initiator.
+
+~~~~~~~~~~~
+          Client                             Server
+        (initiator)                        (responder)
+CTX_A {     |                                   | CTX_A {
+ SID = 1    |                                   |  SID = 0
+ RID = 0    |                                   |  RID = 1
+}           |                                   | }
+            |                                   |
+Protect     |  Req1                             |
+CTX_A       |---------------------------------->| Verify CTX_A
+            | OSCORE: ..., kid:1                |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    RecipientID: 42                |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   |
+
+          // When embedded in KUDOS, CTX_1 is CTX_A.
+          // Also, there cannot be application payload.
+
+            |                                   |
+            |   Resp1                           |
+Verify CTX_A|<----------------------------------| Protect CTX_A
+            | OSCORE: ...                       |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    RecipientID: 78                |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+
+           // When embedded in KUDOS, this message
+           // is protected using CTX_NEW. Also, there
+           // there cannot be application payload.
+           // Then, CTX_B builds on CTX_NEW by updating
+           // the new Sender/Recipient IDs
+
+            |                                   |
+CTX_B {     |                                   | CTX_B {
+ SID = 78   |                                   |  SID = 42
+ RID = 42   |                                   |  RID = 78
+}           |                                   | }
+            |                                   |
+Protect     |  Req2                             |
+CTX_B       |---------------------------------->| Verify CTX_B
+            | OSCORE: ..., kid:78               |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   |
+            |   Resp2                           |
+Verify CTX_B|<----------------------------------| Protect CTX_B
+            | OSCORE: ...                       |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   |
+Client      |                                   |
+deletes     |                                   |
+CTX_A       |                                   |
+            |                                   |
+Protect     |  Req3                             |
+CTX_B       |---------------------------------->| Verify CTX_B
+            | OSCORE: ..., kid:78               |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   | Server
+            |                                   | Deletes CTX_A
+            |                                   |
+~~~~~~~~~~~
+{: #fig-id-update-client-init title="Client-Initiated OSCORE IDs Update Workflow" artwork-align="center"}
+
+\[TODO: discuss the example\]
+
+### Server-Initiated OSCORE IDs Update {#example-server-initiated-id-update}
+
+{{fig-id-update-server-init}} shows the stand-alone OSCORE IDs update workflow, with the server acting as initiator.
+
+~~~~~~~~~~~
+          Client                             Server
+        (responder)                        (initiator)
+CTX_A {     |                                   | CTX_A {
+ SID = 1    |                                   |  SID = 0
+ RID = 0    |                                   |  RID = 1
+}           |                                   | }
+            |                                   |
+Protect     |  Req1                             |
+CTX_A       |---------------------------------->| Verify CTX_A
+            | OSCORE: ..., kid:1                |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   |
+
+         // When (to be) embedded in KUDOS, CTX_OLD is CTX_A
+
+            |   Resp1                           |
+Verify CTX_A|<----------------------------------| Protect CTX_A
+            | OSCORE: ...                       |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    RecipientID: 78                |
+            |    Application Payload            |
+            | }                                 |
+
+          // When embedded in KUDOS, this message is
+          // protected with CTX_1 instead. Also
+          // there cannot be application payload.
+
+            |                                   |
+CTX_A {     |                                   | CTX_A {
+ SID = 1    |                                   |  SID = 0
+ RID = 0    |                                   |  RID = 1
+}           |                                   | }
+            |                                   |
+Protect     |  Req2                             |
+CTX_A       |---------------------------------->| Verify CTX_A
+            | OSCORE: ..., kid:1                |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    RecipientID: 42                |
+            |    Application Payload            |
+            | }                                 |
+
+          // When embedded in KUDOS, this message is
+          // protected with CTX_NEW instead. Also
+          // there cannot be application payload.
+
+            |                                   |
+            |   Resp2                           |
+Verify CTX_A|<----------------------------------| Protect CTX_A
+            | OSCORE: ...                       |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+
+          // When embedded in KUDOS, this message is
+          // protected with CTX_NEW instead. Also
+          // there cannot be application payload.
+
+            |                                   |
+CTX_B {     |                                   | CTX_B {
+ SID = 78   |                                   |  SID = 42
+ RID = 42   |                                   |  RID = 78
+}           |                                   | }
+            |                                   |
+Protect     |  Req3                             |
+CTX_B       |---------------------------------->| Verify CTX_B
+            | OSCORE: ..., kid:78               |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   |
+            |   Resp3                           |
+Verify CTX_B|<----------------------------------| Protect CTX_B
+            | OSCORE: ...                       |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+Client del  |                                   |
+CTX_A       |                                   |
+            |                                   |
+Protect     |  Req4                             |
+CTX_B       |---------------------------------->| Verify CTX_B
+            | OSCORE: ..., kid:78               |
+            | Encrypted_Payload {               | Server del CTX_B
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   |
+            |   Resp4                           |
+Verify CTX_B|<----------------------------------| Protect CTX_B
+            | OSCORE: ...                       |
+            | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
+            |                                   |
+~~~~~~~~~~~
+{: #fig-id-update-server-init title="Server-Initiated OSCORE IDs Update Workflow" artwork-align="center"}
+
+\[TODO: discuss the example\]
+
+### Additional Actions for Stand-Alone Execution {#id-update-additional-actions}
+
+A peer MUST NOT participate in a stand-alone OSCORE IDs update procedure with another peer, between having experienced a loss of state and having performed a full-fledged establishment/renewal of an OSCORE Security Context with the other peer (e.g., through KUDOS or EDHOC {{I-D.ietf-lake-edhoc}}).
+
+More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the pair (Master Secret, ID Context) of CTX\_OLD. This can happen, for instance, following a device reboot.
+
+Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer perform the following additional steps.
+
+* When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current pair (Master Secret, ID Context).
+
+* When receiving an OSCORE ID update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current pair (Master Secret, ID Context).
+
+In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current pair (Master Secret, ID Context), since the latest update of OSCORE Master Secret (e.g, performed through KUDOS).
 
 # KUDOS procedure without Forward Secrecy {#no-fs-mode}
 
@@ -815,7 +1077,9 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Improved message processing, also covering corner cases.
 
-* Appendix on method to estimate and not store 'count_q'.
+* Example of method to estimate and not store 'count_q'.
+
+* Procedure to update OSCORE Sender/Recipient IDs.
 
 # Acknowledgments # {#acknowledgments}
 {: numbered="no"}
