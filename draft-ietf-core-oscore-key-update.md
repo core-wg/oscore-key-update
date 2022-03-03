@@ -416,16 +416,16 @@ CTX_1 =              |                    |
                      |     Request #1     |
 Protect with CTX_1   |------------------->|
                      | OSCORE Option:     | CTX_1 =
-                     |   ...              |   update(R1,
-                     |   d flag: 1        |          CTX_OLD)
+                     |   ...              |   updateCtx(R1,
+                     |   d flag: 1        |             CTX_OLD)
                      |   ...              |
                      |   ID Detail: R1    | Verify with CTX_1
                      |   ...              |
                      |                    | Generate R2
                      |                    |
                      |                    | CTX_NEW =
-                     |                    |   update(R1|R2,
-                     |                    |          CTX_OLD)
+                     |                    |   updateCtx(R1|R2,
+                     |                    |             CTX_OLD)
                      |                    |
                      |     Response #1    |
                      |<-------------------| Protect with CTX_NEW
@@ -466,6 +466,8 @@ Upon receiving the OSCORE response, the client retrieves the value R2 from the '
 After that, the client can send a new OSCORE request protected with the new Security Context CTX\_NEW. When successfully verifying the request using the Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
 
 From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
+
+Note that the server achieves key confirmation only when receiving a message from the client as protected with the new Security Context CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete the new Security Context CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}}.
 
 ### Server-Initiated Key Update {#ssec-derive-ctx-server-init}
 
@@ -536,6 +538,8 @@ Upon receiving the OSCORE request, the server retrieves the value R1 \| R2 from 
 After that, the server can send an OSCORE response protected with the new Security Context CTX\_NEW. When successfully verifying the response using the Security Context CTX\_NEW, the client deletes the old Security Context CTX\_OLD.
 
 From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
+
+Note that the client achieves key confirmation only when receiving a message from the server as protected with the new Security Context CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete the new Security Context CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}} in {{ssec-derive-ctx-client-init}}.
 
 ## Retention Policies # {#ssec-retention}
 
