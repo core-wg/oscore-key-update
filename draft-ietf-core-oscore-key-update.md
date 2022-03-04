@@ -1016,7 +1016,7 @@ Note that:
 
 * A device that has only one of the above pairs can attempt to run KUDOS, but that can fail due to the other peer's capabilities. (Practically, in order to use the FS mode of KUDOS both peers must be CAPABLE).
 
-## Workflow and Actions After Reboot
+## Workflow Including Actions After Reboot
 
 This section describes the overall procedure a device should follow after it has lost state (e.g. due to a reboot). As a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:
 
