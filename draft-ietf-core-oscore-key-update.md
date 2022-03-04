@@ -724,17 +724,25 @@ Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the pee
 
 As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old Security Context CTX\_OLD.
 
-This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, after having completed a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully match against the Observe requests of two different observations, i.e., an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
+This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, after having completed a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, i.e., an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
 
 The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-signaling}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, as defined in {{ssec-derive-ctx}}.
 
-If a peer supporting KUDOS is generally interested in preserving ongoing observations across a key update, the peer maintains a counter EPOCH for each ongoing observation it participates in. At any point in time, (EPOCH + 1) is the number of KUDOS execution performed by the peer since the sucessful registration of the associated observation. That is, EPOCH indicates the lifetime of an observation measured in keying material epochs, and is bounded by the configuration parameter MAX\_EPOCH.
+If a peer supporting KUDOS is generally interested in preserving ongoing observations across a key update, the peer maintains a counter EPOCH for each ongoing observation it participates in. At any point in time, (EPOCH + 1) is the number of KUDOS executions performed by the peer since the sucessful registration of the associated observation. That is, EPOCH indicates the lifetime of an observation measured in keying material epochs, and is bounded by the configuration parameter MAX\_EPOCH.
 
-\[NOTE: MAX\_EPOCH really has to be the same for any two peers. As a start, it can be assumed that a TBD default value applies, unless a different one is provided. It is possible to unable an actual negotiation between two peers running KUDOS, see {{preserving-observe-signaling}}.\]
+\[ NOTE:
+
+MAX\_EPOCH really has to be the same for any two peers. As a start, it can be assumed that a TBD default value applies, unless a different one is provided. It is possible to enable an actual negotiation between two peers running KUDOS, see {{preserving-observe-signaling}}.
+
+\]
 
 The following sections specify the different actions taken by the peer depending on whether it acts as client or server in an ongoing observation, as well as the signaling method used in KUDOS to agree on preserving the ongoing observations beyond the current KUDOS execution.
 
-\[NOTE: This method may be of more general applicability, i.e, also in case an update of the OSCORE keying material is performed through a different means than KUDOS.\]
+\[ NOTE:
+
+This method may be of more general applicability, i.e, also in case an update of the OSCORE keying material is performed through a different means than KUDOS.
+
+\]
 
 ## Management of Observations
 
@@ -744,41 +752,41 @@ If the server sends back a successful response also including the Observe option
 
 If the client receives back the successful response from the server, then the client initializes to 0 the counter EPOCH associated with the just confirmed observation.
 
-If, later on, the client is not interested in the observation anymore, it MUST NOT simply forget about it. Rather, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client A MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
+If, later on, the client is not interested in the observation anymore, it MUST NOT simply forget about it. Rather, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
 
-In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve across the key update, then A explicitly opts-in by using the signaling approach embedded in KUDOS and defined in {{preserving-observe-signaling}}.
+In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve across the key update, then A explicitly indicates it by using the signaling approach embedded in KUDOS and defined in {{preserving-observe-signaling}}.
 
 After having successfully completed the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), if the other peer B has confirmed its interest in preserving those ongoing observations also by using the signaling approach defined in {{preserving-observe-signaling}}, then the peer A performs the following actions.
 
-1. For each ongoing observation X that A has with B:
+1. For each ongoing observation X that A has with B and for which following notifications are going to be protected with CTX\_NEW:
 
    a. The peer A increments the counter EPOCH associated with X.
 
    b. If the updated value of EPOCH associated with X has reached MAX\_EPOCH, then the peer A MUST terminate the observation.
 
-      If the peer A was acting as client in the observation X, then it SHOULD send an explicit cancellation request to the other peer B, i.e., a request including the Observe option with value 1 (see {{Section 3.6 of RFC7641}}).
+2. For each still ongoing observation X that A has with B after the previous step, such that A acts as client in X and for which following notifications are going to be protected with CTX\_NEW:
 
-2. For each still ongoing observation X that A has with B after the previous step, such that A acts as client in X:
+   a. The peer A MUST attempt again to cancel X, if A previously tried to do that but had not received a response from the other peer B as confirmation. As specified above, such an observation cancellation MUST be performed by sending a cancellation request.
 
-   a. The peer A considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations with the other peer B.
+   b. The peer A considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations with the other peer B. Then, the peer A determines the value PIV\* as the highest OSCORE Partial IV among those considered at the previous step.
 
-   b. The peer A determines the value PIV\* as the highest OSCORE Partial IV among those considered at the previous step.
-
-   c. In the Sender Context of the OSCORE Security Context shared with the other peer B, the peer A sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
+   c. In the Sender Context within CTX\_NEW, the peer A sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
 
 ## Signaling to Preserve Observations # {#preserving-observe-signaling}
 
-When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another. To this end, the OSCORE option shown in {{fig-oscore-option}} and included in a KUDOS message is further extended as follows.
+When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another and are bound to the OSCORE Security Context to renew. To this end, the extended OSCORE option shown in {{fig-oscore-option}} and included in a KUDOS message is further extended as follows.
 
-\[
-NOTE: This is an early proposal with many details to be refined.
+\[ NOTE:
+
+This is an early proposal with many details to be refined.
+
 \]
 
-An additional bit "Extend Observations", 'b', is set to 1 by the sender peer to indicate that it wishes to preserve ongoing observations with the other peer.
+An additional bit "Preserve Observations", 'b', is set to 1 by the sender peer to indicate that it wishes to preserve ongoing observations with the other peer.
 
 While 'b' can be a bit in the second byte of the OSCORE option containing the OSCORE flag bits, 'b' can rather be one bit in the 1 byte 'x' following 'kid context' (if any) and originally encoding the size of 'id detail'. Since, the recommended size of 'id detail' is 8 bytes, the number of bits left available in the 'x' bit is amply sufficient to still indicate the size of 'id detail'.
 
-If is fundamental to integrity-protect the value of the bit 'b' set in the two KUDOS messages. This can be achieved by taking also the whole byte 'x' including the the bit 'b' as input in the derivation of the new OSCORE Security Context CTX\_NEW.
+It is fundamental to integrity-protect the value of the bit 'b' set in the two KUDOS messages. This can be achieved by taking also the whole byte 'x' including the bit 'b' as input in the derivation of the new OSCORE Security Context CTX\_NEW.
 
 That is, the updateCtx() function defined in {{function-update}} would be invoked as follows:
 
@@ -786,13 +794,13 @@ That is, the updateCtx() function defined in {{function-update}} would be invoke
 
 * CTX\_NEW = updateCtx(X1\|X2\|R1\|R2, CTX\_OLD), when deriving CTX\_NEW for processing the second KUDOS message in the KUDOS execution.
 
-where X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the the first and second KUDOS message in the KUDOS execution, respectively.
+where X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message in the KUDOS execution, respectively.
 
-\[
+\[ NOTE:
 
-NOTE: The single bit 'b' can actually be replaced by three bits 'b1', 'b2' and 'b3' still within the byte 'x'. These can be used by the two peers performing KUDOS to negotiate the value of MAX\_EPOCH (see {{preserving-observe}}. Then, the two peers agree to use as MAX\_EPOCH the smallest of the two values exchanged during the execution of KUDOS.
+The single bit 'b' can actually be replaced by three bits 'b1', 'b2' and 'b3' still within the byte 'x'. These can be used by the two peers performing KUDOS to negotiate the value of MAX\_EPOCH (see {{preserving-observe}}. Then, the two peers agree to use as MAX\_EPOCH the smallest of the two values exchanged during the execution of KUDOS.
 
-The final encoding of the 'x' byte specified in {{ssec-oscore-option-extensions}} will be affected.
+The final encoding of the 'x' byte specified in {{ssec-oscore-option-extensions}} will be affected. In particular, a smarter encoding would be convenient for the bits left to use to indicate the size in bytes of 'id detail'.
 
 \]
 
@@ -1181,7 +1189,9 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Example of method to estimate and not store 'count_q'.
 
-* Procedure to update OSCORE Sender/Recipient IDs.
+* Added procedure to update OSCORE Sender/Recipient IDs.
+
+* Added method for preserving observations across key updates.
 
 # Acknowledgments # {#acknowledgments}
 {: numbered="no"}
