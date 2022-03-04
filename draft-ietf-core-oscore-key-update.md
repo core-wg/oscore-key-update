@@ -989,8 +989,10 @@ The KUDOS procedure as defined in section {{sec-rekeying-method}} ensures Forwar
 Due to the need to support also devices that cannot write to non-volatile memory, it becomes neccessary to define a way of running KUDOS that no longer guarantees Forward Secrecy, but allows devices which are not capable of storing information to persistant storage to nontheless use KUDOS. This is an alternative execution of KUDOS, which sacrifices FS but allows devices to perform a stateless key update, i.e., without writing on disk (which is possible using the current OSCORE Appendix B.2). This section defines such a method which is called the non-FS mode of KUDOS.
 
 Formally the requirements for running KUDOS with Forward Secrecy are the following. After KUDOS has successfully completed:
-- The Master Secret and Master Salt are updated (in CTX_NEW), and keys derived from the "original" one (in CTX_OLD) are not used anymore
-- The new Master Secret and Master Salt are stored in non-volatile memory, for retrieval after loss off state (e.g. rebooting)
+
+* The Master Secret and Master Salt are updated (in CTX_NEW), and keys derived from the "original" one (in CTX_OLD) are not used anymore.
+
+* The new Master Secret and Master Salt are stored in non-volatile memory, for retrieval after loss off state (e.g. rebooting).
 
 If both peers do not fulfill the above requirements the non-FS mode of KUDOS must be used.
 
@@ -1001,56 +1003,61 @@ This section introduces a number of concepts that are used when describing how t
 Devices which are able to store information to non-volatible memory are CAPABLE whichs implies the following: The device is generally capable of writing to disk (non-volatile memory). This excludes any one-time only writing in non-volatile memory happening at manufacturing time or (re-)commissioning time, e.g., to write the Bootstrap Master Secret and Bootstrap Master Salt.
 
 Furthermore the following types of key material is defined:
-- Bootstrap Master Secret and Bootstrap Master Salt
-    - If provisioned they are stored on disk, and they are never changed by the device.
-- Latest Master Secret and Latest Master Salt
-    - Can be dynamically updated by the device; they are lost upon reboot unless stored on disk.
+
+* Bootstrap Master Secret and Bootstrap Master Salt: If provisioned they are stored on disk, and they are never changed by the device.
+
+* Latest Master Secret and Latest Master Salt: Can be dynamically updated by the device; they are lost upon reboot unless stored on disk.
 
 Note that:
-- A device can have none of the pairs above, only one or both.
-- A device that has neither of the above pairs, cannot run KUDOS.
-- A device that has only one of the above pairs can attempt to run KUDOS, but that can fail due to the other peer's capabilities. (Practically, in order to use the FS mode of KUDOS both peers must be CAPABLE).
 
-## Workflow after reboot
+* A device can have none of the pairs above, only one or both.
+
+* A device that has neither of the above pairs, cannot run KUDOS.
+
+* A device that has only one of the above pairs can attempt to run KUDOS, but that can fail due to the other peer's capabilities. (Practically, in order to use the FS mode of KUDOS both peers must be CAPABLE).
+
+## Workflow and actions after reboot
 
 This section describes the overall procedure a device should follow after it has lost state (e.g. due to a reboot). As a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:
-- should be stored on disk if the device is CAPABLE;
-- must always be stored in volatile memory for practical use with OSCORE
+
+* should be stored on disk if the device is CAPABLE.
+
+* must always be stored in volatile memory for practical use with OSCORE.
 
 This is independent of how exactly such Master Secret and Master Salt have been obtained (e.g. KUDOS or EDHOC). An exception to the above is the temporary KUDOS context CTX_1 which must not be stored on disk.
 
 This enables the following sequence of event in case of rebooting:
 
-- The device checks if it has a (Latest Master Secret, and Latest Master Salt) on disk
+* The device checks if it has a (Latest Master Secret, and Latest Master Salt) on disk
 
-- If yes:
-    - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD
-    - Run KUDOS as initiator
-        - If CAPABLE store on disk the Master Secret and Master Salt from CTX_NEW as Latest Master Secret, and Latest Master Salt
+* If yes:
+    * Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD
+    * Run KUDOS as initiator
+        * If CAPABLE store on disk the Master Secret and Master Salt from CTX_NEW as Latest Master Secret, and Latest Master Salt
 
-- If no, the device checks if it has a (Bootstrap Master Secret, and Bootstrap Master Salt) on disk
+* If no, the device checks if it has a (Bootstrap Master Secret, and Bootstrap Master Salt) on disk
 
-    - If yes:
-        - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD
-        - If CAPABLE, the device stores (Bootstrap Master Secret, and Bootstrap Master Salt) on disk as (Latest Master Secret, and Latest Master Salt). (This is to support  the case of a CAPABLE device that has not run KUDOS with the other peer yet.)
-        - Run KUDOS as initiator
-            - If CAPABLE, store on disk the Master Secret and Master Salt from CTX_New as (Latest Master Secret, Latest Master Salt).
+    * If yes:
+        * Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD
+        * If CAPABLE, the device stores (Bootstrap Master Secret, and Bootstrap Master Salt) on disk as (Latest Master Secret, and Latest Master Salt). (This is to support  the case of a CAPABLE device that has not run KUDOS with the other peer yet.)
+        * Run KUDOS as initiator
+            * If CAPABLE, store on disk the Master Secret and Master Salt from CTX_New as (Latest Master Secret, Latest Master Salt).
 
-    - If no, use alternative ways to establish a first OSCORE context CTX_NEW, e.g., EDHOC.
-        - If CAPABLE, store on disk the Master Secret and Master Salt from CTX_NEW as (Latest Master Secret, Latest Master Salt).
+    * If no, use alternative ways to establish a first OSCORE context CTX_NEW, e.g., EDHOC.
+        * If CAPABLE, store on disk the Master Secret and Master Salt from CTX_NEW as (Latest Master Secret, Latest Master Salt).
 
-## Signaling
+## Signaling of FS or non-FS mode
 
 In order for the devices to signal whether the FS or non-FS mode of KUDOS is being used for a specific execution, a method for signaling is needed. This section defines such a signaling method by utilizing a bit 'p' which when set to 0 indicates usage of the original version of KUDOS (with FS), and when set to 1 indicates usage of the non-FS mode of KUDOS.
 
 That is, the 'p' bit is defined and used as follows:
 
-- The 'p' bit to indicate FS or no-FS mode is the left-most bit of the 'x' field intended to signal the size of the 'id detail' field. Specifically 1 bit of the 8 bits in the 'x' field is reserved for the signaling bit 'p'. (Leaving 7 bits to indicate the size of the 'id detail' field, which still ensures the possibility of more than large (secure) enough nonces R1 and R2.)
-- The bit must be set to 0 when using the original version of KUDOS. The bit must be set to 0 if the second byte of flag bits is present but the 'd' flag is set to 0 (the message is not a KUDOS message). The bit must be set to 1 when using the non-FS mode of KUDOS.
-- In a KUDOS message (i.e., the 'd' bit is set to 1), the 'p' bit indicates what material to use for CTX_OLD which is used as input to updateCtx():
-    - If the 'p' bit is set to 0, KUDOS is run in PFS mode. That is, the current Security Context CTX_OLD is used and the goal is to preserve FS. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Latest Master Secret, and Master Salt = Latest Master Salt. In order to use this mode of KUDOS, a device must be CAPABLE.
-    - If the 'p' bit is set to 1, KUDOS is run in no-FS mode, meaning that FS is sacrificed as a stateful execution is not possible. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Bootstrap Master Secret, and Master Salt = Bootstrap Master Salt. Due to this every execution of KUDOS between these peers will always consider this same Master Secret/Master Salt pair.
-        - In order to use this mode of KUDOS a peer must have Bootstrap Master Secret and Bootstrap Master Salt.
+* The 'p' bit to indicate FS or no-FS mode is the left-most bit of the 'x' field intended to signal the size of the 'id detail' field. Specifically 1 bit of the 8 bits in the 'x' field is reserved for the signaling bit 'p'. (Leaving 7 bits to indicate the size of the 'id detail' field, which still ensures the possibility of more than large (secure) enough nonces R1 and R2.)
+* The bit must be set to 0 when using the original version of KUDOS. The bit must be set to 0 if the second byte of flag bits is present but the 'd' flag is set to 0 (the message is not a KUDOS message). The bit must be set to 1 when using the non-FS mode of KUDOS.
+* In a KUDOS message (i.e., the 'd' bit is set to 1), the 'p' bit indicates what material to use for CTX_OLD which is used as input to updateCtx():
+    * If the 'p' bit is set to 0, KUDOS is run in PFS mode. That is, the current Security Context CTX_OLD is used and the goal is to preserve FS. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Latest Master Secret, and Master Salt = Latest Master Salt. In order to use this mode of KUDOS, a device must be CAPABLE.
+    * If the 'p' bit is set to 1, KUDOS is run in no-FS mode, meaning that FS is sacrificed as a stateful execution is not possible. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Bootstrap Master Secret, and Master Salt = Bootstrap Master Salt. Due to this every execution of KUDOS between these peers will always consider this same Master Secret/Master Salt pair.
+    * In order to use this mode of KUDOS a peer must have Bootstrap Master Secret and Bootstrap Master Salt.
 
 Note that in this manner the 'x' field will also be an input to the updateCtx() method, which ensures that the content of the bit is used for deriving key material. Through these means the bit 'p' will be not be possible to modify in transit successfully. Specifically, to avoid inconsistencies (e.g., N1 and N2 have different sizes), updateCtx() takes as input parameters, in addition to CTX_OLD, both the 'x' byte from the first KUDOS message and the 'x' byte from the second KUDOS message. That is, for a client-initiated execution  Request #1 and Response #1, and for a server-initiated exectution Response#1 and Request #2.
 
@@ -1075,7 +1082,7 @@ When running KUDOS, it must be ensured that if both peers are CAPABLE, KUDOS is 
 That is, if the initiator sends the first KUDOS message in the procedure (Request #1 for the client-initiated procedure or Response #1 for the server-initiated procedure), with the 'p' bit set to 0 and the responder is non-CAPABLE:
 * If the responder is the server,
 
-    * It MUST return a protected 5.03 error response to Request #1 (protected with CTX_NEW), with an explanatory diagnostic payload. The 'p' bit in this response MUST be set to 1. When the initiating client receives this, if 'p' was 0 in the first Request #1, the client learns that the server can run only the no-FS mode and MAY try again, setting the 'p' bit to 1 in the new Request #1.
+   * It MUST return a protected 5.03 error response to Request #1 (protected with CTX_NEW), with an explanatory diagnostic payload. The 'p' bit in this response MUST be set to 1. When the initiating client receives this, if 'p' was 0 in the first Request #1, the client learns that the server can run only the no-FS mode and MAY try again, setting the 'p' bit to 1 in the new Request #1.
 
 * If the responder is the client,
 
