@@ -618,7 +618,7 @@ This document mainly covers security considerations about using AEAD keys in OSC
 
 Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
 
-TODO: Add more considerations.
+\[TODO: Add more considerations.\]
 
 # IANA Considerations
 
@@ -745,7 +745,7 @@ The Recipient ID Option defined in this section has the properties summarized in
 | No.  | C | U | N | R | Name         | Format | Length | Default |
 +------+---+---+---+---+--------------+--------+--------+---------+
 |      |   |   |   |   |              |        |        |         |
-| TBD1 |   |   |   |   | Recipient-ID | opaque | 0-7    | (none)  |
+| TBD1 |   |   |   |   | Recipient-ID | opaque |  0-7   | (none)  |
 |      |   |   |   |   |              |        |        |         |
 +------+---+---+---+---+--------------+--------+--------+---------+
          C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
@@ -760,18 +760,21 @@ The Recipient-ID Option is of class E in terms of OSCORE processing (see {{Secti
 
 {{fig-id-update-client-init}} shows the stand-alone OSCORE IDs update workflow, with the client acting as initiator.
 
+On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+
 ~~~~~~~~~~~
           Client                             Server
-        (initiator)                        (responder)
+       (initiator)                         (responder)
+            |                                   |
 CTX_A {     |                                   | CTX_A {
  SID = 1    |                                   |  SID = 0
  RID = 0    |                                   |  RID = 1
 }           |                                   | }
             |                                   |
-Protect     |  Req1                             |
-CTX_A       |---------------------------------->| Verify CTX_A
-            | OSCORE: ..., kid:1                |
-            | Encrypted_Payload {               |
+            |            Request #1             |
+Protect     |---------------------------------->|
+with CTX_A  | OSCORE Option: ..., kid:1         | Verify
+            | Encrypted_Payload {               | with CTX_A
             |    ...                            |
             |    RecipientID: 42                |
             |    ...                            |
@@ -779,23 +782,25 @@ CTX_A       |---------------------------------->| Verify CTX_A
             | }                                 |
             |                                   |
 
-          // When embedded in KUDOS, CTX_1 is CTX_A.
-          // Also, there cannot be application payload.
+          // When embedded in KUDOS, CTX_1 is CTX_A,
+          // and there cannot be application payload.
 
             |                                   |
-            |   Resp1                           |
-Verify CTX_A|<----------------------------------| Protect CTX_A
-            | OSCORE: ...                       |
-            | Encrypted_Payload {               |
+            |            Response #1            |
+            |<----------------------------------| Protect
+Verify      | OSCORE Option: ...                | with CTX_A
+with CTX_A  | Encrypted_Payload {               |
             |    ...                            |
-            |    RecipientID: 78                |
+            |    Recipient-ID: 78               |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
+            |                                   |
 
            // When embedded in KUDOS, this message
-           // is protected using CTX_NEW. Also, there
+           // is protected using CTX_NEW, and there
            // there cannot be application payload.
+           //
            // Then, CTX_B builds on CTX_NEW by updating
            // the new Sender/Recipient IDs
 
@@ -805,35 +810,34 @@ CTX_B {     |                                   | CTX_B {
  RID = 42   |                                   |  RID = 78
 }           |                                   | }
             |                                   |
-Protect     |  Req2                             |
-CTX_B       |---------------------------------->| Verify CTX_B
-            | OSCORE: ..., kid:78               |
-            | Encrypted_Payload {               |
+            |            Request #2             |
+Protect     |---------------------------------->|
+with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+            | Encrypted_Payload {               | with  CTX_B
             |    ...                            |
             |    Application Payload            |
             | }                                 |
             |                                   |
-            |   Resp2                           |
-Verify CTX_B|<----------------------------------| Protect CTX_B
-            | OSCORE: ...                       |
-            | Encrypted_Payload {               |
+            |            Response #2            |
+            |<----------------------------------| Protect
+Verify      | OSCORE Option: ...                | with CTX_B
+with CTX_B  | Encrypted_Payload {               |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
             |                                   |
-Client      |                                   |
-deletes     |                                   |
+Discard     |                                   |
 CTX_A       |                                   |
             |                                   |
-Protect     |  Req3                             |
-CTX_B       |---------------------------------->| Verify CTX_B
-            | OSCORE: ..., kid:78               |
-            | Encrypted_Payload {               |
+            |            Request #3             |
+Protect     |---------------------------------->|
+with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+            | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
             | }                                 |
-            |                                   | Server
-            |                                   | Deletes CTX_A
+            |                                   | Discard
+            |                                   | CTX_A
             |                                   |
 ~~~~~~~~~~~
 {: #fig-id-update-client-init title="Client-Initiated OSCORE IDs Update Workflow" artwork-align="center"}
@@ -844,36 +848,41 @@ CTX_B       |---------------------------------->| Verify CTX_B
 
 {{fig-id-update-server-init}} shows the stand-alone OSCORE IDs update workflow, with the server acting as initiator.
 
+On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+
 ~~~~~~~~~~~
           Client                             Server
-        (responder)                        (initiator)
+       (responder)                         (initiator)
+            |                                   |
 CTX_A {     |                                   | CTX_A {
  SID = 1    |                                   |  SID = 0
  RID = 0    |                                   |  RID = 1
 }           |                                   | }
             |                                   |
-Protect     |  Req1                             |
-CTX_A       |---------------------------------->| Verify CTX_A
-            | OSCORE: ..., kid:1                |
-            | Encrypted_Payload {               |
+            |            Request #1             |
+Protect     |---------------------------------->|
+with CTX_A  | OSCORE Option: ..., kid:1         | Verify
+            | Encrypted_Payload {               | with CTX_A
             |    ...                            |
             |    Application Payload            |
             | }                                 |
             |                                   |
 
-         // When (to be) embedded in KUDOS, CTX_OLD is CTX_A
+          // When (to be) embedded in KUDOS,
+          // CTX_OLD is CTX_A
 
-            |   Resp1                           |
-Verify CTX_A|<----------------------------------| Protect CTX_A
-            | OSCORE: ...                       |
-            | Encrypted_Payload {               |
+            |                                   |
+            |            Response #1            |
+            |<----------------------------------| Protect
+Verify      | OSCORE Option: ...                | with CTX_A
+with CTX_A  | Encrypted_Payload {               |
             |    ...                            |
-            |    RecipientID: 78                |
+            |    Recipient-ID: 78               |
             |    Application Payload            |
             | }                                 |
 
           // When embedded in KUDOS, this message is
-          // protected with CTX_1 instead. Also
+          // protected with CTX_1 instead, and
           // there cannot be application payload.
 
             |                                   |
@@ -882,30 +891,32 @@ CTX_A {     |                                   | CTX_A {
  RID = 0    |                                   |  RID = 1
 }           |                                   | }
             |                                   |
-Protect     |  Req2                             |
-CTX_A       |---------------------------------->| Verify CTX_A
-            | OSCORE: ..., kid:1                |
-            | Encrypted_Payload {               |
+            |            Request #2             |
+Protect     |---------------------------------->|
+with CTX_A  | OSCORE Option: ..., kid:1         | Verify
+            | Encrypted_Payload {               | with CTX_A
             |    ...                            |
-            |    RecipientID: 42                |
+            |    Recipient-ID: 42               |
             |    Application Payload            |
             | }                                 |
+            |                                   |
 
           // When embedded in KUDOS, this message is
-          // protected with CTX_NEW instead. Also
+          // protected with CTX_NEW instead, and
           // there cannot be application payload.
 
             |                                   |
-            |   Resp2                           |
-Verify CTX_A|<----------------------------------| Protect CTX_A
-            | OSCORE: ...                       |
-            | Encrypted_Payload {               |
+            |            Response #2            |
+            |<----------------------------------| Protect
+Verify      | OSCORE Option: ...                | with CTX_A
+with CTX_A  | Encrypted_Payload {               |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
+            |                                   |
 
           // When embedded in KUDOS, this message is
-          // protected with CTX_NEW instead. Also
+          // protected with CTX_NEW instead, and
           // there cannot be application payload.
 
             |                                   |
@@ -914,36 +925,40 @@ CTX_B {     |                                   | CTX_B {
  RID = 42   |                                   |  RID = 78
 }           |                                   | }
             |                                   |
-Protect     |  Req3                             |
-CTX_B       |---------------------------------->| Verify CTX_B
-            | OSCORE: ..., kid:78               |
-            | Encrypted_Payload {               |
+            |            Request #3             |
+Protect     |---------------------------------->|
+with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+            | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
             | }                                 |
             |                                   |
-            |   Resp3                           |
-Verify CTX_B|<----------------------------------| Protect CTX_B
-            | OSCORE: ...                       |
-            | Encrypted_Payload {               |
+            |            Response #3            |
+            |<----------------------------------| Protect
+Verify      | OSCORE Option: ...                | with CTX_B
+with CTX_B  | Encrypted_Payload {               |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
-Client del  |                                   |
+            |                                   |
+Discard     |                                   |
 CTX_A       |                                   |
             |                                   |
-Protect     |  Req4                             |
-CTX_B       |---------------------------------->| Verify CTX_B
-            | OSCORE: ..., kid:78               |
-            | Encrypted_Payload {               | Server del CTX_B
+            |            Request #4             |
+Protect     |---------------------------------->|
+with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+            | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
             | }                                 |
             |                                   |
-            |   Resp4                           |
-Verify CTX_B|<----------------------------------| Protect CTX_B
-            | OSCORE: ...                       |
-            | Encrypted_Payload {               |
+            |                                   | Discard
+            |                                   | CTX_A
+            |                                   |
+            |            Response #4            |
+            |<----------------------------------| Protect
+Verify      | OSCORE Option: ...                | with CTX_B
+with CTX_B  | Encrypted_Payload {               |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
