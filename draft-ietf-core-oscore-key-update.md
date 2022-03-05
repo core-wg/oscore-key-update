@@ -1082,7 +1082,7 @@ Formally the requirements for running KUDOS with Forward Secrecy are the followi
 
 If both peers do not fulfill the above requirements the non-FS mode of KUDOS must be used.
 
-## Introduced Concepts
+## Handling and use of Key Material
 
 This section introduces a number of concepts that are used when describing how the non-FS mode of KUDOS operates.
 
@@ -1102,9 +1102,7 @@ Note that:
 
 * A device that has only one of the above pairs can attempt to run KUDOS, but that can fail due to the other peer's capabilities. (Practically, in order to use the FS mode of KUDOS both peers must be CAPABLE).
 
-## Workflow Including Actions After Reboot
-
-This section describes the overall procedure a device should follow after it has lost state (e.g. due to a reboot). As a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:
+The following describes the overall procedure a device should follow after it has lost state (e.g. due to a reboot). As a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:
 
 * should be stored on disk if the device is CAPABLE.
 
@@ -1132,7 +1130,7 @@ Following those rules enables the following sequence of event in case of rebooti
     * If no, use alternative ways to establish a first OSCORE context CTX_NEW, e.g., EDHOC.
         * If CAPABLE, store on disk the Master Secret and Master Salt from CTX_NEW as (Latest Master Secret, Latest Master Salt).
 
-## Signaling of FS or Non-FS mode
+## Signaling of FS or Non-FS Mode
 
 In order for the devices to signal whether the FS or non-FS mode of KUDOS is being used for a specific execution, a method for signaling is needed. This section defines such a signaling method by utilizing a bit 'p' which when set to 0 indicates usage of the original version of KUDOS (with FS), and when set to 1 indicates usage of the non-FS mode of KUDOS.
 
@@ -1145,9 +1143,9 @@ That is, the 'p' bit is defined and used as follows:
     * If the 'p' bit is set to 1, KUDOS is run in non-FS mode, meaning that FS is sacrificed, as a stateful execution is not possible. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Bootstrap Master Secret, and Master Salt = Bootstrap Master Salt. Due to this, every execution of KUDOS between these peers will always consider this same Master Secret/Master Salt pair.
         * In order to use this mode of KUDOS a peer must have Bootstrap Master Secret and Bootstrap Master Salt available.
 
-Note that the 'x' field is an input to the updateCtx() method (see Section {{ssec-update-function}}), which ensures that the content of the bit is used for deriving key material. Through these means the bit 'p' will be not be possible to modify in transit successfully. Specifically, to avoid inconsistencies (e.g., N1 and N2 have different sizes), updateCtx() takes as input parameters, in addition to CTX_OLD, both the 'x' byte from the first KUDOS message and the 'x' byte from the second KUDOS message. That is, for a client-initiated execution Request #1 and Response #1, and for a server-initiated exectution Response #1 and Request #2.
+Note that the 'x' field is an input to the updateCtx() method (see Section {{preserving-observe-signaling}}), which ensures that the content of the bit is used for deriving key material. Through these means the bit 'p' will be not be possible to modify in transit successfully. Specifically, to avoid inconsistencies (e.g., N1 and N2 have different sizes), updateCtx() takes as input parameters, in addition to CTX_OLD, both the 'x' byte from the first KUDOS message and the 'x' byte from the second KUDOS message. That is, for a client-initiated execution Request #1 and Response #1, and for a server-initiated exectution Response #1 and Request #2.
 
-## Selection of KUDOS Mode
+## Selection and Negotiaton of KUDOS Mode
 
 The following section describes instructions for how devices should choose a mode of KUDOS to use. That is, how it should perform the choice between using the FS and non-FS modes of KUDOS.
 
@@ -1160,8 +1158,6 @@ If a peer A has learned that the other peer B does support running KUDOS in FS-m
 Note that if both peers reboot simultanously, the client initiated variant of KUDOS would end up being run. This is because the client would first send KUDOS Request #1 which would initiate the procedure and induce the server to respond with Response #1. There is no opportunity for the server to initiate the procedure as the client acts first.
 
 If able to run KUDOS as specified in the 'p' flag by the initiator, the responder MUST comply and do so.
-
-## Negotiation and Errors due to Mismatched Mode
 
 When running KUDOS, it must be ensured that if both peers are CAPABLE, KUDOS is ran in its original FS mode. If both peers are not CAPABLE devices, the initiator will use KUDOS in non-FS mode and the KUDOS execution will be ran in non-FS mode. However, if one device is CAPABLE, and the other devices is not, specific steps are required to be taken. The following section describes what steps a device should take in case the responding devices is not CAPABLE, and the initiating device is CAPABLE and initiates KUDOS with the FS mode.
 
