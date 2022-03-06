@@ -229,7 +229,7 @@ Other specifications define a number of ways to accomplish this, as summarized b
 
    As a result, the two peers establish a new OSCORE Security Context with new ID Context, Sender Key and Recipient Key, while keeping the same OSCORE Master Secret and OSCORE Master Salt from the old OSCORE Security Context.
 
-   This procedure does not require any additional components to what OSCORE already provides, and it does not provide perfect forward secrecy.
+   This procedure does not require any additional components to what OSCORE already provides, and it does not provide forward secrecy.
 
    The procedure defined in {{Section B.2 of RFC8613}} is used in 6TiSCH networks {{RFC7554}}{{RFC8180}} when handling failure events. That is, a node acting as Join Registrar/Coordinator (JRC) assists new devices, namely "pledges", to securely join the network as per the Constrained Join Protocol {{RFC9031}}. In particular, a pledge exchanges OSCORE-protected messages with the JRC, from which it obtains a short identifier, link-layer keying material and other configuration parameters. As per {{Section 8.3.3 of RFC9031}}, a JRC that experiences a failure event may likely lose information about joined nodes, including their assigned identifiers. Then, the reinitialized JRC can establish a new OSCORE Security Context with each pledge, through the procedure defined in {{Section B.2 of RFC8613}}.
 
@@ -237,13 +237,13 @@ Other specifications define a number of ways to accomplish this, as summarized b
 
   When a CoAP client uploads an Access Token to a CoAP server as an access credential, the two peers also exchange two nonces. Then, the two peers use the two nonces together with information provided by the ACE Authorization Server that issued the Access Token, in order to derive an OSCORE Security Context.
 
-  This procedure does not provide perfect forward secrecy.
+  This procedure does not provide forward secrecy.
 
 * The two peers can run the EDHOC key exchange protocol based on Diffie-Hellman and defined in {{I-D.ietf-lake-edhoc}}, in order to establish a pseudo-random key in a mutually authenticated way.
 
    Then, the two peers can use the established pseudo-random key to derive external application keys. This allows the two peers to securely derive especially an OSCORE Master Secret and an OSCORE Master Salt, from which an OSCORE Security Context can be established.
 
-   This procedure additionally provides perfect forward secrecy.
+   This procedure additionally provides forward secrecy.
 
 * If one peer is acting as LwM2M Client and the other peer as LwM2M Server, according to the OMA Lightweight Machine to Machine Core specification {{LwM2M}}, then the LwM2M Client peer may take the initiative to bootstrap again with the LwM2M Bootstrap Server, and receive again an OSCORE Security Context. Alternatively, the LwM2M Server can instruct the LwM2M Client to initiate this procedure.
 
@@ -265,7 +265,7 @@ KUDOS relies on the support function updateCtx() defined in {{ssec-update-functi
 
 * KUDOS can be initiated by either peer. In particular, the client or the server may start KUDOS by sending the first rekeying message.
 
-* The new OSCORE Security Context enjoys Perfect Forward Secrecy.
+* The new OSCORE Security Context enjoys forward secrecy.
 
 * The same ID Context value used in the old OSCORE Security Context is preserved in the new Security Context. Furthermore, the ID Context value never changes throughout the KUDOS execution.
 
@@ -814,7 +814,7 @@ Furthermore, this procedure can be executed stand-alone, or rather seamlessly in
 
 * In the former stand-alone case, updating the OSCORE Sender/Recipient IDs effectively results in updating part of the current OSCORE Security Context.
 
-   That is, a new Sender Key, Recipient Key and Common IV are derived as defined in {{Section 3.2 of RFC8613}}. Also, the Sender Sequence Number and the replay window are re-initialized accordingly, as defined in {{Section 3.2.2 of RFC8613}}. Since the same Master Secret is preserved, perfect forward secrecy is not achieved.
+   That is, a new Sender Key, Recipient Key and Common IV are derived as defined in {{Section 3.2 of RFC8613}}. Also, the Sender Sequence Number and the replay window are re-initialized accordingly, as defined in {{Section 3.2.2 of RFC8613}}. Since the same Master Secret is preserved, forward secrecy is not achieved.
 
    Finally, as defined in {{id-update-additional-actions}}, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.
 
@@ -1188,6 +1188,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Added procedure to update OSCORE Sender/Recipient IDs.
 
 * Added method for preserving observations across key updates.
+
+* Added key update without forward secrecy.
 
 # Acknowledgments # {#acknowledgments}
 {: numbered="no"}
