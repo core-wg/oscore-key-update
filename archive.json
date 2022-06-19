@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-06-16T00:50:35.954429+00:00",
+  "timestamp": "2022-06-19T00:50:43.880705+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -1008,6 +1008,68 @@
       "updatedAt": "2022-05-23T16:54:11Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 34,
+      "id": "I_kwDOGfmof85L_aDo",
+      "title": "Issue with out of sync PRK_out/PRK_exporter e.g. if nonces are manipulated",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/34",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "If EDHOC-Exporter(label, context, length) is executed on the peers with different nonce (for instance due to manipulation), the PRK_out and PRK_exporter can get out of sync. Somehow the old PRK_out needs to be saved, or new ones created in branches.\r\n\r\nNote that this could possibly be solved in EDHOC.",
+      "createdAt": "2022-06-17T11:24:04Z",
+      "updatedAt": "2022-06-17T11:24:23Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 35,
+      "id": "I_kwDOGfmof85L_atq",
+      "title": "Add signaling for EDHOC / non-EDHOC (KeyUpdate) mode?",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/35",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "To choose from the two modes in the updateCtx(N, CTX_IN) function.",
+      "createdAt": "2022-06-17T11:27:03Z",
+      "updatedAt": "2022-06-17T11:27:03Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 36,
+      "id": "I_kwDOGfmof85L_pHQ",
+      "title": "Admit 0 length nonce",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/36",
+      "state": "CLOSED",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "",
+      "createdAt": "2022-06-17T12:30:38Z",
+      "updatedAt": "2022-06-17T12:37:02Z",
+      "closedAt": "2022-06-17T12:37:02Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Actually need nonce for multiple PRK_out from a single input PRK_out",
+          "createdAt": "2022-06-17T12:37:02Z",
+          "updatedAt": "2022-06-17T12:37:02Z"
+        }
+      ]
     }
   ],
   "pulls": []
