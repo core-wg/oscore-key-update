@@ -335,30 +335,34 @@ updateCtx(N, CTX_IN) {
   MSECRET_NEW   // The new Master Secret
   MSALT_NEW     // The new Master Salt
 
+  oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
+  oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
+
   if <the original Security Context was established through EDHOC> {
 
     EDHOC-KeyUpdate(N)
-    // This results in updating the key PRK_4x3m of the
-    // EDHOC session, i.e., PRK_4x3m = Extract(N, PRK_4x3m)
+    // This results in updating the key PRK_out of the
+    // EDHOC session, i.e., PRK_out = EDHOC-KDF( PRK_out, 11,
+    // N, hash_length )
+    // It also results in updating the key PRK_exporter, i.e.,
+    // PRK_exporter = EDHOC-KDF(PRK_out, 10, h'', hash_length)
 
-    MSECRET_NEW = EDHOC-Exporter("OSCORE_Master_Secret",
-                                 h'', key_length)
-      = EDHOC-KDF(PRK_4x3m, TH_4,
-                  "OSCORE_Master_Secret", h'', key_length)
+    MSECRET_NEW = EDHOC-Exporter(0, h'', oscore_key_length)
 
-    MSALT_NEW = EDHOC-Exporter("OSCORE_Master_Salt",
-                               h'', salt_length)
-      = EDHOC-KDF(PRK_4x3m, TH_4,
-                  "OSCORE_Master_Salt", h'', salt_length)
+      = EDHOC-KDF(PRK_exporter, 0, h'', oscore_key_length)
+
+
+    MSALT_NEW = EDHOC-Exporter(1, h'', oscore_salt_length)
+
+      = EDHOC-KDF(PRK_exporter, 1, h'', oscore_salt_length)
 
   }
   else {
-    Master Secret Length = < Size of CTX_IN.MasterSecret in bytes >
 
     MSECRET_NEW = HKDF-Expand-Label(CTX_IN.MasterSecret, Label,
-                                    N, Master Secret Length)
+                                    N, oscore_key_length)
                 = HKDF-Expand(CTX_IN.MasterSecret, HkdfLabel,
-                              Master Secret Length)
+                              oscore_key_length)
 
     MSALT_NEW = N;
   }
