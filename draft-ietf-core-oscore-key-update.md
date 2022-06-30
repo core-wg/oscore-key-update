@@ -283,7 +283,15 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 * This document defines the usage of the first least significant bit "ID Detail Flag", 'd', in the second byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
 
-   When it is set to 1, the compressed COSE object contains an 'id detail', to be used for the steps defined in {{ssec-derive-ctx}}. In particular, the 1 byte following 'kid context' (if any) encodes the length x of 'id detail', and the following x bytes encode 'id detail'.
+   When it is set to 1, the compressed COSE object contains an 'id detail', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'id detail', and signaling bits for specific behaviour during the KUDOS execution. Specifically the encoding of 'x' is as follows:
+
+   * The five least significant bits encode the length of the 'id detail' as an integer.
+
+   * The sixth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}.
+
+   * The seventh least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}.
+
+   * The eight least significant bit is reserved for future use and SHALL be set to zero.
 
    Hereafter, this document refers to a message where the 'd' flag is set to 0 as "non KUDOS (request/response) message", and to a message where the 'd' flag is set to 1 as "KUDOS (request/response) message".
 
@@ -391,7 +399,12 @@ struct {
 
 This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
 
-In particular, each peer contributes by generating a fresh value R1 or R2, and providing it to the other peer. Furthermore, X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message, respectively. The byte string concatenation of the values, hereafter denoted as R1 \| R2, is used as input N, and the concatenation X1 \ X2 is used as input X by the updateCtx() function in order to derive the new OSCORE Security Context CTX\_NEW. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
+In particular, each peer contributes by generating a fresh value R1 or R2, and providing it to the other peer. Furthermore, X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message, respectively. The byte string concatenation of the values, hereafter denoted as R1 \| R2, is used as input N, and the concatenation X1 \| X2 is used as input X by the updateCtx() function in order to derive the new OSCORE Security Context CTX\_NEW. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
+
+When setting the signaling bits in the 'x' byte of the OSCORE option the initiator must determine if it wants to keep ongoing observations by signaling that in the bit "Preserve Observations" 'b'. In the case that the 'b' bits are not equal in X1 and X2 initiator and recipient must behave as if the bit 'b' was set to 0. For steps to take depending on the value of this bit see {{preserving-observe-signaling}}.
+
+Additionally, when setting the signaling bits in the 'x' byte of the OSCORE option the initiator must determine if it wants to use the FS or no-FS mode of KUDOS by signaling that in the bit
+No Forward Secrecy" 'p'. In the case that the 'p' bits are not equal in X1 and X2 KUDOS execution will be terminated. For steps to take depending on the value of this bit see {{no-fs-signaling}}.
 
 Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages.
 
