@@ -523,10 +523,22 @@ Table of Contents
       Section 7.2.
 
       When it is set to 1, the compressed COSE object contains an 'id
-      detail', to be used for the steps defined in Section 4.3.  In
-      particular, the 1 byte following 'kid context' (if any) encodes
-      the length x of 'id detail', and the following x bytes encode 'id
-      detail'.
+      detail', to be used for the steps defined in Section 4.3.  The 1
+      byte 'x' following 'kid context' (if any) encodes the length of
+      'id detail', and signaling bits for specific behaviour during the
+      KUDOS execution.  Specifically the encoding of 'x' is as follows:
+
+      -  The five least significant bits encode the length of the 'id
+         detail' as an integer.
+
+      -  The sixth least significant bit is the "No Forward Secrecy" 'p'
+         bit, see Appendix D.2.
+
+      -  The seventh least significant bit is the "Preserve
+         Observations" 'b' bit, see Appendix C.2.
+
+      -  The eight least significant bit is reserved for future use and
+         SHALL be set to zero.
 
       Hereafter, this document refers to a message where the 'd' flag is
       set to 0 as "non KUDOS (request/response) message", and to a
@@ -685,11 +697,25 @@ Table of Contents
    are the values of the 'x' byte specified in the OSCORE option of the
    first and second KUDOS message, respectively.  The byte string
    concatenation of the values, hereafter denoted as R1 | R2, is used as
-   input N, and the concatenation X1 \ X2 is used as input X by the
+   input N, and the concatenation X1 | X2 is used as input X by the
    updateCtx() function in order to derive the new OSCORE Security
    Context CTX_NEW.  As for any new OSCORE Security Context, the Sender
    Sequence Number and the replay window are re-initialized accordingly
    (see Section 3.2.2 of [RFC8613]).
+
+   When setting the signaling bits in the 'x' byte of the OSCORE option
+   the initiator must determine if it wants to keep ongoing observations
+   by signaling that in the bit "Preserve Observations" 'b'.  In the
+   case that the 'b' bits are not equal in X1 and X2 initiator and
+   recipient must behave as if the bit 'b' was set to 0.  For steps to
+   take depending on the value of this bit see Appendix C.2.
+
+   Additionally, when setting the signaling bits in the 'x' byte of the
+   OSCORE option the initiator must determine if it wants to use the FS
+   or no-FS mode of KUDOS by signaling that in the bit No Forward
+   Secrecy" 'p'.  In the case that the 'p' bits are not equal in X1 and
+   X2 KUDOS execution will be terminated.  For steps to take depending
+   on the value of this bit see Appendix D.2.
 
    Once a peer has successfully derived the new OSCORE Security Context
    CTX_NEW, that peer MUST use CTX_NEW to protect outgoing non KUDOS
