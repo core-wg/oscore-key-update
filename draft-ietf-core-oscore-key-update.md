@@ -616,196 +616,6 @@ In particular, it is especially convenient for the handling of failure events co
 
 Since the JRC uses ID Context values as identifiers of network nodes, namely "pledge identifiers", the above implies that the JRC does not have anymore to perform a mapping between a new, different ID Context value and a certain pledge identifier (see {{Section 8.3.3 of RFC9031}}). It follows that pledge identifiers can remain constant once assigned, and thus ID Context values used as pledge identifiers can be employed in the long-term as originally intended.
 
-# Security Considerations
-
-This document mainly covers security considerations about using AEAD keys in OSCORE and their usage limits, in addition to the security considerations of {{RFC8613}}.
-
-Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
-
-\[TODO: Add more considerations.\]
-
-# IANA Considerations
-
-RFC Editor: Please replace "\[this document\]" with the RFC number of this document and delete this paragraph.
-
-This document has the following actions for IANA.
-
-## CoAP Option Numbers Registry ## {#iana-coap-options}
-
-IANA is asked to enter the following option number to the "CoAP Option Numbers" registry within the "CoRE Parameters" registry group.
-
-~~~~~~~~~~~
-+--------+--------------+-----------------+
-| Number |     Name     |    Reference    |
-+--------+--------------+-----------------+
-|  TBD   | Recipient-ID | [this document] |
-+--------+--------------+-----------------+
-~~~~~~~~~~~
-{: artwork-align="center"}
-
-The number suggested to IANA for the Recipient-ID option is 24.
-
-## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
-
-IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
-
-~~~~~~~~~~~
-+----------+------------------+------------------------+-----------+
-| Bit      |       Name       |      Description       | Reference |
-| Position |                  |                        |           |
-+----------+------------------+------------------------+-----------+
-|    1     | Extension-1 Flag | Set to 1 if the OSCORE | [this     |
-|          |                  | Option specifies a     | document] |
-|          |                  | second byte of OSCORE  |           |
-|          |                  | flag bits              |           |
-+----------+------------------+------------------------+-----------+
-|    15    |  ID Detail Flag  | Set to 1 if the        | [this     |
-|          |                  | compressed COSE object | document] |
-|          |                  | contains 'id detail'   |           |
-+----------+------------------+------------------------+-----------+
-~~~~~~~~~~~
-
---- back
-
-# Detailed considerations for AEAD_AES_128_CCM_8 # {#aead-aes-128-ccm-8-details}
-
-For the AEAD_AES_128_CCM_8 algorithm when used as AEAD Algorithm for OSCORE, larger IA and CA values are achieved, depending on the value of 'q', 'v' and 'l'. {{algorithm-limits-ccm8}} shows the resulting IA and CA probabilities enjoyed by AEAD_AES_128_CCM_8, when taking different values of 'q', 'v' and 'l' as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
-
-As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the lowest IA = 2^-50 and a good CA = 2^-70 by considering the largest possible value of the (q, v, l) triplet equal to (2^20, 2^10, 2^8), while still keeping a good security level. Note that the value of 'l' does not impact on IA, while CA displays good values for every considered value of 'l'.
-
-~~~~~~~~~~~
-+-----------------------+----------------+----------------+
-| 'q', 'v' and 'l'      | IA probability | CA probability |
-|-----------------------+----------------+----------------|
-| q=2^20, v=2^20, l=2^8 | 2^-44          | 2^-70          |
-| q=2^15, v=2^20, l=2^8 | 2^-44          | 2^-80          |
-| q=2^10, v=2^20, l=2^8 | 2^-44          | 2^-90          |
-| q=2^20, v=2^15, l=2^8 | 2^-49          | 2^-70          |
-| q=2^15, v=2^15, l=2^8 | 2^-49          | 2^-80          |
-| q=2^10, v=2^15, l=2^8 | 2^-49          | 2^-90          |
-| q=2^20, v=2^14, l=2^8 | 2^-50          | 2^-70          |
-| q=2^15, v=2^14, l=2^8 | 2^-50          | 2^-80          |
-| q=2^10, v=2^14, l=2^8 | 2^-50          | 2^-90          |
-| q=2^20, v=2^10, l=2^8 | 2^-54          | 2^-70          |
-| q=2^15, v=2^10, l=2^8 | 2^-54          | 2^-80          |
-| q=2^10, v=2^10, l=2^8 | 2^-54          | 2^-90          |
-|-----------------------+----------------+----------------|
-| q=2^20, v=2^20, l=2^6 | 2^-44          | 2^-74          |
-| q=2^15, v=2^20, l=2^6 | 2^-44          | 2^-84          |
-| q=2^10, v=2^20, l=2^6 | 2^-44          | 2^-94          |
-| q=2^20, v=2^15, l=2^6 | 2^-49          | 2^-74          |
-| q=2^15, v=2^15, l=2^6 | 2^-49          | 2^-84          |
-| q=2^10, v=2^15, l=2^6 | 2^-49          | 2^-94          |
-| q=2^20, v=2^14, l=2^6 | 2^-50          | 2^-74          |
-| q=2^15, v=2^14, l=2^6 | 2^-50          | 2^-84          |
-| q=2^10, v=2^14, l=2^6 | 2^-50          | 2^-94          |
-| q=2^20, v=2^10, l=2^6 | 2^-54          | 2^-74          |
-| q=2^15, v=2^10, l=2^6 | 2^-54          | 2^-84          |
-| q=2^10, v=2^10, l=2^6 | 2^-54          | 2^-94          |
-+-----------------------+----------------+----------------+
-~~~~~~~~~~~
-{: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
-
-# Estimation of 'count_q' # {#estimation-count-q}
-
-This section defines a method to compute an estimate of the counter 'count_q' (see {{sender-context}}), hence not requiring a peer to store it in its own Sender Context.
-
-This method relies on the fact that, at any point in time, a peer has performed _at most_ ENC = (SSN + SSN\*) encryptions using its own Sender Key, where:
-
-* SSN is the current value of this peer's Sender Sequence Number.
-
-* SSN\* is the current value of other peer's Sender Sequence Number. That is, SSN\* is an overestimation of the responses without Partial IV that this peer has sent.
-
-Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the peer aborts the message processing if the estimated est\_q > limit\_q, where est\_q = (SSN + X) and X is determined as follows.
-
-* If the outgoing message is a response, X is the Partial IV specified in the corresponding request that this peer is responding to. Note that X < SSN\* always holds.
-
-* If the outgoing message is a request, X is the highest Partial IV value marked as received in this peer's Replay Window plus 1, or 0 if it has not accepted any protected message from the other peer yet. That is, X is the highest Partial IV specified in message received from the other peer, i.e., the highest seen Sender Sequence Number of the other peer. Note that, also in this case, X < SSN\* always holds.
-
-# Preserving Observations across Key Updates # {#preserving-observe}
-
-As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old Security Context CTX\_OLD.
-
-This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, after having completed a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, i.e., an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
-
-The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-signaling}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, as defined in {{ssec-derive-ctx}}.
-
-If a peer supporting KUDOS is generally interested in preserving ongoing observations across a key update, the peer maintains a counter EPOCH for each ongoing observation it participates in. At any point in time, (EPOCH + 1) is the number of KUDOS executions performed by the peer since the sucessful registration of the associated observation. That is, EPOCH indicates the lifetime of an observation measured in keying material epochs, and is bounded by the configuration parameter MAX\_EPOCH.
-
-\[ NOTE:
-
-MAX\_EPOCH really has to be the same for any two peers. As a start, it can be assumed that a TBD default value applies, unless a different one is provided. It is possible to enable an actual negotiation between two peers running KUDOS, see {{preserving-observe-signaling}}.
-
-\]
-
-The following sections specify the different actions taken by the peer depending on whether it acts as client or server in an ongoing observation, as well as the signaling method used in KUDOS to agree on preserving the ongoing observations beyond the current KUDOS execution.
-
-\[ NOTE:
-
-This method may be of more general applicability, i.e, also in case an update of the OSCORE keying material is performed through a different means than KUDOS.
-
-\]
-
-## Management of Observations
-
-As per {{Section 3.1 of RFC7641}}, a client can register its interest in observing a resource at a server, by sending a registration request including the Observe option with value 0.
-
-If the server sends back a successful response also including the Observe option, hence confirming that the observation has been registered, then the server initializes to 0 the counter EPOCH associated with the just confirmed observation.
-
-If the client receives back the successful response from the server, then the client initializes to 0 the counter EPOCH associated with the just confirmed observation.
-
-If, later on, the client is not interested in the observation anymore, it MUST NOT simply forget about it. Rather, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
-
-In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve across the key update, then A explicitly indicates it by using the signaling approach embedded in KUDOS and defined in {{preserving-observe-signaling}}.
-
-After having successfully completed the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), if the other peer B has confirmed its interest in preserving those ongoing observations also by using the signaling approach defined in {{preserving-observe-signaling}}, then the peer A performs the following actions.
-
-1. For each ongoing observation X that A has with B and for which following notifications are going to be protected with CTX\_NEW:
-
-   a. The peer A increments the counter EPOCH associated with X.
-
-   b. If the updated value of EPOCH associated with X has reached MAX\_EPOCH, then the peer A MUST terminate the observation.
-
-2. For each still ongoing observation X that A has with B after the previous step, such that A acts as client in X and for which following notifications are going to be protected with CTX\_NEW:
-
-   a. The peer A MUST attempt again to cancel X, if A previously tried to do that but had not received a response from the other peer B as confirmation. As specified above, such an observation cancellation MUST be performed by sending a cancellation request.
-
-   b. The peer A considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations with the other peer B. Then, the peer A determines the value PIV\* as the highest OSCORE Partial IV among those considered at the previous step.
-
-   c. In the Sender Context within CTX\_NEW, the peer A sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
-
-## Signaling to Preserve Observations # {#preserving-observe-signaling}
-
-When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another and are bound to the OSCORE Security Context to renew. To this end, the extended OSCORE option shown in {{fig-oscore-option}} and included in a KUDOS message is further extended as follows.
-
-\[ NOTE:
-
-This is an early proposal with many details to be refined.
-
-\]
-
-An additional bit "Preserve Observations", 'b', is set to 1 by the sender peer to indicate that it wishes to preserve ongoing observations with the other peer.
-
-While 'b' can be a bit in the second byte of the OSCORE option containing the OSCORE flag bits, 'b' can rather be one bit in the 1 byte 'x' following 'kid context' (if any) and originally encoding the size of 'id detail'. Since, the recommended size of 'id detail' is 8 bytes, the number of bits left available in the 'x' byte is amply sufficient to still indicate the size of 'id detail'.
-
-It is fundamental to integrity-protect the value of the bit 'b' set in the two KUDOS messages. This can be achieved by taking also the whole byte 'x' including the bit 'b' as input in the derivation of the new OSCORE Security Context CTX\_NEW.
-
-That is, the updateCtx() function defined in {{function-update}} would be invoked as follows:
-
-* CTX\_1 = updateCtx(X1\|R1, CTX\_OLD), when deriving CTX\_1 for processing the first KUDOS message in the KUDOS execution.
-
-* CTX\_NEW = updateCtx(X1\|X2\|R1\|R2, CTX\_OLD), when deriving CTX\_NEW for processing the second KUDOS message in the KUDOS execution.
-
-where X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message in the KUDOS execution, respectively.
-
-\[ NOTE:
-
-The single bit 'b' can actually be replaced by three bits 'b1', 'b2' and 'b3' still within the byte 'x'. These can be used by the two peers performing KUDOS to negotiate the value of MAX\_EPOCH (see {{preserving-observe}}. Then, the two peers agree to use as MAX\_EPOCH the smallest of the two values exchanged during the execution of KUDOS.
-
-The final encoding of the 'x' byte specified in {{ssec-oscore-option-extensions}} will be affected. In particular, a smarter encoding would be convenient for the bits left to use to indicate the size in bytes of 'id detail'.
-
-\]
-
 # Update of OSCORE Sender/Recipient IDs # {#update-oscore-ids}
 
 This section defines an optional procedure that two peers can execute to update the OSCORE Sender/Recipient IDs that they use in their shared OSCORE Security Context.
@@ -1069,6 +879,196 @@ Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a 
 * When receiving an OSCORE ID update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current triplet (Master Secret, Master Salt ID Context).
 
 In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt ID Context), since the latest update of OSCORE Master Secret (e.g, performed through KUDOS).
+
+# Security Considerations
+
+This document mainly covers security considerations about using AEAD keys in OSCORE and their usage limits, in addition to the security considerations of {{RFC8613}}.
+
+Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
+
+\[TODO: Add more considerations.\]
+
+# IANA Considerations
+
+RFC Editor: Please replace "\[this document\]" with the RFC number of this document and delete this paragraph.
+
+This document has the following actions for IANA.
+
+## CoAP Option Numbers Registry ## {#iana-coap-options}
+
+IANA is asked to enter the following option number to the "CoAP Option Numbers" registry within the "CoRE Parameters" registry group.
+
+~~~~~~~~~~~
++--------+--------------+-----------------+
+| Number |     Name     |    Reference    |
++--------+--------------+-----------------+
+|  TBD   | Recipient-ID | [this document] |
++--------+--------------+-----------------+
+~~~~~~~~~~~
+{: artwork-align="center"}
+
+The number suggested to IANA for the Recipient-ID option is 24.
+
+## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
+
+IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
+
+~~~~~~~~~~~
++----------+------------------+------------------------+-----------+
+| Bit      |       Name       |      Description       | Reference |
+| Position |                  |                        |           |
++----------+------------------+------------------------+-----------+
+|    1     | Extension-1 Flag | Set to 1 if the OSCORE | [this     |
+|          |                  | Option specifies a     | document] |
+|          |                  | second byte of OSCORE  |           |
+|          |                  | flag bits              |           |
++----------+------------------+------------------------+-----------+
+|    15    |  ID Detail Flag  | Set to 1 if the        | [this     |
+|          |                  | compressed COSE object | document] |
+|          |                  | contains 'id detail'   |           |
++----------+------------------+------------------------+-----------+
+~~~~~~~~~~~
+
+--- back
+
+# Detailed considerations for AEAD_AES_128_CCM_8 # {#aead-aes-128-ccm-8-details}
+
+For the AEAD_AES_128_CCM_8 algorithm when used as AEAD Algorithm for OSCORE, larger IA and CA values are achieved, depending on the value of 'q', 'v' and 'l'. {{algorithm-limits-ccm8}} shows the resulting IA and CA probabilities enjoyed by AEAD_AES_128_CCM_8, when taking different values of 'q', 'v' and 'l' as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
+
+As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the lowest IA = 2^-50 and a good CA = 2^-70 by considering the largest possible value of the (q, v, l) triplet equal to (2^20, 2^10, 2^8), while still keeping a good security level. Note that the value of 'l' does not impact on IA, while CA displays good values for every considered value of 'l'.
+
+~~~~~~~~~~~
++-----------------------+----------------+----------------+
+| 'q', 'v' and 'l'      | IA probability | CA probability |
+|-----------------------+----------------+----------------|
+| q=2^20, v=2^20, l=2^8 | 2^-44          | 2^-70          |
+| q=2^15, v=2^20, l=2^8 | 2^-44          | 2^-80          |
+| q=2^10, v=2^20, l=2^8 | 2^-44          | 2^-90          |
+| q=2^20, v=2^15, l=2^8 | 2^-49          | 2^-70          |
+| q=2^15, v=2^15, l=2^8 | 2^-49          | 2^-80          |
+| q=2^10, v=2^15, l=2^8 | 2^-49          | 2^-90          |
+| q=2^20, v=2^14, l=2^8 | 2^-50          | 2^-70          |
+| q=2^15, v=2^14, l=2^8 | 2^-50          | 2^-80          |
+| q=2^10, v=2^14, l=2^8 | 2^-50          | 2^-90          |
+| q=2^20, v=2^10, l=2^8 | 2^-54          | 2^-70          |
+| q=2^15, v=2^10, l=2^8 | 2^-54          | 2^-80          |
+| q=2^10, v=2^10, l=2^8 | 2^-54          | 2^-90          |
+|-----------------------+----------------+----------------|
+| q=2^20, v=2^20, l=2^6 | 2^-44          | 2^-74          |
+| q=2^15, v=2^20, l=2^6 | 2^-44          | 2^-84          |
+| q=2^10, v=2^20, l=2^6 | 2^-44          | 2^-94          |
+| q=2^20, v=2^15, l=2^6 | 2^-49          | 2^-74          |
+| q=2^15, v=2^15, l=2^6 | 2^-49          | 2^-84          |
+| q=2^10, v=2^15, l=2^6 | 2^-49          | 2^-94          |
+| q=2^20, v=2^14, l=2^6 | 2^-50          | 2^-74          |
+| q=2^15, v=2^14, l=2^6 | 2^-50          | 2^-84          |
+| q=2^10, v=2^14, l=2^6 | 2^-50          | 2^-94          |
+| q=2^20, v=2^10, l=2^6 | 2^-54          | 2^-74          |
+| q=2^15, v=2^10, l=2^6 | 2^-54          | 2^-84          |
+| q=2^10, v=2^10, l=2^6 | 2^-54          | 2^-94          |
++-----------------------+----------------+----------------+
+~~~~~~~~~~~
+{: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
+
+# Estimation of 'count_q' # {#estimation-count-q}
+
+This section defines a method to compute an estimate of the counter 'count_q' (see {{sender-context}}), hence not requiring a peer to store it in its own Sender Context.
+
+This method relies on the fact that, at any point in time, a peer has performed _at most_ ENC = (SSN + SSN\*) encryptions using its own Sender Key, where:
+
+* SSN is the current value of this peer's Sender Sequence Number.
+
+* SSN\* is the current value of other peer's Sender Sequence Number. That is, SSN\* is an overestimation of the responses without Partial IV that this peer has sent.
+
+Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the peer aborts the message processing if the estimated est\_q > limit\_q, where est\_q = (SSN + X) and X is determined as follows.
+
+* If the outgoing message is a response, X is the Partial IV specified in the corresponding request that this peer is responding to. Note that X < SSN\* always holds.
+
+* If the outgoing message is a request, X is the highest Partial IV value marked as received in this peer's Replay Window plus 1, or 0 if it has not accepted any protected message from the other peer yet. That is, X is the highest Partial IV specified in message received from the other peer, i.e., the highest seen Sender Sequence Number of the other peer. Note that, also in this case, X < SSN\* always holds.
+
+# Preserving Observations across Key Updates # {#preserving-observe}
+
+As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old Security Context CTX\_OLD.
+
+This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, after having completed a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, i.e., an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
+
+The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-signaling}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, as defined in {{ssec-derive-ctx}}.
+
+If a peer supporting KUDOS is generally interested in preserving ongoing observations across a key update, the peer maintains a counter EPOCH for each ongoing observation it participates in. At any point in time, (EPOCH + 1) is the number of KUDOS executions performed by the peer since the sucessful registration of the associated observation. That is, EPOCH indicates the lifetime of an observation measured in keying material epochs, and is bounded by the configuration parameter MAX\_EPOCH.
+
+\[ NOTE:
+
+MAX\_EPOCH really has to be the same for any two peers. As a start, it can be assumed that a TBD default value applies, unless a different one is provided. It is possible to enable an actual negotiation between two peers running KUDOS, see {{preserving-observe-signaling}}.
+
+\]
+
+The following sections specify the different actions taken by the peer depending on whether it acts as client or server in an ongoing observation, as well as the signaling method used in KUDOS to agree on preserving the ongoing observations beyond the current KUDOS execution.
+
+\[ NOTE:
+
+This method may be of more general applicability, i.e, also in case an update of the OSCORE keying material is performed through a different means than KUDOS.
+
+\]
+
+## Management of Observations
+
+As per {{Section 3.1 of RFC7641}}, a client can register its interest in observing a resource at a server, by sending a registration request including the Observe option with value 0.
+
+If the server sends back a successful response also including the Observe option, hence confirming that the observation has been registered, then the server initializes to 0 the counter EPOCH associated with the just confirmed observation.
+
+If the client receives back the successful response from the server, then the client initializes to 0 the counter EPOCH associated with the just confirmed observation.
+
+If, later on, the client is not interested in the observation anymore, it MUST NOT simply forget about it. Rather, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
+
+In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve across the key update, then A explicitly indicates it by using the signaling approach embedded in KUDOS and defined in {{preserving-observe-signaling}}.
+
+After having successfully completed the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), if the other peer B has confirmed its interest in preserving those ongoing observations also by using the signaling approach defined in {{preserving-observe-signaling}}, then the peer A performs the following actions.
+
+1. For each ongoing observation X that A has with B and for which following notifications are going to be protected with CTX\_NEW:
+
+   a. The peer A increments the counter EPOCH associated with X.
+
+   b. If the updated value of EPOCH associated with X has reached MAX\_EPOCH, then the peer A MUST terminate the observation.
+
+2. For each still ongoing observation X that A has with B after the previous step, such that A acts as client in X and for which following notifications are going to be protected with CTX\_NEW:
+
+   a. The peer A MUST attempt again to cancel X, if A previously tried to do that but had not received a response from the other peer B as confirmation. As specified above, such an observation cancellation MUST be performed by sending a cancellation request.
+
+   b. The peer A considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations with the other peer B. Then, the peer A determines the value PIV\* as the highest OSCORE Partial IV among those considered at the previous step.
+
+   c. In the Sender Context within CTX\_NEW, the peer A sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
+
+## Signaling to Preserve Observations # {#preserving-observe-signaling}
+
+When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another and are bound to the OSCORE Security Context to renew. To this end, the extended OSCORE option shown in {{fig-oscore-option}} and included in a KUDOS message is further extended as follows.
+
+\[ NOTE:
+
+This is an early proposal with many details to be refined.
+
+\]
+
+An additional bit "Preserve Observations", 'b', is set to 1 by the sender peer to indicate that it wishes to preserve ongoing observations with the other peer.
+
+While 'b' can be a bit in the second byte of the OSCORE option containing the OSCORE flag bits, 'b' can rather be one bit in the 1 byte 'x' following 'kid context' (if any) and originally encoding the size of 'id detail'. Since, the recommended size of 'id detail' is 8 bytes, the number of bits left available in the 'x' byte is amply sufficient to still indicate the size of 'id detail'.
+
+It is fundamental to integrity-protect the value of the bit 'b' set in the two KUDOS messages. This can be achieved by taking also the whole byte 'x' including the bit 'b' as input in the derivation of the new OSCORE Security Context CTX\_NEW.
+
+That is, the updateCtx() function defined in {{function-update}} would be invoked as follows:
+
+* CTX\_1 = updateCtx(X1\|R1, CTX\_OLD), when deriving CTX\_1 for processing the first KUDOS message in the KUDOS execution.
+
+* CTX\_NEW = updateCtx(X1\|X2\|R1\|R2, CTX\_OLD), when deriving CTX\_NEW for processing the second KUDOS message in the KUDOS execution.
+
+where X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message in the KUDOS execution, respectively.
+
+\[ NOTE:
+
+The single bit 'b' can actually be replaced by three bits 'b1', 'b2' and 'b3' still within the byte 'x'. These can be used by the two peers performing KUDOS to negotiate the value of MAX\_EPOCH (see {{preserving-observe}}. Then, the two peers agree to use as MAX\_EPOCH the smallest of the two values exchanged during the execution of KUDOS.
+
+The final encoding of the 'x' byte specified in {{ssec-oscore-option-extensions}} will be affected. In particular, a smarter encoding would be convenient for the bits left to use to indicate the size in bytes of 'id detail'.
+
+\]
 
 # Key Update without Forward Secrecy {#no-fs-mode}
 
