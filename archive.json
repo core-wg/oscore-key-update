@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-06-30T00:49:08.161327+00:00",
+  "timestamp": "2022-07-03T00:53:36.837317+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -944,23 +944,31 @@
       "id": "I_kwDOGfmof85JJX9G",
       "title": "Align with updates in EDHOC draft about Exporter/Key-Update",
       "url": "https://github.com/core-wg/oscore-key-update/issues/30",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2022-05-05T21:29:32Z",
-      "updatedAt": "2022-05-05T21:29:32Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2022-06-30T14:31:26Z",
+      "closedAt": "2022-06-30T14:31:26Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done in commit cd092038be6c3d8df293682a388246b6ab1cbe27",
+          "createdAt": "2022-06-30T14:31:26Z",
+          "updatedAt": "2022-06-30T14:31:26Z"
+        }
+      ]
     },
     {
       "number": 31,
       "id": "I_kwDOGfmof85KOViO",
       "title": "Do not use epoch, decide yes/no keep observations for each KUDOS execution?",
       "url": "https://github.com/core-wg/oscore-key-update/issues/31",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -969,8 +977,8 @@
       ],
       "body": "From telco with G\u00f6ran on May 23.",
       "createdAt": "2022-05-23T14:38:14Z",
-      "updatedAt": "2022-05-23T14:38:23Z",
-      "closedAt": null,
+      "updatedAt": "2022-06-30T21:22:01Z",
+      "closedAt": "2022-06-30T21:22:01Z",
       "comments": []
     },
     {
@@ -978,7 +986,7 @@
       "id": "I_kwDOGfmof85KO92T",
       "title": "Move Update of OSCORE Sender/Recipient IDs to main body",
       "url": "https://github.com/core-wg/oscore-key-update/issues/32",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -987,8 +995,8 @@
       ],
       "body": "",
       "createdAt": "2022-05-23T16:34:38Z",
-      "updatedAt": "2022-05-23T16:53:32Z",
-      "closedAt": null,
+      "updatedAt": "2022-06-30T07:25:27Z",
+      "closedAt": "2022-06-30T07:25:27Z",
       "comments": []
     },
     {
@@ -996,7 +1004,7 @@
       "id": "I_kwDOGfmof85KO-Qu",
       "title": "Move most of Preserving Observations across Key Updates to body",
       "url": "https://github.com/core-wg/oscore-key-update/issues/33",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1005,8 +1013,8 @@
       ],
       "body": "Keep epoch-related things in the Appendix",
       "createdAt": "2022-05-23T16:36:08Z",
-      "updatedAt": "2022-05-23T16:54:11Z",
-      "closedAt": null,
+      "updatedAt": "2022-06-30T21:21:57Z",
+      "closedAt": "2022-06-30T21:21:57Z",
       "comments": []
     },
     {
@@ -1023,9 +1031,17 @@
       ],
       "body": "If EDHOC-Exporter(label, context, length) is executed on the peers with different nonce (for instance due to manipulation), the PRK_out and PRK_exporter can get out of sync. Somehow the old PRK_out needs to be saved, or new ones created in branches.\r\n\r\nNote that this could possibly be solved in EDHOC.",
       "createdAt": "2022-06-17T11:24:04Z",
-      "updatedAt": "2022-06-17T11:24:23Z",
+      "updatedAt": "2022-07-01T13:39:57Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Wait for updates to EDHOC to allow \"branching\"",
+          "createdAt": "2022-07-01T13:39:57Z",
+          "updatedAt": "2022-07-01T13:39:57Z"
+        }
+      ]
     },
     {
       "number": 35,
