@@ -285,11 +285,13 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    When it is set to 1, the compressed COSE object contains an 'id detail', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'id detail', and signaling bits for specific behaviour during the KUDOS execution. Specifically the encoding of 'x' is as follows:
 
-   * The five least significant bits encode the length of the 'id detail' as an integer.
+   * The four least significant bits encode the length of the 'id detail' minus 1, as an integer.
 
-   * The sixth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}.
+   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}.
 
-   * The seventh least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}.
+   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}.
+
+   * The seventh least significant bit is reserved and SHALL be set to zero.
 
    * The eight least significant bit is reserved for future use and SHALL be set to zero.
 
