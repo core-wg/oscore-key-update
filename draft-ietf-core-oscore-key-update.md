@@ -781,6 +781,8 @@ After having successfully completed the KUDOS execution (i.e., after having succ
 
    c. In the Sender Context of the OSCORE Security Context shared with the other peer B, the peer A sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
 
+Note that when running KUDOS the peer must determine if it wishes to preserve ongoing observations or not. Input to this decision can be an understanding on the peer that its value for PIV\* begins to come close to the maximum possible PIV it can use. In such case it may choose to re-run KUDOS without preserving observations in order to "start over" from a fresh fully unused PIV space. In addition application specific policies can have influence on the decision to preserve observations or not.
+
 ### Signaling to Preserve Observations # {#preserving-observe-signaling}
 
 When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another and are bound to the OSCORE Security Context to renew. This is signaled by using the extended OSCORE option shown in {{fig-oscore-option}} and included in a KUDOS message, specifically by setting to 1 the bit "Preserve Observations", 'b', in the 'x' byte contained in the OSCORE option (see {{ssec-oscore-option-extensions}}).
