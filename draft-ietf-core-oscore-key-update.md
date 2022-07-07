@@ -289,9 +289,9 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    * The four least significant bits encode the length of the 'id detail' minus 1, as an integer.
 
-   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}. Setting this bit to 1 will indicate to the other peer to use the no-FS mode of KUDOS. By default the FS mode of KUDOS will be used, however there are device which may not support using that mode and thus must use the no-FS mode. In the case that the peers signal different 'p' bits, and thus do not agree on the KUDOS mode to use, KUDOS execution will be terminated. For steps to take if initiator or responder indicates to use the no-FS mode, see {{no-fs-mode}}.
+   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also to devices that do not support its FS mode. At the same time, two devices MUST run KUDOS in FS mode if they both support it, as per {{ssec-update-function}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
 
-   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}. Setting this bit to 1 will indicate to the other peer to use preserve observations after KUDOS execution has finished. In the case that the 'b' bits indicated by the peers are not equal, and thus do not agree to preserve observations, all observations will be terminated. For steps to take if both initiator and recipient indicates to preserve observations, see {{preserving-observe}}.
+   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}. The sender peer indicates its wish to preserve ongoing observations or not beyond the KUDOS execution, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
 
    * The seventh least significant bit is reserved and SHALL be set to zero.
 
@@ -435,7 +435,9 @@ The length of the nonces N1 and N2 is application specific. The application need
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
 
-In the following sections 'b(c,d)' denotes the CBOR byte-string representations of 'c' concantenated with the CBOR byte-string representations of 'd', that is: b.(c,d) = bstr .cbor c \| bstr .cbor d.
+In the following sections 'b(c,d)' denotes the byte concatenation of two elements. The first element is the CBOR byte string with value 'c'. The second element is the CBOR byte string with value 'd'. That is, b(c,d) = bstr .cbor c \| bstr .cbor d, where \| denotes byte concatenation.
+
+<!-- Add example with real values, and for updateCtx processing -->
 
 <!--
 TEXT OBSOLETED BY SAFER HANDLING IN LATER SECTIONS
@@ -501,11 +503,11 @@ Verify with CTX_NEW  |                    |
 {: #fig-message-exchange-client-init title="Client-Initiated KUDOS Workflow" artwork-align="center"}
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, specifies N1 as 'id detail' (see {{ssec-oscore-option-extensions}}).
-
+<!-- Add example with values -->
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'id detail' of the request, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the server verifies the request by using the Security Context CTX\_1.
 
 After that, the server generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'id detail'.
-
+<!-- Add example with values -->
 Upon receiving the OSCORE response, the client retrieves the value N2 from the 'id detail' of the response, and the value X2 from the 'x' byte of the OSCORE option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
 After that, the client can send a new OSCORE request protected with the new Security Context CTX\_NEW. When successfully verifying the request using the Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
