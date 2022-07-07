@@ -287,9 +287,9 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    * The four least significant bits encode the length of the 'id detail' minus 1, as an integer.
 
-   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}.
+   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}. Setting this bit to 1 will indicate to the other peer to use the no-FS mode of KUDOS. By default the FS mode of KUDOS will be used, however there are device which may not support using that mode and thus must use the no-FS mode. In the case that the peers signal different 'p' bits, and thus do not agree on the KUDOS mode to use, KUDOS execution will be terminated. For steps to take if initiator or responder indicates to use the no-FS mode, see {{no-fs-mode}}.
 
-   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}.
+   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}. Setting this bit to 1 will indicate to the other peer to use preserve observations after KUDOS execution has finished. In the case that the 'b' bits indicated by the peers are not equal, and thus do not agree to preserve observations, all observations will be terminated. For steps to take if both initiator and recipient indicates to preserve observations, see {{preserving-observe}}.
 
    * The seventh least significant bit is reserved and SHALL be set to zero.
 
@@ -409,10 +409,7 @@ This section defines the actual KUDOS procedure performed by two peers to update
 
 In particular, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message, respectively. These values are used by the peers as input to the updateCtx() function in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
-When setting the signaling bits in the 'x' byte of the OSCORE option the initiator must determine if it wants to keep ongoing observations by signaling that in the bit "Preserve Observations" 'b'. In the case that the 'b' bits are not equal in X1 and X2 initiator and recipient must behave as if the bit 'b' was set to 0, and all observations terminated. For steps to take if both initiator and recipient indicate to preserve observations, see {{preserving-observe}}. Note that this may be exploited as a general method for terminating multiple ongoing observations. That is, a client wishing to terminate all its ongoing observations can execute the KUDOS procedure and indicate to NOT keep ongoing observations. Thus, all its observations will be terminated after the KUDOS execution has finished. Note that in this scenario the client may in fact not be interested primarily in running KUDOS to update the key material but rather specifically for terminating observations. This solution may be cheaper than explicitly sending observaton cancellation requests for all ongoing observations.
-
-Additionally, when setting the signaling bits in the 'x' byte of the OSCORE option the initiator must determine if it wants to use the FS or no-FS mode of KUDOS by signaling that in the bit
-No Forward Secrecy" 'p'. In the case that the 'p' bits are not equal in X1 and X2 KUDOS execution will be terminated. For steps to take if initiator or responder indicates to use the no-FS mode, see {{no-fs-mode}}.
+When starting KUDOS the initiator determines if it wants to preserve observations. In such case, the "Preserve Observations" 'b' bit in the message is set to 1 (see {{ssec-oscore-option-extensions}}). Only if the equivalent bit from the responder is set to 1 observatons are preserved (see {{preserving-observe}}). Note that this may be exploited as a general method for terminating multiple ongoing observations. That is, a client wishing to terminate all its ongoing observations can execute the KUDOS procedure and indicate to NOT keep ongoing observations. Thus, all its observations will be terminated after the KUDOS execution has finished. Note that in this scenario the client may in fact not be interested primarily in running KUDOS to update the key material but rather specifically for terminating observations. This solution may be cheaper than explicitly sending observaton cancellation requests for all ongoing observations.
 
 Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages.
 
