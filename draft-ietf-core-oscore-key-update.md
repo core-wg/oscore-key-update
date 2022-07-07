@@ -338,6 +338,12 @@ In either case, the derivation of new values follows the same approach used in T
 
 After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX\_OUT as per {{Section 3.2 of RFC8613}}. Any other parameter required for the derivation takes the same value as in the Security Context CTX\_IN. Finally, the function returns the newly derived Security Context CTX\_OUT.
 
+\[ NOTE:
+
+Note that in the case a peer has lost its EDHOC session it may be unable to utilize the EDHOC-KeyUpdate for deriving a new Security Context. In such case yet another bit in the X1 and X2 bytes can be utilized for signaling to the other peer how the new Security Context should be derived, that is relying on the EDHOC-KeyUpdate or using HKDF-Expand. Furthermore, currently the updateCtx function is defined as a single function, both able to generate a new context with EDHOC-KeyUpdate or HKDF-Expand. An alternative design would be to split this functionality into two separate functions. This would allow calling the appropriate function depending on the desired functionality. Such a design can be more convenient as the X input does not have to be parsed inside updateCtx, rather the parsing can happen beforehand and the correct function called.
+
+\]
+
 ~~~~~~~~~~~
 updateCtx(X, N, CTX_IN) {
 
