@@ -771,7 +771,15 @@ If, later on, the client is not interested in the observation anymore, it MUST N
 
 In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve across the key update, then A explicitly indicates it by using the signaling approach embedded in KUDOS and defined in {{preserving-observe-signaling}}.
 
-After having successfully completed the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), if the other peer B has confirmed its interest in preserving those ongoing observations also by using the signaling approach defined in {{preserving-observe-signaling}}, then the peer A does not terminate any ongoing observation but rather keeps the same observations as it had before the KUDOS execution.
+After having successfully completed the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), if the other peer B has confirmed its interest in preserving those ongoing observations also by using the signaling approach defined in {{preserving-observe-signaling}}, then the peer A performs the following actions. This sequence of steps will allow the peer to "jump" over Partial IVs (PIVs) that are occupied and in use for ongoing observations.
+
+1. For each still ongoing observation X that A has with B, such that A acts as client in X:
+
+   a. The peer A considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations with the other peer B.
+
+   b. The peer A determines the value PIV\* as the highest OSCORE Partial IV among those considered at the previous step.
+
+   c. In the Sender Context of the OSCORE Security Context shared with the other peer B, the peer A sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
 
 ### Signaling to Preserve Observations # {#preserving-observe-signaling}
 
