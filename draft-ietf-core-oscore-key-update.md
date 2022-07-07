@@ -407,7 +407,7 @@ struct {
 
 This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
 
-In particular, each peer contributes by generating a fresh value R1 or R2, and providing it to the other peer. Furthermore, X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message, respectively. The byte string concatenation of the values, hereafter denoted as R1 \| R2, is used as input N, and the concatenation X1 \| X2 is used as input X by the updateCtx() function in order to derive the new OSCORE Security Context CTX\_NEW. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
+In particular, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message, respectively. The byte string concatenation of the values, hereafter denoted as N1 \| N2, is used as input N, and the concatenation X1 \| X2 is used as input X by the updateCtx() function in order to derive the new OSCORE Security Context CTX\_NEW. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
 When setting the signaling bits in the 'x' byte of the OSCORE option the initiator must determine if it wants to keep ongoing observations by signaling that in the bit "Preserve Observations" 'b'. In the case that the 'b' bits are not equal in X1 and X2 initiator and recipient must behave as if the bit 'b' was set to 0, and all observations terminated. For steps to take if both initiator and recipient indicate to preserve observations, see {{preserving-observe}}.
 
@@ -422,14 +422,14 @@ Once a peer has successfully decrypted and verified an incoming message protecte
 
 KUDOS can be started by the client or the server, as defined in {{ssec-derive-ctx-client-init}} and {{ssec-derive-ctx-server-init}}, respectively. The following properties hold for both the client- and server-initiated version of KUDOS.
 
-* The initiator always offers the fresh value R1.
-* The responder always offers the fresh value R2
+* The initiator always offers the fresh value N1.
+* The responder always offers the fresh value N2
 * The initiator and responder encodes the 'x' byte with the length of 'id detail' and signaling bits
 * The responder is always the first one deriving the new OSCORE Security Context CTX\_NEW.
 * The initiator is always the first one achieving key confirmation, hence able to safely discard the old OSCORE Security Context CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
-The length of the nonces R1 and R2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
+The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
 
@@ -447,34 +447,34 @@ A client must be ready to receive a non KUDOS response protected with keying mat
                    Client               Server
                 (initiator)          (responder)
                      |                    |
-Generate R1          |                    |
+Generate N1          |                    |
                      |                    |
 CTX_1 =              |                    |
-  updateCtx(X1, R1,  |                    |
+  updateCtx(X1, N1,  |                    |
             CTX_OLD) |                    |
                      |                    |
                      |     Request #1     |
 Protect with CTX_1   |------------------->|
                      | OSCORE Option:     | CTX_1 =
-                     |   ...              |   updateCtx(X1, R1,
+                     |   ...              |   updateCtx(X1, N1,
                      |   d flag: 1        |             CTX_OLD)
                      |   X1               |
-                     |   ID Detail: R1    | Verify with CTX_1
+                     |   ID Detail: N1    | Verify with CTX_1
                      |   ...              |
-                     |                    | Generate R2
+                     |                    | Generate N2
                      |                    |
                      |                    | CTX_NEW =
-                     |                    |   updateCtx(X1|X2, R1|R2,
+                     |                    |   updateCtx(X1|X2, N1|N2,
                      |                    |             CTX_OLD)
                      |                    |
                      |     Response #1    |
                      |<-------------------| Protect with CTX_NEW
 CTX_NEW =            | OSCORE Option:     |
   updateCtx(X1|X2,   |   ...              |
-            R1|R2,   |                    |
+            N1|N2,   |                    |
             CTX_OLD) |   d flag: 1        |
                      |   X2               |
-Verify with CTX_NEW  |   ID Detail: R2    |
+Verify with CTX_NEW  |   ID Detail: N2    |
                      |   ...              |
 Discard CTX_OLD      |                    |
                      |                    |
@@ -496,13 +496,13 @@ Verify with CTX_NEW  |                    |
 ~~~~~~~~~~~
 {: #fig-message-exchange-client-init title="Client-Initiated KUDOS Workflow" artwork-align="center"}
 
-First, the client generates a random value R1, and uses the nonce N = R1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, specifies R1 as 'id detail' (see {{ssec-oscore-option-extensions}}).
+First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, specifies N1 as 'id detail' (see {{ssec-oscore-option-extensions}}).
 
-Upon receiving the OSCORE request, the server retrieves the value R1 from the 'id detail' of the request, the value X1 from the 'x' byte of the OSCOREe option, and uses the nonce N = R1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the server verifies the request by using the Security Context CTX\_1.
+Upon receiving the OSCORE request, the server retrieves the value N1 from the 'id detail' of the request, the value X1 from the 'x' byte of the OSCOREe option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the server verifies the request by using the Security Context CTX\_1.
 
-After that, the server generates a random value R2, and uses the nonce N = R1 \| R2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies R2 as 'id detail'.
+After that, the server generates a random value N2, and uses the nonce N = N1 \| N2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'id detail'.
 
-Upon receiving the OSCORE response, the client retrieves the value R2 from the 'id detail' of the response, and the value X2 from the 'x' byte of the OSCORE option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client uses the nonce N = R1 \| R2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
+Upon receiving the OSCORE response, the client retrieves the value N2 from the 'id detail' of the response, and the value X2 from the 'x' byte of the OSCORE option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client uses the nonce N = N1 \| N2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
 After that, the client can send a new OSCORE request protected with the new Security Context CTX\_NEW. When successfully verifying the request using the Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
 
@@ -540,34 +540,34 @@ As mentioned in {{ssec-derive-ctx}}, a client must be ready to receive a non KUD
 Protect with CTX_OLD |------------------->|
                      |                    | Verify with CTX_OLD
                      |                    |
-                     |                    | Generate R1
+                     |                    | Generate N1
                      |                    |
                      |                    | CTX_1 =
-                     |                    |   updateCtx(X1, R1,
+                     |                    |   updateCtx(X1, N1,
                      |                    |             CTX_OLD)
                      |                    |
                      |     Response #1    |
                      |<-------------------| Protect with CTX_1
 CTX_1 =              | OSCORE Option:     |
-  updateCtx(X1, R1,  |   ...              |
+  updateCtx(X1, N1,  |   ...              |
             CTX_OLD) |   d flag: 1        |
                      |   X1               |
-Verify with CTX_1    |   ID Detail: R1    |
+Verify with CTX_1    |   ID Detail: N1    |
                      |   ...              |
-Generate R2          |                    |
+Generate N2          |                    |
                      |                    |
 CTX_NEW =            |                    |
   updateCtx(X1|X2,   |                    |
-            R1|R2    |                    |
+            N1|N2    |                    |
             CTX_OLD) |                    |
                      |                    |
                      |     Request #2     |
 Protect with CTX_NEW |------------------->|
                      | OSCORE Option:     | CTX_NEW =
-                     |   ...              |   updateCtx(X1|X2, R1|R2,
+                     |   ...              |   updateCtx(X1|X2, N1|N2,
                      |   d flag: 1        |             CTX_OLD)
                      |   X2               |
-                     |   ID Detail: R1|R2 | Verify with CTX_NEW
+                     |   ID Detail: N1|N2 | Verify with CTX_NEW
                      |   ...              |
                      |                    | Discard CTX_OLD
                      |                    |
@@ -587,13 +587,13 @@ Discard CTX_OLD      |                    |
 
 First, the client sends a normal OSCORE request to the server, protected with the old Security Context CTX\_OLD and with the 'd' flag bit set to 0.
 
-Upon receiving the OSCORE request and after having verified it with the old Security Context CTX\_OLD as usual, the server generates a random value R1 and uses the nonce N = R1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the server sends an OSCORE response to the client, protected with the Security Context CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies R1 as 'id detail' (see {{ssec-oscore-option-extensions}}).
+Upon receiving the OSCORE request and after having verified it with the old Security Context CTX\_OLD as usual, the server generates a random value N1 and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the server sends an OSCORE response to the client, protected with the Security Context CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'id detail' (see {{ssec-oscore-option-extensions}}).
 
-Upon receiving the OSCORE response, the client retrieves the value R1 from the 'id detail' of the response, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = R1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the client verifies the response by using the Security Context CTX\_1.
+Upon receiving the OSCORE response, the client retrieves the value N1 from the 'id detail' of the response, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the client verifies the response by using the Security Context CTX\_1.
 
-After that, the client generates a random value R2, and uses the nonce N = R1 \| R2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the client sends an OSCORE request to the server, protected with the new Security Context CTX\_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies R1 \| R2 as 'id detail'.
+After that, the client generates a random value N2, and uses the nonce N = N1 \| N2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the client sends an OSCORE request to the server, protected with the new Security Context CTX\_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N1 \| N2 as 'id detail'.
 
-Upon receiving the OSCORE request, the server retrieves the value R1 \| R2 from the request and the value X2 from the 'x' byte of the OSCORE option. Then, the server verifies that: i) the value R1 is identical to the value R1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value R1 \| R2 has not been received before in an OSCORE request with the 'd' flag bit set to 1. If the verification succeeds, the server uses the nonce N = R1 \| R2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the server verifies the request by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
+Upon receiving the OSCORE request, the server retrieves the value N1 \| N2 from the request and the value X2 from the 'x' byte of the OSCORE option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 \| N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1. If the verification succeeds, the server uses the nonce N = N1 \| N2 and X = X1 \| X2 together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the server verifies the request by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
 After that, the server can send an OSCORE response protected with the new Security Context CTX\_NEW. When successfully verifying the response using the Security Context CTX\_NEW, the client deletes the old Security Context CTX\_OLD.
 
