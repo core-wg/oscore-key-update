@@ -92,7 +92,7 @@ Table of Contents
      4.4.  Key Update without Forward Secrecy
        4.4.1.  Handling and use of Keying Material
        4.4.2.  Signaling of FS Mode or Non-FS Mode
-       4.4.3.  Selection and Negotiation of KUDOS Mode
+       4.4.3.  Selection of KUDOS Mode
      4.5.  Preserving Observations across Key Updates
        4.5.1.  Management of Observations
        4.5.2.  Signaling to Preserve Observations
@@ -1269,7 +1269,7 @@ Discard CTX_OLD      |                    |
       Security Context CTX_OLD provided as input to the updateCtx()
       function, hence the impossibility to achieve forward secrecy.
 
-4.4.3.  Selection and Negotiation of KUDOS Mode
+4.4.3.  Selection of KUDOS Mode
 
    This section defines how a peer determines to run KUDOS either in FS
    or no-FS mode with another peer.
