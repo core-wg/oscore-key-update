@@ -388,9 +388,9 @@ updateCtx(X, N, CTX_IN) {
 Where HkdfLabel is defined as
 
 struct {
-    uint16 length = Length;
+    uint16 length = oscore_key_length;
     opaque label<7..255> = "oscore " + Label;
-    opaque context<0..255> = Context;
+    opaque context<0..255> = X_N;
 } HkdfLabel;
 ~~~~~~~~~~~
 {: #function-update title="Function for deriving a new OSCORE Security Context" artwork-align="center"}
