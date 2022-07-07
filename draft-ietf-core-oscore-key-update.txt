@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                             1 July 2022
-Expires: 2 January 2023
+Intended status: Standards Track                             7 July 2022
+Expires: 8 January 2023
 
 
                      Key Update for OSCORE (KUDOS)
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 January 2023.
+   This Internet-Draft will expire on 8 January 2023.
 
 Copyright Notice
 
@@ -527,14 +527,30 @@ Table of Contents
       'id detail', and signaling bits for specific behaviour during the
       KUDOS execution.  Specifically the encoding of 'x' is as follows:
 
-      -  The five least significant bits encode the length of the 'id
-         detail' as an integer.
+      -  The four least significant bits encode the length of the 'id
+         detail' minus 1, as an integer.
 
-      -  The sixth least significant bit is the "No Forward Secrecy" 'p'
-         bit, see Section 4.4.2.
+      -  The fifth least significant bit is the "No Forward Secrecy" 'p'
+         bit, see Section 4.4.2.  Setting this bit to 1 will indicate to
+         the other peer to use the no-FS mode of KUDOS.  By default the
+         FS mode of KUDOS will be used, however there are device which
+         may not support using that mode and thus must use the no-FS
+         mode.  In the case that the peers signal different 'p' bits,
+         and thus do not agree on the KUDOS mode to use, KUDOS execution
+         will be terminated.  For steps to take if initiator or
+         responder indicates to use the no-FS mode, see Section 4.4.
 
-      -  The seventh least significant bit is the "Preserve
-         Observations" 'b' bit, see Section 4.5.2.
+      -  The sixth least significant bit is the "Preserve Observations"
+         'b' bit, see Section 4.5.2.  Setting this bit to 1 will
+         indicate to the other peer to use preserve observations after
+         KUDOS execution has finished.  In the case that the 'b' bits
+         indicated by the peers are not equal, and thus do not agree to
+         preserve observations, all observations will be terminated.
+         For steps to take if both initiator and recipient indicates to
+         preserve observations, see Section 4.5.
+
+      -  The seventh least significant bit is reserved and SHALL be set
+         to zero.
 
       -  The eight least significant bit is reserved for future use and
          SHALL be set to zero.
@@ -627,19 +643,40 @@ Table of Contents
    same value as in the Security Context CTX_IN.  Finally, the function
    returns the newly derived Security Context CTX_OUT.
 
+   [ NOTE:
+
+   Note that in the case a peer has lost its EDHOC session it may be
+   unable to utilize the EDHOC-KeyUpdate for deriving a new Security
+   Context.  In such case yet another bit in the X1 and X2 bytes can be
+   utilized for signaling to the other peer how the new Security Context
+   should be derived, that is relying on the EDHOC-KeyUpdate or using
+   HKDF-Expand.  Furthermore, currently the updateCtx function is
+   defined as a single function, both able to generate a new context
+   with EDHOC-KeyUpdate or HKDF-Expand.  An alternative design would be
+   to split this functionality into two separate functions.  This would
+   allow calling the appropriate function depending on the desired
+   functionality.  Such a design can be more convenient as the X input
+   does not have to be parsed inside updateCtx, rather the parsing can
+   happen beforehand and the correct function called.
+
+   ]
+
    updateCtx(X, N, CTX_IN) {
 
      CTX_OUT       // The new Security Context
      MSECRET_NEW   // The new Master Secret
      MSALT_NEW     // The new Master Salt
-     X_N = X | N   // Concatenation of X and Nonce
+
+     X_cbor = bstr .cbor X // CBOR bstr wrapping of X
+     N_cbor = bstr .cbor N // CBOR bstr wrapping of N
+     X_N = bstr .cbor (X_cbor | N_cbor) // CBOR bstr wrapping of above
 
      oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
      oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
 
      if <the original Security Context was established through EDHOC> {
 
-       EDHOC-KeyUpdate(N)
+       EDHOC-KeyUpdate(X_N)
        // This results in updating the key PRK_out of the
        // EDHOC session, i.e., PRK_out = EDHOC-KDF(PRK_out, 11,
        // N, hash_length)
@@ -676,9 +713,9 @@ Table of Contents
    Where HkdfLabel is defined as
 
    struct {
-       uint16 length = Length;
+       uint16 length = oscore_key_length;
        opaque label<7..255> = "oscore " + Label;
-       opaque context<0..255> = Context;
+       opaque context<0..255> = X_N;
    } HkdfLabel;
 
        Figure 4: Function for deriving a new OSCORE Security Context
@@ -691,32 +728,29 @@ Table of Contents
    completed the KUDOS execution, the two peers agree on a newly
    established OSCORE Security Context CTX_NEW.
 
-   In particular, each peer contributes by generating a fresh value R1
-   or R2, and providing it to the other peer.  Furthermore, X1 and X2
+   In particular, each peer contributes by generating a fresh value N1
+   or N2, and providing it to the other peer.  Furthermore, X1 and X2
    are the values of the 'x' byte specified in the OSCORE option of the
-   first and second KUDOS message, respectively.  The byte string
-   concatenation of the values, hereafter denoted as R1 | R2, is used as
-   input N, and the concatenation X1 | X2 is used as input X by the
-   updateCtx() function in order to derive the new OSCORE Security
-   Context CTX_NEW.  As for any new OSCORE Security Context, the Sender
-   Sequence Number and the replay window are re-initialized accordingly
-   (see Section 3.2.2 of [RFC8613]).
+   first and second KUDOS message, respectively.  These values are used
+   by the peers as input to the updateCtx() function in order to derive
+   a new OSCORE Security Context.  As for any new OSCORE Security
+   Context, the Sender Sequence Number and the replay window are re-
+   initialized accordingly (see Section 3.2.2 of [RFC8613]).
 
-   When setting the signaling bits in the 'x' byte of the OSCORE option
-   the initiator must determine if it wants to keep ongoing observations
-   by signaling that in the bit "Preserve Observations" 'b'.  In the
-   case that the 'b' bits are not equal in X1 and X2 initiator and
-   recipient must behave as if the bit 'b' was set to 0, and all
-   observations terminated.  For steps to take if both initiator and
-   recipient indicate to preserve observations, see Section 4.5.
-
-   Additionally, when setting the signaling bits in the 'x' byte of the
-   OSCORE option the initiator must determine if it wants to use the FS
-   or no-FS mode of KUDOS by signaling that in the bit No Forward
-   Secrecy" 'p'.  In the case that the 'p' bits are not equal in X1 and
-   X2 KUDOS execution will be terminated.  For steps to take if
-   initiator or responder indicates to use the no-FS mode, see
-   Section 4.4.
+   When starting KUDOS the initiator determines if it wants to preserve
+   observations.  In such case, the "Preserve Observations" 'b' bit in
+   the message is set to 1 (see Section 4.1).  Only if the equivalent
+   bit from the responder is set to 1 observatons are preserved (see
+   Section 4.5).  Note that this may be exploited as a general method
+   for terminating multiple ongoing observations.  That is, a client
+   wishing to terminate all its ongoing observations can execute the
+   KUDOS procedure and indicate to NOT keep ongoing observations.  Thus,
+   all its observations will be terminated after the KUDOS execution has
+   finished.  Note that in this scenario the client may in fact not be
+   interested primarily in running KUDOS to update the key material but
+   rather specifically for terminating observations.  This solution may
+   be cheaper than explicitly sending observaton cancellation requests
+   for all ongoing observations.
 
    Once a peer has successfully derived the new OSCORE Security Context
    CTX_NEW, that peer MUST use CTX_NEW to protect outgoing non KUDOS
@@ -736,9 +770,9 @@ Table of Contents
    properties hold for both the client- and server-initiated version of
    KUDOS.
 
-   *  The initiator always offers the fresh value R1.
+   *  The initiator always offers the fresh value N1.
 
-   *  The responder always offers the fresh value R2
+   *  The responder always offers the fresh value N2
 
    *  The initiator and responder encodes the 'x' byte with the length
       of 'id detail' and signaling bits
@@ -754,7 +788,7 @@ Table of Contents
       OSCORE Sender ID and Recipient ID.  Also, they both preserve and
       use the same OSCORE ID Context from CTX_OLD.
 
-   The length of the nonces R1 and R2 is application specific.  The
+   The length of the nonces N1 and N2 is application specific.  The
    application needs to set the length of each nonce such that the
    probability of its value being repeated is negligible.  To this end,
    each nonce is typically at least 8 bytes long.
@@ -768,90 +802,95 @@ Table of Contents
    update process when sending the second KUDOS message, as protected
    with the new OSCORE Security Context CTX_NEW.
 
+   In the following sections 'b(c,d)' denotes the CBOR byte-string
+   representations of 'c' concantenated with the CBOR byte-string
+   representations of 'd', that is: b.(c,d) = bstr .cbor c | bstr .cbor
+   d.
+
 4.3.1.  Client-Initiated Key Update
 
    Figure 5 shows the KUDOS workflow with the client acting as
    initiator.
 
-                      Client               Server
-                   (initiator)          (responder)
-                        |                    |
-   Generate R1          |                    |
-                        |                    |
-   CTX_1 =              |                    |
-     updateCtx(X1, R1,  |                    |
-               CTX_OLD) |                    |
-                        |                    |
-                        |     Request #1     |
-   Protect with CTX_1   |------------------->|
-                        | OSCORE Option:     | CTX_1 =
-                        |   ...              |   updateCtx(X1, R1,
-                        |   d flag: 1        |             CTX_OLD)
-                        |   X1               |
-                        |   ID Detail: R1    | Verify with CTX_1
-                        |   ...              |
-                        |                    | Generate R2
-                        |                    |
-                        |                    | CTX_NEW =
-                        |                    |   updateCtx(X1|X2, R1|R2,
-                        |                    |             CTX_OLD)
-                        |                    |
-                        |     Response #1    |
-                        |<-------------------| Protect with CTX_NEW
-   CTX_NEW =            | OSCORE Option:     |
-     updateCtx(X1|X2,   |   ...              |
-               R1|R2,   |                    |
-               CTX_OLD) |   d flag: 1        |
-                        |   X2               |
-   Verify with CTX_NEW  |   ID Detail: R2    |
-                        |   ...              |
-   Discard CTX_OLD      |                    |
-                        |                    |
+                   Client               Server
+                (initiator)          (responder)
+                     |                    |
+Generate N1          |                    |
+                     |                    |
+CTX_1 =              |                    |
+  updateCtx(X1, N1,  |                    |
+            CTX_OLD) |                    |
+                     |                    |
+                     |     Request #1     |
+Protect with CTX_1   |------------------->|
+                     | OSCORE Option:     | CTX_1 =
+                     |   ...              |  updateCtx(X1, N1,
+                     |   d flag: 1        |            CTX_OLD)
+                     |   X1               |
+                     |   ID Detail: N1    | Verify with CTX_1
+                     |   ...              |
+                     |                    | Generate N2
+                     |                    |
+                     |                    | CTX_NEW =
+                     |                    |  updateCtx(b(X1,X2), b(N1,N2),
+                     |                    |            CTX_OLD)
+                     |                    |
+                     |     Response #1    |
+                     |<-------------------| Protect with CTX_NEW
+CTX_NEW =            | OSCORE Option:     |
+ updateCtx(b(X1,X2), |   ...              |
+           b(N1,N2), |                    |
+           CTX_OLD)  |   d flag: 1        |
+                     |   X2               |
+Verify with CTX_NEW  |   ID Detail: N2    |
+                     |   ...              |
+Discard CTX_OLD      |                    |
+                     |                    |
 
-   // The actual key update process ends here.
-   // The two peers can use the new Security Context CTX_NEW.
+// The actual key update process ends here.
+// The two peers can use the new Security Context CTX_NEW.
 
-                        |                    |
-                        |     Request #2     |
-   Protect with CTX_NEW |------------------->|
-                        |                    | Verify with CTX_NEW
-                        |                    |
-                        |                    | Discard CTX_OLD
-                        |                    |
-                        |     Response #2    |
-                        |<-------------------| Protect with CTX_NEW
-   Verify with CTX_NEW  |                    |
-                        |                    |
+                     |                    |
+                     |     Request #2     |
+Protect with CTX_NEW |------------------->|
+                     |                    | Verify with CTX_NEW
+                     |                    |
+                     |                    | Discard CTX_OLD
+                     |                    |
+                     |     Response #2    |
+                     |<-------------------| Protect with CTX_NEW
+Verify with CTX_NEW  |                    |
+                     |                    |
 
-                 Figure 5: Client-Initiated KUDOS Workflow
+              Figure 5: Client-Initiated KUDOS Workflow
 
-   First, the client generates a random value R1, and uses the nonce N =
-   R1 and X = X1 together with the old Security Context CTX_OLD, in
+   First, the client generates a random value N1, and uses the nonce N =
+   N1 and X = X1 together with the old Security Context CTX_OLD, in
    order to derive a temporary Security Context CTX_1.  Then, the client
    sends an OSCORE request to the server, protected with the Security
    Context CTX_1.  In particular, the request has the 'd' flag bit set
-   to 1, specifies R1 as 'id detail' (see Section 4.1).
+   to 1, specifies N1 as 'id detail' (see Section 4.1).
 
-   Upon receiving the OSCORE request, the server retrieves the value R1
+   Upon receiving the OSCORE request, the server retrieves the value N1
    from the 'id detail' of the request, the value X1 from the 'x' byte
-   of the OSCOREe option, and uses the nonce N = R1 and X = X1 together
+   of the OSCORE option, and uses the nonce N = N1 and X = X1 together
    with the old Security Context CTX_OLD, in order to derive the
    temporary Security Context CTX_1.  Then, the server verifies the
    request by using the Security Context CTX_1.
 
-   After that, the server generates a random value R2, and uses the
-   nonce N = R1 | R2 and X = X1 | X2 together with the old Security
+   After that, the server generates a random value N2, and uses the
+   nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security
    Context CTX_OLD, in order to derive the new Security Context CTX_NEW.
    Then, the server sends an OSCORE response to the client, protected
    with the new Security Context CTX_NEW.  In particular, the response
-   has the 'd' flag bit set to 1 and specifies R2 as 'id detail'.
+   has the 'd' flag bit set to 1 and specifies N2 as 'id detail'.
 
-   Upon receiving the OSCORE response, the client retrieves the value R2
+   Upon receiving the OSCORE response, the client retrieves the value N2
    from the 'id detail' of the response, and the value X2 from the 'x'
    byte of the OSCORE option.  Since the client has received a response
    to an OSCORE request it made with the 'd' flag bit set to 1, the
-   client uses the nonce N = R1 | R2 and X = X1 | X2 together with the
-   old Security Context CTX_OLD, in order to derive the new Security
+   client uses the nonce N = b(N1, N2) and X = b(X1, X2) together with
+   the old Security Context CTX_OLD, in order to derive the new Security
    Context CTX_NEW.  Finally, the client verifies the response by using
    the Security Context CTX_NEW and deletes the old Security Context
    CTX_OLD.
@@ -902,56 +941,56 @@ Table of Contents
    Figure 6 shows the KUDOS workflow with the server acting as
    initiator.
 
-                      Client               Server
-                   (responder)          (initiator)
-                        |                    |
-                        |     Request #1     |
-   Protect with CTX_OLD |------------------->|
-                        |                    | Verify with CTX_OLD
-                        |                    |
-                        |                    | Generate R1
-                        |                    |
-                        |                    | CTX_1 =
-                        |                    |   updateCtx(X1, R1,
-                        |                    |             CTX_OLD)
-                        |                    |
-                        |     Response #1    |
-                        |<-------------------| Protect with CTX_1
-   CTX_1 =              | OSCORE Option:     |
-     updateCtx(X1, R1,  |   ...              |
-               CTX_OLD) |   d flag: 1        |
-                        |   X1               |
-   Verify with CTX_1    |   ID Detail: R1    |
-                        |   ...              |
-   Generate R2          |                    |
-                        |                    |
-   CTX_NEW =            |                    |
-     updateCtx(X1|X2,   |                    |
-               R1|R2    |                    |
-               CTX_OLD) |                    |
-                        |                    |
-                        |     Request #2     |
-   Protect with CTX_NEW |------------------->|
-                        | OSCORE Option:     | CTX_NEW =
-                        |   ...              |   updateCtx(X1|X2, R1|R2,
-                        |   d flag: 1        |             CTX_OLD)
-                        |   X2               |
-                        |   ID Detail: R1|R2 | Verify with CTX_NEW
-                        |   ...              |
-                        |                    | Discard CTX_OLD
-                        |                    |
+                   Client               Server
+                (responder)          (initiator)
+                     |                    |
+                     |     Request #1     |
+Protect with CTX_OLD |------------------->|
+                     |                    | Verify with CTX_OLD
+                     |                    |
+                     |                    | Generate N1
+                     |                    |
+                     |                    | CTX_1 =
+                     |                    |  updateCtx(X1, N1,
+                     |                    |            CTX_OLD)
+                     |                    |
+                     |     Response #1    |
+                     |<-------------------| Protect with CTX_1
+CTX_1 =              | OSCORE Option:     |
+  updateCtx(X1, N1,  |   ...              |
+            CTX_OLD) |   d flag: 1        |
+                     |   X1               |
+Verify with CTX_1    |   ID Detail: N1    |
+                     |   ...              |
+Generate N2          |                    |
+                     |                    |
+CTX_NEW =            |                    |
+ updateCtx(b(X1,X2), |                    |
+           b(N1,N2   |                    |
+           CTX_OLD)  |                    |
+                     |                    |
+                     |     Request #2     |
+Protect with CTX_NEW |------------------->|
+                     | OSCORE Option:     | CTX_NEW =
+                     |   ...              |  updateCtx(b(X1,X2), b(N1,N2),
+                     |   d flag: 1        |            CTX_OLD)
+                     |   X2               |
+                     |   ID Detail: N1|N2 | Verify with CTX_NEW
+                     |   ...              |
+                     |                    | Discard CTX_OLD
+                     |                    |
 
-   // The actual key update process ends here.
-   // The two peers can use the new Security Context CTX_NEW.
+// The actual key update process ends here.
+// The two peers can use the new Security Context CTX_NEW.
 
-                        |     Response #2    |
-                        |<-------------------| Protect with CTX_NEW
-   Verify with CTX_NEW  |                    |
-                        |                    |
-   Discard CTX_OLD      |                    |
-                        |                    |
+                     |     Response #2    |
+                     |<-------------------| Protect with CTX_NEW
+Verify with CTX_NEW  |                    |
+                     |                    |
+Discard CTX_OLD      |                    |
+                     |                    |
 
-                 Figure 6: Server-Initiated KUDOS Workflow
+              Figure 6: Server-Initiated KUDOS Workflow
 
    First, the client sends a normal OSCORE request to the server,
    protected with the old Security Context CTX_OLD and with the 'd' flag
@@ -959,35 +998,35 @@ Table of Contents
 
    Upon receiving the OSCORE request and after having verified it with
    the old Security Context CTX_OLD as usual, the server generates a
-   random value R1 and uses the nonce N = R1 and X = X1 together with
+   random value N1 and uses the nonce N = N1 and X = X1 together with
    the old Security Context CTX_OLD, in order to derive a temporary
    Security Context CTX_1.  Then, the server sends an OSCORE response to
    the client, protected with the Security Context CTX_1.  In
    particular, the response has the 'd' flag bit set to 1 and specifies
-   R1 as 'id detail' (see Section 4.1).
+   N1 as 'id detail' (see Section 4.1).
 
-   Upon receiving the OSCORE response, the client retrieves the value R1
+   Upon receiving the OSCORE response, the client retrieves the value N1
    from the 'id detail' of the response, the value X1 from the 'x' byte
-   of the OSCORE option, and uses the nonce N = R1 and X = X1 together
+   of the OSCORE option, and uses the nonce N = N1 and X = X1 together
    with the old Security Context CTX_OLD, in order to derive the
    temporary Security Context CTX_1.  Then, the client verifies the
    response by using the Security Context CTX_1.
 
-   After that, the client generates a random value R2, and uses the
-   nonce N = R1 | R2 and X = X1 | X2 together with the old Security
+   After that, the client generates a random value N2, and uses the
+   nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security
    Context CTX_OLD, in order to derive the new Security Context CTX_NEW.
    Then, the client sends an OSCORE request to the server, protected
    with the new Security Context CTX_NEW.  In particular, the request
-   has the 'd' flag bit set to 1 and specifies R1 | R2 as 'id detail'.
+   has the 'd' flag bit set to 1 and specifies N1 | N2 as 'id detail'.
 
    Upon receiving the OSCORE request, the server retrieves the value
-   R1 | R2 from the request and the value X2 from the 'x' byte of the
-   OSCORE option.  Then, the server verifies that: i) the value R1 is
-   identical to the value R1 specified in a previous OSCORE response
-   with the 'd' flag bit set to 1; and ii) the value R1 | R2 has not
+   N1 | N2 from the request and the value X2 from the 'x' byte of the
+   OSCORE option.  Then, the server verifies that: i) the value N1 is
+   identical to the value N1 specified in a previous OSCORE response
+   with the 'd' flag bit set to 1; and ii) the value N1 | N2 has not
    been received before in an OSCORE request with the 'd' flag bit set
    to 1.  If the verification succeeds, the server uses the nonce N =
-   R1 | R2 and X = X1 | X2 together with the old Security Context
+   b(N1, N2) and X = b(X1, X2) together with the old Security Context
    CTX_OLD, in order to derive the new Security Context CTX_NEW.
    Finally, the server verifies the request by using the Security
    Context CTX_NEW and deletes the old Security Context CTX_OLD.
@@ -1399,9 +1438,32 @@ Table of Contents
    having successfully derived the new OSCORE Security Context CTX_NEW),
    if the other peer B has confirmed its interest in preserving those
    ongoing observations also by using the signaling approach defined in
-   Section 4.5.2, then the peer A does not terminate any ongoing
-   observation but rather keeps the same observations as it had before
-   the KUDOS execution.
+   Section 4.5.2, then the peer A performs the following actions.  This
+   sequence of steps will allow the peer to "jump" over Partial IVs
+   (PIVs) that are occupied and in use for ongoing observations.
+
+   1.  For each still ongoing observation X that A has with B, such that
+       A acts as client in X:
+
+       a.  The peer A considers all the OSCORE Partial IV values used in
+       the Observe registration request associated with any of the still
+       ongoing observations with the other peer B.
+
+       b.  The peer A determines the value PIV* as the highest OSCORE
+       Partial IV among those considered at the previous step.
+
+       c.  In the Sender Context of the OSCORE Security Context shared
+       with the other peer B, the peer A sets its own Sender Sequence
+       Number to (PIV* + 1), rather than to 0.
+
+   Note that when running KUDOS the peer must determine if it wishes to
+   preserve ongoing observations or not.  Input to this decision can be
+   an understanding on the peer that its value for PIV* begins to come
+   close to the maximum possible PIV it can use.  In such case it may
+   choose to re-run KUDOS without preserving observations in order to
+   "start over" from a fresh fully unused PIV space.  In addition
+   application specific policies can have influence on the decision to
+   preserve observations or not.
 
 4.5.2.  Signaling to Preserve Observations
 
