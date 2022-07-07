@@ -96,6 +96,8 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 Readers are expected to be familiar with the terms and concepts related to the CoAP {{RFC7252}} and OSCORE {{RFC8613}} protocols.
 
+<!-- Add: KUDOS mode (FS / no-FS) -->
+
 # AEAD Key Usage Limits in OSCORE
 
 The following sections details how key usage limits for AEAD algorithms must be considered when using OSCORE. It covers specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context, updates to the OSCORE message processing, and existing methods for rekeying OSCORE.
@@ -705,7 +707,7 @@ In a KUDOS message (i.e., the 'd' bit is set to 1), the 'p' bit practically dete
 
 * If the 'p' bit is set to 1, the updateCtx() function used to derive CTX\_1 or CTX\_NEW considers as input CTX\_OLD the current OSCORE Security Context shared with the other peer, with the following difference: Bootstrap Master Secret is used as Master Secret and Boostrap Master Salt is used as Master Salt. That is, every execution of KUDOS in no-FS mode between these two peers considers the same pair (Master Secret, Master Salt) in the OSCORE Security Context CTX\_OLD provided as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.
 
-### Selection and Negotiation of KUDOS Mode
+### Selection of KUDOS Mode
 
 This section defines how a peer determines to run KUDOS either in FS or no-FS mode with another peer.
 
