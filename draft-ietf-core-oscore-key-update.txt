@@ -160,6 +160,11 @@ Table of Contents
    Readers are expected to be familiar with the terms and concepts
    related to the CoAP [RFC7252] and OSCORE [RFC8613] protocols.
 
+   The term "KUDOS mode" is used to denote two different modes of
+   running KUDOS, that is preserving Forward Secrecy (FS mode) (see
+   Section 4.2) or not preserving Forward Secrecy (no-FS mode) (see
+   Section 4.4).
+
 2.  AEAD Key Usage Limits in OSCORE
 
    The following sections details how key usage limits for AEAD
