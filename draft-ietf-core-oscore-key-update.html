@@ -1345,7 +1345,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
       <h2 id="name-aead-key-usage-limits-in-os">
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-aead-key-usage-limits-in-os" class="section-name selfRef">AEAD Key Usage Limits in OSCORE</a>
       </h2>
-<p id="section-2-1">The following section details how key usage limits for AEAD algorithms must be considered when using OSCORE. The following discusses specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context; and updates to the OSCORE message processing.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-1">This section details how key usage limits for AEAD algorithms must be considered when using OSCORE. In particular, it discusses specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context; and updates to the OSCORE message processing.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <div id="problem-overview">
 <section id="section-2.1">
         <h3 id="name-problem-overview">
@@ -1538,7 +1538,7 @@ This procedure does not provide forward secrecy.<a href="#section-3-4.2.3" class
         <li class="normal" id="section-3-4.3">
           <p id="section-3-4.3.1">The two peers can run the EDHOC key exchange protocol based on Diffie-Hellman and defined in <span>[<a href="#I-D.ietf-lake-edhoc" class="xref">I-D.ietf-lake-edhoc</a>]</span>, in order to establish a pseudo-random key in a mutually authenticated way.<a href="#section-3-4.3.1" class="pilcrow">¶</a></p>
 <p id="section-3-4.3.2">
-Then, the two peers can use the established pseudo-random key to derive external application keys. This allows the two peers to securely derive especially an OSCORE Master Secret and an OSCORE Master Salt, from which an OSCORE Security Context can be established.<a href="#section-3-4.3.2" class="pilcrow">¶</a></p>
+Then, the two peers can use the established pseudo-random key to derive external application keys. This allows the two peers to securely derive an OSCORE Master Secret and an OSCORE Master Salt, from which an OSCORE Security Context can be established.<a href="#section-3-4.3.2" class="pilcrow">¶</a></p>
 <p id="section-3-4.3.3">
 This procedure additionally provides forward secrecy.<a href="#section-3-4.3.3" class="pilcrow">¶</a></p>
 </li>
@@ -1552,7 +1552,8 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
       </ul>
 <p id="section-3-5">Manually updating the OSCORE Security Context at the two peers should be a last resort option, and it might often be not practical or feasible.<a href="#section-3-5" class="pilcrow">¶</a></p>
 <p id="section-3-6">Even when any of the alternatives mentioned above is available, it is RECOMMENDED that two OSCORE peers update their Security Context by using the KUDOS procedure as defined in <a href="#sec-rekeying-method" class="xref">Section 4</a> of this document.<a href="#section-3-6" class="pilcrow">¶</a></p>
-<p id="section-3-7">It is RECOMMENDED that the peer initiating the key update procedure starts it before reaching the 'q' or 'v' limits. Otherwise, the AEAD keys possibly to be used during the key update procedure itself may already be or become invalid before the rekeying is completed, which may prevent a successful establishment of the new OSCORE Security Context altogether.<a href="#section-3-7" class="pilcrow">¶</a></p>
+<p id="section-3-7">It is RECOMMENDED that the peer initiating the key update procedure starts it before reaching the 'q' or 'v' limits. Otherwise, the AEAD keys to be possibly used during the key update procedure itself may already be or become invalid before the rekeying is completed, which may prevent a successful establishment of the new OSCORE Security Context altogether.<a href="#section-3-7" class="pilcrow">¶</a></p>
+<p id="section-3-8">In addition to approaching the 'q' or 'v' limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration, as per the 'exp' parameter defined in <a href="#common-context" class="xref">Section 2.2.1</a>; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.<a href="#section-3-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-rekeying-method">
