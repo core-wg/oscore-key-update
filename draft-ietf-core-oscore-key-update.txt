@@ -533,7 +533,7 @@ Table of Contents
       KUDOS execution.  Specifically the encoding of 'x' is as follows:
 
       -  The four least significant bits encode the length of the
-         'nonce' minus 1, as an integer.
+         'nonce' in bytes minus 1, as an integer.
 
       -  The fifth least significant bit is the "No Forward Secrecy" 'p'
          bit, see Section 4.4.2.  The sender peer indicates its wish to
@@ -873,23 +873,74 @@ Verify with CTX_NEW  |                    |
    order to derive a temporary Security Context CTX_1.  Then, the client
    sends an OSCORE request to the server, protected with the Security
    Context CTX_1.  In particular, the request has the 'd' flag bit set
-   to 1, specifies N1 as 'nonce' (see Section 4.1).  Upon receiving the
-   OSCORE request, the server retrieves the value N1 from the 'nonce' of
-   the request, the value X1 from the 'x' byte of the OSCORE option, and
-   uses the nonce N = N1 and X = X1 together with the old Security
-   Context CTX_OLD, in order to derive the temporary Security Context
-   CTX_1.  Then, the server verifies the request by using the Security
-   Context CTX_1.
+   to 1, specifies N1 as 'nonce' (see Section 4.1).
+
+   An example of this nonce processing on the client with values for N1
+   and X1 is presented in Figure 6.
+
+   N1 and X1 expressed a raw values
+   N1 = 0x018a278f7faab55a
+   X1 = 0x80
+
+   updateCtx() is called with
+   N = 0x018a278f7faab55a
+   X = 0x80
+
+   In updateCtx() N_cbor and X_cbor are built as CBOR encoded byte strings
+   N_cbor = 0x48018a278f7faab55a (h'018a278f7faab55a')
+   X_cbor = 0x4180               (h'80')
+
+   Finally X_N is built from N_cbor and X_cbor
+   X_N = 0x4b418048018A278F7FAAB55A (h'4180 48018a278f7faab55a')
+
+      Figure 6: Example of nonce processing for KUDOS message 1
+
+   Upon receiving the OSCORE request, the server retrieves the value N1
+   from the 'nonce' of the request, the value X1 from the 'x' byte of
+   the OSCORE option, and uses the nonce N = N1 and X = X1 together with
+   the old Security Context CTX_OLD, in order to derive the temporary
+   Security Context CTX_1.  Then, the server verifies the request by
+   using the Security Context CTX_1.
 
    After that, the server generates a random value N2, and uses the
    nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security
    Context CTX_OLD, in order to derive the new Security Context CTX_NEW.
    Then, the server sends an OSCORE response to the client, protected
    with the new Security Context CTX_NEW.  In particular, the response
-   has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.  Upon
-   receiving the OSCORE response, the client retrieves the value N2 from
-   the 'nonce' of the response, and the value X2 from the 'x' byte of
-   the OSCORE option.  Since the client has received a response to an
+   has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.
+
+   An example of this nonce processing on the server with values for N1,
+   X1, N2 and X2 is presented in Figure 7.
+
+   N1, X1, N2 and X2 expressed a raw values
+   N1 = 0x018a278f7faab55a
+   X1 = 0x80
+   N2 = 0x25a8991cd700ac01
+   X2 = 0x80
+
+   N1, X1, N2, and X2 as CBOR encoded byte strings
+   N1 = 0x48018A278F7FAAB55A
+   X1 = 0x4180
+   N2 = 0x4825a8991cd700ac01
+   X2 = 0x4180
+
+   N and X are built
+   N = 0x48018A278F7FAAB55A4825a8991cd700ac01
+   X = 0x41804180
+
+   In updateCtx() N_cbor and X_cbor are built as CBOR encoded byte strings
+   N_cbor = 0x5248018A278F7FAAB55A4825A8991CD700AC01
+   X_cbor = 0x4441804180
+
+   Finally X_N is built from N_cbor and X_cbor
+   X_N = 0x581844418041805248018A278F7FAAB55A4825A8991CD700AC01
+   (h'4441804180 5248018A278F7FAAB55A4825A8991CD700AC01')
+
+      Figure 7: Example of nonce processing for KUDOS message 2
+
+   Upon receiving the OSCORE response, the client retrieves the value N2
+   from the 'nonce' of the response, and the value X2 from the 'x' byte
+   of the OSCORE option.  Since the client has received a response to an
    OSCORE request it made with the 'd' flag bit set to 1, the client
    uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old
    Security Context CTX_OLD, in order to derive the new Security Context
@@ -940,7 +991,7 @@ Verify with CTX_NEW  |                    |
 
 4.3.2.  Server-Initiated Key Update
 
-   Figure 6 shows the KUDOS workflow with the server acting as
+   Figure 8 shows the KUDOS workflow with the server acting as
    initiator.
 
                    Client               Server
@@ -992,7 +1043,7 @@ Verify with CTX_NEW  |                    |
 Discard CTX_OLD      |                    |
                      |                    |
 
-              Figure 6: Server-Initiated KUDOS Workflow
+              Figure 8: Server-Initiated KUDOS Workflow
 
    First, the client sends a normal OSCORE request to the server,
    protected with the old Security Context CTX_OLD and with the 'd' flag
@@ -1052,7 +1103,7 @@ Discard CTX_OLD      |                    |
 
 4.3.2.1.  Avoiding In-Transit Requests During a Key Update
 
-   Before sending the KUDOS message Request #2 in Figure 6, the client
+   Before sending the KUDOS message Request #2 in Figure 8, the client
    MUST ensure that it has no ouststanding interactions with the server
    (see Section 4.7 of [RFC7252]), with the exception of ongoing
    observations [RFC7641] with that server.
@@ -1079,7 +1130,7 @@ Discard CTX_OLD      |                    |
 
    *  The server needs to execute KUDOS, which, due to the previous
       point, can only be performed in its server-initiated version as
-      per Figure 6.  That is, the server has to wait for an incoming non
+      per Figure 8.  That is, the server has to wait for an incoming non
       KUDOS request, in order to initiate KUDOS by replying with the
       first KUDOS message as a response.
 
@@ -1554,7 +1605,7 @@ Discard CTX_OLD      |                    |
 5.1.  The Recipient-ID Option
 
    The Recipient ID Option defined in this section has the properties
-   summarized in Figure 7, which extends Table 4 of [RFC7252].  That is,
+   summarized in Figure 9, which extends Table 4 of [RFC7252].  That is,
    the option is elective, safe to forward, part of the cache key and
    non repeatable.
 
@@ -1567,7 +1618,7 @@ Discard CTX_OLD      |                    |
     +------+---+---+---+---+--------------+--------+--------+---------+
              C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
 
-                     Figure 7: The Recipient-ID Option.
+                     Figure 9: The Recipient-ID Option.
 
    This document particularly defines how this option is used in
    messages protected with OSCORE.  That is, when the option is included
@@ -1580,7 +1631,7 @@ Discard CTX_OLD      |                    |
 
 5.1.1.  Client-Initiated OSCORE IDs Update
 
-   Figure 8 shows the stand-alone OSCORE IDs update workflow, with the
+   Figure 10 shows the stand-alone OSCORE IDs update workflow, with the
    client acting as initiator.
 
    On each peer, SID and RID denote the OSCORE Sender ID and Recipient
@@ -1663,13 +1714,13 @@ Discard CTX_OLD      |                    |
                    |                                   | CTX_A
                    |                                   |
 
-           Figure 8: Client-Initiated OSCORE IDs Update Workflow
+           Figure 10: Client-Initiated OSCORE IDs Update Workflow
 
    [TODO: discuss the example]
 
 5.1.2.  Server-Initiated OSCORE IDs Update
 
-   Figure 9 shows the stand-alone OSCORE IDs update workflow, with the
+   Figure 11 shows the stand-alone OSCORE IDs update workflow, with the
    server acting as initiator.
 
    On each peer, SID and RID denote the OSCORE Sender ID and Recipient
@@ -1788,7 +1839,7 @@ Discard CTX_OLD      |                    |
                    | }                                 |
                    |                                   |
 
-           Figure 9: Server-Initiated OSCORE IDs Update Workflow
+           Figure 11: Server-Initiated OSCORE IDs Update Workflow
 
    [TODO: discuss the example]
 
@@ -1988,12 +2039,12 @@ Appendix A.  Detailed considerations for AEAD_AES_128_CCM_8
 
    For the AEAD_AES_128_CCM_8 algorithm when used as AEAD Algorithm for
    OSCORE, larger IA and CA values are achieved, depending on the value
-   of 'q', 'v' and 'l'.  Figure 10 shows the resulting IA and CA
+   of 'q', 'v' and 'l'.  Figure 12 shows the resulting IA and CA
    probabilities enjoyed by AEAD_AES_128_CCM_8, when taking different
    values of 'q', 'v' and 'l' as input to the formulas defined in
    [I-D.irtf-cfrg-aead-limits].
 
-   As shown in Figure 10, it is especially possible to achieve the
+   As shown in Figure 12, it is especially possible to achieve the
    lowest IA = 2^-50 and a good CA = 2^-70 by considering the largest
    possible value of the (q, v, l) triplet equal to (2^20, 2^10, 2^8),
    while still keeping a good security level.  Note that the value of
@@ -2030,7 +2081,7 @@ Appendix A.  Detailed considerations for AEAD_AES_128_CCM_8
         | q=2^10, v=2^10, l=2^6 | 2^-54          | 2^-94          |
         +-----------------------+----------------+----------------+
 
-      Figure 10: Probabilities for AEAD_AES_128_CCM_8 based on chosen
+      Figure 12: Probabilities for AEAD_AES_128_CCM_8 based on chosen
                              q, v and l values.
 
 Appendix B.  Estimation of 'count_q'
