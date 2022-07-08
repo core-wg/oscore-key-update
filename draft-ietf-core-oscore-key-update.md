@@ -108,6 +108,10 @@ Readers are expected to be familiar with the terms and concepts related to the C
 
 This document additionally defines the following terminology.
 
+* Initiator: the peer starting the KUDOS execution, by sending the first KUDOS message.
+
+* Responder: the peer that receives the first KUDOS message in a KUDOS execution.
+
 * FS mode: the KUDOS execution mode that achieves forward secrecy (see {{ssec-update-function}}).
 
 * No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see {{no-fs-mode}}).
@@ -283,7 +287,7 @@ KUDOS relies on the support function updateCtx() defined in {{ssec-update-functi
 
 * KUDOS can be initiated by either peer. In particular, the client or the server may start KUDOS by sending the first rekeying message.
 
-* The new OSCORE Security Context enjoys forward secrecy.
+* The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see {{no-fs-mode}}).
 
 * The same ID Context value used in the old OSCORE Security Context is preserved in the new Security Context. Furthermore, the ID Context value never changes throughout the KUDOS execution.
 
@@ -293,31 +297,29 @@ KUDOS relies on the support function updateCtx() defined in {{ssec-update-functi
 
 ## Extensions to the OSCORE Option # {#ssec-oscore-option-extensions}
 
-In order to support the message exchange for establishing a new OSCORE Security Context as defined in {{ssec-derive-ctx}}, this document extends the use of the OSCORE option originally defined in {{RFC8613}} as follows.
+In order to support the message exchange for establishing a new OSCORE Security Context as defined in {{ssec-derive-ctx}}, this document extends the use of the OSCORE Option originally defined in {{RFC8613}} as follows.
 
-* This document defines the usage of the seventh least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
+* This document defines the usage of the seventh least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
 
-   When the Extension-1 Flag is set to 1, the second byte of the OSCORE option MUST include the set of OSCORE flag bits 8-15.
+   When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the set of OSCORE flag bits 8-15.
 
-* This document defines the usage of the first least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
+* This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. This flag bit is specified in {{iana-cons-flag-bits}}.
 
-   When it is set to 1, the compressed COSE object contains an 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'nonce', and signaling bits for specific behaviour during the KUDOS execution. Specifically the encoding of 'x' is as follows:
+   When it is set to 1, the compressed COSE object contains a 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution. Specifically, the encoding of 'x' is as follows:
 
-   * The four least significant bits encode the length of the 'nonce' in bytes minus 1, as an integer.
+   * The four least significant bits encode the 'nonce' length in bytes minus 1, namely 'm'.
 
-   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also to devices that do not support its FS mode. At the same time, two devices MUST run KUDOS in FS mode if they both support it, as per {{ssec-update-function}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
+   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also for devices that do not support the FS mode. At the same time, two devices MUST run KUDOS in FS mode if they both support it, as per {{ssec-update-function}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
 
-   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}. The sender peer indicates its wish to preserve ongoing observations or not beyond the KUDOS execution, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
+   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}. The sender peer indicates its wish to preserve ongoing observations beyond the KUDOS execution or not, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
 
-   * The seventh least significant bit is reserved and SHALL be set to zero.
-
-   * The eight least significant bit is reserved for future use and SHALL be set to zero.
+   * The seventh and eight least significant bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
 
    Hereafter, this document refers to a message where the 'd' flag is set to 0 as "non KUDOS (request/response) message", and to a message where the 'd' flag is set to 1 as "KUDOS (request/response) message".
 
-* The second-to-eighth least significant bits in the second byte of the OSCORE option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
+* The second-to-eighth least significant bits in the second byte of the OSCORE Option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
 
-{{fig-oscore-option}} shows the OSCORE option value including also 'nonce'.
+{{fig-oscore-option}} shows the OSCORE Option value including also 'nonce'.
 
 ~~~~~~~~~~~
  0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
@@ -325,42 +327,47 @@ In order to support the message exchange for establishing a new OSCORE Security 
 |0|1|0|h|k|  n  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | d | Partial IV (if any) |
 +-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
 
- <- 1 byte -> <----- s bytes ------> <- 1 byte -> <----- x bytes ---->
+
+ <- 1 byte -> <----- s bytes ------> <- 1 byte -> <--- m + 1 bytes --->
 +------------+----------------------+---------------------------------+
 | s (if any) | kid context (if any) | x (if any) | nonce (if any)     |
 +------------+----------------------+------------+--------------------+
-
-+------------------+
-| kid (if any) ... |
-+------------------+
+                                   /              \____
+                                  /                    |
+                                 /   0 1 2 3 4 5 6 7   |
++------------------+             |  +-+-+-+-+-+-+-+-+  |
+| kid (if any) ... |             |  |0|0|b|p|   m   |  |
++------------------+             |  +-+-+-+-+-+-+-+-+  |
 ~~~~~~~~~~~
-{: #fig-oscore-option title="The OSCORE option value, including 'nonce'" artwork-align="center"}
+{: #fig-oscore-option title="The OSCORE Option value, including 'nonce'" artwork-align="center"}
 
 ## Function for Security Context Update # {#ssec-update-function}
 
-The updateCtx() function shown in {{function-update}} takes as input a nonce N, the 'x' parameter of the OSCORE option (signaling bits and length of the 'nonce') as X, as well as an OSCORE Security Context CTX\_IN, and returns as output a new OSCORE Security Context CTX\_OUT.
+The updateCtx() function shown in {{function-update}} takes as input three parameters X, N and CTX\_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-derive-ctx-client-init}}), while CTX\_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX\_OUT.
 
-As a first step, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT, according to one of the two following methods. The used method depends on how the two peers established their original Security Context, i.e., the Security Context that they shared before performing KUDOS with one another for the first time.
+As a first step, the updateCtx() function builds the two CBOR byte strings X\_cbor and N\_cbor, with value the input parameter X and N, respectively. Then, it builds the CBOR byte string X\_N, with value the byte concatenation of X\_cbor and N\_cbor.
 
-* If the original Security Context was established by running the EDHOC protocol {{I-D.ietf-lake-edhoc}}, the following applies.
+After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT. Specifically, the updateCtx() function uses one of the two following methods, depending on how the two peers established their original Security Context, i.e., the Security Context that they shared before performing KUDOS with one another for the first time.
 
-   First, the EDHOC keys PRK_out and PRK_exporter shared by the two peers is updated using the EDHOC-KeyUpdate() function defined in {{Section 4.4 of I-D.ietf-lake-edhoc}}, which takes the nonce N as input.
+* METHOD 1 - If the original Security Context was established by running the EDHOC protocol {{I-D.ietf-lake-edhoc}}, the following applies.
 
-   After that, the EDHOC-Exporter() function defined in {{Section 4.3 of I-D.ietf-lake-edhoc}} is used to derive the new values for the Master Secret and Master Salt, consistently with what is defined in {{Section A.2 of I-D.ietf-lake-edhoc}}. In particular, the context parameter provided as second argument to the EDHOC-Exporter() function is the empty CBOR byte string (0x40) {{RFC8949}}, which is denoted as h''.
+   First, the EDHOC key PRK\_out shared by the two peers is updated, by invoking the EDHOC-KeyUpdate() function defined in {{Section 4.2.2 of I-D.ietf-lake-edhoc}}, providing X\_N as input. Then, the EDHOC key PRK\_exporter is updated as defined in {{Section 4.2.1 of I-D.ietf-lake-edhoc}} and leveraging the new PRK\_out derived above.
+
+   After that, the EDHOC-Exporter() function defined in {{Section 4.2.1 of I-D.ietf-lake-edhoc}} is used to derive the new values for the Master Secret and Master Salt, consistently with what is defined in {{Section A.1 of I-D.ietf-lake-edhoc}}. In particular, the context parameter provided as second argument to the EDHOC-Exporter() function is the empty CBOR byte string (0x40) {{RFC8949}}, which is denoted as h''.
 
    Note that, compared to the compliance requirements in {{Section 7 of I-D.ietf-lake-edhoc}}, a peer MUST support the EDHOC-KeyUpdate() function, in case it establishes an original Security Context through the EDHOC protocol and intends to perform KUDOS.
 
-* If the original Security Context was established through other means than the EDHOC protocol, the new Master Secret is derived through an HKDF-Expand() step, which takes as input N, X, as well as the Master Secret value from the Security Context CTX\_IN. Instead, the new Master Salt takes N as value.
-
-The X parameter, the whole byte 'x' following 'kid context' (if any), is used as input in the derivation of the new OSCORE Security Contexts during the procedure. This is because the 'x' byte encodes both the length of 'nonce', but also contains signaling bits which are fundamental to integrity-protect.
+* METHOD 2 - If the original Security Context was established through other means than the EDHOC protocol, the new Master Secret is derived through an HKDF-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N and the length of the Master Secret. Instead, the new Master Salt takes N as value.
 
 In either case, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
 
 After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX\_OUT as per {{Section 3.2 of RFC8613}}. Any other parameter required for the derivation takes the same value as in the Security Context CTX\_IN. Finally, the function returns the newly derived Security Context CTX\_OUT.
 
-\[ NOTE:
+Since the updateCtx() function also takes X as input, the derivation of CTX\_OUT also considers as input the information from the 'x' field transported in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that, if successfully completed, a KUDOS execution occurs as intended by the two peers.
 
-Note that in the case a peer has lost its EDHOC session it may be unable to utilize the EDHOC-KeyUpdate for deriving a new Security Context. In such case yet another bit in the X1 and X2 bytes can be utilized for signaling to the other peer how the new Security Context should be derived, that is relying on the EDHOC-KeyUpdate or using HKDF-Expand. Furthermore, currently the updateCtx function is defined as a single function, both able to generate a new context with EDHOC-KeyUpdate or HKDF-Expand. An alternative design would be to split this functionality into two separate functions. Or, alternatively keep updateCtx() and create two additional functions to be called from within updateCtx(). This would allow calling the appropriate function depending on the desired functionality. Such a design can be more convenient as the X input does not have to be parsed inside updateCtx, rather the parsing can happen beforehand and the correct function called.
+\[
+
+NOTE: In the case its EDHOC session has become invalid, a peer is unable to utilize the first method based on the EDHOC-KeyUpdate() function. In such a case, rather than running the EDHOC protocol again, it is preferable to fall back for the second method based on HKDF-Expand(). In order for the peer to signal the need for such a fall back, the seventh least significant bit in the 'x' byte of the OSCORE Option can be used. This may further justify a possible restructuring of the pseudocode, as two distincts updateCtx() functions implementing one method each.
 
 \]
 
@@ -376,28 +383,31 @@ updateCtx(X, N, CTX_IN) {
   X_N = bstr .cbor (X_cbor | N_cbor) // CBOR bstr wrapping of above
 
   oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
-  oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
 
   if <the original Security Context was established through EDHOC> {
+    // METHOD 1
+    // "hash_length" is the output size in bytes of the used EDHOC
+    // hash algorithm, while h'' is the empty CBOR byte string (0x40)
 
+    // Update the EDHOC key PRK_out
     EDHOC-KeyUpdate(X_N)
-    // This results in updating the key PRK_out of the
-    // EDHOC session, i.e., PRK_out = EDHOC-KDF(PRK_out, 11,
-    // N, hash_length)
-    // It also results in updating the key PRK_exporter, i.e.,
-    // PRK_exporter = EDHOC-KDF(PRK_out, 10, h'', hash_length)
+
+    // Update the EDHOC key PRK_exporter using the new PRK_out
+    PRK_exporter = EDHOC-KDF(PRK_out, 10, h'', hash_length)
 
     MSECRET_NEW = EDHOC-Exporter(0, h'', oscore_key_length)
-
       = EDHOC-KDF(PRK_exporter, 0, h'', oscore_key_length)
 
+    oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
 
     MSALT_NEW = EDHOC-Exporter(1, h'', oscore_salt_length)
-
       = EDHOC-KDF(PRK_exporter, 1, h'', oscore_salt_length)
 
   }
   else {
+    // METHOD 2
+
+    Label = "key update"
 
     MSECRET_NEW = HKDF-Expand-Label(CTX_IN.MasterSecret, Label,
                                     X_N, oscore_key_length)
@@ -428,13 +438,13 @@ struct {
 
 This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
 
-In particular, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the values of the 'x' byte specified in the OSCORE option of the first and second KUDOS message, respectively. These values are used by the peers as input to the updateCtx() function in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
-
-When starting KUDOS the initiator determines if it wants to preserve observations. In such case, the "Preserve Observations" 'b' bit in the message is set to 1 (see {{ssec-oscore-option-extensions}}). Only if the equivalent bit from the responder is set to 1 observatons are preserved (see {{preserving-observe}}). Note that this may be exploited as a general method for terminating multiple ongoing observations. That is, a client wishing to terminate all its ongoing observations can execute the KUDOS procedure and indicate to NOT keep ongoing observations. Thus, all its observations will be terminated after the KUDOS execution has finished. Note that in this scenario the client may in fact not be interested primarily in running KUDOS to update the key material but rather specifically for terminating observations. This solution may be cheaper than explicitly sending observaton cancellation requests for all ongoing observations.
+In particular, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
 Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages.
 
-Also, that peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}.
+Also, that peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}. More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
+
+Note that, even though that peer had no real reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see {{Section 3.6 of RFC7641}}).
 
 Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
@@ -442,24 +452,15 @@ KUDOS can be started by the client or the server, as defined in {{ssec-derive-ct
 
 * The initiator always offers the fresh value N1.
 * The responder always offers the fresh value N2
-* The initiator and responder encodes the 'x' byte with the length of 'nonce' and signaling bits
 * The responder is always the first one deriving the new OSCORE Security Context CTX\_NEW.
-* The initiator is always the first one achieving key confirmation, hence able to safely discard the old OSCORE Security Context CTX\_OLD.
+* The initiator is always the first one achieving key confirmation, hence the first one able to safely discard the old OSCORE Security Context CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
 The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
 
-In the following sections 'b(c,d)' denotes the byte concatenation of two elements. The first element is the CBOR byte string with value 'c'. The second element is the CBOR byte string with value 'd'. That is, b(c,d) = bstr .cbor c \| bstr .cbor d, where \| denotes byte concatenation.
-
-<!-- Add example with real values, and for updateCtx processing -->
-
-<!--
-TEXT OBSOLETED BY SAFER HANDLING IN LATER SECTIONS
-
-A client must be ready to receive a non KUDOS response protected with keying material different than that used to protect the corresponding non KUDOS request. This is the case if KUDOS is run between the transmission of a non KUDOS request and the transmission of the corresponding non KUDOS response.
--->
+In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
 ### Client-Initiated Key Update {#ssec-derive-ctx-client-init}
 
@@ -467,114 +468,115 @@ A client must be ready to receive a non KUDOS response protected with keying mat
 
 ~~~~~~~~~~~
                    Client               Server
-                (initiator)          (responder)
-                     |                    |
-Generate N1          |                    |
-                     |                    |
-CTX_1 =              |                    |
-  updateCtx(X1, N1,  |                    |
-            CTX_OLD) |                    |
-                     |                    |
-                     |     Request #1     |
-Protect with CTX_1   |------------------->|
-                     | OSCORE Option:     | CTX_1 =
-                     |   ...              |  updateCtx(X1, N1,
-                     |   d flag: 1        |            CTX_OLD)
-                     |   X1               |
-                     |   Nonce: N1        | Verify with CTX_1
-                     |   ...              |
-                     |                    | Generate N2
-                     |                    |
-                     |                    | CTX_NEW =
-                     |                    |  updateCtx(b(X1,X2), b(N1,N2),
-                     |                    |            CTX_OLD)
-                     |                    |
-                     |     Response #1    |
-                     |<-------------------| Protect with CTX_NEW
-CTX_NEW =            | OSCORE Option:     |
- updateCtx(b(X1,X2), |   ...              |
-           b(N1,N2), |                    |
-           CTX_OLD)  |   d flag: 1        |
-                     |   X2               |
-Verify with CTX_NEW  |   Nonce: N2        |
-                     |   ...              |
-Discard CTX_OLD      |                    |
-                     |                    |
+                   (initiator)          (responder)
+                        |                    |
+Generate N1             |                    |
+                        |                    |
+CTX_1 =                 |                    |
+  updateCtx(X1, N1,     |                    |
+            CTX_OLD)    |                    |
+                        |                    |
+                        |     Request #1     |
+Protect with CTX_1      |------------------->|
+                        | OSCORE Option:     | CTX_1 =
+                        |   ...              |  updateCtx(X1, N1,
+                        |   d flag: 1        |            CTX_OLD)
+                        |   X1               |
+                        |   Nonce: N1        | Verify with CTX_1
+                        |   ...              |
+                        |                    | Generate N2
+                        |                    |
+                        |                    | CTX_NEW =
+                        |                    |  updateCtx(Comb(X1,X2),
+                        |                    |            Comb(N1,N2),
+                        |                    |            CTX_OLD)
+                        |                    |
+                        |     Response #1    |
+                        |<-------------------| Protect with CTX_NEW
+CTX_NEW =               | OSCORE Option:     |
+ updateCtx(Comb(X1,X2), |   ...              |
+           Comb(N1,N2), |                    |
+              CTX_OLD)  |   d flag: 1        |
+                        |   X2               |
+Verify with CTX_NEW     |   Nonce: N2        |
+                        |   ...              |
+Discard CTX_OLD         |                    |
+                        |                    |
 
 // The actual key update process ends here.
 // The two peers can use the new Security Context CTX_NEW.
 
-                     |                    |
-                     |     Request #2     |
-Protect with CTX_NEW |------------------->|
-                     |                    | Verify with CTX_NEW
-                     |                    |
-                     |                    | Discard CTX_OLD
-                     |                    |
-                     |     Response #2    |
-                     |<-------------------| Protect with CTX_NEW
-Verify with CTX_NEW  |                    |
-                     |                    |
+                        |                    |
+                        |     Request #2     |
+Protect with CTX_NEW    |------------------->|
+                        |                    | Verify with CTX_NEW
+                        |                    |
+                        |                    | Discard CTX_OLD
+                        |                    |
+                        |     Response #2    |
+                        |<-------------------| Protect with CTX_NEW
+Verify with CTX_NEW     |                    |
+                        |                    |
 ~~~~~~~~~~~
 {: #fig-message-exchange-client-init title="Client-Initiated KUDOS Workflow" artwork-align="center"}
 
-First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}).
+First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}).
 
-An example of this nonce processing on the client with values for N1 and X1 is presented in {{fig-kudos-nonce-mess-one}}.
+Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the server verifies the request by using the Security Context CTX\_1.
+
+{{fig-kudos-x-n-example-mess-one}} shows an example of how the two peers compute X and N provided as input to the updateCtx() function, and how they compute X\_N within the updateCtx() function, when deriving CTX\_1 (see {{ssec-update-function}}).
 
 ~~~~~~~~~~~~~~~~~~~~~~~
-   N1 and X1 expressed a raw values
-   N1 = 0x018a278f7faab55a
+   X1 and N1 expressed a raw values
    X1 = 0x80
+   N1 = 0x018a278f7faab55a
 
    updateCtx() is called with
-   N = 0x018a278f7faab55a
    X = 0x80
+   N = 0x018a278f7faab55a
 
-   In updateCtx() N_cbor and X_cbor are built as CBOR encoded byte strings
-   N_cbor = 0x48018a278f7faab55a (h'018a278f7faab55a')
+   In updateCtx(), X_cbor and N_cbor are built as CBOR byte strings
    X_cbor = 0x4180               (h'80')
+   N_cbor = 0x48018a278f7faab55a (h'018a278f7faab55a')
 
-   Finally X_N is built from N_cbor and X_cbor
-   X_N = 0x4b418048018A278F7FAAB55A (h'4180 48018a278f7faab55a')
+   In updateCtx(), X_N is built from N_cbor and X_cbor
+   X_N = 0x4b418048018a278f7faab55a (h'418048018a278f7faab55a')
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-nonce-mess-one title="Example of nonce processing for KUDOS message 1"}
+{: #fig-kudos-x-n-example-mess-one title="Example of X, N and X\_N computing for the first KUDOS message"}
 
-Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' of the request, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the server verifies the request by using the Security Context CTX\_1.
+After that, the server generates a random value N2, and uses N = Comb(N1, N2) and X = Comb(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.
 
-After that, the server generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.
-
-
-An example of this nonce processing on the server with values for N1, X1, N2 and X2 is presented in {{fig-kudos-nonce-mess-two}}.
+An example of this nonce processing on the server with values for N1, X1, N2 and X2 is presented in {{fig-kudos-x-n-example-mess-two}}.
 
 ~~~~~~~~~~~~~~~~~~~~~~~
-   N1, X1, N2 and X2 expressed a raw values
-   N1 = 0x018a278f7faab55a
+   X1, X2, N1 and N2 expressed a raw values
    X1 = 0x80
-   N2 = 0x25a8991cd700ac01
    X2 = 0x80
+   N1 = 0x018a278f7faab55a
+   N2 = 0x25a8991cd700ac01
 
-   N1, X1, N2, and X2 as CBOR encoded byte strings
-   N1 = 0x48018A278F7FAAB55A
-   X1 = 0x4180
-   N2 = 0x4825a8991cd700ac01
-   X2 = 0x4180
+   X1, X2, N1 and N2 as CBOR byte strings
+   X1 = 0x4180 (h'80')
+   X2 = 0x4180 (h'80')
+   N1 = 0x48018a278f7Faab55a (h'018a278f7Faab55a')
+   N2 = 0x4825a8991cd700ac01 (h'25a8991cd700ac01')
 
-   N and X are built
-   N = 0x48018A278F7FAAB55A4825a8991cd700ac01
+   updateCtx() is called with
    X = 0x41804180
+   N = 0x48018a278f7faab55a4825a8991cd700ac01
 
-   In updateCtx() N_cbor and X_cbor are built as CBOR encoded byte strings
-   N_cbor = 0x5248018A278F7FAAB55A4825A8991CD700AC01
-   X_cbor = 0x4441804180
+   In updateCtx(), X_cbor and N_cbor are built as CBOR byte strings
+   X_cbor = 0x4441804180 (h'41804180')
+   N_cbor = 0x5248018a278f7faab55a4825a8991cd700ac01
+            (h'48018a278f7faab55a4825a8991cd700ac01')
 
-   Finally X_N is built from N_cbor and X_cbor
-   X_N = 0x581844418041805248018A278F7FAAB55A4825A8991CD700AC01
-   (h'4441804180 5248018A278F7FAAB55A4825A8991CD700AC01')
+   In updateCtx(), X_N is built from N_cbor and X_cbor
+   X_N = 0x581844418041805248018a278f7Faab55a4825a8991cd700ac01
+         (h'44418041805248018a278f7faab55a4825a8991cd700ac01')
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-nonce-mess-two title="Example of nonce processing for KUDOS message 2"}
+{: #fig-kudos-x-n-example-mess-two title="Example of X, N and X\_N computing for the second KUDOS message"}
 
-Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' of the response, and the value X2 from the 'x' byte of the OSCORE option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
+Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the response, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
 After that, the client can send a new OSCORE request protected with the new Security Context CTX\_NEW. When successfully verifying the request using the Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
 
@@ -592,80 +594,77 @@ If there are any, the client MUST NOT initiate the KUDOS execution, before eithe
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW to cryptographically match with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
 
-<!--
-TEXT OBSOLETED BY SAFER HANDLING ABOVE
-
-As mentioned in {{ssec-derive-ctx}}, a client must be ready to receive a non KUDOS response protected with keying material different than that used to protect the corresponding non KUDOS request. When running the client-initiated version of KUDOS as per {{fig-message-exchange-client-init}}, this can happen if the client uses NSTART > 1 (see {{Section 4.7 of RFC7252}}), and the client has outstanding interactions with the server (see {{Section 4.7 of RFC7252}}) when sending the first KUDOS message.
-
-\[NOTE: Another case would be where the client has an observation already ongoing at the server when KUDOS starts. However, this assumes that it is possible to safely preserve observations across a key update, which is not the case at the moment although under consideration.\]
--->
-
 ### Server-Initiated Key Update {#ssec-derive-ctx-server-init}
 
 {{fig-message-exchange-server-init}} shows the KUDOS workflow with the server acting as initiator.
 
 ~~~~~~~~~~~
-                   Client               Server
-                (responder)          (initiator)
-                     |                    |
-                     |     Request #1     |
-Protect with CTX_OLD |------------------->|
-                     |                    | Verify with CTX_OLD
-                     |                    |
-                     |                    | Generate N1
-                     |                    |
-                     |                    | CTX_1 =
-                     |                    |  updateCtx(X1, N1,
-                     |                    |            CTX_OLD)
-                     |                    |
-                     |     Response #1    |
-                     |<-------------------| Protect with CTX_1
-CTX_1 =              | OSCORE Option:     |
-  updateCtx(X1, N1,  |   ...              |
-            CTX_OLD) |   d flag: 1        |
-                     |   X1               |
-Verify with CTX_1    |   Nonce: N1        |
-                     |   ...              |
-Generate N2          |                    |
-                     |                    |
-CTX_NEW =            |                    |
- updateCtx(b(X1,X2), |                    |
-           b(N1,N2   |                    |
-           CTX_OLD)  |                    |
-                     |                    |
-                     |     Request #2     |
-Protect with CTX_NEW |------------------->|
-                     | OSCORE Option:     | CTX_NEW =
-                     |   ...              |  updateCtx(b(X1,X2), b(N1,N2),
-                     |   d flag: 1        |            CTX_OLD)
-                     |   X2               |
-                     |   Nonce: N1|N2     | Verify with CTX_NEW
-                     |   ...              |
-                     |                    | Discard CTX_OLD
-                     |                    |
+                      Client               Server
+                   (responder)          (initiator)
+                        |                    |
+                        |     Request #1     |
+Protect with CTX_OLD    |------------------->|
+                        |                    | Verify with CTX_OLD
+                        |                    |
+                        |                    | Generate N1
+                        |                    |
+                        |                    | CTX_1 =
+                        |                    |  updateCtx(X1, N1,
+                        |                    |            CTX_OLD)
+                        |                    |
+                        |     Response #1    |
+                        |<-------------------| Protect with CTX_1
+CTX_1 =                 | OSCORE Option:     |
+  updateCtx(X1, N1,     |   ...              |
+            CTX_OLD)    |   d flag: 1        |
+                        |   X1               |
+Verify with CTX_1       |   Nonce: N1        |
+                        |   ...              |
+Generate N2             |                    |
+                        |                    |
+CTX_NEW =               |                    |
+ updateCtx(Comb(X1,X2), |                    |
+           Comb(N1,N2   |                    |
+              CTX_OLD)  |                    |
+                        |                    |
+                        |     Request #2     |
+Protect with CTX_NEW    |------------------->|
+                        | OSCORE Option:     | CTX_NEW =
+                        |   ...              |  updateCtx(Comb(X1,X2),
+                        |                    |            Comb(N1,N2),
+                        |   d flag: 1        |            CTX_OLD)
+                        |   X2               |
+                        |   Nonce: N1|N2     | Verify with CTX_NEW
+                        |   ...              |
+                        |                    | Discard CTX_OLD
+                        |                    |
 
 // The actual key update process ends here.
 // The two peers can use the new Security Context CTX_NEW.
 
-                     |     Response #2    |
-                     |<-------------------| Protect with CTX_NEW
-Verify with CTX_NEW  |                    |
-                     |                    |
-Discard CTX_OLD      |                    |
-                     |                    |
+                        |     Response #2    |
+                        |<-------------------| Protect with CTX_NEW
+Verify with CTX_NEW     |                    |
+                        |                    |
+Discard CTX_OLD         |                    |
+                        |                    |
 
 ~~~~~~~~~~~
 {: #fig-message-exchange-server-init title="Server-Initiated KUDOS Workflow" artwork-align="center"}
 
 First, the client sends a normal OSCORE request to the server, protected with the old Security Context CTX\_OLD and with the 'd' flag bit set to 0.
 
-Upon receiving the OSCORE request and after having verified it with the old Security Context CTX\_OLD as usual, the server generates a random value N1 and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the server sends an OSCORE response to the client, protected with the Security Context CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}).
+Upon receiving the OSCORE request and after having verified it with the old Security Context CTX\_OLD as usual, the server generates a random value N1 and provides the updateCtx() function with the input N = N1, X = X1 and the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
-Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' of the response, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the client verifies the response by using the Security Context CTX\_1.
+Then, the server sends an OSCORE response to the client, protected with the Security Context CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}).
 
-After that, the client generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the client sends an OSCORE request to the server, protected with the new Security Context CTX\_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N1 \| N2 as 'nonce'.
+Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the response, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the client verifies the response by using the Security Context CTX\_1.
 
-Upon receiving the OSCORE request, the server retrieves the value N1 \| N2 from the request and the value X2 from the 'x' byte of the OSCORE option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 \| N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1. If the verification succeeds, the server uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the server verifies the request by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
+After that, the client generates a random value N2, and provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the client sends an OSCORE request to the server, protected with the new Security Context CTX\_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N1 \| N2 as 'nonce'.
+
+Upon receiving the OSCORE request, the server retrieves the value N1 \| N2 from the request and the value X2 from the 'x' byte of the OSCORE Option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 \| N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1.
+
+If the verification succeeds, the server provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the server verifies the request by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
 After that, the server can send an OSCORE response protected with the new Security Context CTX\_NEW. When successfully verifying the response using the Security Context CTX\_NEW, the client deletes the old Security Context CTX\_OLD.
 
@@ -680,12 +679,6 @@ Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-ini
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW to cryptographically match with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
-
-<!--
-TEXT OBSOLETED BY THE SAFER HANDLING ABOVE
-
-As mentioned in {{ssec-derive-ctx}}, a client must be ready to receive a non KUDOS response protected with keying material different than that used to protect the corresponding non KUDOS request. When running the server-initiated version of KUDOS as per {{fig-message-exchange-server-init}}, this can happen if the client uses NSTART > 1 (see {{Section 4.7 of RFC7252}}), and one of the non KUDOS requests results in the server initiating KUDOS (i.e., yielding the first KUDOS message as response). In such a case, the other non KUDOS requests representing oustanding interactions with the server (see {{Section 4.7 of RFC7252}}) would be replied to later on, once the server has finished executing KUDOS (i.e., when the server receives the second KUDOS message, successfully verifies it, and derives the new OSCORE Security Context CTX\_NEW).
--->
 
 #### Preventing Deadlock Situations
 
@@ -765,9 +758,9 @@ Building on the above, after having experienced a reboot, a peer A checks whethe
 
 ### Signaling of FS Mode or Non-FS Mode # {#no-fs-signaling}
 
-The signaling method that two peers use to agree on whether to run KUDOS in FS or non-FS mode is a signaling bit in the 'x' byte of the OSCORE option. Specifically, the bit "No Forward Secrecy", 'p', is set to 1 by the sender peer to indicate that it wishes to run KUDOS in no-FS mode, or to 0 if it wishes to run KUDOS in FS mode (see {{ssec-oscore-option-extensions}}).
+The signaling method that two peers use to agree on whether to run KUDOS in FS or non-FS mode is a signaling bit in the 'x' byte of the OSCORE Option. Specifically, the bit "No Forward Secrecy", 'p', is set to 1 by the sender peer to indicate that it wishes to run KUDOS in no-FS mode, or to 0 if it wishes to run KUDOS in FS mode (see {{ssec-oscore-option-extensions}}).
 
-If the second byte of the OSCORE option containing flag bits is present and the 'd' flag is set to 0 (i.e., the message is not a KUDOS message), the bit 'p' MUST be set to 0.
+If the second byte of the OSCORE Option containing flag bits is present and the 'd' flag is set to 0 (i.e., the message is not a KUDOS message), the bit 'p' MUST be set to 0.
 
 In a KUDOS message (i.e., the 'd' bit is set to 1), the 'p' bit practically determines what OSCORE Security Context to use as CTX\_OLD during the KUDOS execution, consistently with the indicated mode.
 
@@ -833,13 +826,13 @@ This method may be of more general applicability, i.e, also in case an update of
 
 ### Management of Observations
 
-As per {{Section 3.1 of RFC7641}}, a client can register its interest in observing a resource at a server, by sending a registration request including the Observe option with value 0.
+As per {{Section 3.1 of RFC7641}}, a client can register its interest in observing a resource at a server, by sending a registration request including the Observe Option with value 0.
 
-If the server sends back a successful response also including the Observe option, hence confirming that the observation has been registered, then the server registers it as an ongoing observation.
+If the server sends back a successful response also including the Observe Option, hence confirming that the observation has been registered, then the server registers it as an ongoing observation.
 
 If the client receives back the successful response from the server, then the client likewise registers it as an ongoing observation.
 
-If, later on, the client is not interested in the observation anymore, it MUST NOT simply forget about it. Rather, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
+If, later on, the client is not interested in the observation anymore, it MUST NOT simply forget about it. Rather, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe Option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
 
 In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve across the key update, then A explicitly indicates it by using the signaling approach embedded in KUDOS and defined in {{preserving-observe-signaling}}.
 
@@ -857,7 +850,7 @@ Note that when running KUDOS the peer must determine if it wishes to preserve on
 
 ### Signaling to Preserve Observations # {#preserving-observe-signaling}
 
-When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another and are bound to the OSCORE Security Context to renew. This is signaled by using the extended OSCORE option shown in {{fig-oscore-option}} and included in a KUDOS message, specifically by setting to 1 the bit "Preserve Observations", 'b', in the 'x' byte contained in the OSCORE option (see {{ssec-oscore-option-extensions}}).
+When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another and are bound to the OSCORE Security Context to renew. This is signaled by using the extended OSCORE Option shown in {{fig-oscore-option}} and included in a KUDOS message, specifically by setting to 1 the bit "Preserve Observations", 'b', in the 'x' byte contained in the OSCORE Option (see {{ssec-oscore-option-extensions}}).
 
 ## Retention Policies # {#ssec-retention}
 
@@ -1137,7 +1130,7 @@ More precisely, a peer has experienced a loss of state if it cannot access the l
 
 Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer perform the following additional steps.
 
-* When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt ID Context).
+* When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID Option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt ID Context).
 
 * When receiving an OSCORE ID update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current triplet (Master Secret, Master Salt ID Context).
 
@@ -1170,7 +1163,7 @@ IANA is asked to enter the following option number to the "CoAP Option Numbers" 
 ~~~~~~~~~~~
 {: artwork-align="center"}
 
-The number suggested to IANA for the Recipient-ID option is 24.
+The number suggested to IANA for the Recipient-ID Option is 24.
 
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
@@ -1255,21 +1248,23 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -01 to -02 ## {#sec-01-02}
 
+* Extended terminology.
+
 * Moved procedure for preserving observations across key updates to main body.
 
 * Moved procedure to update OSCORE Sender/Recipient IDs to main body.
 
 * Moved key update without forward secrecy section to main body.
 
-* Modifications and alignment of updateCtx() with EDHOC draft
+* Define signaling bits present in the 'x' byte.
 
-* Define signaling bits present in the 'x' byte
+* Modifications and alignment of updateCtx() with EDHOC.
 
-* Describe CBOR wrapping of involved nonces with examples
+* Describe CBOR wrapping of involved nonces with examples.
 
-* Rename 'id detail' to 'nonce'
+* Renamed 'id detail' to 'nonce'.
 
-* Additions to terminology section
+* Editorial improvements.
 
 ## Version -00 to -01 ## {#sec-00-01}
 
