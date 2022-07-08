@@ -104,9 +104,13 @@ This document updates {{RFC8613}} as follows.
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
-Readers are expected to be familiar with the terms and concepts related to the CoAP {{RFC7252}} and OSCORE {{RFC8613}} protocols.
+Readers are expected to be familiar with the terms and concepts related to the CoAP {{RFC7252}}, Observe {{RFC7641}}, CBOR {{RFC8949}}, OSCORE {{RFC8613}} and EDHOC {{I-D.ietf-lake-edhoc}}.
 
-The term "KUDOS mode" is used to denote two different modes of running KUDOS, that is preserving Forward Secrecy (FS mode) (see {{ssec-update-function}}) or not preserving Forward Secrecy (no-FS mode) (see {{no-fs-mode}}).
+This document additionally defines the following terminology.
+
+* FS mode: the KUDOS execution mode that achieves forward secrecy (see {{ssec-update-function}}).
+
+* No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see {{no-fs-mode}}).
 
 # AEAD Key Usage Limits in OSCORE
 
