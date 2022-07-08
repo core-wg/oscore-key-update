@@ -113,7 +113,8 @@ Table of Contents
    Appendix A.  Detailed considerations for AEAD_AES_128_CCM_8
    Appendix B.  Estimation of 'count_q'
    Appendix C.  Document Updates
-     C.1.  Version -00 to -01
+     C.1.  Version -01 to -02
+     C.2.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2120,7 +2121,27 @@ Appendix C.  Document Updates
 
    RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
-C.1.  Version -00 to -01
+C.1.  Version -01 to -02
+
+   *  Moved procedure for preserving observations across key updates to
+      main body.
+
+   *  Moved procedure to update OSCORE Sender/Recipient IDs to main
+      body.
+
+   *  Moved key update without forward secrecy section to main body.
+
+   *  Modifications and alignment of updateCtx() with EDHOC draft
+
+   *  Define signaling bits present in the 'x' byte
+
+   *  Describe CBOR wrapping of involved nonces with examples
+
+   *  Rename 'id detail' to 'nonce'
+
+   *  Additions to terminology section
+
+C.2.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
