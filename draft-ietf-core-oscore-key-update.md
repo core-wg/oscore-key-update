@@ -1,4 +1,6 @@
 ---
+v: 3
+
 title:  Key Update for OSCORE (KUDOS)
 abbrev: Key Update for OSCORE (KUDOS)
 docname: draft-ietf-core-oscore-key-update-latest
@@ -10,6 +12,7 @@ area: Internet
 wg: CoRE Working Group
 kw: Internet-Draft
 cat: std
+submissiontype: IETF
 updates: 8613
 
 coding: utf-8
@@ -69,6 +72,9 @@ informative:
     title: Lightweight Machine to Machine Technical Specification - Transport Bindings, Approved Version 1.2, OMA-TS-LightweightM2M_Transport-V1_2-20201110-A
     date: 2020-11
     target: http://www.openmobilealliance.org/release/LightweightM2M/V1_2-20201110-A/OMA-TS-LightweightM2M_Transport-V1_2-20201110-A.pdf
+
+entity:
+  SELF: "[RFC-XXXX]"
 
 --- abstract
 
@@ -1137,20 +1143,20 @@ Depending on the specific key update procedure used to establish a new OSCORE Se
 
 # IANA Considerations
 
-RFC Editor: Please replace "\[this document\]" with the RFC number of this document and delete this paragraph.
-
 This document has the following actions for IANA.
+
+Note to RFC Editor: Please replace all occurrences of "{{&SELF}}" with the RFC number of this specification and delete this paragraph.
 
 ## CoAP Option Numbers Registry ## {#iana-coap-options}
 
 IANA is asked to enter the following option number to the "CoAP Option Numbers" registry within the "CoRE Parameters" registry group.
 
 ~~~~~~~~~~~
-+--------+--------------+-----------------+
-| Number |     Name     |    Reference    |
-+--------+--------------+-----------------+
-|  TBD   | Recipient-ID | [this document] |
-+--------+--------------+-----------------+
++--------+--------------+------------+
+| Number |     Name     | Reference  |
++--------+--------------+------------+
+|  TBD   | Recipient-ID | [RFC-XXXX] |
++--------+--------------+------------+
 ~~~~~~~~~~~
 {: artwork-align="center"}
 
@@ -1161,19 +1167,19 @@ The number suggested to IANA for the Recipient-ID option is 24.
 IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 ~~~~~~~~~~~
-+----------+------------------+------------------------+-----------+
-| Bit      |       Name       |      Description       | Reference |
-| Position |                  |                        |           |
-+----------+------------------+------------------------+-----------+
-|    1     | Extension-1 Flag | Set to 1 if the OSCORE | [this     |
-|          |                  | Option specifies a     | document] |
-|          |                  | second byte of OSCORE  |           |
-|          |                  | flag bits              |           |
-+----------+------------------+------------------------+-----------+
-|    15    |  Nonce Flag      | Set to 1 if the        | [this     |
-|          |                  | compressed COSE object | document] |
-|          |                  | contains 'nonce'       |           |
-+----------+------------------+------------------------+-----------+
++----------+------------------+------------------------+------------+
+| Bit      |       Name       |      Description       | Reference  |
+| Position |                  |                        |            |
++----------+------------------+------------------------+------------+
+|    1     | Extension-1 Flag | Set to 1 if the OSCORE | [RFC-XXXX] |
+|          |                  | Option specifies a     |            |
+|          |                  | second byte of OSCORE  |            |
+|          |                  | flag bits              |            |
++----------+------------------+------------------------+------------+
+|    15    |  Nonce Flag      | Set to 1 if the        | [RFC-XXXX] |
+|          |                  | compressed COSE object |            |
+|          |                  | contains 'nonce'       |            |
++----------+------------------+------------------------+------------+
 ~~~~~~~~~~~
 
 --- back
@@ -1272,6 +1278,6 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 # Acknowledgments # {#acknowledgments}
 {: numbered="no"}
 
-The authors sincerely thank Christian Amsüss, John Mattsson and Göran Selander for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{John Preuß Mattsson}}} and {{{Göran Selander}}} for their feedback and comments.
 
 The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 project SIFIS-Home (Grant agreement 952652).
