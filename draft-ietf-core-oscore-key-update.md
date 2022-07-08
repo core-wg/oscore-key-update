@@ -287,7 +287,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    When it is set to 1, the compressed COSE object contains an 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'nonce', and signaling bits for specific behaviour during the KUDOS execution. Specifically the encoding of 'x' is as follows:
 
-   * The four least significant bits encode the length of the 'nonce' minus 1, as an integer.
+   * The four least significant bits encode the length of the 'nonce' in bytes minus 1, as an integer.
 
    * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also to devices that do not support its FS mode. At the same time, two devices MUST run KUDOS in FS mode if they both support it, as per {{ssec-update-function}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
 
@@ -503,11 +503,61 @@ Verify with CTX_NEW  |                    |
 {: #fig-message-exchange-client-init title="Client-Initiated KUDOS Workflow" artwork-align="center"}
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}).
-<!-- Add example with values -->
+
+An example of this nonce processing on the client with values for N1 and X1 is presented in {{fig-kudos-nonce-mess-one}}.
+
+~~~~~~~~~~~~~~~~~~~~~~~
+   N1 and X1 expressed a raw values
+   N1 = 0x018a278f7faab55a
+   X1 = 0x80
+
+   updateCtx() is called with
+   N = 0x018a278f7faab55a
+   X = 0x80
+
+   In updateCtx() N_cbor and X_cbor are built as CBOR encoded byte strings
+   N_cbor = 0x48018a278f7faab55a (h'018a278f7faab55a')
+   X_cbor = 0x4180               (h'80')
+
+   Finally X_N is built from N_cbor and X_cbor
+   X_N = 0x4b418048018A278F7FAAB55A (h'4180 48018a278f7faab55a')
+~~~~~~~~~~~~~~~~~~~~~~~
+{: #fig-kudos-nonce-mess-one title="Example of nonce processing for KUDOS message 1"}
+
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' of the request, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1. Then, the server verifies the request by using the Security Context CTX\_1.
 
 After that, the server generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.
-<!-- Add example with values -->
+
+
+An example of this nonce processing on the server with values for N1, X1, N2 and X2 is presented in {{fig-kudos-nonce-mess-two}}.
+
+~~~~~~~~~~~~~~~~~~~~~~~
+   N1, X1, N2 and X2 expressed a raw values
+   N1 = 0x018a278f7faab55a
+   X1 = 0x80
+   N2 = 0x25a8991cd700ac01
+   X2 = 0x80
+
+   N1, X1, N2, and X2 as CBOR encoded byte strings
+   N1 = 0x48018A278F7FAAB55A
+   X1 = 0x4180
+   N2 = 0x4825a8991cd700ac01
+   X2 = 0x4180
+
+   N and X are built
+   N = 0x48018A278F7FAAB55A4825a8991cd700ac01
+   X = 0x41804180
+
+   In updateCtx() N_cbor and X_cbor are built as CBOR encoded byte strings
+   N_cbor = 0x5248018A278F7FAAB55A4825A8991CD700AC01
+   X_cbor = 0x4441804180
+
+   Finally X_N is built from N_cbor and X_cbor
+   X_N = 0x581844418041805248018A278F7FAAB55A4825A8991CD700AC01
+   (h'4441804180 5248018A278F7FAAB55A4825A8991CD700AC01')
+~~~~~~~~~~~~~~~~~~~~~~~
+{: #fig-kudos-nonce-mess-two title="Example of nonce processing for KUDOS message 2"}
+
 Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' of the response, and the value X2 from the 'x' byte of the OSCORE option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
 After that, the client can send a new OSCORE request protected with the new Security Context CTX\_NEW. When successfully verifying the request using the Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
