@@ -96,7 +96,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 Readers are expected to be familiar with the terms and concepts related to the CoAP {{RFC7252}} and OSCORE {{RFC8613}} protocols.
 
-<!-- Add: KUDOS mode (FS / no-FS) -->
+The term "KUDOS mode" is used to denote two different modes of running KUDOS, that is preserving Forward Secrecy (FS mode) (see {{ssec-update-function}}) or not preserving Forward Secrecy (no-FS mode) (see {{no-fs-mode}}).
 
 # AEAD Key Usage Limits in OSCORE
 
