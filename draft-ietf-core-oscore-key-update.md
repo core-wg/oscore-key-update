@@ -1237,6 +1237,24 @@ Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the pee
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -01 to -02 ## {#sec-01-02}
+
+* Moved procedure for preserving observations across key updates to main body.
+
+* Moved procedure to update OSCORE Sender/Recipient IDs to main body.
+
+* Moved key update without forward secrecy section to main body.
+
+* Modifications and alignment of updateCtx() with EDHOC draft
+
+* Define signaling bits present in the 'x' byte
+
+* Describe CBOR wrapping of involved nonces with examples
+
+* Rename 'id detail' to 'nonce'
+
+* Additions to terminology section
+
 ## Version -00 to -01 ## {#sec-00-01}
 
 * Recommendation on limits for CCM_8. Details in Appendix.
