@@ -1031,7 +1031,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 8 January 2023</td>
+<td class="center">Expires 9 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1047,12 +1047,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-07-07" class="published">7 July 2022</time>
+<time datetime="2022-07-08" class="published">8 July 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-01-08">8 January 2023</time></dd>
+<dd class="expires"><time datetime="2023-01-09">9 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1101,7 +1101,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1573,11 +1573,11 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
 When the Extension-1 Flag is set to 1, the second byte of the OSCORE option MUST include the set of OSCORE flag bits 8-15.<a href="#section-4.1-2.1.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.2">
-            <p id="section-4.1-2.2.1">This document defines the usage of the first least significant bit "ID Detail Flag", 'd', in the second byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in <a href="#iana-cons-flag-bits" class="xref">Section 7.2</a>.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.2.1">This document defines the usage of the first least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in <a href="#iana-cons-flag-bits" class="xref">Section 7.2</a>.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.2.2">
-When it is set to 1, the compressed COSE object contains an 'id detail', to be used for the steps defined in <a href="#ssec-derive-ctx" class="xref">Section 4.3</a>. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'id detail', and signaling bits for specific behaviour during the KUDOS execution. Specifically the encoding of 'x' is as follows:<a href="#section-4.1-2.2.2" class="pilcrow">¶</a></p>
+When it is set to 1, the compressed COSE object contains an 'nonce', to be used for the steps defined in <a href="#ssec-derive-ctx" class="xref">Section 4.3</a>. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'nonce', and signaling bits for specific behaviour during the KUDOS execution. Specifically the encoding of 'x' is as follows:<a href="#section-4.1-2.2.2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.1-2.2.3.1">The four least significant bits encode the length of the 'id detail' minus 1, as an integer.<a href="#section-4.1-2.2.3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.1-2.2.3.1">The four least significant bits encode the length of the 'nonce' minus 1, as an integer.<a href="#section-4.1-2.2.3.1" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="section-4.1-2.2.3.2">The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see <a href="#no-fs-signaling" class="xref">Section 4.4.2</a>. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also to devices that do not support its FS mode. At the same time, two devices MUST run KUDOS in FS mode if they both support it, as per <a href="#ssec-update-function" class="xref">Section 4.2</a>. The execution of KUDOS in no-FS mode is defined in <a href="#no-fs-mode" class="xref">Section 4.4</a>.<a href="#section-4.1-2.2.3.2" class="pilcrow">¶</a>
 </li>
@@ -1594,7 +1594,7 @@ Hereafter, this document refers to a message where the 'd' flag is set to 0 as "
           <li class="normal" id="section-4.1-2.3">The second-to-eighth least significant bits in the second byte of the OSCORE option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="xref">RFC8613</a>]</span>.<a href="#section-4.1-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-4.1-3"><a href="#fig-oscore-option" class="xref">Figure 3</a> shows the OSCORE option value including also 'id detail'.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.1-3"><a href="#fig-oscore-option" class="xref">Figure 3</a> shows the OSCORE option value including also 'nonce'.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
 <span id="name-the-oscore-option-value-inc"></span><div id="fig-oscore-option">
 <figure id="figure-3">
           <div class="alignCenter art-text artwork" id="section-4.1-4.1">
@@ -1606,7 +1606,7 @@ Hereafter, this document refers to a message where the 'd' flag is set to 0 as "
 
  &lt;- 1 byte -&gt; &lt;----- s bytes ------&gt; &lt;- 1 byte -&gt; &lt;----- x bytes ----&gt;
 +------------+----------------------+---------------------------------+
-| s (if any) | kid context (if any) | x (if any) | id detail (if any) |
+| s (if any) | kid context (if any) | x (if any) | nonce (if any)     |
 +------------+----------------------+------------+--------------------+
 
 +------------------+
@@ -1615,7 +1615,7 @@ Hereafter, this document refers to a message where the 'd' flag is set to 0 as "
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-the-oscore-option-value-inc" class="selfRef">The OSCORE option value, including 'id detail'</a>
+<a href="#name-the-oscore-option-value-inc" class="selfRef">The OSCORE option value, including 'nonce'</a>
           </figcaption></figure>
 </div>
 </section>
@@ -1625,7 +1625,7 @@ Hereafter, this document refers to a message where the 'd' flag is set to 0 as "
         <h3 id="name-function-for-security-conte">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-function-for-security-conte" class="section-name selfRef">Function for Security Context Update</a>
         </h3>
-<p id="section-4.2-1">The updateCtx() function shown in <a href="#function-update" class="xref">Figure 4</a> takes as input a nonce N, the 'x' parameter of the OSCORE option (signaling bits and length of the 'id detail') as X, as well as an OSCORE Security Context CTX_IN, and returns as output a new OSCORE Security Context CTX_OUT.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-1">The updateCtx() function shown in <a href="#function-update" class="xref">Figure 4</a> takes as input a nonce N, the 'x' parameter of the OSCORE option (signaling bits and length of the 'nonce') as X, as well as an OSCORE Security Context CTX_IN, and returns as output a new OSCORE Security Context CTX_OUT.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">As a first step, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX_OUT, according to one of the two following methods. The used method depends on how the two peers established their original Security Context, i.e., the Security Context that they shared before performing KUDOS with one another for the first time.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-3.1">
@@ -1640,7 +1640,7 @@ Note that, compared to the compliance requirements in <span><a href="https://dat
           <li class="normal" id="section-4.2-3.2">If the original Security Context was established through other means than the EDHOC protocol, the new Master Secret is derived through an HKDF-Expand() step, which takes as input N, X, as well as the Master Secret value from the Security Context CTX_IN. Instead, the new Master Salt takes N as value.<a href="#section-4.2-3.2" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-4.2-4">The X parameter, the whole byte 'x' following 'kid context' (if any), is used as input in the derivation of the new OSCORE Security Contexts during the procedure. This is because the 'x' byte encodes both the length of 'id detail', but also contains signaling bits which are fundamental to integrity-protect.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">The X parameter, the whole byte 'x' following 'kid context' (if any), is used as input in the derivation of the new OSCORE Security Contexts during the procedure. This is because the 'x' byte encodes both the length of 'nonce', but also contains signaling bits which are fundamental to integrity-protect.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">In either case, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>) and used for computing new keying material in case of key update (see <span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.3" class="relref">Section 4.6.3</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>).<a href="#section-4.2-5" class="pilcrow">¶</a></p>
 <p id="section-4.2-6">After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX_OUT as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2" class="relref">Section 3.2</a> of [<a href="#RFC8613" class="xref">RFC8613</a>]</span>. Any other parameter required for the derivation takes the same value as in the Security Context CTX_IN. Finally, the function returns the newly derived Security Context CTX_OUT.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
 <p id="section-4.2-7">[ NOTE:<a href="#section-4.2-7" class="pilcrow">¶</a></p>
@@ -1731,7 +1731,7 @@ struct {
 </li>
           <li class="normal" id="section-4.3-8.2">The responder always offers the fresh value N2<a href="#section-4.3-8.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.3-8.3">The initiator and responder encodes the 'x' byte with the length of 'id detail' and signaling bits<a href="#section-4.3-8.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-8.3">The initiator and responder encodes the 'x' byte with the length of 'nonce' and signaling bits<a href="#section-4.3-8.3" class="pilcrow">¶</a>
 </li>
           <li class="normal" id="section-4.3-8.4">The responder is always the first one deriving the new OSCORE Security Context CTX_NEW.<a href="#section-4.3-8.4" class="pilcrow">¶</a>
 </li>
@@ -1768,7 +1768,7 @@ Protect with CTX_1   |-------------------&gt;|
                      |   ...              |  updateCtx(X1, N1,
                      |   d flag: 1        |            CTX_OLD)
                      |   X1               |
-                     |   ID Detail: N1    | Verify with CTX_1
+                     |   Nonce: N1        | Verify with CTX_1
                      |   ...              |
                      |                    | Generate N2
                      |                    |
@@ -1783,7 +1783,7 @@ CTX_NEW =            | OSCORE Option:     |
            b(N1,N2), |                    |
            CTX_OLD)  |   d flag: 1        |
                      |   X2               |
-Verify with CTX_NEW  |   ID Detail: N2    |
+Verify with CTX_NEW  |   Nonce: N2        |
                      |   ...              |
 Discard CTX_OLD      |                    |
                      |                    |
@@ -1808,12 +1808,12 @@ Verify with CTX_NEW  |                    |
 <a href="#name-client-initiated-kudos-work" class="selfRef">Client-Initiated KUDOS Workflow</a>
             </figcaption></figure>
 </div>
-<p id="section-4.3.1-3">First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive a temporary Security Context CTX_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX_1. In particular, the request has the 'd' flag bit set to 1, specifies N1 as 'id detail' (see <a href="#ssec-oscore-option-extensions" class="xref">Section 4.1</a>).
+<p id="section-4.3.1-3">First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive a temporary Security Context CTX_1. Then, the client sends an OSCORE request to the server, protected with the Security Context CTX_1. In particular, the request has the 'd' flag bit set to 1, specifies N1 as 'nonce' (see <a href="#ssec-oscore-option-extensions" class="xref">Section 4.1</a>).
 
-Upon receiving the OSCORE request, the server retrieves the value N1 from the 'id detail' of the request, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive the temporary Security Context CTX_1. Then, the server verifies the request by using the Security Context CTX_1.<a href="#section-4.3.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.1-4">After that, the server generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX_OLD, in order to derive the new Security Context CTX_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'id detail'.
+Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' of the request, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive the temporary Security Context CTX_1. Then, the server verifies the request by using the Security Context CTX_1.<a href="#section-4.3.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-4">After that, the server generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX_OLD, in order to derive the new Security Context CTX_NEW. Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.
 
-Upon receiving the OSCORE response, the client retrieves the value N2 from the 'id detail' of the response, and the value X2 from the 'x' byte of the OSCORE option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX_OLD, in order to derive the new Security Context CTX_NEW. Finally, the client verifies the response by using the Security Context CTX_NEW and deletes the old Security Context CTX_OLD.<a href="#section-4.3.1-4" class="pilcrow">¶</a></p>
+Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' of the response, and the value X2 from the 'x' byte of the OSCORE option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX_OLD, in order to derive the new Security Context CTX_NEW. Finally, the client verifies the response by using the Security Context CTX_NEW and deletes the old Security Context CTX_OLD.<a href="#section-4.3.1-4" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-5">After that, the client can send a new OSCORE request protected with the new Security Context CTX_NEW. When successfully verifying the request using the Security Context CTX_NEW, the server deletes the old Security Context CTX_OLD and can reply with an OSCORE response protected with the new Security Context CTX_NEW.<a href="#section-4.3.1-5" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-6">From then on, the two peers can protect their message exchanges by using the new Security Context CTX_NEW.<a href="#section-4.3.1-6" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-7">Note that the server achieves key confirmation only when receiving a message from the client as protected with the new Security Context CTX_NEW. If the server sends a non KUDOS request to the client protected with CTX_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete the new Security Context CTX_NEW and start a new client-initiated key update process, by taking the role of initiator as per <a href="#fig-message-exchange-client-init" class="xref">Figure 5</a>.<a href="#section-4.3.1-7" class="pilcrow">¶</a></p>
@@ -1859,7 +1859,7 @@ CTX_1 =              | OSCORE Option:     |
   updateCtx(X1, N1,  |   ...              |
             CTX_OLD) |   d flag: 1        |
                      |   X1               |
-Verify with CTX_1    |   ID Detail: N1    |
+Verify with CTX_1    |   Nonce: N1        |
                      |   ...              |
 Generate N2          |                    |
                      |                    |
@@ -1874,7 +1874,7 @@ Protect with CTX_NEW |-------------------&gt;|
                      |   ...              |  updateCtx(b(X1,X2), b(N1,N2),
                      |   d flag: 1        |            CTX_OLD)
                      |   X2               |
-                     |   ID Detail: N1|N2 | Verify with CTX_NEW
+                     |   Nonce: N1|N2     | Verify with CTX_NEW
                      |   ...              |
                      |                    | Discard CTX_OLD
                      |                    |
@@ -1896,9 +1896,9 @@ Discard CTX_OLD      |                    |
             </figcaption></figure>
 </div>
 <p id="section-4.3.2-3">First, the client sends a normal OSCORE request to the server, protected with the old Security Context CTX_OLD and with the 'd' flag bit set to 0.<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-4">Upon receiving the OSCORE request and after having verified it with the old Security Context CTX_OLD as usual, the server generates a random value N1 and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive a temporary Security Context CTX_1. Then, the server sends an OSCORE response to the client, protected with the Security Context CTX_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'id detail' (see <a href="#ssec-oscore-option-extensions" class="xref">Section 4.1</a>).<a href="#section-4.3.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-5">Upon receiving the OSCORE response, the client retrieves the value N1 from the 'id detail' of the response, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive the temporary Security Context CTX_1. Then, the client verifies the response by using the Security Context CTX_1.<a href="#section-4.3.2-5" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-6">After that, the client generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX_OLD, in order to derive the new Security Context CTX_NEW. Then, the client sends an OSCORE request to the server, protected with the new Security Context CTX_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N1 | N2 as 'id detail'.<a href="#section-4.3.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-4">Upon receiving the OSCORE request and after having verified it with the old Security Context CTX_OLD as usual, the server generates a random value N1 and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive a temporary Security Context CTX_1. Then, the server sends an OSCORE response to the client, protected with the Security Context CTX_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see <a href="#ssec-oscore-option-extensions" class="xref">Section 4.1</a>).<a href="#section-4.3.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-5">Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' of the response, the value X1 from the 'x' byte of the OSCORE option, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive the temporary Security Context CTX_1. Then, the client verifies the response by using the Security Context CTX_1.<a href="#section-4.3.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-6">After that, the client generates a random value N2, and uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX_OLD, in order to derive the new Security Context CTX_NEW. Then, the client sends an OSCORE request to the server, protected with the new Security Context CTX_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N1 | N2 as 'nonce'.<a href="#section-4.3.2-6" class="pilcrow">¶</a></p>
 <p id="section-4.3.2-7">Upon receiving the OSCORE request, the server retrieves the value N1 | N2 from the request and the value X2 from the 'x' byte of the OSCORE option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 | N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1. If the verification succeeds, the server uses the nonce N = b(N1, N2) and X = b(X1, X2) together with the old Security Context CTX_OLD, in order to derive the new Security Context CTX_NEW. Finally, the server verifies the request by using the Security Context CTX_NEW and deletes the old Security Context CTX_OLD.<a href="#section-4.3.2-7" class="pilcrow">¶</a></p>
 <p id="section-4.3.2-8">After that, the server can send an OSCORE response protected with the new Security Context CTX_NEW. When successfully verifying the response using the Security Context CTX_NEW, the client deletes the old Security Context CTX_OLD.<a href="#section-4.3.2-8" class="pilcrow">¶</a></p>
 <p id="section-4.3.2-9">From then on, the two peers can protect their message exchanges by using the new Security Context CTX_NEW.<a href="#section-4.3.2-9" class="pilcrow">¶</a></p>
@@ -2518,9 +2518,9 @@ with CTX_B  | Encrypted_Payload {               |
 |          |                  | second byte of OSCORE  |           |
 |          |                  | flag bits              |           |
 +----------+------------------+------------------------+-----------+
-|    15    |  ID Detail Flag  | Set to 1 if the        | [this     |
+|    15    |  Nonce Flag      | Set to 1 if the        | [this     |
 |          |                  | compressed COSE object | document] |
-|          |                  | contains 'id detail'   |           |
+|          |                  | contains 'nonce'       |           |
 +----------+------------------+------------------------+-----------+
 </pre><a href="#section-7.2-2" class="pilcrow">¶</a>
 </div>
