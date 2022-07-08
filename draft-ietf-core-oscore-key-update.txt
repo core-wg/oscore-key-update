@@ -649,11 +649,13 @@ Table of Contents
    HKDF-Expand.  Furthermore, currently the updateCtx function is
    defined as a single function, both able to generate a new context
    with EDHOC-KeyUpdate or HKDF-Expand.  An alternative design would be
-   to split this functionality into two separate functions.  This would
-   allow calling the appropriate function depending on the desired
-   functionality.  Such a design can be more convenient as the X input
-   does not have to be parsed inside updateCtx, rather the parsing can
-   happen beforehand and the correct function called.
+   to split this functionality into two separate functions.  Or,
+   alternatively keep updateCtx() and create two additional functions to
+   be called from within updateCtx().  This would allow calling the
+   appropriate function depending on the desired functionality.  Such a
+   design can be more convenient as the X input does not have to be
+   parsed inside updateCtx, rather the parsing can happen beforehand and
+   the correct function called.
 
    ]
 
