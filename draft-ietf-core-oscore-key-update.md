@@ -90,13 +90,15 @@ Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} provid
 
 In particular, OSCORE uses AEAD algorithms to provide confidentiality and integrity of messages exchanged between two peers. Due to known issues allowing forgery attacks against AEAD algorithms, limits should be followed on the number of times a specific key is used to perform encryption or decryption {{I-D.irtf-cfrg-aead-limits}}.
 
-Should these limits be exceeded, an adversary may break the security properties of the AEAD algorithm, such as message confidentiality and integrity, e.g. by performing a message forgery attack. The original OSCORE specification {{RFC8613}} does not consider such limits.
+The original OSCORE specification {{RFC8613}} does not consider such key usage limits. However, should they be exceeded, an adversary may break the security properties of the AEAD algorithm, such as message confidentiality and integrity, e.g., by performing a message forgery attack. Among other reasons, approaching the key usage limits requires updating the OSCORE keying material before communications can securely continue.
 
 This document updates {{RFC8613}} as follows.
 
 * It defines when a peer must stop using an OSCORE Security Context shared with another peer, due to the reached key usage limits. When this happens, the two peers have to establish a new Security Context with new keying material, in order to continue their secure communication with OSCORE.
 
 * It specifies KUDOS, a lightweight key update procedure that the two peers can use in order to update their current keying material and establish a new OSCORE Security Context. This deprecates and replaces the procedure specified in {{Section B.2 of RFC8613}}.
+
+* It specifies a method that two peers can use to update their OSCORE identifiers. This can be run as a stand-alone procedure, or instead embedded in a KUDOS execution.
 
 ## Terminology ## {#terminology}
 
