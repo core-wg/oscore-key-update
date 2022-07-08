@@ -114,7 +114,7 @@ This document additionally defines the following terminology.
 
 # AEAD Key Usage Limits in OSCORE
 
-The following section details how key usage limits for AEAD algorithms must be considered when using OSCORE. The following discusses specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context; and updates to the OSCORE message processing.
+This section details how key usage limits for AEAD algorithms must be considered when using OSCORE. In particular, it discusses specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context; and updates to the OSCORE message processing.
 
 ## Problem Overview {#problem-overview}
 
@@ -257,7 +257,7 @@ Other specifications define a number of ways to accomplish this, as summarized b
 
 * The two peers can run the EDHOC key exchange protocol based on Diffie-Hellman and defined in {{I-D.ietf-lake-edhoc}}, in order to establish a pseudo-random key in a mutually authenticated way.
 
-   Then, the two peers can use the established pseudo-random key to derive external application keys. This allows the two peers to securely derive especially an OSCORE Master Secret and an OSCORE Master Salt, from which an OSCORE Security Context can be established.
+   Then, the two peers can use the established pseudo-random key to derive external application keys. This allows the two peers to securely derive an OSCORE Master Secret and an OSCORE Master Salt, from which an OSCORE Security Context can be established.
 
    This procedure additionally provides forward secrecy.
 
@@ -271,7 +271,9 @@ Manually updating the OSCORE Security Context at the two peers should be a last 
 
 Even when any of the alternatives mentioned above is available, it is RECOMMENDED that two OSCORE peers update their Security Context by using the KUDOS procedure as defined in {{sec-rekeying-method}} of this document.
 
-It is RECOMMENDED that the peer initiating the key update procedure starts it before reaching the 'q' or 'v' limits. Otherwise, the AEAD keys possibly to be used during the key update procedure itself may already be or become invalid before the rekeying is completed, which may prevent a successful establishment of the new OSCORE Security Context altogether.
+It is RECOMMENDED that the peer initiating the key update procedure starts it before reaching the 'q' or 'v' limits. Otherwise, the AEAD keys to be possibly used during the key update procedure itself may already be or become invalid before the rekeying is completed, which may prevent a successful establishment of the new OSCORE Security Context altogether.
+
+In addition to approaching the 'q' or 'v' limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration, as per the 'exp' parameter defined in {{common-context}}; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
 
 # Key Update for OSCORE (KUDOS) # {#sec-rekeying-method}
 
