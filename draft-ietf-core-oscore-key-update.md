@@ -94,7 +94,7 @@ The original OSCORE specification {{RFC8613}} does not consider such key usage l
 
 This document updates {{RFC8613}} as follows.
 
-* It defines when a peer must stop using an OSCORE Security Context shared with another peer, due to the reached key usage limits. When this happens, the two peers have to establish a new Security Context with new keying material, in order to continue their secure communication with OSCORE.
+* It defines what steps an OSCORE peer takes to preserve the security of its communications, by stopping using the OSCORE Security Context shared with another peer when approaching the key usage limits.
 
 * It specifies KUDOS, a lightweight key update procedure that the two peers can use in order to update their current keying material and establish a new OSCORE Security Context. This deprecates and replaces the procedure specified in {{Section B.2 of RFC8613}}.
 
@@ -114,7 +114,7 @@ This document additionally defines the following terminology.
 
 # AEAD Key Usage Limits in OSCORE
 
-The following sections details how key usage limits for AEAD algorithms must be considered when using OSCORE. It covers specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context, updates to the OSCORE message processing, and existing methods for rekeying OSCORE.
+The following section details how key usage limits for AEAD algorithms must be considered when using OSCORE. The following discusses specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context; and updates to the OSCORE message processing.
 
 ## Problem Overview {#problem-overview}
 
@@ -122,19 +122,19 @@ The OSCORE security protocol {{RFC8613}} uses AEAD algorithms to provide integri
 
 When processing messages with OSCORE, each peer should follow specific limits as to the number of times it uses a specific key. This applies separately to the Sender Key used to encrypt outgoing messages, and to the Recipient Key used to decrypt and verify incoming protected messages.
 
-Exceeding these limits may allow an adversary to break the security properties of the AEAD algorithm, such as message confidentiality and integrity, e.g. by performing a message forgery attack.
+Exceeding these limits may allow an adversary to break the security properties of the AEAD algorithm, such as message confidentiality and integrity, e.g., by performing a message forgery attack.
 
 The following refers to the two parameters 'q' and 'v' introduced in {{I-D.irtf-cfrg-aead-limits}}, to use when deploying an AEAD algorithm.
 
-* 'q': this parameter has as value the number of messages protected with a specific key, i.e. the number of times the AEAD algorithm has been invoked to encrypt data with that key.
+* 'q': this parameter has as value the number of messages protected with a specific key, i.e., the number of times the AEAD algorithm has been invoked to encrypt data with that key.
 
-* 'v': this parameter has as value the number of alleged forgery attempts that have been made against a specific key, i.e. the amount of failed decryptions that has been done with the AEAD algorithm for that key.
+* 'v': this parameter has as value the number of alleged forgery attempts that have been made against a specific key, i.e., the amount of failed decryptions that have occurred with the AEAD algorithm for that key.
 
 When a peer uses OSCORE:
 
-* The key used to protect outgoing messages is its Sender Key, in its Sender Context.
+* The key used to protect outgoing messages is its Sender Key from its Sender Context.
 
-* The key used to decrypt and verify incoming messages is its Recipient Key, in its Recipient Context.
+* The key used to decrypt and verify incoming messages is its Recipient Key from its Recipient Context.
 
 Both keys are derived as part of the establishment of the OSCORE Security Context, as defined in {{Section 3.2 of RFC8613}}.
 
@@ -144,11 +144,11 @@ Therefore, in order to preserve the security of the used AEAD algorithm, OSCORE 
 
 ### Limits for 'q' and 'v' {#limits}
 
-Formulas for calculating the security levels as Integrity Advantage (IA) and Confidentiality Advantage (CA) probabilities, are presented in {{I-D.irtf-cfrg-aead-limits}}. These formulas take as input specific values for 'q' and 'v' (see section {{problem-overview}}) and for 'l', i.e., the maximum length of each message (in cipher blocks).
+Formulas for calculating the security levels, as Integrity Advantage (IA) and Confidentiality Advantage (CA) probabilities, are presented in {{I-D.irtf-cfrg-aead-limits}}. These formulas take as input specific values for 'q' and 'v' (see section {{problem-overview}}) and for 'l', i.e., the maximum length of each message (in cipher blocks).
 
-For the algorithms that can be used as AEAD Algorithm for OSCORE shows in {{algorithm-limits}}, the key property to achieve is having IA and CA values which are no larger than p = 2^-64, which will ensure a safe security level for the AEAD Algorithm. This can be entailed by using the values q = 2^20, v = 2^20, and l = 2^10, that this document recommends to use for these algorithms.
+For the algorithms shown in {{algorithm-limits}} that can be used as AEAD Algorithm for OSCORE, the key property to achieve is having IA and CA values which are no larger than p = 2^-64, which will ensure a safe security level for the AEAD Algorithm. This can be entailed by using the values q = 2^20, v = 2^20, and l = 2^10, that this document recommends to use for these algorithms.
 
-{{algorithm-limits}} shows the resulting IA and CA probabilities enjoyed by the considered algorithms, when taking the value of 'q', 'v' and 'l' above as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
+{{algorithm-limits}} also shows the resulting IA and CA probabilities enjoyed by the considered algorithms, when taking the value of 'q', 'v' and 'l' above as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
 
 ~~~~~~~~~~~
 +------------------------+----------------+----------------+
@@ -162,7 +162,7 @@ For the algorithms that can be used as AEAD Algorithm for OSCORE shows in {{algo
 ~~~~~~~~~~~
 {: #algorithm-limits title="Probabilities for algorithms based on chosen q, v and l values." artwork-align="center"}
 
-When AEAD_AES_128_CCM_8 is used as AEAD Algorithm for OSCORE, the triplet (q, v, l) considered above yields larger values of IA and CA. Hence, specifically for AEAD_AES_128_CCM_8, this document recommends using the triplet (q, v, l) = (2^20, 2^14, 2^8). This is appropriate since the resulting CA and IA values are not greater than the threshold value of 2^-50 defined in {{I-D.irtf-cfrg-aead-limits}}, and thus yields an acceptable security level. Achieving smaller values of CA and IA would require to inconveniently reduce 'q', 'v' or 'l', with no corresponding increase in terms of security. This is further elaborated in {{aead-aes-128-ccm-8-details}}.
+When AEAD_AES_128_CCM_8 is used as AEAD Algorithm for OSCORE, the triplet (q, v, l) considered above yields larger values of IA and CA. Hence, specifically for AEAD_AES_128_CCM_8, this document recommends using the triplet (q, v, l) = (2^20, 2^14, 2^8). This is appropriate, since the resulting CA and IA values are not greater than the threshold value of 2^-50 defined in {{I-D.irtf-cfrg-aead-limits}}, and thus yields an acceptable security level. Achieving smaller values of CA and IA would require to inconveniently reduce 'q', 'v' or 'l', with no corresponding increase in terms of security, as further elaborated in {{aead-aes-128-ccm-8-details}}.
 
 ~~~~~~~~~~~
 +------------------------+----------+----------+-----------+
@@ -201,7 +201,7 @@ The Sender Context is extended to include the following parameters.
 
    The value of 'limit_q' depends on the AEAD algorithm specified in the Common Context, considering the properties of that algorithm. The value of 'limit_q' is determined according to {{limits}}.
 
-Note for implementation: it is possible to avoid storing and maintaining the counter 'count_q'. Rather, an estimated value to be compared against 'limit_q' can be computed, by leveraging the Sender Sequence Number of the peer and (an estimate of) the other peer's. A possible method to achieve this is described in {{estimation-count-q}}. While this relieves peers from storing and maintaining the precise 'count_q' value, it results in overestimating the number of encryptions performed with a Sender Key. This in turn results in approaching 'limit_q' sooner and performing a key update procedure more frequently.
+Note for implementation: it is possible to avoid storing and maintaining the counter 'count_q'. Rather, an estimated value to be compared against 'limit_q' can be computed, by leveraging the Sender Sequence Number of the peer and (an estimate of) the other peer's. A possible method to achieve this is described in {{estimation-count-q}}. While this relieves peers from storing and maintaining the precise 'count_q' value, it results in overestimating the number of encryptions performed with a Sender Key. This in turn results in approaching 'limit_q' sooner and thus in performing a key update procedure more frequently.
 
 ### Recipient Context # {#recipient-context}
 
