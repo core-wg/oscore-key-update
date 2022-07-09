@@ -1929,7 +1929,7 @@ Table of Contents
    access the latest snapshot of the latest OSCORE Security Context
    CTX_OLD or the whole set of OSCORE Sender/Recipient IDs that have
    been used with the triplet (Master Secret, Master Salt, ID Context)
-   of CTX_OLD.  This can happen, for instance, after a device reboot.YYY
+   of CTX_OLD.  This can happen, for instance, after a device reboot.
 
    Furthermore, when participating in a stand-alone OSCORE IDs update
    procedure, a peer performs the following additional steps.
