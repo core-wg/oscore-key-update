@@ -313,9 +313,9 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    * The four least significant bits encode the 'nonce' length in bytes minus 1, namely 'm'.
 
-   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit, see {{no-fs-signaling}}. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also for peers that cannot support the FS mode. At the same time, two peers MUST run KUDOS in FS mode if they are both capable to, as per {{ssec-derive-ctx}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
+   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also for peers that cannot support the FS mode. At the same time, two peers MUST run KUDOS in FS mode if they are both capable to, as per {{ssec-derive-ctx}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
 
-   * The sixth least significant bit is the "Preserve Observations" 'b' bit, see {{preserving-observe-signaling}}. The sender peer indicates its wish to preserve ongoing observations beyond the KUDOS execution or not, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
+   * The sixth least significant bit is the "Preserve Observations" 'b' bit. The sender peer indicates its wish to preserve ongoing observations beyond the KUDOS execution or not, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
 
    * The seventh and eight least significant bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
 
@@ -371,7 +371,7 @@ Since the updateCtx() function also takes X as input, the derivation of CTX\_OUT
 
 \[
 
-NOTE: In the case its EDHOC session has become invalid, a peer is unable to utilize the first method based on the EDHOC-KeyUpdate() function. In such a case, rather than running the EDHOC protocol again, it is preferable to fall back for the second method based on HKDF-Expand(). In order for the peer to signal the need for such a fall back, the seventh least significant bit in the 'x' byte of the OSCORE Option can be used. This may further justify a possible restructuring of the pseudocode, as two distincts updateCtx() functions implementing one method each.
+NOTE: In the case its EDHOC session has become invalid, a peer is unable to utilize the first method based on the EDHOC-KeyUpdate() function. In such a case, rather than running the EDHOC protocol again, it is preferable to fall back for the second method based on HKDF-Expand(). In order for the peer to signal the need for such a fall back, the seventh least significant bit in the 'x' byte of the OSCORE Option can be used. This may further justify a possible restructuring of the pseudocode, as two distinct updateCtx() functions implementing one method each.
 
 \]
 
@@ -535,7 +535,7 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
 {{fig-kudos-x-n-example-mess-one}} shows an example of how the two peers compute X and N provided as input to the updateCtx() function, and how they compute X\_N within the updateCtx() function, when deriving CTX\_1 (see {{ssec-update-function}}).
 
 ~~~~~~~~~~~~~~~~~~~~~~~
-   X1 and N1 expressed a raw values
+   X1 and N1 expressed as raw values
    X1 = 0x80
    N1 = 0x018a278f7faab55a
 
@@ -566,7 +566,7 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
    X1, X2, N1 and N2 as CBOR byte strings
    X1 = 0x4180 (h'80')
    X2 = 0x4180 (h'80')
-   N1 = 0x48018a278f7Faab55a (h'018a278f7Faab55a')
+   N1 = 0x48018a278f7faab55a (h'018a278f7faab55a')
    N2 = 0x4825a8991cd700ac01 (h'25a8991cd700ac01')
 
    updateCtx() is called with
@@ -579,7 +579,7 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
             (h'48018a278f7faab55a4825a8991cd700ac01')
 
    In updateCtx(), X_N is built from N_cbor and X_cbor
-   X_N = 0x581844418041805248018a278f7Faab55a4825a8991cd700ac01
+   X_N = 0x581844418041805248018a278f7faab55a4825a8991cd700ac01
          (h'44418041805248018a278f7faab55a4825a8991cd700ac01')
 ~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-kudos-x-n-example-mess-two title="Example of X, N and X\_N computing for the second KUDOS message"}
@@ -596,7 +596,7 @@ Also note that, if both peers reboot simultaneously, they will run the client-in
 
 #### Avoiding In-Transit Requests During a Key Update
 
-Before sending the KUDOS message Request #1 in {{fig-message-exchange-client-init}}, the client MUST ensure that it has no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
+Before sending the KUDOS message Request #1 in {{fig-message-exchange-client-init}}, the client MUST ensure that it has no outstanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
 
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
@@ -682,7 +682,7 @@ Note that the client achieves key confirmation only when receiving a message fro
 
 #### Avoiding In-Transit Requests During a Key Update
 
-Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-init}}, the client MUST ensure that it has no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
+Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-init}}, the client MUST ensure that it has no outstanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
 
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
@@ -714,7 +714,7 @@ If either or both peers are not able to write in non-volatile memory the OSCORE 
 
 ### Handling and Use of Keying Material
 
-In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatible memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time.
+In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time.
 
 The following terms are used to refer to OSCORE keying material.
 
@@ -770,7 +770,7 @@ During a KUDOS execution, the two peers agree on whether to perform the key upda
 
 * If the 'p' bit is set to 0 (FS mode), the updateCtx() function used to derive CTX\_1 or CTX\_NEW considers as input CTX\_OLD the current OSCORE Security Context shared with the other peer as is. In particular, CTX\_OLD includes Latest Master Secret as OSCORE Master Secret and Latest Master Salt as OSCORE Master Salt.
 
-* If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX\_1 or CTX\_NEW considers as input CTX\_OLD the current OSCORE Security Context shared with the other peer, with the following difference: Bootstrap Master Secret is used as OSCORE Master Secret and Boostrap Master Salt is used as OSCORE Master Salt. That is, every execution of KUDOS in no-FS mode between these two peers considers the same pair (Master Secret, Master Salt) in the OSCORE Security Context CTX\_OLD provided as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.
+* If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX\_1 or CTX\_NEW considers as input CTX\_OLD the current OSCORE Security Context shared with the other peer, with the following difference: Bootstrap Master Secret is used as OSCORE Master Secret and Bootstrap Master Salt is used as OSCORE Master Salt. That is, every execution of KUDOS in no-FS mode between these two peers considers the same pair (Master Secret, Master Salt) in the OSCORE Security Context CTX\_OLD provided as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.
 
 A peer determines to run KUDOS either in FS or no-FS mode with another peer as follows.
 
@@ -812,47 +812,51 @@ In either case, both KUDOS peers delete the OSCORE Security Contexts CTX\_1 and 
 
 ## Preserving Observations across Key Updates # {#preserving-observe}
 
-As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old Security Context CTX\_OLD.
+As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old OSCORE Security Context CTX\_OLD.
 
-This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, after having completed a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, i.e., an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
+This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, beyond the completion of a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, i.e., against an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
 
-The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-signaling}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, as defined in {{ssec-derive-ctx}}.
+The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-management}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, just as defined in {{ssec-derive-ctx}}.
 
-The following sections specify the different actions taken by the peer depending on whether it acts as client or server in an ongoing observation, as well as the signaling method used in KUDOS to agree on preserving the ongoing observations beyond the current KUDOS execution.
+\[
 
-\[ NOTE:
-
-This method may be of more general applicability, i.e, also in case an update of the OSCORE keying material is performed through a different means than KUDOS.
+NOTE: While a dedicated signaling would have to be introduced, this rationale may be of more general applicability, i.e., in case an update of the OSCORE keying material is performed through a different means than KUDOS.
 
 \]
 
-### Management of Observations
+### Management of Observations {#preserving-observe-management}
 
 As per {{Section 3.1 of RFC7641}}, a client can register its interest in observing a resource at a server, by sending a registration request including the Observe Option with value 0.
 
-If the server sends back a successful response also including the Observe Option, hence confirming that the observation has been registered, then the server registers it as an ongoing observation.
+If the server registers the observation as ongoing, the server sends back a successful response also including the Observe Option, hence confirming that an entry has been successfully added for that client.
 
-If the client receives back the successful response from the server, then the client likewise registers it as an ongoing observation.
+If the client receives back the successful response above from the server, then the client also registers the observation as ongoing.
 
-If, later on, the client is not interested in the observation anymore, it MUST NOT simply forget about it. Rather, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe Option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
+In case the client can ever consider to preserve ongoing observations beyond a key update as defined below, then the client MUST NOT simply forget about an ongoing observation if not interested in it anymore. Instead, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe Option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
 
-In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve across the key update, then A explicitly indicates it by using the signaling approach embedded in KUDOS and defined in {{preserving-observe-signaling}}.
+In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve beyond the key update, then A can explicitly indicate its interest to do so. To this end, the peer A sets to 1 the bit "Preserve Observations", 'b', in the 'x' byte of the OSCORE Option value (see {{ssec-oscore-option-extensions}}), in the KUDOS message it sends to the other peer B.
 
-After having successfully completed the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), if the other peer B has confirmed its interest in preserving those ongoing observations also by using the signaling approach defined in {{preserving-observe-signaling}}, then the peer A performs the following actions. This sequence of steps will allow the peer to "jump" over Partial IVs (PIVs) that are occupied and in use for ongoing observations.
+If a peer acting as responder receives the first KUDOS message with the bit 'b' set to 0, then the peer MUST set to 0 the bit 'b' in the KUDOS message it sends as follow-up, regardless of its wish to preserve ongoing observations with the other peer.
 
-1. For each still ongoing observation X that A has with B, such that A acts as client in X:
+If a peer acting as initiator has sent the first KUDOS message with the bit 'b' set to 0, the peer MUST ignore the bit 'b' in the follow-up KUDOS message that it receives from the other peer.
 
-   a. The peer A considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations with the other peer B.
+After successfully completing the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), both peers have expressed their interest in preserving their common ongoing observations if and only if the bit 'b' was set to 1 in both the exchanged KUDOS messages. In such a case, each peer X performs the following actions.
 
-   b. The peer A determines the value PIV\* as the highest OSCORE Partial IV among those considered at the previous step.
+1. The peer X considers all the still ongoing observations that it has with the other peer, such that X acts as client in those observations. If there are no such observations, the peer X takes no further actions. Otherwise, it moves to step 2.
 
-   c. In the Sender Context of the OSCORE Security Context shared with the other peer B, the peer A sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
+2. The peer X considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations determined at step 1.
 
-Note that when running KUDOS the peer must determine if it wishes to preserve ongoing observations or not. Input to this decision can be an understanding on the peer that its value for PIV\* begins to come close to the maximum possible PIV it can use. In such case it may choose to re-run KUDOS without preserving observations in order to "start over" from a fresh fully unused PIV space. In addition application specific policies can have influence on the decision to preserve observations or not.
+3. The peer X determines the value PIV\* as the highest OSCORE Partial IV value among those considered at step 2.
 
-### Signaling to Preserve Observations # {#preserving-observe-signaling}
+4. In the Sender Context of the OSCORE Security Context shared with the other peer, the peer X sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
 
-When performing KUDOS, a peer can indicate to the other peer its interest in  preserving the ongoing observations that they have with one another and are bound to the OSCORE Security Context to renew. This is signaled by using the extended OSCORE Option shown in {{fig-oscore-option}} and included in a KUDOS message, specifically by setting to 1 the bit "Preserve Observations", 'b', in the 'x' byte contained in the OSCORE Option (see {{ssec-oscore-option-extensions}}).
+As a result, each peer X will "jump" beyond the OSCORE Partial IV (PIV) values that are occupied and in use for ongoing observations with the other peer where X acts as client.
+
+Note that, each time it runs KUDOS, a peer must determine if it wishes to preserve ongoing observations with the other peer or not, before sending its KUDOS message.
+
+To this end, the peer should also assess the new value that PIV\* would take after a successful completion of KUDOS, in case ongoing observations with the other peer are going to be preserved. If the peer considers such a new value of PIV\* to be too close to the maximum possible value admitted for the OSCORE Partial IV, then the peer may choose to run KUDOS with no intention to preserve its ongoing observations with the other peer, in order to "start over" from a fresh, entirely unused PIV space.
+
+Application policies can further influence whether attempting to preserve observations beyond a key update is appropriate or not.
 
 ## Retention Policies # {#ssec-retention}
 
@@ -1130,7 +1134,7 @@ After having experienced a loss of state, a peer MUST NOT participate in a stand
 
 More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt ID Context) of CTX\_OLD. This can happen, for instance, following a device reboot.
 
-Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer perform the following additional steps.
+Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer performs the following additional steps.
 
 * When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID Option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt ID Context).
 
