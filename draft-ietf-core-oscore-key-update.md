@@ -566,7 +566,7 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
    X1, X2, N1 and N2 as CBOR byte strings
    X1 = 0x4180 (h'80')
    X2 = 0x4180 (h'80')
-   N1 = 0x48018a278f7Faab55a (h'018a278f7Faab55a')
+   N1 = 0x48018a278f7faab55a (h'018a278f7faab55a')
    N2 = 0x4825a8991cd700ac01 (h'25a8991cd700ac01')
 
    updateCtx() is called with
@@ -579,7 +579,7 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
             (h'48018a278f7faab55a4825a8991cd700ac01')
 
    In updateCtx(), X_N is built from N_cbor and X_cbor
-   X_N = 0x581844418041805248018a278f7Faab55a4825a8991cd700ac01
+   X_N = 0x581844418041805248018a278f7faab55a4825a8991cd700ac01
          (h'44418041805248018a278f7faab55a4825a8991cd700ac01')
 ~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-kudos-x-n-example-mess-two title="Example of X, N and X\_N computing for the second KUDOS message"}
