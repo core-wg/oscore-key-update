@@ -557,7 +557,7 @@ After that, the server generates a random value N2, and uses N = Comb(N1, N2) an
 An example of this nonce processing on the server with values for N1, X1, N2 and X2 is presented in {{fig-kudos-x-n-example-mess-two}}.
 
 ~~~~~~~~~~~~~~~~~~~~~~~
-   X1, X2, N1 and N2 expressed a raw values
+   X1, X2, N1 and N2 expressed as raw values
    X1 = 0x80
    X2 = 0x80
    N1 = 0x018a278f7faab55a
