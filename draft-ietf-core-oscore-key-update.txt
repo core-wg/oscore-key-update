@@ -706,7 +706,7 @@ Table of Contents
    HKDF-Expand().  In order for the peer to signal the need for such a
    fall back, the seventh least significant bit in the 'x' byte of the
    OSCORE Option can be used.  This may further justify a possible
-   restructuring of the pseudocode, as two distincts updateCtx()
+   restructuring of the pseudocode, as two distinct updateCtx()
    functions implementing one method each.
 
    ]
@@ -939,7 +939,7 @@ Table of Contents
    X_N within the updateCtx() function, when deriving CTX_1 (see
    Section 4.2).
 
-      X1 and N1 expressed a raw values
+      X1 and N1 expressed as raw values
       X1 = 0x80
       N1 = 0x018a278f7faab55a
 
@@ -967,7 +967,7 @@ Table of Contents
    An example of this nonce processing on the server with values for N1,
    X1, N2 and X2 is presented in Figure 7.
 
-      X1, X2, N1 and N2 expressed a raw values
+      X1, X2, N1 and N2 expressed as raw values
       X1 = 0x80
       X2 = 0x80
       N1 = 0x018a278f7faab55a
@@ -1030,7 +1030,7 @@ Table of Contents
 4.3.1.1.  Avoiding In-Transit Requests During a Key Update
 
    Before sending the KUDOS message Request #1 in Figure 5, the client
-   MUST ensure that it has no ouststanding interactions with the server
+   MUST ensure that it has no outstanding interactions with the server
    (see Section 4.7 of [RFC7252]), with the exception of ongoing
    observations [RFC7641] with that server.
 
@@ -1167,7 +1167,7 @@ Table of Contents
 4.3.2.1.  Avoiding In-Transit Requests During a Key Update
 
    Before sending the KUDOS message Request #2 in Figure 8, the client
-   MUST ensure that it has no ouststanding interactions with the server
+   MUST ensure that it has no outstanding interactions with the server
    (see Section 4.7 of [RFC7252]), with the exception of ongoing
    observations [RFC7641] with that server.
 
@@ -1243,7 +1243,7 @@ Table of Contents
 4.4.1.  Handling and Use of Keying Material
 
    In the following, a device is denoted as "CAPABLE" if it is able to
-   store information in non-volatible memory (e.g., on disk), beyond a
+   store information in non-volatile memory (e.g., on disk), beyond a
    one-time-only writing occurring at manufacturing or
    (re-)commissioning time.
 
@@ -1369,7 +1369,7 @@ Table of Contents
       used to derive CTX_1 or CTX_NEW considers as input CTX_OLD the
       current OSCORE Security Context shared with the other peer, with
       the following difference: Bootstrap Master Secret is used as
-      OSCORE Master Secret and Boostrap Master Salt is used as OSCORE
+      OSCORE Master Secret and Bootstrap Master Salt is used as OSCORE
       Master Salt.  That is, every execution of KUDOS in no-FS mode
       between these two peers considers the same pair (Master Secret,
       Master Salt) in the OSCORE Security Context CTX_OLD provided as
@@ -1913,7 +1913,7 @@ Table of Contents
    CTX_OLD.  This can happen, for instance, following a device reboot.
 
    Furthermore, when participating in a stand-alone OSCORE IDs update
-   procedure, a peer perform the following additional steps.
+   procedure, a peer performs the following additional steps.
 
    *  When sending an OSCORE ID update message, the peer MUST specify
       its new intended OSCORE Recipient ID as value of the Recipient-ID
