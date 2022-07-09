@@ -371,7 +371,7 @@ Since the updateCtx() function also takes X as input, the derivation of CTX\_OUT
 
 \[
 
-NOTE: In the case its EDHOC session has become invalid, a peer is unable to utilize the first method based on the EDHOC-KeyUpdate() function. In such a case, rather than running the EDHOC protocol again, it is preferable to fall back for the second method based on HKDF-Expand(). In order for the peer to signal the need for such a fall back, the seventh least significant bit in the 'x' byte of the OSCORE Option can be used. This may further justify a possible restructuring of the pseudocode, as two distincts updateCtx() functions implementing one method each.
+NOTE: In the case its EDHOC session has become invalid, a peer is unable to utilize the first method based on the EDHOC-KeyUpdate() function. In such a case, rather than running the EDHOC protocol again, it is preferable to fall back for the second method based on HKDF-Expand(). In order for the peer to signal the need for such a fall back, the seventh least significant bit in the 'x' byte of the OSCORE Option can be used. This may further justify a possible restructuring of the pseudocode, as two distinct updateCtx() functions implementing one method each.
 
 \]
 
@@ -535,7 +535,7 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
 {{fig-kudos-x-n-example-mess-one}} shows an example of how the two peers compute X and N provided as input to the updateCtx() function, and how they compute X\_N within the updateCtx() function, when deriving CTX\_1 (see {{ssec-update-function}}).
 
 ~~~~~~~~~~~~~~~~~~~~~~~
-   X1 and N1 expressed a raw values
+   X1 and N1 expressed as raw values
    X1 = 0x80
    N1 = 0x018a278f7faab55a
 
@@ -557,7 +557,7 @@ After that, the server generates a random value N2, and uses N = Comb(N1, N2) an
 An example of this nonce processing on the server with values for N1, X1, N2 and X2 is presented in {{fig-kudos-x-n-example-mess-two}}.
 
 ~~~~~~~~~~~~~~~~~~~~~~~
-   X1, X2, N1 and N2 expressed a raw values
+   X1, X2, N1 and N2 expressed as raw values
    X1 = 0x80
    X2 = 0x80
    N1 = 0x018a278f7faab55a
@@ -596,7 +596,7 @@ Also note that, if both peers reboot simultaneously, they will run the client-in
 
 #### Avoiding In-Transit Requests During a Key Update
 
-Before sending the KUDOS message Request #1 in {{fig-message-exchange-client-init}}, the client MUST ensure that it has no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
+Before sending the KUDOS message Request #1 in {{fig-message-exchange-client-init}}, the client MUST ensure that it has no outstanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
 
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
@@ -682,7 +682,7 @@ Note that the client achieves key confirmation only when receiving a message fro
 
 #### Avoiding In-Transit Requests During a Key Update
 
-Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-init}}, the client MUST ensure that it has no ouststanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
+Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-init}}, the client MUST ensure that it has no outstanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
 
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
@@ -714,7 +714,7 @@ If either or both peers are not able to write in non-volatile memory the OSCORE 
 
 ### Handling and Use of Keying Material
 
-In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatible memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time.
+In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time.
 
 The following terms are used to refer to OSCORE keying material.
 
@@ -770,7 +770,7 @@ During a KUDOS execution, the two peers agree on whether to perform the key upda
 
 * If the 'p' bit is set to 0 (FS mode), the updateCtx() function used to derive CTX\_1 or CTX\_NEW considers as input CTX\_OLD the current OSCORE Security Context shared with the other peer as is. In particular, CTX\_OLD includes Latest Master Secret as OSCORE Master Secret and Latest Master Salt as OSCORE Master Salt.
 
-* If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX\_1 or CTX\_NEW considers as input CTX\_OLD the current OSCORE Security Context shared with the other peer, with the following difference: Bootstrap Master Secret is used as OSCORE Master Secret and Boostrap Master Salt is used as OSCORE Master Salt. That is, every execution of KUDOS in no-FS mode between these two peers considers the same pair (Master Secret, Master Salt) in the OSCORE Security Context CTX\_OLD provided as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.
+* If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX\_1 or CTX\_NEW considers as input CTX\_OLD the current OSCORE Security Context shared with the other peer, with the following difference: Bootstrap Master Secret is used as OSCORE Master Secret and Bootstrap Master Salt is used as OSCORE Master Salt. That is, every execution of KUDOS in no-FS mode between these two peers considers the same pair (Master Secret, Master Salt) in the OSCORE Security Context CTX\_OLD provided as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.
 
 A peer determines to run KUDOS either in FS or no-FS mode with another peer as follows.
 
@@ -1130,7 +1130,7 @@ After having experienced a loss of state, a peer MUST NOT participate in a stand
 
 More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt ID Context) of CTX\_OLD. This can happen, for instance, following a device reboot.
 
-Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer perform the following additional steps.
+Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer performs the following additional steps.
 
 * When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID Option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt ID Context).
 
