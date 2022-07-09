@@ -518,10 +518,11 @@ Table of Contents
    updateCtx() defined in Section 4.2.
 
    The message exchange between the two peers is defined in Section 4.3,
-   with particular reference to the FS mode providing forward secrecy.
-   Building on the same message exchange, the use of the no-FS mode is
-   defined in Section 4.4.  Two peers MUST run KUDOS in FS mode if they
-   are both capable to.
+   with particular reference to the stateful FS mode providing forward
+   secrecy.  Building on the same message exchange, the possible use of
+   the stateless no-FS mode is defined in Section 4.4, as intended to
+   peers that are not able to write in non-volatile memory.  Two peers
+   MUST run KUDOS in FS mode if they are both capable to.
 
    The key update procedure fulfills the following properties.
 
