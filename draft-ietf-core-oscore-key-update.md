@@ -880,19 +880,19 @@ Since the JRC uses ID Context values as identifiers of network nodes, namely "pl
 
 # Update of OSCORE Sender/Recipient IDs # {#update-oscore-ids}
 
-This section defines an optional procedure that two peers can execute to update the OSCORE Sender/Recipient IDs that they use in their shared OSCORE Security Context.
+This section defines a procedure that two peers can perform, in order to update the OSCORE Sender/Recipient IDs that they use in their shared OSCORE Security Context.
 
-This procedure can be initiated by either peer. In particular, the client or the server may start it by sending the first OSCORE ID update message. When sending an OSCORE ID update message, a peer provides its new intended OSCORE Recipient ID to the other peer.
+This procedure can be initiated by either peer. In particular, the client or the server may start it by sending the first OSCORE IDs update message. When sending an OSCORE IDs update message, a peer provides its new intended OSCORE Recipient ID to the other peer.
 
-Furthermore, this procedure can be executed stand-alone, or rather seamlessly integrated in an execution of KUDOS (see {{sec-rekeying-method}}).
+Furthermore, this procedure can be executed stand-alone, or instead seamlessly integrated in an execution of KUDOS (see {{sec-rekeying-method}}) using its FS mode or no-FS mode (see {{no-fs-mode}}).
 
 * In the former stand-alone case, updating the OSCORE Sender/Recipient IDs effectively results in updating part of the current OSCORE Security Context.
 
-   That is, a new Sender Key, Recipient Key and Common IV are derived as defined in {{Section 3.2 of RFC8613}}. Also, the Sender Sequence Number and the replay window are re-initialized accordingly, as defined in {{Section 3.2.2 of RFC8613}}. Since the same Master Secret is preserved, forward secrecy is not achieved.
+   That is, both peers derive a new Sender Key, Recipient Key and Common IV, as defined in {{Section 3.2 of RFC8613}}. Also, both peer re-initialize the Sender Sequence Number and the replay window accordingly, as defined in {{Section 3.2.2 of RFC8613}}. Since the same Master Secret is preserved, forward secrecy is not achieved.
 
-   Finally, as defined in {{id-update-additional-actions}}, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.
+   As defined in {{id-update-additional-actions}}, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.
 
-* In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the ID update procedure.
+* In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure.
 
 \[TODO: think about the possibility of safely preserving ongoing observations following an update of OSCORE IDs alone.\]
 
@@ -959,7 +959,7 @@ with CTX_A  | Encrypted_Payload {               |
 
            // When embedded in KUDOS, this message
            // is protected using CTX_NEW, and there
-           // there cannot be application payload.
+           // cannot be application payload.
            //
            // Then, CTX_B builds on CTX_NEW by updating
            // the new Sender/Recipient IDs
@@ -998,6 +998,14 @@ with CTX_B  | OSCORE Option: ..., kid:78        | Verify
             | }                                 |
             |                                   | Discard
             |                                   | CTX_A
+            |                                   |
+            |            Response #3            |
+            |<----------------------------------| Protect
+Verify      | OSCORE Option: ...                | with CTX_B
+with CTX_B  | Encrypted_Payload {               |
+            |    ...                            |
+            |    Application Payload            |
+            | }                                 |
             |                                   |
 ~~~~~~~~~~~
 {: #fig-id-update-client-init title="Client-Initiated OSCORE IDs Update Workflow" artwork-align="center"}
@@ -1130,17 +1138,17 @@ with CTX_B  | Encrypted_Payload {               |
 
 ### Additional Actions for Stand-Alone Execution {#id-update-additional-actions}
 
-After having experienced a loss of state, a peer MUST NOT participate in a stand-alone OSCORE IDs update procedure with another peer, until having performed a full-fledged establishment/renewal of an OSCORE Security Context with the other peer (e.g., through KUDOS or EDHOC {{I-D.ietf-lake-edhoc}}).
+After having experienced a loss of state, a peer MUST NOT participate in a stand-alone OSCORE IDs update procedure with another peer, until having performed a full-fledged establishment/renewal of an OSCORE Security Context with the other peer (e.g., by running KUDOS or the EDHOC protocol {{I-D.ietf-lake-edhoc}}).
 
-More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt ID Context) of CTX\_OLD. This can happen, for instance, following a device reboot.
+More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX\_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt, ID Context) of CTX\_OLD. This can happen, for instance, after a device reboot.YYY
 
 Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer performs the following additional steps.
 
-* When sending an OSCORE ID update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID Option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt ID Context).
+* When sending an OSCORE IDs update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID Option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt, ID Context).
 
-* When receiving an OSCORE ID update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current triplet (Master Secret, Master Salt ID Context).
+* When receiving an OSCORE IDs update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current triplet (Master Secret, Master Salt, ID Context).
 
-In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt ID Context), since the latest update of OSCORE Master Secret (e.g, performed through KUDOS).
+In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt, ID Context) since the latest update of OSCORE Master Secret (e.g, performed by running KUDOS).
 
 # Security Considerations
 
