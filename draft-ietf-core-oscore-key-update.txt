@@ -1593,7 +1593,7 @@ Table of Contents
 
 4.6.  Retention Policies
 
-   Applications MAY define policies that allows a peer to also
+   Applications MAY define policies that allow a peer to also
    temporarily keep the old Security Context CTX_OLD, rather than simply
    overwriting it to become CTX_NEW.  This allows the peer to decrypt
    late, still on-the-fly incoming messages protected with CTX_OLD.
@@ -1625,7 +1625,7 @@ Table of Contents
 
    Since the JRC uses ID Context values as identifiers of network nodes,
    namely "pledge identifiers", the above implies that the JRC does not
-   have anymore to perform a mapping between a new, different ID Context
+   have to perform anymore a mapping between a new, different ID Context
    value and a certain pledge identifier (see Section 8.3.3 of
    [RFC9031]).  It follows that pledge identifiers can remain constant
    once assigned, and thus ID Context values used as pledge identifiers
