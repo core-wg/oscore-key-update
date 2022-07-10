@@ -355,9 +355,9 @@ After that, the updateCtx() function derives the new values of the Master Secret
 
 * METHOD 1 - If the original Security Context was established by running the EDHOC protocol {{I-D.ietf-lake-edhoc}}, the following applies.
 
-   First, the EDHOC key PRK\_out shared by the two peers is updated, by invoking the EDHOC-KeyUpdate() function defined in {{Section 4.2.2 of I-D.ietf-lake-edhoc}}, providing X\_N as input. Then, the EDHOC key PRK\_exporter is updated as defined in {{Section 4.2.1 of I-D.ietf-lake-edhoc}} and leveraging the new PRK\_out derived above.
+   First, the EDHOC-KeyUpdate() function defined in {{Section 4.2.2 of I-D.ietf-lake-edhoc}} is invoked. This results in deriving a new EDHOC key PRK\_out shared by the two peers, and in using it to derive a new EDHOC key PRK\_exporter, as per {{Section 4.2.1 of I-D.ietf-lake-edhoc}}.
 
-   After that, the EDHOC-Exporter() function defined in {{Section 4.2.1 of I-D.ietf-lake-edhoc}} is used to derive the new values for the Master Secret and Master Salt, consistently with what is defined in {{Section A.1 of I-D.ietf-lake-edhoc}}. In particular, the context parameter provided as second argument to the EDHOC-Exporter() function is the empty CBOR byte string (0x40) {{RFC8949}}, which is denoted as h''.
+   After that, the EDHOC-Exporter() function defined in {{Section 4.2.1 of I-D.ietf-lake-edhoc}} is used to derive the new values for the OSCORE Master Secret and Master Salt, consistently with what is defined in {{Section A.1 of I-D.ietf-lake-edhoc}}. In particular, the EDHOC-Exporter() function takes the new EDHOC key PRK\_exporter derived above as first argument, while the context parameter provided as second argument is the empty CBOR byte string (0x40) {{RFC8949}}, which is denoted as h''.
 
    Note that, compared to the compliance requirements in {{Section 7 of I-D.ietf-lake-edhoc}}, a peer MUST support the EDHOC-KeyUpdate() function, in case it establishes an original Security Context through the EDHOC protocol and intends to perform KUDOS.
 
@@ -390,17 +390,13 @@ updateCtx(X, N, CTX_IN) {
 
   if <the original Security Context was established through EDHOC> {
     // METHOD 1
-    // "hash_length" is the output size in bytes of the used EDHOC
-    // hash algorithm, while h'' is the empty CBOR byte string (0x40)
 
-    // Update the EDHOC key PRK_out
-    EDHOC-KeyUpdate(X_N)
-
-    // Update the EDHOC key PRK_exporter using the new PRK_out
-    PRK_exporter = EDHOC-KDF(PRK_out, 10, h'', hash_length)
+    // Update the EDHOC key PRK_out, and use the
+    // new one to update the EDHOC key PRK_exporter
+    (new PRK_out, new PRK_exporter) = EDHOC-KeyUpdate(X_N)
 
     MSECRET_NEW = EDHOC-Exporter(0, h'', oscore_key_length)
-      = EDHOC-KDF(PRK_exporter, 0, h'', oscore_key_length)
+      = EDHOC-KDF(new PRK_exporter, 0, h'', oscore_key_length)
 
     oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
 
