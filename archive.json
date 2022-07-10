@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-07T00:55:33.601998+00:00",
+  "timestamp": "2022-07-10T00:57:43.857190+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -65,7 +65,7 @@
       "id": "I_kwDOGfmof85E14bm",
       "title": "Add note for implementers about counting q using SSN",
       "url": "https://github.com/core-wg/oscore-key-update/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -74,8 +74,8 @@
       ],
       "body": "Add note for implementers saying that q can be counted in a possibly more efficient way. This is by keeping the count of replies sent without partial IV in count_q and then adding to that the Sender Sequence Number to get the full count_q value.",
       "createdAt": "2022-03-01T07:31:25Z",
-      "updatedAt": "2022-03-01T16:37:58Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T15:56:46Z",
+      "closedAt": "2022-07-08T15:56:46Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -97,6 +97,13 @@
           "body": "Example\r\n\r\nc->s PIV: 0, Observe (1 encryption C)\r\ns->c PIV: Notification (1 encryption S)\r\ns->c PIV: Notification (1 encryption S)\r\ns->c PIV: Notification (1 encryption S)\r\n\r\nc: 1 encryption / SSN = 1\r\ns: 3 encryption / SSN = 3\r\n\r\nq_limit = 4\r\n\r\nc->s PIV: 1 - (1 encryption C)\r\ns->c PIV: - (1 encryption S)\r\n\r\nc: 2 encryption / SSN = 2\r\ns: 4 encryption / SSN = 3\r\n\r\n\r\nc->s PIV: 2 - (1 encryption C)\r\ns->c PIV: - (1 encryption S) // The server is already acting wrong here\r\n\r\nc: 3 encryption / SSN = 3\r\ns: 5 encryption / SSN = 3\r\n\r\n\r\nc->s PIV: 3 - (1 encryption C) // The client would stop after this\r\ns->c PIV: - (1 encryption S)\r\n\r\nc: 4 encryption / SSN = 4\r\ns: 6 encryption / SSN = 3\r\n\r\n---\r\n\r\nA possible optimization can work as follows.\r\n\r\nPro: no need to keep an explicit count_q.\r\nCon: pessimistic overestimation, staling the keys earlier than needed\r\n\r\nAt any point in time, an endpoint has made *at most* ENC = (SSN + SSN*) encryptions, where:\r\n* SSN is its own Sender Sequence Number.\r\n* SSN* is the other endpoint's Sender Sequence Number. That is, SSN* is an overestimation of the responses without Partial IV that this endpoint has sent.\r\n-\r\nBefore performing an encryption, an endpoint stops and invalidates the Security Context if (SSN + X) > limit_q , where SSN is the Sender Sequence Number of this endpoint, and X is determined as follows:\r\n\r\n* if this endpoint is producing an outgoing response, X is the Partial IV in the request it is responding to.\r\n    * Note that X < SSN* always holds.\r\n* if this endpoint is producing an outgoing request, X is the highest Partial IV value marked as received in its Replay Window, or (REPLAY_WINDOW_SIZE - 1) if it has received no messages yet from the other endpoint.\r\n    * That is, X is the highest Partial IV seen from the other point, i.e. its highest seen Sender Sequence Number, and again X < SSN* always holds.",
           "createdAt": "2022-03-01T16:37:58Z",
           "updatedAt": "2022-03-01T16:37:58Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This should be what is covered in _Appendix B. Estimation of 'count_q'_",
+          "createdAt": "2022-07-08T15:56:46Z",
+          "updatedAt": "2022-07-08T15:56:46Z"
         }
       ]
     },
@@ -547,7 +554,7 @@
       ],
       "body": "It would be good to specify recommendations for the minimum length of R1 and R2. Similarly to how OSCORE does it in:\r\nhttps://datatracker.ietf.org/doc/html/rfc8613#page-72",
       "createdAt": "2022-03-01T07:42:22Z",
-      "updatedAt": "2022-03-01T07:42:27Z",
+      "updatedAt": "2022-07-08T16:02:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -556,6 +563,13 @@
           "body": "Comment by Christian during CoRE interim on October 13:\r\n\r\n> Might be good, but some devices may keep it shorter if sure of no reuse. Similar to what raised in the Echo-Request-Tag document.\r\n\r\nSo we can allow smaller values (if they can make sure it's safe) to not lock out embedded implementations.",
           "createdAt": "2022-03-01T07:42:27Z",
           "updatedAt": "2022-03-01T07:42:27Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We have a brief mention of minimum lenghts:\r\n_The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long._",
+          "createdAt": "2022-07-08T16:02:18Z",
+          "updatedAt": "2022-07-08T16:02:18Z"
         }
       ]
     },
@@ -573,7 +587,7 @@
       ],
       "body": "The content related to the limits should be updated to reflect the changes to the CFRG draft:\r\n\r\nhttps://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-03\r\n\r\nFor instance the definition/description of 'l' has changed.",
       "createdAt": "2022-03-01T07:42:49Z",
-      "updatedAt": "2022-03-01T07:55:49Z",
+      "updatedAt": "2022-07-08T16:01:09Z",
       "closedAt": null,
       "comments": [
         {
@@ -603,6 +617,13 @@
           "body": "Calculate IA and CA based on CFRG table.",
           "createdAt": "2022-03-01T07:43:06Z",
           "updatedAt": "2022-03-01T07:43:06Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Should be fine now?",
+          "createdAt": "2022-07-08T16:01:08Z",
+          "updatedAt": "2022-07-08T16:01:08Z"
         }
       ]
     },
@@ -717,7 +738,7 @@
       "id": "I_kwDOGfmof85E160b",
       "title": "Add mode without PFS (to retain stateless operations)",
       "url": "https://github.com/core-wg/oscore-key-update/issues/21",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -726,8 +747,8 @@
       ],
       "body": "See\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/core/EL0yHxQrP2DQwHxo6ojnQedvFbY/",
       "createdAt": "2022-03-01T07:45:37Z",
-      "updatedAt": "2022-03-01T16:30:47Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T15:55:00Z",
+      "closedAt": "2022-07-08T15:55:00Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -735,6 +756,13 @@
           "body": "The original version of KUDOS ensures PFS. This requires that:\r\n- The Master Secret and Master Salt are updated, and keys derived from the \"original\" ones are not used anymore;\r\n- The new Master Secret and Master Salt are stored on disk (non-volatile) memory, for possible retrieval after rebooting;\r\n- The two KUDOS peers are able to perform a stateful procedure.\r\n\r\nNew concepts:\r\n- Bootstrap Master Secret and Bootstrap Master Salt\r\n    - If provisioned they are stored on disk, and they are never changed by the device.\r\n\r\n- Latest Master Secret and Latest Master Salt\r\n    - It can be dynamically updated by the device; it's lost upon reboot unless stored on disk (which is recommended if possible to do).\r\n\r\nNote that:\r\n- A device can have none of the pairs above, only one or both.\r\n- A device that has neither of the above pairs, cannot run KUDOS.\r\n- A device that has only one of the above pairs can try to run KUDOS, but that can fail due to the other peer (see below).\r\n\r\nThe original version of KUDOS is problematic for some devices that can afford only a single writing in persistent memory when a Bootstrap Master Secret and a Bootstrap Master Salt are provided (e.g., at manufacturing), but no more after that. These devices cannot perform a stateful key update procedure which practically prevents ensuring PFS.\r\n\r\nWhat follows enables an alternative execution of KUDOS, which sacrifices PFS but allows devices to perform a stateless key update, i.e., without writing on disk (like possible in OSCORE Appendix B.2).\r\n\r\nCAPABLE = A device capable of writing to disk (non-volatile memory).\r\n\r\nAs a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:\r\n- should be stored on disk if the device is CAPABLE;\r\n- must always be stored in volatile memory for practical use with OSCORE\r\n\r\nThis is independent of how exactly such Master Secret and Master Salt have been obtained. An exception to the above is the temporary KUDOS context CTX_1 which must not be stored on disk.\r\n\r\nThis enables the following sequence of event in case of rebooting:\r\n\r\n- Check if you have a (Latest Master Secret, and Latest Master Salt) on disk\r\n\r\n- If yes:\r\n    - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD\r\n    - Note: no need to restore this pair on disk in this case!\r\n    - Run KUDOS as initiator\r\n\r\n- If no, check if you have a (Bootstrap Master Secret, and Bootstrap Master Salt) on disk\r\n\r\n    - If yes:\r\n        - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD\r\n        - If CAPABLE, (Bootstrap Master Secret, and Bootstrap Master Salt) is stored on disk as (Latest Master Secret, and Latest Master Salt)\r\n        - Run KUDOS as initiator\r\n\r\n    - If no, use other ways to establish a first OSCORE context CTX_OLD\r\n\r\n\r\nProposed extensions:\r\n- In the OSCORE option of a KUDOS message, in the second byte of flag bits, one more bit 'p' is used. The bit must be set to 0 when using the original version of KUDOS. The bit must be set to 0 if the second byte of flag bits is present but the 'd' flag is set to 0 (the message is not a KUDOS message).\r\n- In a KUDOS message (i.e., the 'd' bit is set to 1), the 'p' bit indicates what material to use for CTX_OLD as the second argument of updateCtx():\r\n    - If the 'p' bit is set to 0, KUDOS is run in PFS mode. That is, the current Security Context CTX_OLD is used and the goal is to preserve PFS. In order to use this mode of KUDOS, a device must be CAPABLE.\r\n    - If the 'p' bit is set to 1, KUDOS is run in no-PFS mode, meaning that PFS is sacrificed because a stateful execution is not possible. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Bootstrap Master Secret, and Master Salt = Bootstrap Master Salt. This means that every execution of KUDOS between these peers will always consider this same Secret/Salt pair.\r\n        - In order to use this mode of KUDOS a peer must have Bootstrap Master Secret and Bootstrap Master Salt.\r\n\r\nIf a device is non CAPABLE, it MUST NOT run KUDOS in PFS mode and MUST run KUDOS in non-PFS mode.\r\n\r\nIf a device is CAPABLE, it SHOULD run KUDOS in this PFS mode as initiator and SHOULD NOT run KUDOS in no-PFS mode as initiator. An exception to this is a follow-up with a responder peer that has made evident to not support this mode. Note that such a CAPABLE device is able to store also this piece of information, so that it can take following executions of KUDOS with this peer with the 'p' bit set to 1, including after a possible reboot.\r\n\r\nNote: If a peer A has learned that the other peer B in fact does support running KUDOS in PFS-mode it should never run KUDOS with that peer B in non-PFS mode (meaning if the other peer B initiates KUDOS with p = 1 it should be rejected). If A is a capable device, it MUST store this information on disk, hence preventing malevolent downgrading to no-PFS mode is case of simultaneous rebooting where B is non capable.\r\n\r\nNote: If both peers reboot simultanously, the client initated variant of KUDOS would end up being run.\r\n\r\nIf able to run KUDOS as specified in the 'p' flag by the initiator, the responder MUST comply and do so. Otherwise:\r\n\r\n* If the responder is the server,\r\n \r\n    * It MUST return a protected 5.03 error response to Request nr.  (protected with CTX_NEW as usual), where the diagnostic payload should explain what has happened. The 'p' bit in the OSCORE option of this response MUST be set to 1. When receiving this, if 'p' was 0 in the first Request nr. , the client learns that the server can run only the no-PFS mode and MAY try again, setting the 'p' bit to 1 in the new Request nr. .\r\n\r\n* If the responder is the client,\r\n\r\n   * After receiving Response nr. , the client sends a Request nr. 2 protected with CTX_NEW as usual. The 'p' bit in the OSCORE option of this response MUST be set to 1. Then, the client can abort the current KUDOS execution, and deletes both CTX_1 and CTX_NEW.\r\n\r\n   * After receiving the Request nr. 2 above (i.e, having the 'p' bit set to 1 as a follow-up to Response nr.  having the 'p' bit set to 0), the server aborts the KUDOS execution, deletes both CTX_1 and CTX_NEW, and learns that the client can run only the no-PFS mode.",
           "createdAt": "2022-03-01T16:29:05Z",
           "updatedAt": "2022-03-01T16:30:47Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This has now been added in the latest version.",
+          "createdAt": "2022-07-08T15:55:00Z",
+          "updatedAt": "2022-07-08T15:55:00Z"
         }
       ]
     },
@@ -743,7 +771,7 @@
       "id": "I_kwDOGfmof85E163C",
       "title": "Update also Sender/Recipient ID during KUDOS execution",
       "url": "https://github.com/core-wg/oscore-key-update/issues/22",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -752,8 +780,8 @@
       ],
       "body": "Possible extension",
       "createdAt": "2022-03-01T07:45:50Z",
-      "updatedAt": "2022-03-01T16:32:17Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T08:21:10Z",
+      "closedAt": "2022-07-08T08:21:10Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -775,6 +803,13 @@
           "body": "### How to transport the new IDs\r\n\r\nRationale: use a new dedicated CoAP option for both transport and signaling.\r\n\r\n~~~~~~~~~~~\r\n+------+---+---+---+---+-------------+--------+--------+---------+\r\n| No.  | C | U | N | R | Name        | Format | Length | Default |\r\n+------+---+---+---+---+-------------+--------+--------+---------+\r\n|      |   |   |   |   |             |        |        |         |\r\n| TBD1 |   |   |   |   | RecipientID | opaque |  0-7   | (none)  |\r\n|      |   |   |   |   |             |        |        |         |\r\n+------+---+---+---+---+-------------+--------+--------+---------+\r\n           C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable\r\n~~~~~~~~~~~\r\n\r\nProposed option number: 24 (00011000)\r\n(If we want it to be critical it can be number 13)\r\n\r\nThe content of the option is the offered new Recipient ID of the message sender. The peer offers a Recipient ID value which is, on its side, currently free under the ID Context used for the Security Context in question.\r\n\r\nThe option is of class E for OSCORE.",
           "createdAt": "2022-03-01T16:32:17Z",
           "updatedAt": "2022-03-01T16:32:17Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This idea has now been added to the text of the draft.",
+          "createdAt": "2022-07-08T08:21:10Z",
+          "updatedAt": "2022-07-08T08:21:10Z"
         }
       ]
     },
@@ -783,7 +818,7 @@
       "id": "I_kwDOGfmof85E166K",
       "title": "Keeping observations alive after KUDOS?",
       "url": "https://github.com/core-wg/oscore-key-update/issues/23",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -792,8 +827,8 @@
       ],
       "body": "Check comments from Christian during IETF 112 CoRE session.",
       "createdAt": "2022-03-01T07:46:06Z",
-      "updatedAt": "2022-03-01T16:24:53Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T08:20:23Z",
+      "closedAt": "2022-07-08T08:20:22Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -822,6 +857,13 @@
           "body": "https://mailarchive.ietf.org/arch/msg/core/Bh81qE65N6zn6IefyoS3rOr3U_0/\r\n\r\n* The 'p' to indicate PFS or no-PFS mode may not be beside the 'd' bit, but rather in the 'x' field intended to signal the size of the 'id detail' field (which would still be up to 127 bytes, while 8 bytes is the common recommendation).\r\n\r\n* Using yet another bit 'b' as above, the client may signal the server about its own intention of preserving old observations in a safe way, i.e., by long-jumping (or skipping, though unpreferred) the SSN value.\r\n\r\n* The same bit 'b' would be useful for the server to set in the KUDOS message it sends, to confirm that it is also indeed preserving old observations.\r\n\r\n* The bit 'b' totally needs to be authenticated! One way to do that can be deriving the new Security Context by taking as input not only the concatenation of N1 and N2 transported as 'id detail', but also the value of those bits (or, for simplicity, of the whole 'x' field including those bits).",
           "createdAt": "2022-03-01T16:24:53Z",
           "updatedAt": "2022-03-01T16:24:53Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We now have a section in the draft on how to accomplish preservation of observations, including how to signal it.",
+          "createdAt": "2022-07-08T08:20:22Z",
+          "updatedAt": "2022-07-08T08:20:22Z"
         }
       ]
     },
@@ -1086,6 +1128,169 @@
           "updatedAt": "2022-06-17T12:37:02Z"
         }
       ]
+    },
+    {
+      "number": 37,
+      "id": "I_kwDOGfmof85NW82E",
+      "title": "Mention idea about splitting updateCtx into 2 functions (or 3)",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/37",
+      "state": "CLOSED",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "",
+      "createdAt": "2022-07-07T18:01:52Z",
+      "updatedAt": "2022-07-08T08:19:15Z",
+      "closedAt": "2022-07-08T08:19:14Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Mentioned splitting into 2 in 76a3faaad5d1814c31c129d2ef8758788440e721",
+          "createdAt": "2022-07-07T18:02:31Z",
+          "updatedAt": "2022-07-07T18:02:31Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done in commits 76a3faaad5d1814c31c129d2ef8758788440e721 & 17184574e8340bcaee9a1455fa9f4f1dd244e42f",
+          "createdAt": "2022-07-08T08:19:14Z",
+          "updatedAt": "2022-07-08T08:19:14Z"
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "id": "I_kwDOGfmof85NW9Q1",
+      "title": "Add registry for 'x' byte",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/38",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "May be good for future extensibility\r\n\r\nOne bit in the 'x' byte could be for extending it",
+      "createdAt": "2022-07-07T18:03:14Z",
+      "updatedAt": "2022-07-07T18:03:14Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 39,
+      "id": "I_kwDOGfmof85NW9hT",
+      "title": "Change 'id detail' to other name (e.g. just 'nonce')",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/39",
+      "state": "CLOSED",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "Makes sense to make the name more specific as use of 'id detail' is KUDOS specific currently\r\n\r\nName can be changed to 'nonce'",
+      "createdAt": "2022-07-07T18:04:01Z",
+      "updatedAt": "2022-07-08T08:15:27Z",
+      "closedAt": "2022-07-08T08:15:27Z",
+      "comments": []
+    },
+    {
+      "number": 40,
+      "id": "I_kwDOGfmof85NW9mS",
+      "title": "Does this document update the Observe RFC?",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/40",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Since we introduce a way to cancel observations",
+      "createdAt": "2022-07-07T18:04:15Z",
+      "updatedAt": "2022-07-07T18:04:15Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 41,
+      "id": "I_kwDOGfmof85NW97F",
+      "title": "Change name of 'p' and 'b' bits in 'x' byte",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/41",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "The old characters are based on older names for the bits.\r\n\r\nNew names could be something like 'f' (FS/no-FS) and 'p' (preserve observations)",
+      "createdAt": "2022-07-07T18:05:17Z",
+      "updatedAt": "2022-07-07T18:05:17Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 42,
+      "id": "I_kwDOGfmof85NW-KC",
+      "title": "Expanding the terminology with \"KUDOS mode\"",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/42",
+      "state": "CLOSED",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "Add also the term \"KUDOS mode\" meaning FS or no-FS mode",
+      "createdAt": "2022-07-07T18:06:01Z",
+      "updatedAt": "2022-07-08T08:28:54Z",
+      "closedAt": "2022-07-08T08:28:54Z",
+      "comments": []
+    },
+    {
+      "number": 43,
+      "id": "I_kwDOGfmof85NW-cd",
+      "title": "Add example on CBOR byte string wrapping and values for N1, N2, X1, X2",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/43",
+      "state": "CLOSED",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "In section ssec-derive-ctx-client-init",
+      "createdAt": "2022-07-07T18:06:58Z",
+      "updatedAt": "2022-07-09T15:48:14Z",
+      "closedAt": "2022-07-09T15:48:14Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Initial draft of example added in commit 19259eed0b85e5fcbf798a87659f2751e4c48e50",
+          "createdAt": "2022-07-08T12:52:43Z",
+          "updatedAt": "2022-07-08T12:52:43Z"
+        }
+      ]
+    },
+    {
+      "number": 44,
+      "id": "I_kwDOGfmof85Nb4AQ",
+      "title": "Update title?",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/44",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Mention both KUDOS and limits in the title",
+      "createdAt": "2022-07-08T15:16:49Z",
+      "updatedAt": "2022-07-08T15:16:49Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": []
