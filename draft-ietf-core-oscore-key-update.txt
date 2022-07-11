@@ -934,7 +934,7 @@ Table of Contents
    Then, the client sends an OSCORE request to the server, protected
    with the Security Context CTX_1.  In particular, the request has the
    'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see
-   Section 4.1).
+   Section 4.1).  After that, the client deletes CTX_1.
 
    Upon receiving the OSCORE request, the server retrieves the value N1
    from the 'nonce' field of the request, the value X1 from the 'x' byte
@@ -1010,7 +1010,8 @@ Table of Contents
 
    Then, the server sends an OSCORE response to the client, protected
    with the new Security Context CTX_NEW.  In particular, the response
-   has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.
+   has the 'd' flag bit set to 1 and specifies N2 as 'nonce'.  After
+   that, the server deletes CTX_1.
 
    Upon receiving the OSCORE response, the client retrieves the value N2
    from the 'nonce' field of the response, and the value X2 from the 'x'
@@ -1150,6 +1151,7 @@ Table of Contents
    Then, the server sends an OSCORE response to the client, protected
    with the Security Context CTX_1.  In particular, the response has the
    'd' flag bit set to 1 and specifies N1 as 'nonce' (see Section 4.1).
+   After that, the server deletes CTX_1.
 
    Upon receiving the OSCORE response, the client retrieves the value N1
    from the 'nonce' field of the response, the value X1 from the 'x'
@@ -1171,7 +1173,7 @@ Table of Contents
    Security Context CTX_NEW.  Then, the client sends an OSCORE request
    to the server, protected with the new Security Context CTX_NEW.  In
    particular, the request has the 'd' flag bit set to 1 and specifies
-   N1 | N2 as 'nonce'.
+   N1 | N2 as 'nonce'.  After that, the client deletes CTX_1.
 
    Upon receiving the OSCORE request, the server retrieves the value
    N1 | N2 from the request and the value X2 from the 'x' byte of the
