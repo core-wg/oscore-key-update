@@ -403,7 +403,7 @@ updateCtx(X, N, CTX_IN) {
     oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
 
     MSALT_NEW = EDHOC-Exporter(1, h'', oscore_salt_length)
-      = EDHOC-KDF(PRK_exporter, 1, h'', oscore_salt_length)
+      = EDHOC-KDF(new PRK_exporter, 1, h'', oscore_salt_length)
 
   }
   else {
