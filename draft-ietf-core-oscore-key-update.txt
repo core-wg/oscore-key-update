@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            10 July 2022
-Expires: 11 January 2023
+Intended status: Standards Track                            11 July 2022
+Expires: 12 January 2023
 
 
                      Key Update for OSCORE (KUDOS)
@@ -57,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 January 2023.
+   This Internet-Draft will expire on 12 January 2023.
 
 Copyright Notice
 
@@ -742,7 +742,7 @@ Table of Contents
        oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
 
        MSALT_NEW = EDHOC-Exporter(1, h'', oscore_salt_length)
-         = EDHOC-KDF(PRK_exporter, 1, h'', oscore_salt_length)
+         = EDHOC-KDF(new PRK_exporter, 1, h'', oscore_salt_length)
 
      }
      else {
