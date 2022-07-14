@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-12T00:55:58.037628+00:00",
+  "timestamp": "2022-07-14T00:56:19.434829+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -1289,6 +1289,24 @@
       "body": "Mention both KUDOS and limits in the title",
       "createdAt": "2022-07-08T15:16:49Z",
       "updatedAt": "2022-07-08T15:16:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 45,
+      "id": "I_kwDOGfmof85Nnqgd",
+      "title": "Consider using an array of two byte strings instead during the nonce processing",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/45",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "See comment:\r\nhttps://github.com/core-wg/oscore-key-update/commit/19259eed0b85e5fcbf798a87659f2751e4c48e50#r78095037",
+      "createdAt": "2022-07-12T15:44:18Z",
+      "updatedAt": "2022-07-12T15:44:31Z",
       "closedAt": null,
       "comments": []
     }
