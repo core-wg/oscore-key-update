@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-19T00:57:35.996495+00:00",
+  "timestamp": "2022-07-21T00:55:32.714680+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -1307,6 +1307,58 @@
       "body": "See comment:\r\nhttps://github.com/core-wg/oscore-key-update/commit/19259eed0b85e5fcbf798a87659f2751e4c48e50#r78095037",
       "createdAt": "2022-07-12T15:44:18Z",
       "updatedAt": "2022-07-12T15:44:31Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 46,
+      "id": "I_kwDOGfmof85ODyVR",
+      "title": "Motivate need changing Sender/Recipient IDs",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/46",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "Issue in the OSCORE repo from John.\r\nhttps://github.com/core-wg/oscore/issues/263\r\n\r\nAlso:\r\nhttps://mailarchive.ietf.org/arch/msg/core/GXsKO4wKdt3RTZnQZxOzRdIG9QI/\u200b\r\nhttps://mailarchive.ietf.org/arch/msg/core/ClwcSF0BUVxDas8BpgT0WY1yQrY/\u200b",
+      "createdAt": "2022-07-19T14:33:06Z",
+      "updatedAt": "2022-07-19T14:33:12Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 47,
+      "id": "I_kwDOGfmof85OD3R_",
+      "title": "Must be able to keep track of used IDs for being able to use the ID update method",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/47",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2022-07-19T14:47:27Z",
+      "updatedAt": "2022-07-19T14:47:27Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 48,
+      "id": "I_kwDOGfmof85OEEdS",
+      "title": "Split updateCtx into 2 parts?",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/48",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "KUDOS"
+      ],
+      "body": "Common beginning, then EDHOC and HKDF-case.",
+      "createdAt": "2022-07-19T15:25:14Z",
+      "updatedAt": "2022-07-19T15:25:14Z",
       "closedAt": null,
       "comments": []
     }
