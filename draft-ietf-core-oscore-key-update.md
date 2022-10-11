@@ -1335,6 +1335,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -02 to -03 ## {#sec-02-03}
 
+* Use of the OSCORE flag bit 0 to signal more flag bits.
+
 * Updated IANA considerations.
 
 * Editorial improvements.
