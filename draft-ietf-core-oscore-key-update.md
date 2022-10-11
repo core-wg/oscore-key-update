@@ -1219,9 +1219,9 @@ IANA is asked to add the following entries to the "OSCORE Flag Bits" registry wi
 |          |                  | second byte of OSCORE  |            |
 |          |                  | flag bits              |            |
 +----------+------------------+------------------------+------------+
-|    15    |  Nonce Flag      | Set to 1 if the        | [RFC-XXXX] |
+|    15    |  Nonce Flag      | Set to 1 if nonce is   | [RFC-XXXX] |
+|          |                  | present in the         |            |
 |          |                  | compressed COSE object |            |
-|          |                  | contains 'nonce'       |            |
 +----------+------------------+------------------------+------------+
 ~~~~~~~~~~~
 
