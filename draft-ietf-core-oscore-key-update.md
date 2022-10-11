@@ -464,6 +464,8 @@ KUDOS can be started by the client or the server, as defined in {{ssec-derive-ct
 * The initiator is always the first one achieving key confirmation, hence the first one able to safely discard the old OSCORE Security Context CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
+If the client acts as initiator (see {{ssec-derive-ctx-client-init}}), the server MUST include its Sender Sequence Number as Partial IV in its response sent as the second KUDOS message. This prevents the AEAD nonce used for the request from being reused for a later response protected with the new OSCORE keying material.
+
 The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with the new OSCORE Security Context CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with the new OSCORE Security Context CTX\_NEW.
@@ -503,12 +505,13 @@ Protect with CTX_1      |------------------->|
                         |<-------------------| Protect with CTX_NEW
 CTX_NEW =               | OSCORE Option:     |
  updateCtx(Comb(X1,X2), |   ...              |
-           Comb(N1,N2), |                    |
-              CTX_OLD)  |   d flag: 1        |
-                        |   X2               |
-Verify with CTX_NEW     |   Nonce: N2        |
-                        |   ...              |
-Discard CTX_OLD         |                    |
+           Comb(N1,N2), |   Partial IV: 0    |
+              CTX_OLD)  |   ...              |
+                        |                    |
+Verify with CTX_NEW     |  d flag: 1         |
+                        |  X2                |
+Discard CTX_OLD         |  Nonce: N2         |
+                        |  ...               |
                         |                    |
 
 // The actual key update process ends here.
@@ -592,7 +595,7 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
 ~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-kudos-x-n-example-mess-two title="Example of X, N and X\_N computing for the second KUDOS message"}
 
-Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. After that, the server deletes CTX\_1.
+Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Also, the server MUST include its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
 Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the response, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
@@ -1336,6 +1339,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -02 to -03 ## {#sec-02-03}
 
 * Use of the OSCORE flag bit 0 to signal more flag bits.
+
+* Include the Partial IV if the second KUDOS message is a response.
 
 * Updated IANA considerations.
 
