@@ -370,7 +370,7 @@ After that, the updateCtx() function derives the new values of the Master Secret
 
    The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX_IN.
 
-   If the key derivation function is an HKDF Algorithm (see {{Section 3.1 of RFC8613}}) then, KUDOS-Expand is mapped to HKDF-Expand {{RFC5869}}, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX_IN.
+   If the key derivation function is an HKDF Algorithm (see {{Section 3.1 of RFC8613}}), then KUDOS-Expand is mapped to HKDF-Expand {{RFC5869}}, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX_IN.
 
          KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length) =
             HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length)
