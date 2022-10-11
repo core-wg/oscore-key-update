@@ -44,6 +44,7 @@ author:
 
 normative:
   RFC2119:
+  RFC5869:
   RFC7252:
   RFC7641:
   RFC8174:
@@ -365,9 +366,18 @@ After that, the updateCtx() function derives the new values of the Master Secret
 
    The points in time when the two peers can delete the old EDHOC keys PRK\_out and PRK_exporter are defined in {{ssec-derive-ctx-client-init}} and {{ssec-derive-ctx-server-init}}, when specifying the client-initiated and server-initiated key update procedure, respectively. Until that point in time, a peer MUST retain the old EDHOC keys and MUST NOT replace them with the newly derived ones.
 
-* METHOD 2 - If the original Security Context was established through other means than the EDHOC protocol, the new Master Secret is derived through an HKDF-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N and the length of the Master Secret. Instead, the new Master Salt takes N as value.
+* METHOD 2 - If the original Security Context was established through other means than the EDHOC protocol, the new Master Secret is derived through a KUDOS-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N and the length of the Master Secret. Instead, the new Master Salt takes N as value.
 
-In either case, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
+   The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX_IN.
+
+   If the key derivation function is an HKDF Algorithm (see {{Section 3.1 of RFC8613}}) then, KUDOS-Expand is mapped to HKDF-Expand {{RFC5869}}, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX_IN.
+
+         KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length) =
+            HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length)
+
+   If a future specification updates {{RFC8613}} by admitting different key derivation functions than HKDF Algorithms (e.g., KMAC as based on the SHAKE128 or SHAKE256 hash functions), that specification has to update also the present document in order to define the mapping between such key derivation functions and KUDOS-Expand.
+
+In the former case and in the latter case when an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
 
 After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX\_OUT as per {{Section 3.2 of RFC8613}}. Any other parameter required for the derivation takes the same value as in the Security Context CTX\_IN. Finally, the function returns the newly derived Security Context CTX\_OUT.
 
@@ -413,10 +423,10 @@ updateCtx(X, N, CTX_IN) {
 
     Label = "key update"
 
-    MSECRET_NEW = HKDF-Expand-Label(CTX_IN.MasterSecret, Label,
-                                    X_N, oscore_key_length)
-                = HKDF-Expand(CTX_IN.MasterSecret, HkdfLabel,
-                              oscore_key_length)
+    MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
+                                     X_N, oscore_key_length)
+                = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
+                               oscore_key_length)
 
     MSALT_NEW = N;
   }
@@ -428,13 +438,13 @@ updateCtx(X, N, CTX_IN) {
 
 }
 
-Where HkdfLabel is defined as
+Where ExpandLabel is defined as
 
 struct {
     uint16 length = oscore_key_length;
     opaque label<7..255> = "oscore " + Label;
     opaque context<0..255> = X_N;
-} HkdfLabel;
+} ExpandLabel;
 ~~~~~~~~~~~
 {: #function-update title="Function for deriving a new OSCORE Security Context" artwork-align="center"}
 
@@ -1339,6 +1349,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -02 to -03 ## {#sec-02-03}
 
 * Use of the OSCORE flag bit 0 to signal more flag bits.
+
+* In UpdateCtx(), open for future key derivation different than HKDF.
 
 * Include the Partial IV if the second KUDOS message is a response.
 
