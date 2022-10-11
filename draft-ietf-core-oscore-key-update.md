@@ -57,8 +57,8 @@ informative:
   RFC7554:
   RFC8180:
   RFC9031:
-  I-D.ietf-ace-oauth-authz:
-  I-D.ietf-ace-oscore-profile:
+  RFC9200:
+  RFC9203:
   I-D.irtf-cfrg-aead-limits:
   LwM2M:
     author:
@@ -253,7 +253,7 @@ Other specifications define a number of ways to accomplish this, as summarized b
 
    The procedure defined in {{Section B.2 of RFC8613}} is used in 6TiSCH networks {{RFC7554}}{{RFC8180}} when handling failure events. That is, a node acting as Join Registrar/Coordinator (JRC) assists new devices, namely "pledges", to securely join the network as per the Constrained Join Protocol {{RFC9031}}. In particular, a pledge exchanges OSCORE-protected messages with the JRC, from which it obtains a short identifier, link-layer keying material and other configuration parameters. As per {{Section 8.3.3 of RFC9031}}, a JRC that experiences a failure event may likely lose information about joined nodes, including their assigned identifiers. Then, the reinitialized JRC can establish a new OSCORE Security Context with each pledge, through the procedure defined in {{Section B.2 of RFC8613}}.
 
-* The two peers can run the OSCORE profile {{I-D.ietf-ace-oscore-profile}} of the Authentication and Authorization for Constrained Environments (ACE) Framework {{I-D.ietf-ace-oauth-authz}}.
+* The two peers can run the OSCORE profile {{RFC9203}} of the Authentication and Authorization for Constrained Environments (ACE) Framework {{RFC9200}}.
 
   When a CoAP client uploads an Access Token to a CoAP server as an access credential, the two peers also exchange two nonces. Then, the two peers use the two nonces together with information provided by the ACE Authorization Server that issued the Access Token, in order to derive an OSCORE Security Context.
 
@@ -1285,6 +1285,10 @@ Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the pee
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -02 to -03 ## {#sec-02-03}
+
+* Editorial improvements.
 
 ## Version -01 to -02 ## {#sec-01-02}
 
