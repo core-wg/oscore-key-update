@@ -80,7 +80,7 @@ entity:
 
 Object Security for Constrained RESTful Environments (OSCORE) uses AEAD algorithms to ensure confidentiality and integrity of exchanged messages. Due to known issues allowing forgery attacks against AEAD algorithms, limits should be followed on the number of times a specific key is used for encryption or decryption. Among other reasons, approaching key usage limits requires updating the OSCORE keying material before communications can securely continue.
 
-This document defines how two OSCORE peers must follow these key usage limits and what steps they must take to preserve the security of their communications. Also, it specifies Key Update for OSCORE (KUDOS), a lightweight procedure that two peers can use to update their keying material and establish a new OSCORE Security Context. Finally, this document specifies a method that two peers can use to update their OSCORE identifiers, as a stand-alone procedure or embedded in a KUDOS execution. Thus, this document updates RFC 8613.
+This document defines how two OSCORE peers must follow these key usage limits and what steps they must take to preserve the security of their communications. Also, it specifies Key Update for OSCORE (KUDOS), a lightweight procedure that two peers can use to update their keying material and establish a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option. Finally, this document specifies a method that two peers can use to update their OSCORE identifiers, as a stand-alone procedure or embedded in a KUDOS execution. Thus, this document updates RFC 8613.
 
 --- middle
 
@@ -97,6 +97,8 @@ This document updates {{RFC8613}} as follows.
 * It defines what steps an OSCORE peer takes to preserve the security of its communications, by stopping using the OSCORE Security Context shared with another peer when approaching the key usage limits.
 
 * It specifies KUDOS, a lightweight key update procedure that the two peers can use in order to update their current keying material and establish a new OSCORE Security Context. This deprecates and replaces the procedure specified in {{Section B.2 of RFC8613}}.
+
+* With reference to the "OSCORE Flag Bits" registry defined in {{Section 13.7 of RFC8613}} as part of the "Constrained RESTful Environments (CoRE) Parameters" registry group, it updates the entries with Bit Position 0 and 1 (see {{sec-iana}}), both originally marked as "Reserved". That is, it defines and registers the usage of the OSCORE flag bit with Bit Position 0, as the one intended to expand the space for the OSCORE flag bits in the OSCORE Option (see {{ssec-oscore-option-extensions}}). Also, it marks the bit with Bit Position of 1 as "Unassigned".
 
 * It specifies a method that two peers can use to update their OSCORE identifiers. This can be run as a stand-alone procedure, or instead embedded in a KUDOS execution.
 
@@ -303,9 +305,9 @@ The key update procedure fulfills the following properties.
 
 In order to support the message exchange for establishing a new OSCORE Security Context, this document extends the use of the OSCORE Option originally defined in {{RFC8613}} as follows.
 
-* This document defines the usage of the seventh least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
+* This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
 
-   When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the set of OSCORE flag bits 8-15.
+   When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the OSCORE flag bits 8-15.
 
 * This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. This flag bit is specified in {{iana-cons-flag-bits}}.
 
@@ -328,7 +330,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 ~~~~~~~~~~~
  0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
 +-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
-|0|1|0|h|k|  n  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | d | Partial IV (if any) |
+|1|0|0|h|k|  n  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | d | Partial IV (if any) |
 +-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
 
 
@@ -1184,7 +1186,7 @@ Depending on the specific key update procedure used to establish a new OSCORE Se
 
 \[TODO: Add more considerations.\]
 
-# IANA Considerations
+# IANA Considerations # {#sec-iana}
 
 This document has the following actions for IANA.
 
@@ -1210,19 +1212,64 @@ The number suggested to IANA for the Recipient-ID Option is 24.
 IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 ~~~~~~~~~~~
-+----------+------------------+------------------------+------------+
-| Bit      |       Name       |      Description       | Reference  |
-| Position |                  |                        |            |
-+----------+------------------+------------------------+------------+
-|    1     | Extension-1 Flag | Set to 1 if the OSCORE | [RFC-XXXX] |
-|          |                  | Option specifies a     |            |
-|          |                  | second byte of OSCORE  |            |
-|          |                  | flag bits              |            |
-+----------+------------------+------------------------+------------+
-|    15    |  Nonce Flag      | Set to 1 if nonce is   | [RFC-XXXX] |
-|          |                  | present in the         |            |
-|          |                  | compressed COSE object |            |
-+----------+------------------+------------------------+------------+
++----------+-------------+-------------------------------+------------+
+| Bit      | Name        | Description                   | Reference  |
+| Position |             |                               |            |
++----------+-------------+-------------------------------+------------+
+|     0    | Extension-1 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
+|          | Flag        | specifies a second byte,      |            |
+|          |             | which includes the OSCORE     |            |
+|          |             | flag bits 8-15                |            |
++----------+-------------+-------------------------------+------------+
+|     8    | Extension-2 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
+|          | Flag        | specifies a third byte,       |            |
+|          |             | which includes the OSCORE     |            |
+|          |             | flag bits 16-23               |            |
++----------+-------------+-------------------------------+------------+
+|    15    | Nonce Flag  | Set to 1 if nonce is present  | [RFC-XXXX] |
+|          |             | in the compressed COSE object |            |
++----------+-------------+-------------------------------+------------+
+|    16    | Extension-3 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
+|          | Flag        | specifies a fourth byte,      |            |
+|          |             | which includes the OSCORE     |            |
+|          |             | flag bits 24-31               |            |
+|          |             |                               |            |
++----------+-------------+-------------------------------+------------+
+|    24    | Extension-4 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
+|          | Flag        | specifies a fifth byte,       |            |
+|          |             | which includes the OSCORE     |            |
+|          |             | flag bits 32-39               |            |
+|          |             |                               |            |
++----------+-------------+-------------------------------+------------+
+|    32    | Extension-5 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
+|          | Flag        | specifies a sixth byte,       |            |
+|          |             | which includes the OSCORE     |            |
+|          |             | flag bits 40-47               |            |
+|          |             |                               |            |
++----------+-------------+-------------------------------+------------+
+|    40    | Extension-6 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
+|          | Flag        | specifies a seventh byte,     |            |
+|          |             | which includes the OSCORE     |            |
+|          |             | flag bits 48-55               |            |
+|          |             |                               |            |
++----------+-------------+-------------------------------+------------+
+|    48    | Extension-7 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
+|          | Flag        | specifies an eigth byte,      |            |
+|          |             | which includes the OSCORE     |            |
+|          |             | flag bits 56-63               |            |
+|          |             |                               |            |
++----------+-------------+-------------------------------+------------+
+~~~~~~~~~~~
+
+In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit Position of 1, i.e., to update the entry as follows.
+
+~~~~~~~~~~~
++----------+------------------+--------------------------+------------+
+| Bit      | Name             | Description              | Reference  |
+| Position |                  |                          |            |
++----------+------------------+--------------------------+------------+
+|     1    | Unassigned       |                          |            |
++----------+------------------+--------------------------+------------+
 ~~~~~~~~~~~
 
 --- back
@@ -1287,6 +1334,8 @@ Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the pee
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -02 to -03 ## {#sec-02-03}
+
+* Updated IANA considerations.
 
 * Editorial improvements.
 
