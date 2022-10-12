@@ -50,7 +50,6 @@ normative:
   RFC8174:
   RFC8613:
   RFC8949:
-  I-D.ietf-lake-edhoc:
 
 informative:
   RFC8446:
@@ -60,6 +59,7 @@ informative:
   RFC9031:
   RFC9200:
   RFC9203:
+  I-D.ietf-lake-edhoc:
   I-D.irtf-cfrg-aead-limits:
   LwM2M:
     author:
@@ -352,21 +352,9 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 The updateCtx() function shown in {{function-update}} takes as input three parameters X, N and CTX\_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-derive-ctx-client-init}}), while CTX\_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX\_OUT.
 
-As a first step, the updateCtx() function builds the two CBOR byte strings X\_cbor and N\_cbor, with value the input parameter X and N, respectively. Then, it builds the CBOR byte string X\_N, with value the byte concatenation of X\_cbor and N\_cbor.
+As a first step, the updateCtx() function builds the two CBOR byte strings X\_cbor and N\_cbor, with value the input parameter X and N, respectively. Then, it builds X\_N, as the byte concatenation of X\_cbor and N\_cbor.
 
-After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT. Specifically, the updateCtx() function uses one of the two following methods, depending on how the two peers established their original Security Context, i.e., the Security Context that they shared before performing KUDOS with one another for the first time.
-
-* METHOD 1 - If the original Security Context was established by running the EDHOC protocol {{I-D.ietf-lake-edhoc}}, the following applies.
-
-   First, the EDHOC-KeyUpdate() function defined in {{Section 4.2.2 of I-D.ietf-lake-edhoc}} is invoked. This results in deriving a new EDHOC key PRK\_out shared by the two peers, and in using it to derive a new EDHOC key PRK\_exporter, as per {{Section 4.2.1 of I-D.ietf-lake-edhoc}}.
-
-   After that, the EDHOC-Exporter() function defined in {{Section 4.2.1 of I-D.ietf-lake-edhoc}} is used to derive the new values for the OSCORE Master Secret and Master Salt, consistently with what is defined in {{Section A.1 of I-D.ietf-lake-edhoc}}. In particular, the EDHOC-Exporter() function takes the new EDHOC key PRK\_exporter derived above as first argument, while the context parameter provided as second argument is the empty CBOR byte string (0x40) {{RFC8949}}, which is denoted as h''.
-
-   Note that, compared to the compliance requirements in {{Section 7 of I-D.ietf-lake-edhoc}}, a peer MUST support the EDHOC-KeyUpdate() function, in case it establishes an original Security Context through the EDHOC protocol and intends to perform KUDOS.
-
-   The points in time when the two peers can delete the old EDHOC keys PRK\_out and PRK_exporter are defined in {{ssec-derive-ctx-client-init}} and {{ssec-derive-ctx-server-init}}, when specifying the client-initiated and server-initiated key update procedure, respectively. Until that point in time, a peer MUST retain the old EDHOC keys and MUST NOT replace them with the newly derived ones.
-
-* METHOD 2 - If the original Security Context was established through other means than the EDHOC protocol, the new Master Secret is derived through a KUDOS-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N and the length of the Master Secret. Instead, the new Master Salt takes N as value.
+After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT. In particular, the new Master Secret is derived through a KUDOS-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N and the length of the Master Secret. Instead, the new Master Salt takes N as value.
 
    The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX_IN.
 
@@ -377,17 +365,11 @@ After that, the updateCtx() function derives the new values of the Master Secret
 
    If a future specification updates {{RFC8613}} by admitting different key derivation functions than HKDF Algorithms (e.g., KMAC as based on the SHAKE128 or SHAKE256 hash functions), that specification has to update also the present document in order to define the mapping between such key derivation functions and KUDOS-Expand.
 
-In the former case and in the latter case when an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
+When an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
 
 After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX\_OUT as per {{Section 3.2 of RFC8613}}. Any other parameter required for the derivation takes the same value as in the Security Context CTX\_IN. Finally, the function returns the newly derived Security Context CTX\_OUT.
 
 Since the updateCtx() function also takes X as input, the derivation of CTX\_OUT also considers as input the information from the 'x' field transported in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that, if successfully completed, a KUDOS execution occurs as intended by the two peers.
-
-\[
-
-NOTE: In the case its EDHOC session has become invalid, a peer is unable to utilize the first method based on the EDHOC-KeyUpdate() function. In such a case, rather than running the EDHOC protocol again, it is preferable to fall back for the second method based on HKDF-Expand(). In order for the peer to signal the need for such a fall back, the seventh least significant bit in the 'x' byte of the OSCORE Option can be used. This may further justify a possible restructuring of the pseudocode, as two distinct updateCtx() functions implementing one method each.
-
-\]
 
 ~~~~~~~~~~~
 updateCtx(X, N, CTX_IN) {
@@ -398,38 +380,19 @@ updateCtx(X, N, CTX_IN) {
 
   X_cbor = bstr .cbor X // CBOR bstr wrapping of X
   N_cbor = bstr .cbor N // CBOR bstr wrapping of N
-  X_N = bstr .cbor (X_cbor | N_cbor) // CBOR bstr wrapping of above
+
+  X_N = X_cbor | N_cbor
 
   oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
 
-  if <the original Security Context was established through EDHOC> {
-    // METHOD 1
+  Label = "key update"
 
-    // Update the EDHOC key PRK_out, and use the
-    // new one to update the EDHOC key PRK_exporter
-    (new PRK_out, new PRK_exporter) = EDHOC-KeyUpdate(X_N)
+  MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
+                                   X_N, oscore_key_length)
+               = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
+                             oscore_key_length)
 
-    MSECRET_NEW = EDHOC-Exporter(0, h'', oscore_key_length)
-      = EDHOC-KDF(new PRK_exporter, 0, h'', oscore_key_length)
-
-    oscore_salt_length = < Size of CTX_IN.MasterSalt in bytes >
-
-    MSALT_NEW = EDHOC-Exporter(1, h'', oscore_salt_length)
-      = EDHOC-KDF(new PRK_exporter, 1, h'', oscore_salt_length)
-
-  }
-  else {
-    // METHOD 2
-
-    Label = "key update"
-
-    MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
-                                     X_N, oscore_key_length)
-                = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
-                               oscore_key_length)
-
-    MSALT_NEW = N;
-  }
+  MSALT_NEW = N;
 
   < Derive CTX_OUT using MSECRET_NEW and MSALT_NEW,
     together with other parameters from CTX_IN >
@@ -543,8 +506,6 @@ Verify with CTX_NEW     |                    |
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_1, then the client deletes the newly derived EDHOC keys PRK\_out and PRK\_exporter, which do not replace the old ones.
-
 Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
@@ -564,12 +525,10 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
    X_cbor = 0x4180               (h'80')
    N_cbor = 0x48018a278f7faab55a (h'018a278f7faab55a')
 
-   In updateCtx(), X_N is built from N_cbor and X_cbor
-   X_N = 0x4b418048018a278f7faab55a (h'418048018a278f7faab55a')
+   In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
+   X_N = 0x418048018a278f7faab55a
 ~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-kudos-x-n-example-mess-one title="Example of X, N and X\_N computing for the first KUDOS message"}
-
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_1, then the server deletes the newly derived EDHOC keys PRK\_out and PRK\_exporter, which do not replace the old ones.
 
 Then, the server verifies the request by using the Security Context CTX\_1.
 
@@ -599,9 +558,8 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
    N_cbor = 0x5248018a278f7faab55a4825a8991cd700ac01
             (h'48018a278f7faab55a4825a8991cd700ac01')
 
-   In updateCtx(), X_N is built from N_cbor and X_cbor
-   X_N = 0x581844418041805248018a278f7faab55a4825a8991cd700ac01
-         (h'44418041805248018a278f7faab55a4825a8991cd700ac01')
+   In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
+   X_N = 0x44418041805248018a278f7faab55a4825a8991cd700ac01
 ~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-kudos-x-n-example-mess-two title="Example of X, N and X\_N computing for the second KUDOS message"}
 
@@ -609,13 +567,9 @@ Then, the server sends an OSCORE response to the client, protected with the new 
 
 Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the response, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_NEW, then the client replaces the old EDHOC keys PRK\_out and PRK\_exporter with the newly derived ones.
-
 Then, the client can send a new OSCORE request protected with the new Security Context CTX\_NEW.
 
 When successfully verifying the request using the Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
-
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_NEW, then the server replaces the old EDHOC keys PRK\_out and PRK\_exporter with the newly derived ones.
 
 From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
 
@@ -693,13 +647,9 @@ First, the client sends a normal OSCORE request to the server, protected with th
 
 Upon receiving the OSCORE request and after having verified it with the old Security Context CTX\_OLD as usual, the server generates a random value N1 and provides the updateCtx() function with the input N = N1, X = X1 and the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_1, then the server deletes the newly derived EDHOC keys PRK\_out and PRK\_exporter, which do not replace the old ones.
-
 Then, the server sends an OSCORE response to the client, protected with the Security Context CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the server deletes CTX\_1.
 
 Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the response, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
-
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_1, then the client deletes the newly derived EDHOC keys PRK\_out and PRK\_exporter, which do not replace the old ones.
 
 Then, the client verifies the response by using the Security Context CTX\_1.
 
@@ -709,13 +659,9 @@ Upon receiving the OSCORE request, the server retrieves the value N1 \| N2 from 
 
 If the verification succeeds, the server provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the server verifies the request by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_NEW, then the server replaces the old EDHOC keys PRK\_out and PRK\_exporter with the newly derived ones.
-
 After that, the server can send an OSCORE response protected with the new Security Context CTX\_NEW.
 
 When successfully verifying the response using the Security Context CTX\_NEW, the client deletes the old Security Context CTX\_OLD.
-
-If the peers' original Security Context was derived through the EDHOC protocol and the updateCtx() function in {{ssec-update-function}} used METHOD 1 to derive CTX\_NEW, then the client replaces the old EDHOC keys PRK\_out and PRK\_exporter with the newly derived ones.
 
 From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
 
@@ -1351,6 +1297,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Use of the OSCORE flag bit 0 to signal more flag bits.
 
 * In UpdateCtx(), open for future key derivation different than HKDF.
+
+* Simplified updateCtx() to use only Expand(); used to be METHOD 2.
 
 * Include the Partial IV if the second KUDOS message is a response.
 
