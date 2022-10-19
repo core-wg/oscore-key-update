@@ -681,7 +681,7 @@ During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS request
 
 When the server-initiated version of KUDOS is used, the two peers risk to run into a deadlock, if all the following conditions hold.
 
-* The client is a client-only device, i.e., it is not capable to act as CoAP server and thus does not listen for incoming requests.
+* The client is a client-only device, i.e., it does not act as CoAP server and thus does not listen for incoming requests.
 
 * The server needs to execute KUDOS, which, due to the previous point, can only be performed in its server-initiated version as per {{fig-message-exchange-server-init}}. That is, the server has to wait for an incoming non KUDOS request, in order to initiate KUDOS by replying with the first KUDOS message as a response.
 
@@ -703,7 +703,7 @@ If either or both peers are not able to write in non-volatile memory the OSCORE 
 
 ### Handling and Use of Keying Material
 
-In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time.
+In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time. If that is not the case, the device will be denoted as "not CAPABLE".
 
 The following terms are used to refer to OSCORE keying material.
 
@@ -722,6 +722,10 @@ Note that:
    - In order to run KUDOS in FS mode, a peer must be a CAPABLE device. It follows that two peers have to both be CAPABLE devices in order to be able to run KUDOS in FS mode with one another.
 
    - In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.
+
+* A peer that is a not CAPABLE device MUST support no-FS mode.
+
+* A peer that is a CAPABLE device MUST support FS mode and SHOULD support no-FS mode.
 
 As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{I-D.ietf-lake-edhoc}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
