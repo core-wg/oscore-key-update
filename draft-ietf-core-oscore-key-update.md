@@ -242,11 +242,13 @@ After 'count_v' has exceeded the 'limit_v' limit, incoming messages MUST NOT be 
 
 # Current methods for Rekeying OSCORE {#sec-current-methods}
 
-Before the limit of 'q' or 'v' defined in {{limits}} has been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication.
+Two peers communicating using OSCORE may choose to renew their shared keying information by establishing a new OSCORE Security Context for a variety of reasons. A particular reason is approaching the limits set for key usage defined in {{limits}}. Practically, when the relevant limits have been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication. That is, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm.
 
-In practice, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm. When this happens, both peers reset their 'count_q' and 'count_v' values to 0 (see {{context}}).
+In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration, as per the 'exp' parameter defined in {{common-context}}; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
 
-Other specifications define a number of ways to accomplish this, as summarized below.
+It is recommended that the peer initiating the key update procedure starts it with some margin before actually reaching the trigger event forcing it to performe a key update. For instance, performing the key update before actually reaching context expiration, or before exhausting the Sender Sequence Number space. If rekeying is not initiated ahead of these events, it may become practically impossible to perform rekeying with certain methods.
+
+Other specifications define a number of ways for rekeying OSCORE, which is summarized below.
 
 * The two peers can run the procedure defined in {{Section B.2 of RFC8613}}. That is, the two peers exchange three or four messages, protected with temporary Security Contexts adding randomness to the ID Context.
 
@@ -277,10 +279,6 @@ Other specifications define a number of ways to accomplish this, as summarized b
 Manually updating the OSCORE Security Context at the two peers should be a last resort option, and it might often be not practical or feasible.
 
 Even when any of the alternatives mentioned above is available, it is RECOMMENDED that two OSCORE peers update their Security Context by using the KUDOS procedure as defined in {{sec-rekeying-method}} of this document.
-
-It is RECOMMENDED that the peer initiating the key update procedure starts it before reaching the 'q' or 'v' limits. Otherwise, the AEAD keys to be possibly used during the key update procedure itself may already be or become invalid before the rekeying is completed, which may prevent a successful establishment of the new OSCORE Security Context altogether.
-
-In addition to approaching the 'q' or 'v' limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration, as per the 'exp' parameter defined in {{common-context}}; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
 
 # Key Update for OSCORE (KUDOS) # {#sec-rekeying-method}
 
