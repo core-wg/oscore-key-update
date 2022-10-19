@@ -585,6 +585,8 @@ If there are any, the client MUST NOT initiate the KUDOS execution, before eithe
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW to cryptographically match with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
 
+During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could for instance otherwise be possible if the client is using a value of NSTART greater than 1.
+
 ### Server-Initiated Key Update {#ssec-derive-ctx-server-init}
 
 {{fig-message-exchange-server-init}} shows the KUDOS workflow with the server acting as initiator.
@@ -674,6 +676,8 @@ Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-ini
 If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW to cryptographically match with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
+
+During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could for instance otherwise be possible if the client is using a value of NSTART greater than 1.
 
 #### Preventing Deadlock Situations
 
