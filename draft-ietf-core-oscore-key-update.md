@@ -851,6 +851,72 @@ To this end, the peer should also assess the new value that PIV\* would take aft
 
 Application policies can further influence whether attempting to preserve observations beyond a key update is appropriate or not.
 
+## Signaling KUDOS support in EDHOC EAD item # {#edhoc-ead-signaling}
+
+The EDHOC protocol defines transmission of external authorization data (EAD) in specific fields of the four EDHOC messages (see {{Section 3.8 of I-D.ietf-lake-edhoc}}). These fields can be used to relay additional data to the other peer, in addition to the content of the 4 defined EDHOC messages. Every EAD item must specify an 'ead_label', as a CBOR integer, and associated 'ead_value', as a CBOR bstr.
+
+This document defines a new label value for the "EDHOC External Authorization Data" registry in {iana-edhoc-aad}. Its associated 'ead_value' can to be used during an EDHOC execution to inform the other peer about support for KUDOS, and in such case in which mode(s). By utilizing this functionality a peer can learn if the other peer supports KUDOS (and which modes) during an EDHOC execution​. The possible values of the 'ead_value' are as follows:
+
+~~~~~~~~~~~
++-------+---------+-----------------------------------------+
+| Name  | CBOR    | Description                             |
+|       | bstr    |                                         |
++=======+=========+=========================================+
+| ASK   | h''     | Indicate to other peer to include KUDOS |
+|       |         | support information in next EAD.        |
++-------+---------+-----------------------------------------+
+| NONE  | h'00'   | This peer does not support KUDOS.       |
++-------+---------+-----------------------------------------+
+| FULL  | h'01'   | This peer supports KUDOS in FS-mode and |
+|       |         | no FS-mode. The other peer must include |
+|       |         | KUDOS support information in next EAD.​  |
++-------+---------+-----------------------------------------+
+| PART  | h'02'   | This peer supports KUDOS in no FS-mode  |
+|       |         | only. The other peer must include KUDOS |
+|       |         | support information in next EAD.​        |
++-------+---------+-----------------------------------------+
+~~~~~~~~~~~
+
+That is, by indicating the ASK value a peer A can indicate to the other peer B, that A wishes to know if B supports KUDOS and in what mode(s). In the EAD of the following EDHOC message peer B must then indicate whether it supports KUDOS and in what mode(s), using NONE, FULL or PART. Using the values FULL or PART means that the other peer must indicate its KUDOS support in the EAD of the next EDHOC message. In essence FULL and PART also has the meaning of ASK. Note that in case ASK, FULL or PART is present in the EAD in EDHOC message 3, and EDHOC is configured to not use message 4, using this 'ead_label' does not mean a message 4 will be sent.
+
+To further illustrate the functionality, two examples are presented below as EDHOC executions where only the EAD values are shown:
+
+~~~~~~~~~~~
+EDHOC                                                       EDHOC
+Initiator                                                   Responder
+|                             EAD_1: ASK                            |
++------------------------------------------------------------------>|
+|                             message_1                             |
+|                                                                   |
+|                             EAD_2: FULL                           |
+|<------------------------------------------------------------------+
+|                             message_2                             |
+|                                                                   |
+|                             EAD_3: FULL                           |
++------------------------------------------------------------------>|
+|                             message_3                             |
+~~~~~~~~~~~
+
+In the example above the initiator indicates in EAD_1 to the responder to inform it regarding its KUDOS support in the next EAD (meaning EAD_2). The responder sends EDHOC message 2 with EAD_2 indicating that it supports both the FS and no FS-mode of KUDOS. Finally, the initiator sends EDHOC message 3 with EAD_3 indicating that it also supports both the FS and no FS-mode. After the EDHOC execution has finished both peers are aware that they both support KUDOS, in the FS and no-FS modes.
+
+~~~~~~~~~~~
+EDHOC                                                       EDHOC
+Initiator                                                   Responder
+|                             EAD_1: ASK                            |
++------------------------------------------------------------------>|
+|                             message_1                             |
+|                                                                   |
+|                             EAD_2: NONE                           |
+|<------------------------------------------------------------------+
+|                             message_2                             |
+|                                                                   |
+|                             EAD_3: -                              |
++------------------------------------------------------------------>|
+|                             message_3                             |
+~~~~~~~~~~~
+
+In this second example the initiator indicates in EAD_1 to the responder to inform it regarding its KUDOS support in the next EAD (meaning EAD_2). The responder sends EDHOC message 2 with EAD_2 indicating that it supports does not support KUDOS at all. Next, the initiator sends EDHOC message 3 with an empty EAD_3, as it already knows using KUDOS will be impossible. After the EDHOC execution has finished the initiator is aware that the responder does not support KUDOS, and the responder knows that it itself does not support KUDOS, thus KUDOS can not be used between these peers.
+
 ## Retention Policies # {#ssec-retention}
 
 Applications MAY define policies that allow a peer to also temporarily keep the old Security Context CTX\_OLD, rather than simply overwriting it to become CTX\_NEW. This allows the peer to decrypt late, still on-the-fly incoming messages protected with CTX\_OLD.
@@ -1235,6 +1301,19 @@ In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit P
 +----------+------------------+--------------------------+------------+
 |     1    | Unassigned       |                          |            |
 +----------+------------------+--------------------------+------------+
+~~~~~~~~~~~
+
+## EDHOC External Authorization Data Registry {#iana-edhoc-aad}
+
+IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
+
+~~~~~~~~~~~
++---------+--------------------------------------+--------------------+
+| Label   | Description                          | Reference          |
++=========+======================================+====================+
+| TBD1    | Indicates whether this peer supports | [RFC-XXXX]         |
+|         | KUDOS and in which mode(s)           |                    |
++---------+--------------------------------------+--------------------+
 ~~~~~~~~~~~
 
 --- back
