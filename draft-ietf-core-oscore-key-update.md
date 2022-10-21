@@ -900,6 +900,7 @@ This document defines a new EDHOC EAD item KUDOS\_EAD and registers its 'ead_lab
 |      |          | KUDOS in no-FS mode only.                    |
 +------+----------+----------------------------------------------+
 ~~~~~~~~~~~
+{: artwork-align="center"}
 
 When the KUDOS\_EAD item is included in EDHOC message_1 with 'ead_value' ASK, a recipient peer that supports the KUDOS\_EAD item MUST specify whether it supports KUDOS in EDHOC message_2.
 
@@ -926,6 +927,7 @@ To further illustrate the functionality, two examples are presented below as EDH
 ~~~~~~~~~~~
 EDHOC                                                 EDHOC
 Initiator                                         Responder
+|                                                         |
 |                EAD_1: (TBD_LABEL, ASK)                  |
 +-------------------------------------------------------->|
 |                        message_1                        |
@@ -937,13 +939,16 @@ Initiator                                         Responder
 |                EAD_3: (TBD_LABEL, FULL)                 |
 +-------------------------------------------------------->|
 |                        message_3                        |
+|                                                         |
 ~~~~~~~~~~~
+{: artwork-align="center"}
 
 In the example above, the Initiator asks the EDHOC Responder about its support for KUDOS ('ead_value' = ASK). In EDHOC message_2, the Responder indicates that it supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). Finally, in EDHOC message_3, the Initiator indicates that it also supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). After the EDHOC execution has successfully finished, both peers are aware that they both support KUDOS, in the FS and no-FS modes.
 
 ~~~~~~~~~~~
 EDHOC                                                 EDHOC
 Initiator                                         Responder
+|                                                         |
 |                EAD_1: (TBD_LABEL, ASK)                  |
 +-------------------------------------------------------->|
 |                        message_1                        |
@@ -954,7 +959,9 @@ Initiator                                         Responder
 |                                                         |
 +-------------------------------------------------------->|
 |                        message_3                        |
+|                                                         |
 ~~~~~~~~~~~
+{: artwork-align="center"}
 
 In this second example, the Initiator asks the EDHOC Responder about its support for KUDOS ('ead_value' = ASK). In EDHOC message_2, the Responder indicates that it does not support KUDOS at all ('ead_value' = NONE). Finally, in EDHOC message_3, the Initiator does not include the KUDOS\_EAD item, since it already knows that using KUDOS with the other peer will not be possible. After the EDHOC execution has successfully finished, the Initiator is aware that the Responder does not support KUDOS, which the two peers are not going to use with each other.
 
