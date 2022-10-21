@@ -244,11 +244,11 @@ After 'count_v' has exceeded the 'limit_v' limit, incoming messages MUST NOT be 
 
 Two peers communicating using OSCORE may choose to renew their shared keying information by establishing a new OSCORE Security Context for a variety of reasons. A particular reason is approaching the limits set for key usage defined in {{limits}}. Practically, when the relevant limits have been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication. That is, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm.
 
-In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration, as per the 'exp' parameter defined in {{common-context}}; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
+In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration time, as per the 'exp' parameter defined in {{common-context}}; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
 
-It is recommended that the peer initiating the key update procedure starts it with some margin before actually reaching the trigger event forcing it to performe a key update. For instance, performing the key update before actually reaching context expiration, or before exhausting the Sender Sequence Number space. If rekeying is not initiated ahead of these events, it may become practically impossible to perform rekeying with certain methods.
+It is RECOMMENDED that the peer initiating the key update procedure starts it with some margin, i.e., well before actually experiencing the trigger event forcing to perform a key update, e.g., the OSCORE Security Context expiration or the exhaustion of the Sender Sequence Number space. If the rekeying is not initiated ahead of these events, it may become practically impossible to perform a key update with certain methods.
 
-Other specifications define a number of ways for rekeying OSCORE, which is summarized below.
+Other specifications define a number of ways for rekeying OSCORE, as summarized below.
 
 * The two peers can run the procedure defined in {{Section B.2 of RFC8613}}. That is, the two peers exchange three or four messages, protected with temporary Security Contexts adding randomness to the ID Context.
 
@@ -583,7 +583,7 @@ If there are any, the client MUST NOT initiate the KUDOS execution, before eithe
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW to cryptographically match with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
 
-During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could for instance otherwise be possible if the client is using a value of NSTART greater than 1.
+During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see {{Section 4.7 of RFC7252}}).
 
 ### Server-Initiated Key Update {#ssec-derive-ctx-server-init}
 
@@ -675,7 +675,7 @@ If there are any, the client MUST NOT initiate the KUDOS execution, before eithe
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW to cryptographically match with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
 
-During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could for instance otherwise be possible if the client is using a value of NSTART greater than 1.
+During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see {{Section 4.7 of RFC7252}}).
 
 #### Preventing Deadlock Situations
 
@@ -703,7 +703,7 @@ If either or both peers are not able to write in non-volatile memory the OSCORE 
 
 ### Handling and Use of Keying Material
 
-In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time. If that is not the case, the device will be denoted as "not CAPABLE".
+In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time. If that is not the case, the device will be denoted as "non-CAPABLE".
 
 The following terms are used to refer to OSCORE keying material.
 
@@ -723,9 +723,9 @@ Note that:
 
    - In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.
 
-* A peer that is a not CAPABLE device MUST support no-FS mode.
+* A peer that is a non-CAPABLE device MUST support no-FS mode.
 
-* A peer that is a CAPABLE device MUST support FS mode and SHOULD support no-FS mode.
+* A peer that is a CAPABLE device MUST support the FS mode and SHOULD support the no-FS mode.
 
 As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{I-D.ietf-lake-edhoc}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
@@ -787,11 +787,11 @@ If, after having received the first KUDOS message, the responder can continue pe
 
 * If both peers are CAPABLE devices, they will run KUDOS in FS mode. That is, both initiator and responder sets the 'p' bit to 0 in the respective sent KUDOS message.
 
-* If both peers are not CAPABLE devices or only the peer acting as initiator is not a CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.
+* If both peers are non-CAPABLE devices or only the peer acting as initiator is a non-CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.
 
-* If only the peer acting as initiator is a CAPABLE device and it has knowledge of the other peer being a not CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.
+* If only the peer acting as initiator is a CAPABLE device and it has knowledge of the other peer being a non-CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.
 
-* If only the peer acting as initiator is a CAPABLE device and it has no knowledge of the other peer being a not CAPABLE device, they will not run KUDOS in FS mode and will rather set to ground for possibly retrying in no-FS mode. In particular, the initiator sets the 'p' bit of its sent KUDOS message to 0. Then:
+* If only the peer acting as initiator is a CAPABLE device and it has no knowledge of the other peer being a non-CAPABLE device, they will not run KUDOS in FS mode and will rather set to ground for possibly retrying in no-FS mode. In particular, the initiator sets the 'p' bit of its sent KUDOS message to 0. Then:
 
    * If the responder is a server, it MUST reply with a 5.03 (Service Unavailable) error response. The response MUST be protected with the newly derived OSCORE Security Context CTX\_NEW. The diagnostic payload MAY provide additional information. In the error response, the 'p' bit MUST be set to 1.
 
