@@ -855,7 +855,7 @@ Application policies can further influence whether attempting to preserve observ
 
 The EDHOC protocol defines transmission of external authorization data (EAD) in specific fields of the four EDHOC messages (see {{Section 3.8 of I-D.ietf-lake-edhoc}}). These fields can be used to relay additional data to the other peer, in addition to the content of the 4 defined EDHOC messages. Every EAD item must specify an 'ead_label', as a CBOR integer, and associated 'ead_value', as a CBOR bstr.
 
-This document defines a new label value for the "EDHOC External Authorization Data" registry in {iana-edhoc-aad}. Its associated 'ead_value' can to be used during an EDHOC execution to inform the other peer about support for KUDOS, and in such case in which mode(s). By utilizing this functionality a peer can learn if the other peer supports KUDOS (and which modes) during an EDHOC execution​. The possible values of the 'ead_value' are as follows:
+This document defines a new label value for the "EDHOC External Authorization Data" registry in {{iana-edhoc-aad}}. Its associated 'ead_value' can to be used during an EDHOC execution to inform the other peer about support for KUDOS, and in such case in which mode(s). By utilizing this functionality a peer can learn if the other peer supports KUDOS (and which modes) during an EDHOC execution​. The possible values of the 'ead_value' are as follows:
 
 ~~~~~~~~~~~
 +-------+---------+-----------------------------------------+
