@@ -232,7 +232,7 @@ Before encrypting the COSE object using the Sender Key, the 'count_q' counter MU
 
 If 'count_q' exceeds the 'limit_q' limit, the message processing MUST be aborted. From then on, the Sender Key MUST NOT be used to encrypt further messages.
 
-### Verifying a Request or a Response ##
+### Verifying a Request or a Response ## {#verifying-req-resp}
 
 If an incoming message is detected to be a replay (see {{Section 7.4 of RFC8613}}), the 'count_v' counter MUST NOT be incremented.
 
@@ -919,7 +919,7 @@ In this second example the initiator indicates in EAD_1 to the responder to info
 
 ## Retention Policies # {#ssec-retention}
 
-Applications MAY define policies that allow a peer to also temporarily keep the old Security Context CTX\_OLD, rather than simply overwriting it to become CTX\_NEW. This allows the peer to decrypt late, still on-the-fly incoming messages protected with CTX\_OLD.
+Applications MAY define policies that allow a peer to temporarily keep the old Security Context CTX\_OLD beyond having established the new Security Context CTX\_NEW and having achieved key confirmation, rather than simply overwriting CTX\_OLD with CTX\_NEW. This allows the peer to decrypt late, still on-the-fly incoming messages protected with CTX\_OLD.
 
 When enforcing such policies, the following applies.
 
@@ -928,6 +928,8 @@ When enforcing such policies, the following applies.
 * Incoming non KUDOS messages MUST first be attempted to decrypt by using CTX\_NEW. If decryption fails, a second attempt can use CTX\_OLD.
 
 * When an amount of time defined by the policy has elapsed since the establishment of CTX\_NEW, the peer deletes CTX\_OLD.
+
+A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX\_OLD is expired (see {{common-context}}); an amount 'limit_v' of failed decryptions and verifications of incoming messages has been experienced, by using the Recipient Key of the Recipient Context of CTX\_OLD (see {{verifying-req-resp}}).
 
 ## Discussion # {#ssec-discussion}
 
