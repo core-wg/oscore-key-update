@@ -53,14 +53,12 @@ normative:
 
 informative:
   RFC8446:
-  RFC7519:
   RFC7554:
   RFC8180:
   RFC9031:
   RFC9200:
   RFC9203:
   I-D.ietf-lake-edhoc:
-  I-D.irtf-cfrg-aead-limits:
   LwM2M:
     author:
       org: Open Mobile Alliance
@@ -79,9 +77,7 @@ entity:
 
 --- abstract
 
-Object Security for Constrained RESTful Environments (OSCORE) uses AEAD algorithms to ensure confidentiality and integrity of exchanged messages. Due to known issues allowing forgery attacks against AEAD algorithms, limits should be followed on the number of times a specific key is used for encryption or decryption. Among other reasons, approaching key usage limits requires updating the OSCORE keying material before communications can securely continue.
-
-This document defines how two OSCORE peers must follow these key usage limits and what steps they must take to preserve the security of their communications. Also, it specifies Key Update for OSCORE (KUDOS), a lightweight procedure that two peers can use to update their keying material and establish a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option. Finally, this document specifies a method that two peers can use to update their OSCORE identifiers, as a stand-alone procedure or embedded in a KUDOS execution. Thus, this document updates RFC 8613.
+This document defines Key Update for OSCORE (KUDOS), a lightweight procedure that two peers can use to update their keying material and establish a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option. Finally, this document specifies a method that two peers can use to update their OSCORE identifiers, as a stand-alone procedure or embedded in a KUDOS execution. Thus, this document updates RFC 8613.
 
 --- middle
 
@@ -89,13 +85,9 @@ This document defines how two OSCORE peers must follow these key usage limits an
 
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} provides end-to-end protection of CoAP {{RFC7252}} messages at the application-layer, ensuring message confidentiality and integrity, replay protection, as well as binding of response to request between a sender and a recipient.
 
-In particular, OSCORE uses AEAD algorithms to provide confidentiality and integrity of messages exchanged between two peers. Due to known issues allowing forgery attacks against AEAD algorithms, limits should be followed on the number of times a specific key is used to perform encryption or decryption {{I-D.irtf-cfrg-aead-limits}}.
-
-The original OSCORE specification {{RFC8613}} does not consider such key usage limits. However, should they be exceeded, an adversary may break the security properties of the AEAD algorithm, such as message confidentiality and integrity, e.g., by performing a message forgery attack. Among other reasons, approaching the key usage limits requires updating the OSCORE keying material before communications can securely continue.
+To ensure secure communication when using OSCORE, peers may need to update their shared keying material. Among other reasons, approaching key usage limits requires updating the OSCORE keying material before communications can securely continue.
 
 This document updates {{RFC8613}} as follows.
-
-* It defines what steps an OSCORE peer takes to preserve the security of its communications, by stopping using the OSCORE Security Context shared with another peer when approaching the key usage limits.
 
 * It specifies KUDOS, a lightweight key update procedure that the two peers can use in order to update their current keying material and establish a new OSCORE Security Context. This deprecates and replaces the procedure specified in {{Section B.2 of RFC8613}}.
 
@@ -119,132 +111,11 @@ This document additionally defines the following terminology.
 
 * No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see {{no-fs-mode}}).
 
-# AEAD Key Usage Limits in OSCORE
-
-This section details how key usage limits for AEAD algorithms must be considered when using OSCORE. In particular, it discusses specific limits for common AEAD algorithms used with OSCORE; necessary additions to the OSCORE Security Context; and updates to the OSCORE message processing.
-
-## Problem Overview {#problem-overview}
-
-The OSCORE security protocol {{RFC8613}} uses AEAD algorithms to provide integrity and confidentiality of messages, as exchanged between two peers sharing an OSCORE Security Context.
-
-When processing messages with OSCORE, each peer should follow specific limits as to the number of times it uses a specific key. This applies separately to the Sender Key used to encrypt outgoing messages, and to the Recipient Key used to decrypt and verify incoming protected messages.
-
-Exceeding these limits may allow an adversary to break the security properties of the AEAD algorithm, such as message confidentiality and integrity, e.g., by performing a message forgery attack.
-
-The following refers to the two parameters 'q' and 'v' introduced in {{I-D.irtf-cfrg-aead-limits}}, to use when deploying an AEAD algorithm.
-
-* 'q': this parameter has as value the number of messages protected with a specific key, i.e., the number of times the AEAD algorithm has been invoked to encrypt data with that key.
-
-* 'v': this parameter has as value the number of alleged forgery attempts that have been made against a specific key, i.e., the amount of failed decryptions that have occurred with the AEAD algorithm for that key.
-
-When a peer uses OSCORE:
-
-* The key used to protect outgoing messages is its Sender Key from its Sender Context.
-
-* The key used to decrypt and verify incoming messages is its Recipient Key from its Recipient Context.
-
-Both keys are derived as part of the establishment of the OSCORE Security Context, as defined in {{Section 3.2 of RFC8613}}.
-
-As mentioned above, exceeding specific limits for the 'q' or 'v' value can weaken the security properties of the AEAD algorithm used, thus compromising secure communication requirements.
-
-Therefore, in order to preserve the security of the used AEAD algorithm, OSCORE has to observe limits for the 'q' and 'v' values, throughout the lifetime of the used AEAD keys.
-
-### Limits for 'q' and 'v' {#limits}
-
-Formulas for calculating the security levels, as Integrity Advantage (IA) and Confidentiality Advantage (CA) probabilities, are presented in {{I-D.irtf-cfrg-aead-limits}}. These formulas take as input specific values for 'q' and 'v' (see section {{problem-overview}}) and for 'l', i.e., the maximum length of each message (in cipher blocks).
-
-For the algorithms shown in {{algorithm-limits}} that can be used as AEAD Algorithm for OSCORE, the key property to achieve is having IA and CA values which are no larger than p = 2^-64, which will ensure a safe security level for the AEAD Algorithm. This can be entailed by using the values q = 2^20, v = 2^20, and l = 2^10, that this document recommends to use for these algorithms.
-
-{{algorithm-limits}} also shows the resulting IA and CA probabilities enjoyed by the considered algorithms, when taking the value of 'q', 'v' and 'l' above as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
-
-~~~~~~~~~~~
-+------------------------+----------------+----------------+
-| Algorithm name         | IA probability | CA probability |
-|------------------------+----------------+----------------|
-| AEAD_AES_128_CCM       | 2^-64          | 2^-66          |
-| AEAD_AES_128_GCM       | 2^-97          | 2^-89          |
-| AEAD_AES_256_GCM       | 2^-97          | 2^-89          |
-| AEAD_CHACHA20_POLY1305 | 2^-73          | -              |
-+------------------------+----------------+----------------+
-~~~~~~~~~~~
-{: #algorithm-limits title="Probabilities for algorithms based on chosen q, v and l values." artwork-align="center"}
-
-When AEAD_AES_128_CCM_8 is used as AEAD Algorithm for OSCORE, the triplet (q, v, l) considered above yields larger values of IA and CA. Hence, specifically for AEAD_AES_128_CCM_8, this document recommends using the triplet (q, v, l) = (2^20, 2^14, 2^8). This is appropriate, since the resulting CA and IA values are not greater than the threshold value of 2^-50 defined in {{I-D.irtf-cfrg-aead-limits}}, and thus yields an acceptable security level. Achieving smaller values of CA and IA would require to inconveniently reduce 'q', 'v' or 'l', with no corresponding increase in terms of security, as further elaborated in {{aead-aes-128-ccm-8-details}}.
-
-~~~~~~~~~~~
-+------------------------+----------+----------+-----------+
-| Algorithm name         | l=2^6 in | l=2^8 in | l=2^10 in |
-|                        | bytes    | bytes    | bytes     |
-|------------------------+----------+----------|-----------|
-| AEAD_AES_128_CCM       | 1024     | 4096     | 16384     |
-| AEAD_AES_128_GCM       | 1024     | 4096     | 16384     |
-| AEAD_AES_256_GCM       | 1024     | 4096     | 16384     |
-| AEAD_AES_128_CCM_8     | 1024     | 4096     | 16384     |
-| AEAD_CHACHA20_POLY1305 | 4096     | 16384    | 65536     |
-+------------------------+----------+----------+-----------+
-~~~~~~~~~~~
-{: #l-values-as-bytes title="Maximum length of each message (in bytes)" artwork-align="center"}
-
-
-## Additional Information in the Security Context # {#context}
-
-In addition to what defined in {{Section 3.1 of RFC8613}}, the OSCORE Security Context MUST also include the following information.
-
-### Common Context # {#common-context}
-
-The Common Context is extended to include the following parameter.
-
-* 'exp': with value the expiration time of the OSCORE Security Context, as a non-negative integer. The parameter contains a numeric value representing the number of seconds from 1970-01-01T00:00:00Z UTC until the specified UTC date/time, ignoring leap seconds, analogous to what specified for NumericDate in {{Section 2 of RFC7519}}.
-
-   At the time indicated in this field, a peer MUST stop using this Security Context to process any incoming or outgoing message, and is required to establish a new Security Context to continue OSCORE-protected communications with the other peer.
-
-### Sender Context # {#sender-context}
-
-The Sender Context is extended to include the following parameters.
-
-* 'count_q': a non-negative integer counter, keeping track of the current 'q' value for the Sender Key. At any time, 'count_q' has as value the number of messages that have been encrypted using the Sender Key. The value of 'count_q' is set to 0 when establishing the Sender Context.
-
-* 'limit_q': a non-negative integer, which specifies the highest value that 'count_q' is allowed to reach, before stopping using the Sender Key to process outgoing messages.
-
-   The value of 'limit_q' depends on the AEAD algorithm specified in the Common Context, considering the properties of that algorithm. The value of 'limit_q' is determined according to {{limits}}.
-
-Note for implementation: it is possible to avoid storing and maintaining the counter 'count_q'. Rather, an estimated value to be compared against 'limit_q' can be computed, by leveraging the Sender Sequence Number of the peer and (an estimate of) the other peer's. A possible method to achieve this is described in {{estimation-count-q}}. While this relieves peers from storing and maintaining the precise 'count_q' value, it results in overestimating the number of encryptions performed with a Sender Key. This in turn results in approaching 'limit_q' sooner and thus in performing a key update procedure more frequently.
-
-### Recipient Context # {#recipient-context}
-
-The Recipient Context is extended to include the following parameters.
-
-* 'count_v': a non-negative integer counter, keeping track of the current 'v' value for the Recipient Key. At any time, 'count_v' has as value the number of failed decryptions occurred on incoming messages using the Recipient Key. The value of 'count_v' is set to 0 when establishing the Recipient Context.
-
-* 'limit_v': a non-negative integer, which specifies the highest value that 'count_v' is allowed to reach, before stopping using the Recipient Key to process incoming messages.
-
-   The value of 'limit_v' depends on the AEAD algorithm specified in the Common Context, considering the properties of that algorithm. The value of 'limit_v' is determined according to {{limits}}.
-
-## OSCORE Messages Processing #
-
-In order to keep track of the 'q' and 'v' values and ensure that AEAD keys are not used beyond reaching their limits, the processing of OSCORE messages is extended as defined in this section. A limitation that is introduced is that, in order to not exceed the selected value for 'l', the total size of the COSE plaintext, authentication Tag, and possible cipher padding for a message may not exceed the block size for the selected algorithm multiplied with 'l‘.
-
-In particular, the processing of OSCORE messages follows the steps outlined in {{Section 8 of RFC8613}}, with the additions defined below.
-
-### Protecting a Request or a Response ## {#protecting-req-resp}
-
-Before encrypting the COSE object using the Sender Key, the 'count_q' counter MUST be incremented.
-
-If 'count_q' exceeds the 'limit_q' limit, the message processing MUST be aborted. From then on, the Sender Key MUST NOT be used to encrypt further messages.
-
-### Verifying a Request or a Response ## {#verifying-req-resp}
-
-If an incoming message is detected to be a replay (see {{Section 7.4 of RFC8613}}), the 'count_v' counter MUST NOT be incremented.
-
-If the decryption and verification of the COSE object using the Recipient Key fails, the 'count_v' counter MUST be incremented.
-
-After 'count_v' has exceeded the 'limit_v' limit, incoming messages MUST NOT be decrypted and verified using the Recipient Key, and their processing MUST be aborted.
-
 # Current methods for Rekeying OSCORE {#sec-current-methods}
 
-Two peers communicating using OSCORE may choose to renew their shared keying information by establishing a new OSCORE Security Context for a variety of reasons. A particular reason is approaching the limits set for key usage defined in {{limits}}. Practically, when the relevant limits have been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication. That is, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm.
+Two peers communicating using OSCORE may choose to renew their shared keying information by establishing a new OSCORE Security Context for a variety of reasons. A particular reason is approaching limits set for safe key usage. Practically, when the relevant limits have been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication. That is, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm.
 
-In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration time, as per the 'exp' parameter defined in {{common-context}}; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
+In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration time; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
 
 It is RECOMMENDED that the peer initiating the key update procedure starts it with some margin, i.e., well before actually experiencing the trigger event forcing to perform a key update, e.g., the OSCORE Security Context expiration or the exhaustion of the Sender Sequence Number space. If the rekeying is not initiated ahead of these events, it may become practically impossible to perform a key update with certain methods.
 
@@ -863,7 +734,7 @@ When enforcing such policies, the following applies.
 
 * When an amount of time defined by the policy has elapsed since the establishment of CTX\_NEW, the peer deletes CTX\_OLD.
 
-A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX\_OLD is expired (see {{common-context}}); an amount 'limit_v' of failed decryptions and verifications of incoming messages has been experienced, by using the Recipient Key of the Recipient Context of CTX\_OLD (see {{verifying-req-resp}}).
+A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX\_OLD is expired; limits set for safe key usage have been reached, for the Recipient Key of the Recipient Context of CTX\_OLD.
 
 ## Discussion # {#ssec-discussion}
 
@@ -1346,64 +1217,13 @@ IANA is asked to add the following entries to the "EDHOC External Authorization 
 
 --- back
 
-# Detailed considerations for AEAD_AES_128_CCM_8 # {#aead-aes-128-ccm-8-details}
-
-For the AEAD_AES_128_CCM_8 algorithm when used as AEAD Algorithm for OSCORE, larger IA and CA values are achieved, depending on the value of 'q', 'v' and 'l'. {{algorithm-limits-ccm8}} shows the resulting IA and CA probabilities enjoyed by AEAD_AES_128_CCM_8, when taking different values of 'q', 'v' and 'l' as input to the formulas defined in {{I-D.irtf-cfrg-aead-limits}}.
-
-As shown in {{algorithm-limits-ccm8}}, it is especially possible to achieve the lowest IA = 2^-50 and a good CA = 2^-70 by considering the largest possible value of the (q, v, l) triplet equal to (2^20, 2^10, 2^8), while still keeping a good security level. Note that the value of 'l' does not impact on IA, while CA displays good values for every considered value of 'l'.
-
-~~~~~~~~~~~
-+-----------------------+----------------+----------------+
-| 'q', 'v' and 'l'      | IA probability | CA probability |
-|-----------------------+----------------+----------------|
-| q=2^20, v=2^20, l=2^8 | 2^-44          | 2^-70          |
-| q=2^15, v=2^20, l=2^8 | 2^-44          | 2^-80          |
-| q=2^10, v=2^20, l=2^8 | 2^-44          | 2^-90          |
-| q=2^20, v=2^15, l=2^8 | 2^-49          | 2^-70          |
-| q=2^15, v=2^15, l=2^8 | 2^-49          | 2^-80          |
-| q=2^10, v=2^15, l=2^8 | 2^-49          | 2^-90          |
-| q=2^20, v=2^14, l=2^8 | 2^-50          | 2^-70          |
-| q=2^15, v=2^14, l=2^8 | 2^-50          | 2^-80          |
-| q=2^10, v=2^14, l=2^8 | 2^-50          | 2^-90          |
-| q=2^20, v=2^10, l=2^8 | 2^-54          | 2^-70          |
-| q=2^15, v=2^10, l=2^8 | 2^-54          | 2^-80          |
-| q=2^10, v=2^10, l=2^8 | 2^-54          | 2^-90          |
-|-----------------------+----------------+----------------|
-| q=2^20, v=2^20, l=2^6 | 2^-44          | 2^-74          |
-| q=2^15, v=2^20, l=2^6 | 2^-44          | 2^-84          |
-| q=2^10, v=2^20, l=2^6 | 2^-44          | 2^-94          |
-| q=2^20, v=2^15, l=2^6 | 2^-49          | 2^-74          |
-| q=2^15, v=2^15, l=2^6 | 2^-49          | 2^-84          |
-| q=2^10, v=2^15, l=2^6 | 2^-49          | 2^-94          |
-| q=2^20, v=2^14, l=2^6 | 2^-50          | 2^-74          |
-| q=2^15, v=2^14, l=2^6 | 2^-50          | 2^-84          |
-| q=2^10, v=2^14, l=2^6 | 2^-50          | 2^-94          |
-| q=2^20, v=2^10, l=2^6 | 2^-54          | 2^-74          |
-| q=2^15, v=2^10, l=2^6 | 2^-54          | 2^-84          |
-| q=2^10, v=2^10, l=2^6 | 2^-54          | 2^-94          |
-+-----------------------+----------------+----------------+
-~~~~~~~~~~~
-{: #algorithm-limits-ccm8 title="Probabilities for AEAD_AES_128_CCM_8 based on chosen q, v and l values." artwork-align="center"}
-
-# Estimation of 'count_q' # {#estimation-count-q}
-
-This section defines a method to compute an estimate of the counter 'count_q' (see {{sender-context}}), hence not requiring a peer to store it in its own Sender Context.
-
-This method relies on the fact that, at any point in time, a peer has performed _at most_ ENC = (SSN + SSN\*) encryptions using its own Sender Key, where:
-
-* SSN is the current value of this peer's Sender Sequence Number.
-
-* SSN\* is the current value of other peer's Sender Sequence Number. That is, SSN\* is an overestimation of the responses without Partial IV that this peer has sent.
-
-Thus, when protecting an outgoing message (see {{protecting-req-resp}}), the peer aborts the message processing if the estimated est\_q > limit\_q, where est\_q = (SSN + X) and X is determined as follows.
-
-* If the outgoing message is a response, X is the Partial IV specified in the corresponding request that this peer is responding to. Note that X < SSN\* always holds.
-
-* If the outgoing message is a request, X is the highest Partial IV value marked as received in this peer's Replay Window plus 1, or 0 if it has not accepted any protected message from the other peer yet. That is, X is the highest Partial IV specified in message received from the other peer, i.e., the highest seen Sender Sequence Number of the other peer. Note that, also in this case, X < SSN\* always holds.
-
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -03 to -04 ## {#sec-03-04}
+
+* Removal of sections about key usage limits
 
 ## Version -02 to -03 ## {#sec-02-03}
 
