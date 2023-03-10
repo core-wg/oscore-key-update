@@ -334,6 +334,9 @@ CTX_1 =                 |                    |
                         |                    |
                         |     Request #1     |
 Protect with CTX_1      |------------------->|
+                        | Uri-Path:          |
+                        | /.well-known/kudos |
+                        |   ...              |
                         | OSCORE Option:     | CTX_1 =
                         |   ...              |  updateCtx(X1, N1,
                         |   d flag: 1        |            CTX_OLD)
@@ -379,7 +382,7 @@ Verify with CTX_NEW     |                    |
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
-Then, the client sends an OSCORE request to the server, protected with the Security Context CTX\_1. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
+Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos}}), by setting the CoAP option Uri-Path to the value "/.well-known/kudos". The client protects this CoAP request using the OSCORE Security Context CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and the old Security Context CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
@@ -745,6 +748,8 @@ A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the ach
 KUDOS is intended to deprecate and replace the procedure defined in {{Section B.2 of RFC8613}}, as fundamentally achieving the same goal, while displaying a number of improvements and advantages.
 
 During a KUDOS execution a peer that is a CoAP Client must be ready to receive CoAP responses protected with a different OSCORE Security Context than what was used to protect the corresponding request. This can be the case when a CoAP client sends a request and shortly after that executes KUDOS. In such case, the CoAP request is protected with CTX\_OLD, while the CoAP response from the server is protected with CTX\_NEW. Another case when this can occur is when incoming responses are observe notifications protected with CTX\NEW, while the corresponding request from the CoAP client that started the observation was protected with CTX\_OLD.
+
+A CoAP server that supports KUDOS should make available the well-known KUDOS resource defined in {{well-known-kudos}}. The presence of such a resource (e.g. by querying well-known/core) can indicate to clients that this server supports KUDOS.
 
 For the server-initiated version, this can happen if the client uses NSTART > 1 and one of the requests results to be a KUDOS trigger. While the other requests would be server later by the server (after KUDOS) is done.
 
@@ -1223,6 +1228,18 @@ IANA is asked to add the following entries to the "EDHOC External Authorization 
 +---------+--------------------------------------+--------------------+
 ~~~~~~~~~~~
 
+## The Well-Known URI Registry {#well-known-kudos}
+
+IANA is requested to add the well-known URI "kudos" to the "Well-Known URIs" registry.
+
+- URI suffix: kudos
+
+- Change controller: IETF
+
+- Specification document(s): \[\[this document\]\]
+
+- Related information: None
+
 --- back
 
 # Document Updates # {#sec-document-updates}
@@ -1242,6 +1259,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Clarify that peers can decide to run KUDOS at any point
 
 * Elaborate on further considerations in discussion section
+
+* Defined a well-known KUDOS resource
 
 ## Version -02 to -03 ## {#sec-02-03}
 
