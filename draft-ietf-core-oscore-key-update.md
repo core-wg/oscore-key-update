@@ -290,6 +290,8 @@ The following specifically defines how KUDOS is run in its stateful FS mode achi
 
 In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory the OSCORE Master Secret and OSCORE Master Salt from the newly derived Security Context CTX\_NEW. If this is not the case, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
 
+A peer can decide that it wants to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. However, KUDOS can be used for active rekeying, and a peer is free to decide that it wants to run the KUDOS procedure at any point in time and for any reason.
+
 When running KUDOS, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
 Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and that peer MUST NOT use the originally shared OSCORE Security Context CTX_\OLD for protect outgoing non KUDOS messages. If a peer already has an OSCORE Security Context CTX_\NEW' present, when using updateCtx() to again derive a CTX\_NEW, this newly derived CTX\_NEW will replace CTX\_NEW'.
@@ -1232,6 +1234,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Include EDHOC-KeyUpdate() in methods for rekeying
 
 * Describe reasons for using the OSCORE ID update procedure
+
+* Clarify that peers can decide to run KUDOS at any point
 
 ## Version -02 to -03 ## {#sec-02-03}
 
