@@ -750,7 +750,7 @@ Since the JRC uses ID Context values as identifiers of network nodes, namely "pl
 
 The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see {{Section 3.8 of I-D.ietf-lake-edhoc}}). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an 'ead_value' encoded as a CBOR bstr.
 
-This document defines a new EDHOC EAD item KUDOS\_EAD and registers its 'ead_label' in {{iana-edhoc-aad}}. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. The possible values of the 'ead_value' are as follows:
+This document defines a new EDHOC EAD item KUDOS\_EAD and registers its 'ead_label' in {{iana-edhoc-aad}}. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, even in the case when one peer supports only the stateless mode, peers can always rely on what is defined in {{no-fs-signaling}}. The possible values of the 'ead_value' are as follows:
 
 ~~~~~~~~~~~
 +------+--------==+----------------------------------------------+
@@ -1226,6 +1226,10 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -03 to -04 ## {#sec-03-04}
 
 * Removal of sections about key usage limits
+
+* Editorial improvements and clarifications.
+
+* Include EDHOC-KeyUpdate() in methods for rekeying
 
 ## Version -02 to -03 ## {#sec-02-03}
 
