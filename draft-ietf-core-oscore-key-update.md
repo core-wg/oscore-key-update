@@ -854,7 +854,7 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
 * In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure.
 
-\[TODO: think about the possibility of safely preserving ongoing observations following an update of OSCORE IDs alone.\]
+By using this procedure the two peers achieve privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peer's communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, to make it more difficult to understand that the continued communication over the new network is taking place between the same set of two peers.
 
 ## The Recipient-ID Option # {#sec-recipient-id-option}
 
@@ -1230,6 +1230,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Editorial improvements and clarifications.
 
 * Include EDHOC-KeyUpdate() in methods for rekeying
+
+* Describe reasons for using the OSCORE ID update procedure
 
 ## Version -02 to -03 ## {#sec-02-03}
 
