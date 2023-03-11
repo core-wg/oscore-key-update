@@ -745,7 +745,7 @@ If, after having received the first KUDOS message, the responder can continue pe
 
 In either case, both KUDOS peers delete the OSCORE Security Contexts CTX\_1 and CTX\_NEW.
 
-## Preserving Observations across Key Updates # {#preserving-observe}
+## Preserving Observations Across Key Updates # {#preserving-observe}
 
 As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old OSCORE Security Context CTX\_OLD.
 
@@ -949,6 +949,8 @@ In this second example, the Initiator asks the EDHOC Responder about its support
 
 This section defines a procedure that two peers can perform, in order to update the OSCORE Sender/Recipient IDs that they use in their shared OSCORE Security Context.
 
+This results in privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peers' communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, in order to make it more difficult to understand that the continued communication over the new network is taking place between the same two peers.
+
 This procedure can be initiated by either peer, i.e., the CoAP client or the CoAP server may start it by sending the first OSCORE IDs update message. Like in KUDOS, the former case is denoted as the "forward message flow" and the latter as the "reverse message flow".
 
 When sending an OSCORE IDs update message, a peer provides its new intended OSCORE Recipient ID to the other peer.
@@ -963,7 +965,6 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
 * In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure. That is, both KUDOS and the OSCORE IDs update procedure MUST be run either in their forward message flow or in their reverse message flow.
 
-By using this procedure the two peers achieve privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peer's communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, to make it more difficult to understand that the continued communication over the new network is taking place between the same two peers.
 
 ## The Recipient-ID Option # {#sec-recipient-id-option}
 
@@ -1219,6 +1220,22 @@ Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a 
 
 In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt, ID Context) since the latest update of OSCORE Master Secret (e.g, performed by running KUDOS).
 
+## Preserving Observations Across ID Updates
+
+When running the OSCORE IDs Update procedure stand-alone or integrated in an execution of KUDOS, the following holds if Observe {{RFC7641}} is supported, in order to preserve ongoing observations beyond a change of OSCORE identifiers.
+
+* If a peer intends to keep active beyond an update of its Sender ID the observations where it is acting as CoAP client, then the peer:
+
+   - MUST store the value of the 'kid' parameter from the original Observe requests, and retain it for the whole duration of the observations, throughout which the client MUST NOT update the stored value associated with the corresponding Observe registration request; and
+
+   - MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see {{Section 5.4 of RFC8613}}), when verifying notifications for that observation as per {{Section 8.4.2 of RFC8613}}.
+
+* If a peer is acting as CoAP server in an ongoing observation, then the peer:
+
+   - MUST store the value of the 'kid' parameter from the original Observe registration request, and retain it for the whole duration of the observation, throughout which the peer MUST NOT update the stored value associated with the corresponding Observe registration request; and
+
+   - MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see {{Section 5.4 of RFC8613}}), when protecting notifications for that observation as per {{Section 8.3.1 of RFC8613}}.
+
 # Security Considerations
 
 This document mainly covers security considerations about using AEAD keys in OSCORE and their usage limits, in addition to the security considerations of {{RFC8613}}.
@@ -1361,6 +1378,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Added new section on preventing deadlocks.
 
 * Clarified that peers can decide to run KUDOS at any point.
+
+* Defined preservation of observations beyond OSCORE ID updates.
 
 * Revised discussion section, including also communication overhead.
 
