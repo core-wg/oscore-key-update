@@ -813,6 +813,32 @@ This can happen, for instance, when a CoAP client sends a request and, shortly a
 
 Also, this can happen when running KUDOS in the reverse message flow, if the client uses NSTART > 1 and one of its requests triggers a KUDOS execution, i.e., the server replies with the first KUDOS message by acting as responder. The other requests would be latest served by the server after KUDOS has been completed.
 
+### Communication Overhead
+
+Each of the two KUDOS messages displays a small communication overhead. This is determined by the following, additional information conveyed in the OSCORE option (see {{ssec-oscore-option-extensions}}).
+
+* The second byte of the OSCORE option.
+
+* The byte 'x' of the OSCORE option.
+
+* The nonce conveyed in the 'nonce' field of the OSCORE option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.
+
+Assuming nonces of the same size in both messages of the same KUDOS execution, this results in the following minimum, typical and maximum communication overhead, when considering a nonce with size 1, 8 and 16 bytes, respectively. All the indicated values are in bytes.
+
+~~~~~~~~~~~
++-------+-----------------+-----------------+
+| Nonce | Overhead of one | Overhead of one |
+| size  | KUDOS message   | KUDOS execution |
++-------+-----------------+-----------------+
+| 1     | 3               | 6               |
++-------+-----------------+-----------------+
+| 8     | 10              | 20              |
++-------+-----------------+-----------------+
+| 16    | 18              | 36              |
++-------+-----------------+-----------------+
+~~~~~~~~~~~
+{: artwork-align="center"}
+
 ### Well-Known KUDOS Resource
 
 A CoAP server that supports KUDOS should make available the well-known KUDOS resource defined in {{well-known-kudos}}. The presence of such a resource (e.g. by querying well-known/core) can indicate to clients that this server supports KUDOS.
@@ -1324,7 +1350,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Clarified that peers can decide to run KUDOS at any point.
 
-* Elaborate on further considerations in discussion section.
+* Revised discussion section, including also communication overhead.
 
 * Defined a well-known KUDOS resource.
 
