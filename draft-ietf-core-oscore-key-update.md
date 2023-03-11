@@ -555,9 +555,57 @@ Later on, this prevents a non KUDOS response protected with the new Security Con
 
 During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see {{Section 4.7 of RFC7252}}).
 
-#### Preventing Deadlock Situations
+## Avoiding Deadlocks
 
-When the server-initiated version of KUDOS is used, the two peers risk to run into a deadlock, if all the following conditions hold.
+This section defines how to avoid a deadlock in different scenarios.
+
+### Scenario 1
+
+In this scenario, an execution of KUDOS fails at PEER_1 acting as initiator, but successfully completes at PEER_2 acting as responder. After that, PEER_1 still stores CTX_OLD, while PEER_2 stores CTX_OLD and the just derived CTX_NEW.
+
+Then, PEER_1 starts a new KUDOS execution acting again as initiator, by sending the first KUDOS message as a CoAP request. This is protected with a temporary Security Context CTX_1, which is newly derived from the retained CTX_OLD, and from the new values X1 and N1 exchanged in the present KUDOS execution.
+
+Upon receving the first KUDOS message, PEER_2, acting again as responder, proceeds as follows.
+
+1. PEER_2 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1'. This is derived from the Security Context CTX_NEW established during the latest successfully completed KUDOS execution.
+
+2. The message verification inevitably fails. If PEER_2 is acting as CoAP server, it MUST NOT reply with an unprotected 4.01 (Unauthorized) CoAP response yet.
+
+3. PEER_2 MUST attempt to verify the first KUDOS message by using a temporary Security Context CTX_1. This is newly derived from the Security Context CTX_OLD retained after the latest successfully completed KUDOS execution, and from the values X1 and N1 exchanged in the present KUDOS execution.
+
+   If the message verification fails, PEER_2: i) retains CTX_OLD and CTX_NEW from the latest successfully completed KUDOS execution; ii) if acting as CoAP server, replies with an unprotected 4.01 (Unauthorized) CoAP response.
+
+   If the message verification succeeds, PEER_2: i) retains CTX_OLD from the latest successfully completed KUDOS execution; ii) replaces CTX_NEW from the latest successfully completed KUDOS execution with a new Security Context CTX_NEW', derived from CTX_OLD and from the values X1, X2, N1 and N2 exchanged in the present KUDOS execution; iii) replies with the second KUDOS message, which is protected with the just derived CTX_NEW'.
+
+### Scenario 2
+
+In this scenario, an execution of KUDOS fails at PEER_1 acting as initiator, but successfully completes at PEER_2 acting as responder. After that, PEER_1 still stores CTX_OLD, while PEER_2 stores CTX_OLD and the just derived CTX_NEW.
+
+Then, PEER_2 starts a new KUDOS execution, this time acting as initiator, by sending the first KUDOS message as a CoAP request. This is protected with a temporary Security Context CTX_1, which is newly derived from CTX_NEW established during the latest successfully completed KUDOS execution, as well as from the new values X1 and N1 exchanged in the present KUDOS execution.
+
+Upon receving the first KUDOS message, PEER_1, this time acting as responder, proceeds as follows.
+
+1. PEER_1 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1', which is derived from the retained Security Context CTX_OLD and from the value X1 and N1 exchanged in the present KUDOS execution.
+
+2. The message verification inevitably fails. If PEER_1 is acting as CoAP server, it replies with an unprotected 4.01 (Unauthorized) CoAP response.
+
+3. If PEER_2 does not receive the second KUDOS message for a pre-defined amount of time, or if it receives a 4.01 (Unauthorized) CoAP response when acting as CoAP client, then PEER_2 can start a new KUDOS execution for a maximum, pre-defined number of times.
+
+   In this case, PEER_2 sends a new first KUDOS message protected with a temporary Security Context CTX_1', which is derived from the retained CTX_OLD, as well as from the new values X1 and N1 exchanged in the present KUDOS execution.
+
+   During this time, PEER_2 does not delete CTX_NEW established during the latest successfully completed KUDOS execution, and does not delete CTX_OLD unless it successfully verifies an incoming message protected with CTX_NEW.
+
+4. Upon receiving such a new, first KUDOS message, PEER_1 verifies it by using the temporary Security Context CTX_1', which is derived from the Security Context CTX_OLD, and from the values X1 and N1 exchanged in the present KUDOS execution.
+
+   If the message verification succeeds, PEER_1 derives an OSCORE Security Context CTX_NEW' from CTX_OLD and from the values X1, X2, N1 and N2 exchanged in the present KUDOS execution. Then, it replies with the second KUDOS message, which is protected with the latest, just derived CTX_NEW'.
+
+5. Upon receiving such second KUDOS message, PEER_2 derives CTX_NEW' from the retained CTX_OLD and from the values X1, X2, N1 and N2 exchanged in the present KUDOS execution. Then, PEER_2 attempts to verify the KUDOS message using the just derived CTX_NEW'.
+
+   If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as well as the retained CTX_NEW established during the immediately previously, successfully completed KUDOS execution.
+
+### Scenario 3
+
+When the server-initiated version of KUDOS is used (see {{ssec-derive-ctx-server-init}}), the two peers risk to run into a deadlock, if all the following conditions hold.
 
 * The client is a client-only device, i.e., it does not act as CoAP server and thus does not listen for incoming requests.
 
@@ -1248,19 +1296,23 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -03 to -04 ## {#sec-03-04}
 
-* Removal of sections about key usage limits
+* Removed content about key usage limits.
 
-* Editorial improvements and clarifications.
+* Include EDHOC-KeyUpdate() in the methods for rekeying.
 
-* Include EDHOC-KeyUpdate() in methods for rekeying
+* Describe reasons for using the OSCORE ID update procedure.
 
-* Describe reasons for using the OSCORE ID update procedure
+* Clarifications on deletion of CTX_OLD and CTX_NEW.
 
-* Clarify that peers can decide to run KUDOS at any point
+* Added new section on preventing deadlocks.
 
-* Elaborate on further considerations in discussion section
+* Clarified that peers can decide to run KUDOS at any point.
 
-* Defined a well-known KUDOS resource
+* Elaborate on further considerations in discussion section.
+
+* Defined a well-known KUDOS resource.
+
+* Editorial improvements.
 
 ## Version -02 to -03 ## {#sec-02-03}
 
