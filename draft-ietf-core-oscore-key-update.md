@@ -77,7 +77,7 @@ entity:
 
 --- abstract
 
-This document defines Key Update for OSCORE (KUDOS), a lightweight procedure that two peers can use to update their keying material and establish a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option. Finally, this document specifies a method that two peers can use to update their OSCORE identifiers, as a stand-alone procedure or embedded in a KUDOS execution. Thus, this document updates RFC 8613.
+This document defines Key Update for OSCORE (KUDOS), a lightweight procedure that two CoAP endpoints can use to update their keying material by establishing a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option as well as the protection of CoAP response messages with OSCORE, and it deprecates the key update procedure specified in Appendix B.2 of RFC 8613. Thus, this document updates RFC 8613. Also, this document defines a procedure that two endpoints can use to update their OSCORE identifiers, run either stand-alone or during a KUDOS execution.
 
 --- middle
 
@@ -93,7 +93,9 @@ This document updates {{RFC8613}} as follows.
 
 * With reference to the "OSCORE Flag Bits" registry defined in {{Section 13.7 of RFC8613}} as part of the "Constrained RESTful Environments (CoRE) Parameters" registry group, it updates the entries with Bit Position 0 and 1 (see {{sec-iana}}), both originally marked as "Reserved". That is, it defines and registers the usage of the OSCORE flag bit with Bit Position 0, as the one intended to expand the space for the OSCORE flag bits in the OSCORE Option (see {{ssec-oscore-option-extensions}}). Also, it marks the bit with Bit Position of 1 as "Unassigned".
 
-* It specifies a method that two peers can use to update their OSCORE identifiers. This can be run as a stand-alone procedure, or instead embedded in a KUDOS execution.
+* It updates the protection of CoAP responses with OSCORE originally specified in {{Section 8.3 of RFC8613}}, as defined in {{sec-updated-response-protection}} of this document.
+
+Furtheremore, this document specifies a method that two peers can use to update their OSCORE identifiers. This can be run as a stand-alone procedure, or instead embedded in a KUDOS execution.
 
 ## Terminology ## {#terminology}
 
@@ -156,6 +158,15 @@ Other specifications define a number of ways for rekeying OSCORE, as summarized 
 Manually updating the OSCORE Security Context at the two peers should be a last resort option, and it might often be not practical or feasible.
 
 Even when any of the alternatives mentioned above is available, it is RECOMMENDED that two OSCORE peers update their Security Context by using the KUDOS procedure as defined in {{sec-rekeying-method}} of this document.
+
+# Updated Protection of Responses with OSCORE # {#sec-updated-response-protection}
+
+The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of step 3 of {{Section 8.3 of RFC8613}}.
+
+{:quote}
+> If the server is using a different Security Context for the response compared to what was used to verify the request (e.g., due to an occurred key update), then the server MUST take the second alternative. That is, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response.
+>
+> This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts. An exception is the procedure in {{Section B.2 of RFC8613}}, which is secure although not complying with the above.
 
 # Key Update for OSCORE (KUDOS) # {#sec-rekeying-method}
 
@@ -316,8 +327,6 @@ KUDOS may run with the initiator acting either as CoAP client or CoAP server. Th
 * The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
-In the forward message flow (see {{ssec-derive-ctx-client-init}}), the server MUST include its Sender Sequence Number as Partial IV in its response sent as the second KUDOS message. This prevents the AEAD nonce used for the request from being reused for a later response protected with the new OSCORE keying material.
-
 The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX\_NEW.
@@ -445,7 +454,7 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
 ~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-kudos-x-n-example-mess-two title="Example of X, N and X_N computing for the second KUDOS message"}
 
-Then, the server sends an OSCORE response to the client, protected with CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Also, the server MUST include its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
+Then, the server sends an OSCORE response to the client, protected with CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
 Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the response, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and CTX\_OLD, in order to derive CTX\_NEW. Finally, the client verifies the response by using CTX\_NEW and deletes CTX\_OLD.
 
@@ -491,12 +500,12 @@ Protect with CTX_OLD    |------------------->|
                         |<-------------------| Protect with CTX_1
 CTX_1 =                 | OSCORE Option:     |
   updateCtx(X1, N1,     |   ...              |
-            CTX_OLD)    |   d flag: 1        |
-                        |   X1               |
-Verify with CTX_1       |   Nonce: N1        |
+            CTX_OLD)    |   Partial IV: 0    |
                         |   ...              |
-Generate N2             |                    |
-                        |                    |
+Verify with CTX_1       |   d flag: 1        |
+                        |   X1               |
+Generate N2             |   Nonce: N1        |
+                        |   ...              |
 CTX_NEW =               |                    |
  updateCtx(Comb(X1,X2), |                    |
            Comb(N1,N2   |                    |
@@ -531,7 +540,7 @@ First, the client sends a normal OSCORE request to the server, protected with th
 
 Upon receiving the OSCORE request and after having verified it with CTX\_OLD as usual, the server generates a random value N1 and provides the updateCtx() function with the input N = N1, X = X1 and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
-Then, the server sends an OSCORE response to the client, protected with CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the server deletes CTX\_1.
+Then, the server sends an OSCORE response to the client, protected with CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the server deletes CTX\_1. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
 Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the response, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
@@ -1339,6 +1348,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Removed content about key usage limits.
 
 * Use of "forward message flow" and "reverse message flow".
+
+* Update to RFC 8613 extended to include protection of responses.
 
 * Include EDHOC-KeyUpdate() in the methods for rekeying.
 
