@@ -801,15 +801,21 @@ A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the ach
 
 KUDOS is intended to deprecate and replace the procedure defined in {{Section B.2 of RFC8613}}, as fundamentally achieving the same goal, while displaying a number of improvements and advantages.
 
-During a KUDOS execution a peer that is a CoAP Client must be ready to receive CoAP responses protected with a different OSCORE Security Context than what was used to protect the corresponding request. This can be the case when a CoAP client sends a request and shortly after that executes KUDOS. In such case, the CoAP request is protected with CTX\_OLD, while the CoAP response from the server is protected with CTX\_NEW. Another case when this can occur is when incoming responses are observe notifications protected with CTX\NEW, while the corresponding request from the CoAP client that started the observation was protected with CTX\_OLD.
-
-A CoAP server that supports KUDOS should make available the well-known KUDOS resource defined in {{well-known-kudos}}. The presence of such a resource (e.g. by querying well-known/core) can indicate to clients that this server supports KUDOS.
-
-In the reverse message flow, this can happen if the client uses NSTART > 1 and one of the requests results to be a KUDOS trigger. While the other requests would be server later by the server (after KUDOS) is done.
-
 In particular, it is especially convenient for the handling of failure events concerning the JRC node in 6TiSCH networks (see {{sec-current-methods}}). That is, among its intrinsic advantages compared to the procedure defined in {{Section B.2 of RFC8613}}, KUDOS preserves the same ID Context value, when establishing a new OSCORE Security Context.
 
 Since the JRC uses ID Context values as identifiers of network nodes, namely "pledge identifiers", the above implies that the JRC does not have to perform anymore a mapping between a new, different ID Context value and a certain pledge identifier (see {{Section 8.3.3 of RFC9031}}). It follows that pledge identifiers can remain constant once assigned, and thus ID Context values used as pledge identifiers can be employed in the long-term as originally intended.
+
+### KUDOS Interleaved with Other Message Exchanges
+
+During a KUDOS execution a peer that is a CoAP Client must be ready to receive CoAP responses protected with a different OSCORE Security Context than the one that was used to protect the corresponding request.
+
+This can happen, for instance, when a CoAP client sends a request and, shortly after that, it executes KUDOS. In such a case, the CoAP request is protected with CTX\_OLD, while the CoAP response from the server is protected with CTX\_NEW. Another case is when incoming responses are Observe notifications protected with CTX\_NEW, while the corresponding request from the CoAP client that started the observation was protected with CTX\_OLD.
+
+Also, this can happen when running KUDOS in the reverse message flow, if the client uses NSTART > 1 and one of its requests triggers a KUDOS execution, i.e., the server replies with the first KUDOS message by acting as responder. The other requests would be latest served by the server after KUDOS has been completed.
+
+### Well-Known KUDOS Resource
+
+A CoAP server that supports KUDOS should make available the well-known KUDOS resource defined in {{well-known-kudos}}. The presence of such a resource (e.g. by querying well-known/core) can indicate to clients that this server supports KUDOS.
 
 ## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
