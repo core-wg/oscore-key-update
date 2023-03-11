@@ -174,7 +174,7 @@ This section defines KUDOS, a lightweight procedure that two OSCORE peers can us
 
 KUDOS relies on the OSCORE Option defined in {{RFC8613}} and extended as defined in {{ssec-oscore-option-extensions}}, as well as on the support function updateCtx() defined in {{ssec-update-function}}.
 
-To ues KUDOS two peers perform a message exchange of OSCORE-protected CoAP messages. This message exchange between the two peers is defined in {{ssec-derive-ctx}}, with particular reference to the stateful FS mode providing forward secrecy. Building on the same message exchange, the possible use of the stateless no-FS mode is defined in {{no-fs-mode}}, as intended to peers that are not able to write in non-volatile memory. Two peers MUST run KUDOS in FS mode if they are both capable to.
+To use KUDOS, two peers perform a message exchange of OSCORE-protected CoAP messages. This message exchange between the two peers is defined in {{ssec-derive-ctx}}, with particular reference to the stateful FS mode providing forward secrecy. Building on the same message exchange, the possible use of the stateless no-FS mode is defined in {{no-fs-mode}}, as intended to peers that are not able to write in non-volatile memory. Two peers MUST run KUDOS in FS mode if they are both capable to.
 
 The key update procedure fulfills the following properties.
 
@@ -309,7 +309,7 @@ A peer can decide that it wants to run KUDOS for a variety of reasons, including
 
 When running KUDOS, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
-Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and that peer MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protect outgoing non KUDOS messages. If a peer already has an OSCORE Security Context CTX\_NEW' present, when using updateCtx() to again derive a CTX\_NEW, this newly derived CTX\_NEW will replace CTX\_NEW'.
+Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX_\OLD for protect outgoing messages. If a peer already has an OSCORE Security Context CTX\_NEW' present, when using updateCtx() to again derive a CTX\_NEW, this newly derived CTX\_NEW will replace CTX\_NEW'.
 
 Also, that peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}. More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
 
@@ -397,7 +397,7 @@ Verify with CTX_NEW     |                    |
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
-Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos}}), by setting the CoAP option Uri-Path to the value "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
+Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos}}), by targeting the resource at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
@@ -856,7 +856,7 @@ A CoAP server that supports KUDOS should make available the well-known KUDOS res
 
 The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see {{Section 3.8 of I-D.ietf-lake-edhoc}}). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an 'ead_value' encoded as a CBOR bstr.
 
-This document defines a new EDHOC EAD item KUDOS\_EAD and registers its 'ead_label' in {{iana-edhoc-aad}}. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, even in the case when one peer supports only the stateless mode, peers can always rely on what is defined in {{no-fs-signaling}}. The possible values of the 'ead_value' are as follows:
+This document defines a new EDHOC EAD item KUDOS\_EAD and registers its 'ead_label' in {{iana-edhoc-aad}}. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, irrespective of the modes they support. The possible values of the 'ead_value' are as follows:
 
 ~~~~~~~~~~~
 +------+--------==+----------------------------------------------+
@@ -962,7 +962,7 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
 * In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure. That is, both KUDOS and the OSCORE IDs update procedure MUST be run either in their forward message flow or in their reverse message flow.
 
-By using this procedure the two peers achieve privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peer's communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, to make it more difficult to understand that the continued communication over the new network is taking place between the same set of two peers.
+By using this procedure the two peers achieve privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peer's communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, to make it more difficult to understand that the continued communication over the new network is taking place between the same two peers.
 
 ## The Recipient-ID Option # {#sec-recipient-id-option}
 
@@ -1351,7 +1351,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Update to RFC 8613 extended to include protection of responses.
 
-* Include EDHOC-KeyUpdate() in the methods for rekeying.
+* Include EDHOC_KeyUpdate() in the methods for rekeying.
 
 * Describe reasons for using the OSCORE ID update procedure.
 
