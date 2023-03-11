@@ -107,11 +107,15 @@ This document additionally defines the following terminology.
 
 * Responder: the peer that receives the first KUDOS message in a KUDOS execution.
 
+* Forward message flow: the KUDOS execution workflow where the initiator acts as CoAP client (see {{ssec-derive-ctx-client-init}}).
+
+* Reverse message flow: the KUDOS execution workflow where the initiator acts as CoAP server (see {{ssec-derive-ctx-server-init}}).
+
 * FS mode: the KUDOS execution mode that achieves forward secrecy (see {{ssec-derive-ctx}}).
 
 * No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see {{no-fs-mode}}).
 
-# Current methods for Rekeying OSCORE {#sec-current-methods}
+# Current Methods for Rekeying OSCORE {#sec-current-methods}
 
 Two peers communicating using OSCORE may choose to renew their shared keying information by establishing a new OSCORE Security Context for a variety of reasons. A particular reason is approaching limits set for safe key usage. Practically, when the relevant limits have been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication. That is, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm.
 
@@ -163,7 +167,7 @@ To ues KUDOS two peers perform a message exchange of OSCORE-protected CoAP messa
 
 The key update procedure fulfills the following properties.
 
-* KUDOS can be initiated by either peer. In particular, the client or the server may start KUDOS by sending the first rekeying message.
+* KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message.
 
 * The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see {{no-fs-mode}}).
 
@@ -302,7 +306,9 @@ Note that, even though that peer had no real reason to update its OSCORE keying 
 
 Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
-KUDOS can be started by the client or the server, as defined in {{ssec-derive-ctx-client-init}} and {{ssec-derive-ctx-server-init}}, respectively. The following properties hold for both the client- and server-initiated version of KUDOS.
+The peer starting the KUDOS execution is denoted as initiator, while the other peer is denoted as responder.
+
+KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}). The following properties hold for both the forward and reverse message flow.
 
 * The initiator always offers the fresh value N1.
 * The responder always offers the fresh value N2
@@ -310,7 +316,7 @@ KUDOS can be started by the client or the server, as defined in {{ssec-derive-ct
 * The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
-If the client acts as initiator (see {{ssec-derive-ctx-client-init}}), the server MUST include its Sender Sequence Number as Partial IV in its response sent as the second KUDOS message. This prevents the AEAD nonce used for the request from being reused for a later response protected with the new OSCORE keying material.
+In the forward message flow (see {{ssec-derive-ctx-client-init}}), the server MUST include its Sender Sequence Number as Partial IV in its response sent as the second KUDOS message. This prevents the AEAD nonce used for the request from being reused for a later response protected with the new OSCORE keying material.
 
 The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
 
@@ -318,9 +324,9 @@ Once a peer acting as initiator (responder) has sent (received) the first KUDOS 
 
 In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
-### Client-Initiated Key Update {#ssec-derive-ctx-client-init}
+### Forward Message Flow {#ssec-derive-ctx-client-init}
 
-{{fig-message-exchange-client-init}} shows the KUDOS workflow with the client acting as KUDOS initiator.
+{{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator.
 
 ~~~~~~~~~~~
                      Client                Server
@@ -378,7 +384,7 @@ Protect with CTX_NEW    |------------------->|
 Verify with CTX_NEW     |                    |
                         |                    |
 ~~~~~~~~~~~
-{: #fig-message-exchange-client-init title="Client-Initiated KUDOS Workflow" artwork-align="center"}
+{: #fig-message-exchange-client-init title="Example of the KUDOS forward message flow." artwork-align="center"}
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
@@ -449,9 +455,9 @@ In the example in {{fig-message-exchange-client-init}}, the client takes the ini
 
 In case the server does not successfully verify the request, the same error handling specified in {{Section 8.2 of RFC8613}} applies. This does not result in deleting CTX\_NEW. If the server successfully verifies the request using CTX\_NEW, the server deletes CTX\_OLD and can reply with an OSCORE response protected with CTX\_NEW.
 
-Note that the server achieves key confirmation only when receiving a message from the client as protected with CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}}.
+Note that the server achieves key confirmation only when receiving a message from the client as protected with CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete CTX\_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow.
 
-Also note that, if both peers reboot simultaneously, they will run the client-initiated version of KUDOS defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
+Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
 
 #### Avoiding In-Transit Requests During a Key Update
 
@@ -463,9 +469,9 @@ Later on, this prevents a non KUDOS response protected with CTX\_NEW to cryptogr
 
 During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see {{Section 4.7 of RFC7252}}).
 
-### Server-Initiated Key Update {#ssec-derive-ctx-server-init}
+### Reverse Message Flow {#ssec-derive-ctx-server-init}
 
-{{fig-message-exchange-server-init}} shows the KUDOS workflow with the server acting as KUDOS initiator.
+{{fig-message-exchange-server-init}} shows an example of KUDOS run in the reverse message flow, with the server acting as initiator.
 
 ~~~~~~~~~~~
                       Client               Server
@@ -519,7 +525,7 @@ Discard CTX_OLD         |                    |
                         |                    |
 
 ~~~~~~~~~~~
-{: #fig-message-exchange-server-init title="Server-Initiated KUDOS Workflow" artwork-align="center"}
+{: #fig-message-exchange-server-init title="Example of the KUDOS reverse message flow" artwork-align="center"}
 
 First, the client sends a normal OSCORE request to the server, protected with the old Security Context CTX\_OLD and with the 'd' flag bit set to 0.
 
@@ -543,7 +549,7 @@ In case the client does not successfully verify the response, the same error han
 
 More generally, as soon as the client successfully verifies an incoming message protected with CTX\_NEW, the client deletes CTX\_OLD.
 
-Note that the client achieves key confirmation only when receiving a message from the server as protected with CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}} in {{ssec-derive-ctx-client-init}}.
+Note that the client achieves key confirmation only when receiving a message from the server as protected with CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete CTX\_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see {{ssec-derive-ctx-client-init}}).
 
 #### Avoiding In-Transit Requests During a Key Update
 
@@ -605,11 +611,11 @@ Upon receving the first KUDOS message, PEER_1, this time acting as responder, pr
 
 ### Scenario 3
 
-When the server-initiated version of KUDOS is used (see {{ssec-derive-ctx-server-init}}), the two peers risk to run into a deadlock, if all the following conditions hold.
+When KUDOS is run in the reverse message flow (see {{ssec-derive-ctx-server-init}}), the two peers risk to run into a deadlock, if all the following conditions hold.
 
 * The client is a client-only device, i.e., it does not act as CoAP server and thus does not listen for incoming requests.
 
-* The server needs to execute KUDOS, which, due to the previous point, can only be performed in its server-initiated version as per {{fig-message-exchange-server-init}}. That is, the server has to wait for an incoming non KUDOS request, in order to initiate KUDOS by replying with the first KUDOS message as a response.
+* The server needs to execute KUDOS, which, due to the previous point, can only be performed in its reverse message flow. That is, the server has to wait for an incoming non KUDOS request, in order to initiate KUDOS by replying with the first KUDOS message as a response.
 
 * The client sends only Non-confirmable CoAP requests to the server and does not expect responses sent back as reply, hence freeing up a request's Token value once the request is sent.
 
@@ -799,7 +805,7 @@ During a KUDOS execution a peer that is a CoAP Client must be ready to receive C
 
 A CoAP server that supports KUDOS should make available the well-known KUDOS resource defined in {{well-known-kudos}}. The presence of such a resource (e.g. by querying well-known/core) can indicate to clients that this server supports KUDOS.
 
-For the server-initiated version, this can happen if the client uses NSTART > 1 and one of the requests results to be a KUDOS trigger. While the other requests would be server later by the server (after KUDOS) is done.
+In the reverse message flow, this can happen if the client uses NSTART > 1 and one of the requests results to be a KUDOS trigger. While the other requests would be server later by the server (after KUDOS) is done.
 
 In particular, it is especially convenient for the handling of failure events concerning the JRC node in 6TiSCH networks (see {{sec-current-methods}}). That is, among its intrinsic advantages compared to the procedure defined in {{Section B.2 of RFC8613}}, KUDOS preserves the same ID Context value, when establishing a new OSCORE Security Context.
 
@@ -901,7 +907,9 @@ In this second example, the Initiator asks the EDHOC Responder about its support
 
 This section defines a procedure that two peers can perform, in order to update the OSCORE Sender/Recipient IDs that they use in their shared OSCORE Security Context.
 
-This procedure can be initiated by either peer. In particular, the client or the server may start it by sending the first OSCORE IDs update message. When sending an OSCORE IDs update message, a peer provides its new intended OSCORE Recipient ID to the other peer.
+This procedure can be initiated by either peer, i.e., the CoAP client or the CoAP server may start it by sending the first OSCORE IDs update message. Like in KUDOS, the former case is denoted as the "forward message flow" and the latter as the "reverse message flow".
+
+When sending an OSCORE IDs update message, a peer provides its new intended OSCORE Recipient ID to the other peer.
 
 Furthermore, this procedure can be executed stand-alone, or instead seamlessly integrated in an execution of KUDOS (see {{sec-rekeying-method}}) using its FS mode or no-FS mode (see {{no-fs-mode}}).
 
@@ -911,7 +919,7 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
    As defined in {{id-update-additional-actions}}, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.
 
-* In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure.
+* In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure. That is, both KUDOS and the OSCORE IDs update procedure MUST be run either in their forward message flow or in their reverse message flow.
 
 By using this procedure the two peers achieve privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peer's communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, to make it more difficult to understand that the continued communication over the new network is taking place between the same set of two peers.
 
@@ -935,9 +943,9 @@ This document particularly defines how this option is used in messages protected
 
 The Recipient-ID Option is of class E in terms of OSCORE processing (see {{Section 4.1 of RFC8613}}).
 
-### Client-Initiated OSCORE IDs Update {#example-client-initiated-id-update}
+### Forward Message Flow {#example-client-initiated-id-update}
 
-{{fig-id-update-client-init}} shows the stand-alone OSCORE IDs update workflow, with the client acting as initiator.
+{{fig-id-update-client-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the forward message flow, with the client acting as initiator.
 
 On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
@@ -1027,13 +1035,13 @@ with CTX_B  | Encrypted_Payload {               |
             | }                                 |
             |                                   |
 ~~~~~~~~~~~
-{: #fig-id-update-client-init title="Client-Initiated OSCORE IDs Update Workflow" artwork-align="center"}
+{: #fig-id-update-client-init title="Example of the OSCORE IDs Update forward message flow" artwork-align="center"}
 
 \[TODO: discuss the example\]
 
-### Server-Initiated OSCORE IDs Update {#example-server-initiated-id-update}
+### Reverse Message Flow {#example-server-initiated-id-update}
 
-{{fig-id-update-server-init}} shows the stand-alone OSCORE IDs update workflow, with the server acting as initiator.
+{{fig-id-update-server-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the reverse message flow, with the server acting as initiator.
 
 On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
@@ -1151,7 +1159,7 @@ with CTX_B  | Encrypted_Payload {               |
             | }                                 |
             |                                   |
 ~~~~~~~~~~~
-{: #fig-id-update-server-init title="Server-Initiated OSCORE IDs Update Workflow" artwork-align="center"}
+{: #fig-id-update-server-init title="Example of the OSCORE IDs Update reverse message flow" artwork-align="center"}
 
 \[TODO: discuss the example\]
 
@@ -1297,6 +1305,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -03 to -04 ## {#sec-03-04}
 
 * Removed content about key usage limits.
+
+* Use of "forward message flow" and "reverse message flow".
 
 * Include EDHOC-KeyUpdate() in the methods for rekeying.
 
