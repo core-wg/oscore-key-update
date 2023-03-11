@@ -307,7 +307,7 @@ KUDOS can be started by the client or the server, as defined in {{ssec-derive-ct
 * The initiator always offers the fresh value N1.
 * The responder always offers the fresh value N2
 * The responder is always the first one deriving the new OSCORE Security Context CTX\_NEW.
-* The initiator is always the first one achieving key confirmation, hOnce a peer has successfullyence the first one able to safely discard the old OSCORE Security Context CTX\_OLD.
+* The initiator is always the first one achieving key confirmation, hence the first one able to safely discard the old OSCORE Security Context CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
 If the client acts as initiator (see {{ssec-derive-ctx-client-init}}), the server MUST include its Sender Sequence Number as Partial IV in its response sent as the second KUDOS message. This prevents the AEAD nonce used for the request from being reused for a later response protected with the new OSCORE keying material.
