@@ -59,6 +59,7 @@ informative:
   RFC9200:
   RFC9203:
   I-D.ietf-lake-edhoc:
+  I-D.irtf-cfrg-aead-limits:
   LwM2M:
     author:
       org: Open Mobile Alliance
@@ -85,7 +86,7 @@ This document defines Key Update for OSCORE (KUDOS), a lightweight procedure tha
 
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} provides end-to-end protection of CoAP {{RFC7252}} messages at the application-layer, ensuring message confidentiality and integrity, replay protection, as well as binding of response to request between a sender and a recipient.
 
-To ensure secure communication when using OSCORE, peers may need to update their shared keying material. Among other reasons, approaching key usage limits requires updating the OSCORE keying material before communications can securely continue.
+To ensure secure communication when using OSCORE, peers may need to update their shared keying material. Among other reasons, approaching key usage limits {{I-D.irtf-cfrg-aead-limits}} requires updating the OSCORE keying material before communications can securely continue.
 
 This document updates {{RFC8613}} as follows.
 
