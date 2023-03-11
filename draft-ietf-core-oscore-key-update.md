@@ -299,13 +299,13 @@ struct {
 
 ## Key Update with Forward Secrecy # {#ssec-derive-ctx}
 
-This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
+This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. A peer may want to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, approaching limits for key usage, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. The expiration time of an OSCORE Security Context and the key usage limits are as hard limits, at which point a peer MUST stop using the keying material in the OSCORE Security Context and has to perform a rekeying before resuming secure communication with the other peer. However, KUDOS can also be used for active rekeying, and a peer may run the KUDOS procedure at any point in time and for any reason.
+
+Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
 
 The following specifically defines how KUDOS is run in its stateful FS mode achieving forward secrecy. That is, in the OSCORE Option value of all the exchanged KUDOS messages, the "No Forward Secrecy" bit is set to 0.
 
 In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory the OSCORE Master Secret and OSCORE Master Salt from the newly derived Security Context CTX\_NEW. If this is not the case, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
-
-A peer can decide that it wants to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. Expiration of an OSCORE Security Context and exceeding the key usage limit serves as hard limits, at which point a peer MUST run KUDOS. However, KUDOS can also be used for active rekeying, and a peer is free to decide that it wants to run the KUDOS procedure at any point in time and for any reason.
 
 When running KUDOS, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
