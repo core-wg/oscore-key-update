@@ -294,7 +294,7 @@ A peer can decide that it wants to run KUDOS for a variety of reasons, including
 
 When running KUDOS, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
-Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and that peer MUST NOT use the originally shared OSCORE Security Context CTX_\OLD for protect outgoing non KUDOS messages. If a peer already has an OSCORE Security Context CTX_\NEW' present, when using updateCtx() to again derive a CTX\_NEW, this newly derived CTX\_NEW will replace CTX\_NEW'.
+Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and that peer MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protect outgoing non KUDOS messages. If a peer already has an OSCORE Security Context CTX\_NEW' present, when using updateCtx() to again derive a CTX\_NEW, this newly derived CTX\_NEW will replace CTX\_NEW'.
 
 Also, that peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}. More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
 
@@ -307,7 +307,7 @@ KUDOS can be started by the client or the server, as defined in {{ssec-derive-ct
 * The initiator always offers the fresh value N1.
 * The responder always offers the fresh value N2
 * The responder is always the first one deriving the new OSCORE Security Context CTX\_NEW.
-* The initiator is always the first one achieving key confirmation, hence the first one able to safely discard the old OSCORE Security Context CTX\_OLD.
+* The initiator is always the first one achieving key confirmation, hOnce a peer has successfullyence the first one able to safely discard the old OSCORE Security Context CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
 If the client acts as initiator (see {{ssec-derive-ctx-client-init}}), the server MUST include its Sender Sequence Number as Partial IV in its response sent as the second KUDOS message. This prevents the AEAD nonce used for the request from being reused for a later response protected with the new OSCORE keying material.
@@ -320,10 +320,10 @@ In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBO
 
 ### Client-Initiated Key Update {#ssec-derive-ctx-client-init}
 
-{{fig-message-exchange-client-init}} shows the KUDOS workflow with the client acting as initiator.
+{{fig-message-exchange-client-init}} shows the KUDOS workflow with the client acting as KUDOS initiator.
 
 ~~~~~~~~~~~
-                   Client               Server
+                     Client                Server
                    (initiator)          (responder)
                         |                    |
 Generate N1             |                    |
@@ -404,7 +404,7 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
    X_N = 0x418048018a278f7faab55a
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-one title="Example of X, N and X\_N computing for the first KUDOS message"}
+{: #fig-kudos-x-n-example-mess-one title="Example of X, N and X_N computing for the first KUDOS message"}
 
 Then, the server verifies the request by using the Security Context CTX\_1.
 
@@ -437,17 +437,19 @@ An example of this nonce processing on the server with values for N1, X1, N2 and
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
    X_N = 0x44418041805248018a278f7faab55a4825a8991cd700ac01
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-two title="Example of X, N and X\_N computing for the second KUDOS message"}
+{: #fig-kudos-x-n-example-mess-two title="Example of X, N and X_N computing for the second KUDOS message"}
 
 Then, the server sends an OSCORE response to the client, protected with the new Security Context CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Also, the server MUST include its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
 Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the response, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the client verifies the response by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
-Then, the client can send a new OSCORE request protected with the new Security Context CTX\_NEW.
+From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW. As soon as the server successfully verifies an incoming message protected with the new Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD.
 
-When successfully verifying the request using the Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
+In the example in {{fig-message-exchange-client-init}}, the client takes the initiative and sends a new OSCORE request protected with the new Security Context CTX\_NEW.
 
-From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
+In case the server does not successfully verify the request, the same error handling specified in {{Section 8.2 of RFC8613}} applies. This does not result in deleting the new Security Context CTX\_NEW.
+
+If the server successfully verifies the request using the new Security Context CTX\_NEW, the server deletes the old Security Context CTX\_OLD and can reply with an OSCORE response protected with the new Security Context CTX\_NEW.
 
 Note that the server achieves key confirmation only when receiving a message from the client as protected with the new Security Context CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete the new Security Context CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}}.
 
@@ -465,7 +467,7 @@ During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS request
 
 ### Server-Initiated Key Update {#ssec-derive-ctx-server-init}
 
-{{fig-message-exchange-server-init}} shows the KUDOS workflow with the server acting as initiator.
+{{fig-message-exchange-server-init}} shows the KUDOS workflow with the server acting as KUDOS initiator.
 
 ~~~~~~~~~~~
                       Client               Server
@@ -537,11 +539,11 @@ Upon receiving the OSCORE request, the server retrieves the value N1 \| N2 from 
 
 If the verification succeeds, the server provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2) and the old Security Context CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the server verifies the request by using the Security Context CTX\_NEW and deletes the old Security Context CTX\_OLD.
 
-After that, the server can send an OSCORE response protected with the new Security Context CTX\_NEW.
+From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW. In particular, as shown in the example in {{fig-message-exchange-server-init}}, the server can send an OSCORE response protected with the new Security Context CTX\_NEW.
 
-When successfully verifying the response using the Security Context CTX\_NEW, the client deletes the old Security Context CTX\_OLD.
+In case the client does not successfully verify the response, the same error handling specified in {{Section 8.4 of RFC8613}} applies. This does not result in deleting the new Security Context CTX\_NEW. If the client successfully verifies the response using the Security Context CTX\_NEW, the client deletes the old Security Context CTX\_OLD.
 
-From then on, the two peers can protect their message exchanges by using the new Security Context CTX\_NEW.
+More generally, as soon as the client successfully verifies an incoming message protected with the new Security Context CTX\_NEW, the client deletes the old Security Context CTX\_OLD.
 
 Note that the client achieves key confirmation only when receiving a message from the server as protected with the new Security Context CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete the new Security Context CTX\_NEW and start a new client-initiated key update process, by taking the role of initiator as per {{fig-message-exchange-client-init}} in {{ssec-derive-ctx-client-init}}.
 
