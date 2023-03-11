@@ -309,7 +309,7 @@ A peer can decide that it wants to run KUDOS for a variety of reasons, including
 
 When running KUDOS, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
-Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX_\OLD for protect outgoing messages. If a peer already has an OSCORE Security Context CTX\_NEW' present, when using updateCtx() to again derive a CTX\_NEW, this newly derived CTX\_NEW will replace CTX\_NEW'.
+Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protect outgoing messages. If a peer already has an OSCORE Security Context CTX\_NEW' present, when using updateCtx() to again derive a CTX\_NEW, this newly derived CTX\_NEW will replace CTX\_NEW'.
 
 Also, that peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}. More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
 
@@ -580,7 +580,7 @@ In this scenario, an execution of KUDOS fails at PEER_1 acting as initiator, but
 
 Then, PEER_1 starts a new KUDOS execution acting again as initiator, by sending the first KUDOS message as a CoAP request. This is protected with a temporary Security Context CTX_1, which is newly derived from the retained CTX_OLD, and from the new values X1 and N1 exchanged in the present KUDOS execution.
 
-Upon receving the first KUDOS message, PEER_2, acting again as responder, proceeds as follows.
+Upon receiving the first KUDOS message, PEER_2, acting again as responder, proceeds as follows.
 
 1. PEER_2 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1'. This is derived from the Security Context CTX_NEW established during the latest successfully completed KUDOS execution.
 
@@ -598,7 +598,7 @@ In this scenario, an execution of KUDOS fails at PEER_1 acting as initiator, but
 
 Then, PEER_2 starts a new KUDOS execution, this time acting as initiator, by sending the first KUDOS message as a CoAP request. This is protected with a temporary Security Context CTX_1, which is newly derived from CTX_NEW established during the latest successfully completed KUDOS execution, as well as from the new values X1 and N1 exchanged in the present KUDOS execution.
 
-Upon receving the first KUDOS message, PEER_1, this time acting as responder, proceeds as follows.
+Upon receiving the first KUDOS message, PEER_1, this time acting as responder, proceeds as follows.
 
 1. PEER_1 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1', which is derived from the retained Security Context CTX_OLD and from the value X1 and N1 exchanged in the present KUDOS execution.
 
