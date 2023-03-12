@@ -58,6 +58,8 @@ informative:
   RFC9031:
   RFC9200:
   RFC9203:
+  RFC9176:
+  RFC8615:
   I-D.ietf-lake-edhoc:
   I-D.irtf-cfrg-aead-limits:
   LwM2M:
@@ -349,10 +351,8 @@ CTX_1 =                 |                    |
             CTX_OLD)    |                    |
                         |                    |
                         |     Request #1     |
-Protect with CTX_1      |------------------->|
-                        | Uri-Path:          |
-                        | /.well-known/kudos |
-                        |   ...              |
+Protect with CTX_1      |------------------->| /.well-known/kudos
+                        |                    |
                         | OSCORE Option:     | CTX_1 =
                         |   ...              |  updateCtx(X1, N1,
                         |   d flag: 1        |            CTX_OLD)
@@ -398,7 +398,7 @@ Verify with CTX_NEW     |                    |
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
-Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos}}), by targeting the resource at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
+Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos-desc}}), by targeting the resource at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
@@ -513,7 +513,8 @@ CTX_NEW =               |                    |
               CTX_OLD)  |                    |
                         |                    |
                         |     Request #2     |
-Protect with CTX_NEW    |------------------->|
+Protect with CTX_NEW    |------------------->| /.well-known/kudos
+                        |                    |
                         | OSCORE Option:     | CTX_NEW =
                         |   ...              |  updateCtx(Comb(X1,X2),
                         |                    |            Comb(N1,N2),
@@ -849,9 +850,9 @@ Assuming nonces of the same size in both messages of the same KUDOS execution, t
 ~~~~~~~~~~~
 {: artwork-align="center"}
 
-### Well-Known KUDOS Resource
+### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
-A CoAP server that supports KUDOS should make available the well-known KUDOS resource defined in {{well-known-kudos}}. The presence of such a resource (e.g. by querying well-known/core) can indicate to clients that this server supports KUDOS.
+According to this specification, KUDOS is transferred in POST requests to the Uri-Path: "/.well-known/kudos" (see {{well-known-kudos}}), and 2.04 (Changed) responses. An application may define its own path that can be discovered, e.g., using a resource directory {{RFC9176}}. Client applications can use the resource type "core.kudos" to discover a server's KUDOS resource, i.e., where to send KUDOS requests, see {{rt-kudos}}.
 
 ## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
@@ -1345,7 +1346,7 @@ IANA is asked to add the following entries to the "EDHOC External Authorization 
 
 ## The Well-Known URI Registry {#well-known-kudos}
 
-IANA is requested to add the well-known URI "kudos" to the "Well-Known URIs" registry.
+IANA is asked to add the 'kudos' well-known URI to the Well-Known URIs registry as defined by {{RFC8615}}.
 
 - URI suffix: kudos
 
@@ -1354,6 +1355,16 @@ IANA is requested to add the well-known URI "kudos" to the "Well-Known URIs" reg
 - Specification document(s): \[\[this document\]\]
 
 - Related information: None
+
+## Resource Type (rt=) Link Target Attribute Values Registry {#rt-kudos}
+
+IANA is requested to add the resource type "core.kudos" to the "Resource Type (rt=) Link Target Attribute Values" registry under the registry group "Constrained RESTful Environments (CoRE) Parameters".
+
+-  Value: "core.kudos"
+
+-  Description: KUDOS resource.
+
+-  Reference: \[\[this document\]\]
 
 --- back
 
@@ -1383,7 +1394,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Revised discussion section, including also communication overhead.
 
-* Defined a well-known KUDOS resource.
+* Defined a well-known KUDOS resource and a KUDOS resource type.
 
 * Editorial improvements.
 
