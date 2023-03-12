@@ -335,6 +335,8 @@ The length of the nonces N1 and N2 is application specific. The application need
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX\_NEW.
 
+In particular, CTX\_OLD is the most recent OSCORE Security Context a peer has with a given ID Context, before initiating KUDOS, or upon having received and successfully verified the first KUDOS message. In turn, CTX\_NEW is the most recent OSCORE Security Context a peer has, with a given ID Context, before sending the second KUDOS message, or upon having received and successfully verified the second KUDOS message.
+
 In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
 ### Forward Message Flow {#ssec-derive-ctx-client-init}
