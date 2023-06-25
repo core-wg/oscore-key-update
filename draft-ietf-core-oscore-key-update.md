@@ -1018,16 +1018,16 @@ The Recipient-ID Option is of class E in terms of OSCORE processing (see {{Secti
        (initiator)                         (responder)
             |                                   |
 CTX_A {     |                                   | CTX_A {
- SID = 1    |                                   |  SID = 0
- RID = 0    |                                   |  RID = 1
+ SID = 0x01 |                                   |  SID = 0x00
+ RID = 0x00 |                                   |  RID = 0x01
 }           |                                   | }
             |                                   |
             |            Request #1             |
 Protect     |---------------------------------->|
-with CTX_A  | OSCORE Option: ..., kid:1         | Verify
+with CTX_A  | OSCORE Option: ..., kid: 0x01     | Verify
             | Encrypted_Payload {               | with CTX_A
             |    ...                            |
-            |    RecipientID: 42                |
+            |    Recipient-ID: 0x42             |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
@@ -1037,19 +1037,19 @@ with CTX_A  | OSCORE Option: ..., kid:1         | Verify
 Verify      | OSCORE Option: ...                | with CTX_A
 with CTX_A  | Encrypted_Payload {               |
             |    ...                            |
-            |    Recipient-ID: 78               |
+            |    Recipient-ID: 0x78             |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
             |                                   |
 CTX_B {     |                                   | CTX_B {
- SID = 78   |                                   |  SID = 42
- RID = 42   |                                   |  RID = 78
+ SID = 0x78 |                                   |  SID = 0x42
+ RID = 0x42 |                                   |  RID = 0x78
 }           |                                   | }
             |                                   |
             |            Request #2             |
 Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
             | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
@@ -1068,7 +1068,7 @@ CTX_A       |                                   |
             |                                   |
             |            Request #3             |
 Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
             | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
@@ -1087,7 +1087,29 @@ with CTX_B  | Encrypted_Payload {               |
 ~~~~~~~~~~~
 {: #fig-id-update-client-init title="Example of the OSCORE IDs Update forward message flow" artwork-align="center"}
 
-\[TODO: discuss the example\]
+Before the OSCORE IDs update procedure starts, the client (the server) shares with the server (the client) an OSCORE Security Context CTX_A with Sender ID 0x01 (0x00) and Recipient ID 0x00 (0x01).
+
+When starting the OSCORE IDs update procedure, the client determines its new intended OSCORE Recipient ID 0x42. Then, the client prepares a CoAP request targeting an application resource at the server. The request includes the Request-ID Option, with value the client's new Recipient ID 0x42.
+
+The client protects the request with CTX_A, i.e., by using the keying material derived from the current client's Sender ID 0x01. The protected request specifies the client's current Sender ID 0x01 in the 'kid' field of the OSCORE Option. After that, the client sends the request to the server as Request \#1.
+
+Upon receiving, decrypting, and successfully verifying the OSCORE message Request \#1, the server retrieves the value 0x42 from the Recipient-ID Option, and determines its new intended OSCORE Recipient ID 0x78. Then, the server prepares a CoAP response including the Request-ID Option, with value the server's new Recipient ID 0x78.
+
+The server protects the response with CTX_A, i.e., by using the keying material derived from the current server's Sender ID 0x00. After that, the server sends the response to the client.
+
+Then, the server considers 0x42 and 0x78 as its new Sender ID and Recipient ID to use with the client, respectively. As shown in the example, the server practically installs a new OSCORE Security Context CTX_B where: i) the Sender ID and the Recipient ID are 0x42 and 0x78, respectively; ii) the Sender Sequence Number and the Replay Window are re-initialized (see {{Section 3.2.2 of RFC8613}}); iii) anything else is like in the OSCORE Security Context used to encrypt the OSCORE message Response \#1.
+
+Upon receiving, decrypting, and successfully verifying the OSCORE message Response \#1, the client considers 0x78 and 0x42 as the new Sender ID and Recipient ID to use with the server, respectively. As shown in the example, the client practically installs a new OSCORE Security Context CTX_B where: i) the Sender ID and the Recipient ID are 0x78 and 0x42, respectively; ii) the Sender Sequence Number and the Replay Window are re-initialized (see {{Section 3.2.2 of RFC8613}}); iii) anything else is like in the OSCORE Security Context used to decrypt the OSCORE response.
+
+From then on, the client and the server can exchange messages protected with the OSCORE Security Context CTX_B, i.e., according to the new OSCORE Sender/Recipient IDs and using new keying material derived from those.
+
+That is, the client sends the OSCORE message Request \#2, which is protected with CTX_B and specifies the new client's Sender ID 0x78 in the 'kid' field of the OSCORE Option.
+
+Upon receiving the OSCORE message Request \#2, the server retrieves the OSCORE Security Context CTX_B, according to its new Recipient ID 0x78 specified in the 'kid' field of the OSCORE Option. Then, the server decrypts and verifies the response by using CTX_B. Finally, the server prepares a CoAP response Response \#2, protects it with CTX_B, and sends it to the client.
+
+Upon receiving the OSCORE message Response \#2, the client decrypts and verifies it with the OSCORE Security Context CTX_B. In case of successfull verification, the client confirms that the server is aligned with the new OSCORE Sender/Recipient IDs, and thus deletes the OSCORE Security Context CTX_A.
+
+After that, one further exchange occurs, where both the CoAP request and the CoAP response are protected with the OSCORE Security Context CTX_B. In particular, upon receiving, decrypting, and successfully verifying the OSCORE message Request \#3, the server confirms that the client is aligned with the new OSCORE Sender/Recipient IDs, and thus deletes the OSCORE Security Context CTX_A.
 
 ### Reverse Message Flow {#example-server-initiated-id-update}
 
@@ -1100,13 +1122,13 @@ with CTX_B  | Encrypted_Payload {               |
        (responder)                         (initiator)
             |                                   |
 CTX_A {     |                                   | CTX_A {
- SID = 1    |                                   |  SID = 0
- RID = 0    |                                   |  RID = 1
+ SID = 0x01 |                                   |  SID = 0x00
+ RID = 0x00 |                                   |  RID = 0x01
 }           |                                   | }
             |                                   |
             |            Request #1             |
 Protect     |---------------------------------->|
-with CTX_A  | OSCORE Option: ..., kid:1         | Verify
+with CTX_A  | OSCORE Option: ..., kid: 0x01     | Verify
             | Encrypted_Payload {               | with CTX_A
             |    ...                            |
             |    Application Payload            |
@@ -1122,13 +1144,13 @@ with CTX_A  | Encrypted_Payload {               |
             | }                                 |
             |                                   |
 CTX_A {     |                                   | CTX_A {
- SID = 1    |                                   |  SID = 0
- RID = 0    |                                   |  RID = 1
+ SID = 0x01 |                                   |  SID = 0x00
+ RID = 0x00 |                                   |  RID = 0x01
 }           |                                   | }
             |                                   |
             |            Request #2             |
 Protect     |---------------------------------->|
-with CTX_A  | OSCORE Option: ..., kid:1         | Verify
+with CTX_A  | OSCORE Option: ..., kid: 0x01     | Verify
             | Encrypted_Payload {               | with CTX_A
             |    ...                            |
             |    Recipient-ID: 42               |
@@ -1144,13 +1166,13 @@ with CTX_A  | Encrypted_Payload {               |
             | }                                 |
             |                                   |
 CTX_B {     |                                   | CTX_B {
- SID = 78   |                                   |  SID = 42
- RID = 42   |                                   |  RID = 78
+ SID = 0x78 |                                   |  SID = 0x42
+ RID = 0x42 |                                   |  RID = 0x78
 }           |                                   | }
             |                                   |
             |            Request #3             |
 Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
             | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
@@ -1169,7 +1191,7 @@ CTX_A       |                                   |
             |                                   |
             |            Request #4             |
 Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid:78        | Verify
+with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
             | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
@@ -1371,6 +1393,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Increased maximum size of the Recipient-ID Option.
 
 * Detailed lifecycle of the OSCORE IDs update procedure.
+
+* Described examples of OSCORE IDs update procedure.
 
 * Clarifications and editorial improvements.
 
