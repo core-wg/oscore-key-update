@@ -955,9 +955,7 @@ This section defines a procedure that two peers can perform, in order to update 
 
 This results in privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peers' communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, in order to make it more difficult to understand that the continued communication over the new network is taking place between the same two peers.
 
-When performing an update of OSCORE Sender/Recipient IDs, a peer provides its new intended OSCORE Recipient ID to the other peer, by means of the Recipient-ID Option defined in {{sec-recipient-id-option}}.
-
-Hereafter, this document refers to a message including the Recipient-ID Option as an "OSCORE IDs update (request/response) message", and to a message not including the Recipient-ID Option as a "non OSCORE IDs update (request/response) message".
+When performing an update of OSCORE Sender/Recipient IDs, a peer provides its new intended OSCORE Recipient ID to the other peer, by means of the Recipient-ID Option defined in {{sec-recipient-id-option}}. Hereafter, this document refers to a message including the Recipient-ID Option as an "OSCORE IDs update (request/response) message".
 
 This procedure can be initiated by either peer, i.e., the CoAP client or the CoAP server may start it by sending the first OSCORE IDs update message. Like in KUDOS, the former case is denoted as the "forward message flow" and the latter as the "reverse message flow".
 
@@ -971,6 +969,23 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
 * In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure. That is, both KUDOS and the OSCORE IDs update procedure MUST be run either in their forward message flow or in their reverse message flow.
 
+An initiator terminates an ongoing OSCORE IDs procedure with another peer as failed, in case, after having sent the first OSCORE IDs update message for the procedure in question, a pre-defined amount of time has elapsed without receiving and successfully verifying the second OSCORE IDs update message from the other peer. It is RECOMMENDED that such an amount of time is equal to MAX_TRANSMIT_WAIT (see {{Section 4.8.2 of RFC7252}}).
+
+A peer terminates an ongoing OSCORE IDs procedure with another peer as successful, in any of the following two cases.
+
+* The peer is acting as initiator, and it has received and successfully verified the second OSCORE IDs update message from the other peer.
+
+* The peer is acting as responder, and it has sent the second OSCORE IDs update message to the other peer.
+
+A peer MUST NOT initiate an OSCORE IDs procedure with another peer, if it has another such procedure ongoing with that other peer.
+
+Upon receiving a valid OSCORE IDs update message, a responder that supports the OSCORE IDs update procedure MUST send the second OSCORE IDs update message, except in the following case.
+
+* The received OSCORE IDs update messages is not a KUDOS message (i.e., the OSCORE IDs update procedure is being performed stand-alone) and the responder has no eligible Recipient ID to offer to the initiator (see {{id-update-additional-actions}}).
+
+   If the responder is a server, the responder MUST also reply to the received OSCORE IDs update request message with a protected 5.03 (Service Unavailable) error response. The error response MUST NOT include the Recipient-ID Option, and its diagnostic payload MAY provide additional information.
+
+   When receiving the error response, the initiator terminates the OSCORE IDs procedure as failed.
 
 ## The Recipient-ID Option # {#sec-recipient-id-option}
 
@@ -1354,6 +1369,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -04 to -05 ## {#sec-04-05}
 
 * Increased maximum size of the Recipient-ID Option.
+
+* Detailed lifecycle of the OSCORE IDs update procedure.
 
 * Clarifications and editorial improvements.
 
