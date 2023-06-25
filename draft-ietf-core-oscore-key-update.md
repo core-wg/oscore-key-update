@@ -99,7 +99,7 @@ This document updates {{RFC8613}} as follows.
 
 * It updates the protection of CoAP responses with OSCORE originally specified in {{Section 8.3 of RFC8613}}, as defined in {{sec-updated-response-protection}} of this document.
 
-Furthermore, this document specifies a method that two peers can use to update their OSCORE identifiers. This can be run as a stand-alone procedure, or instead embedded in a KUDOS execution.
+Furthermore, this document specifies a method that two peers can use to update their OSCORE identifiers. This can be run as a stand-alone procedure, or instead integrated in a KUDOS execution.
 
 ## Terminology ## {#terminology}
 
@@ -994,9 +994,9 @@ The Recipient-ID Option is of class E in terms of OSCORE processing (see {{Secti
 
 ### Forward Message Flow {#example-client-initiated-id-update}
 
-{{fig-id-update-client-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the forward message flow, with the client acting as initiator.
+{{fig-id-update-client-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the forward message flow, with the client acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
-On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+{{sec-id-update-in-kudos-forward}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the forward message flow.
 
 ~~~~~~~~~~~
           Client                             Server
@@ -1018,7 +1018,7 @@ with CTX_A  | OSCORE Option: ..., kid:1         | Verify
             | }                                 |
             |                                   |
 
-          // When embedded in KUDOS, CTX_1 is CTX_A,
+          // When integrated in KUDOS, CTX_1 is CTX_A,
           // and there cannot be application payload.
 
             |                                   |
@@ -1033,7 +1033,7 @@ with CTX_A  | Encrypted_Payload {               |
             | }                                 |
             |                                   |
 
-           // When embedded in KUDOS, this message
+           // When integrated in KUDOS, this message
            // is protected using CTX_NEW, and there
            // cannot be application payload.
            //
@@ -1090,9 +1090,9 @@ with CTX_B  | Encrypted_Payload {               |
 
 ### Reverse Message Flow {#example-server-initiated-id-update}
 
-{{fig-id-update-server-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the reverse message flow, with the server acting as initiator.
+{{fig-id-update-server-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the reverse message flow, with the server acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
-On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+{{sec-id-update-in-kudos-reverse}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the reverse message flow.
 
 ~~~~~~~~~~~
           Client                             Server
@@ -1112,7 +1112,7 @@ with CTX_A  | OSCORE Option: ..., kid:1         | Verify
             | }                                 |
             |                                   |
 
-          // When (to be) embedded in KUDOS,
+          // When (to be) integrated in KUDOS,
           // CTX_OLD is CTX_A
 
             |                                   |
@@ -1125,7 +1125,7 @@ with CTX_A  | Encrypted_Payload {               |
             |    Application Payload            |
             | }                                 |
 
-          // When embedded in KUDOS, this message is
+          // When integrated in KUDOS, this message is
           // protected with CTX_1 instead, and
           // there cannot be application payload.
 
@@ -1145,7 +1145,7 @@ with CTX_A  | OSCORE Option: ..., kid:1         | Verify
             | }                                 |
             |                                   |
 
-          // When embedded in KUDOS, this message is
+          // When integrated in KUDOS, this message is
           // protected with CTX_NEW instead, and
           // there cannot be application payload.
 
@@ -1159,7 +1159,7 @@ with CTX_A  | Encrypted_Payload {               |
             | }                                 |
             |                                   |
 
-          // When embedded in KUDOS, this message is
+          // When integrated in KUDOS, this message is
           // protected with CTX_NEW instead, and
           // there cannot be application payload.
 
@@ -1373,7 +1373,7 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 --- back
 
-# Examples of OSCORE ID Updates Embedded in KUDOS # {#sec-id-update-in-kudos}
+# Examples of OSCORE ID Updates Integrated in KUDOS # {#sec-id-update-in-kudos}
 
 ## Forward Message Flow # {#sec-id-update-in-kudos-forward}
 
