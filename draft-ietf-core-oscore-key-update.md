@@ -1228,12 +1228,12 @@ IANA is asked to enter the following option number to the "CoAP Option Numbers" 
 +--------+--------------+------------+
 | Number |     Name     | Reference  |
 +--------+--------------+------------+
-|  TBD   | Recipient-ID | [RFC-XXXX] |
+| TBD24  | Recipient-ID | [RFC-XXXX] |
 +--------+--------------+------------+
 ~~~~~~~~~~~
 {: artwork-align="center"}
 
-The number suggested to IANA for the Recipient-ID Option is 24.
+Note to RFC Editor: Following the registration of the CoAP Option Number 24, please replace "TBD24" with "24" in the table above. Then, please delete this paragraph.
 
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
