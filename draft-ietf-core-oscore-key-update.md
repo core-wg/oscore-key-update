@@ -955,15 +955,17 @@ This section defines a procedure that two peers can perform, in order to update 
 
 This results in privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peers' communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, in order to make it more difficult to understand that the continued communication over the new network is taking place between the same two peers.
 
-This procedure can be initiated by either peer, i.e., the CoAP client or the CoAP server may start it by sending the first OSCORE IDs update message. Like in KUDOS, the former case is denoted as the "forward message flow" and the latter as the "reverse message flow".
+When performing an update of OSCORE Sender/Recipient IDs, a peer provides its new intended OSCORE Recipient ID to the other peer, by means of the Recipient-ID Option defined in {{sec-recipient-id-option}}.
 
-When sending an OSCORE IDs update message, a peer provides its new intended OSCORE Recipient ID to the other peer.
+Hereafter, this document refers to a message including the Recipient-ID Option as an "OSCORE IDs (request/response) update message", and to a message not including the Recipient-ID Option as a "non OSCORE IDs (request/response) update message".
+
+This procedure can be initiated by either peer, i.e., the CoAP client or the CoAP server may start it by sending the first OSCORE IDs update message. Like in KUDOS, the former case is denoted as the "forward message flow" and the latter as the "reverse message flow".
 
 Furthermore, this procedure can be executed stand-alone, or instead seamlessly integrated in an execution of KUDOS (see {{sec-rekeying-method}}) using its FS mode or no-FS mode (see {{no-fs-mode}}).
 
 * In the former stand-alone case, updating the OSCORE Sender/Recipient IDs effectively results in updating part of the current OSCORE Security Context.
 
-   That is, both peers derive a new Sender Key, Recipient Key and Common IV, as defined in {{Section 3.2 of RFC8613}}. Also, both peer re-initialize the Sender Sequence Number and the replay window accordingly, as defined in {{Section 3.2.2 of RFC8613}}. Since the same Master Secret is preserved, forward secrecy is not achieved.
+   That is, both peers derive a new Sender Key, Recipient Key, and Common IV, as defined in {{Section 3.2 of RFC8613}}. Also, both peer re-initialize the Sender Sequence Number and the replay window accordingly, as defined in {{Section 3.2.2 of RFC8613}}. Since the same Master Secret is preserved, forward secrecy is not achieved.
 
    As defined in {{id-update-additional-actions}}, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.
 
@@ -972,7 +974,7 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
 ## The Recipient-ID Option # {#sec-recipient-id-option}
 
-The Recipient ID Option defined in this section has the properties summarized in {{fig-recipient-id-option}}, which extends Table 4 of {{RFC7252}}. That is, the option is elective, safe to forward, part of the cache key and non repeatable.
+The Recipient ID-Option defined in this section has the properties summarized in {{fig-recipient-id-option}}, which extends Table 4 of {{RFC7252}}. That is, the option is elective, safe to forward, part of the cache key, and non repeatable.
 
 ~~~~~~~~~~~
 +------+---+---+---+---+--------------+--------+--------+---------+
@@ -1047,7 +1049,7 @@ CTX_B {     |                                   | CTX_B {
             |            Request #2             |
 Protect     |---------------------------------->|
 with CTX_B  | OSCORE Option: ..., kid:78        | Verify
-            | Encrypted_Payload {               | with  CTX_B
+            | Encrypted_Payload {               | with CTX_B
             |    ...                            |
             |    Application Payload            |
             | }                                 |
@@ -1218,11 +1220,11 @@ More precisely, a peer has experienced a loss of state if it cannot access the l
 
 Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer performs the following additional steps.
 
-* When sending an OSCORE IDs update message, the peer MUST specify its new intended OSCORE Recipient ID as value of the Recipient-ID Option only if such a Recipient ID is not only available (see {{Section 3.3 of RFC8613}}, but it has also never been used as Recipient ID with the current triplet (Master Secret, Master Salt, ID Context).
+* When a peer sends an OSCORE IDs update message, the value of the Recipient-ID Option that the peer specifies as its new intended OSCORE Recipient ID MUST fulfill both the following conditions: it is currently available as Recipient ID to use for the peer (see {{Section 3.3 of RFC8613}}); and the peer has never used it as Recipient ID with the current triplet (Master Secret, Master Salt, ID Context).
 
-* When receiving an OSCORE IDs update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with current triplet (Master Secret, Master Salt, ID Context).
+* When receiving an OSCORE IDs update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with the current triplet (Master Secret, Master Salt, ID Context).
 
-In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt, ID Context) since the latest update of OSCORE Master Secret (e.g, performed by running KUDOS).
+In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt, ID Context) since the latest update of the OSCORE Master Secret (e.g., performed by running KUDOS).
 
 ## Preserving Observations Across ID Updates
 
