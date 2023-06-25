@@ -957,7 +957,7 @@ This results in privacy benefits, as it helps mitigate the ability of an adversa
 
 When performing an update of OSCORE Sender/Recipient IDs, a peer provides its new intended OSCORE Recipient ID to the other peer, by means of the Recipient-ID Option defined in {{sec-recipient-id-option}}.
 
-Hereafter, this document refers to a message including the Recipient-ID Option as an "OSCORE IDs (request/response) update message", and to a message not including the Recipient-ID Option as a "non OSCORE IDs (request/response) update message".
+Hereafter, this document refers to a message including the Recipient-ID Option as an "OSCORE IDs update (request/response) message", and to a message not including the Recipient-ID Option as a "non OSCORE IDs update (request/response) message".
 
 This procedure can be initiated by either peer, i.e., the CoAP client or the CoAP server may start it by sending the first OSCORE IDs update message. Like in KUDOS, the former case is denoted as the "forward message flow" and the latter as the "reverse message flow".
 
