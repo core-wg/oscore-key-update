@@ -50,6 +50,7 @@ normative:
   RFC8174:
   RFC8613:
   RFC8949:
+  I-D.ietf-lake-edhoc:
   <!--- I.D.ietf-core-oscore-key-limits: -->
 
 informative:
@@ -61,7 +62,6 @@ informative:
   RFC9203:
   RFC9176:
   RFC8615:
-  I-D.ietf-lake-edhoc:
   I-D.irtf-cfrg-aead-limits:
   LwM2M:
     author:
