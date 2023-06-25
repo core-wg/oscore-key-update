@@ -981,7 +981,7 @@ The Recipient ID-Option defined in this section has the properties summarized in
 | No.  | C | U | N | R | Name         | Format | Length | Default |
 +------+---+---+---+---+--------------+--------+--------+---------+
 |      |   |   |   |   |              |        |        |         |
-| TBD1 |   |   |   |   | Recipient-ID | opaque |  0-7   | (none)  |
+| TBD1 |   |   |   |   | Recipient-ID | opaque | 0-255  | (none)  |
 |      |   |   |   |   |              |        |        |         |
 +------+---+---+---+---+--------------+--------+--------+---------+
          C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
@@ -1388,6 +1388,8 @@ TBD
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -04 to -05 ## {#sec-04-05}
+
+* Increased maximum size of the Recipient-ID Option.
 
 * Clarifications and editorial improvements.
 
