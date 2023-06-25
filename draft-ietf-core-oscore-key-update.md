@@ -981,7 +981,7 @@ The Recipient ID-Option defined in this section has the properties summarized in
 | No.  | C | U | N | R | Name         | Format | Length | Default |
 +------+---+---+---+---+--------------+--------+--------+---------+
 |      |   |   |   |   |              |        |        |         |
-| TBD1 |   |   |   |   | Recipient-ID | opaque | 0-255  | (none)  |
+| TBD1 |   |   |   |   | Recipient-ID | opaque | 0-32   | (none)  |
 |      |   |   |   |   |              |        |        |         |
 +------+---+---+---+---+--------------+--------+--------+---------+
          C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
