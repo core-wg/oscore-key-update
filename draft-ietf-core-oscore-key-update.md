@@ -1370,7 +1370,7 @@ IANA is asked to add the following entries to the "EDHOC External Authorization 
 ~~~~~~~~~~~
 +---------+--------------------------------------+--------------------+
 | Label   | Description                          | Reference          |
-+=========+======================================+====================+
++---------+--------------------------------------+--------------------+
 | TBD1    | Indicates whether this peer supports | [RFC-XXXX]         |
 |         | KUDOS and in which mode(s)           |                    |
 +---------+--------------------------------------+--------------------+
@@ -1384,7 +1384,7 @@ IANA is asked to add the 'kudos' well-known URI to the Well-Known URIs registry 
 
 - Change controller: IETF
 
-- Specification document(s): \[\[this document\]\]
+- Specification document(s): {{&SELF}}
 
 - Related information: None
 
@@ -1396,7 +1396,7 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 -  Description: KUDOS resource.
 
--  Reference: \[\[this document\]\]
+-  Reference: {{&SELF}}
 
 --- back
 
@@ -1507,6 +1507,6 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 # Acknowledgments # {#acknowledgments}
 {: numbered="no"}
 
-The authors sincerely thank {{{Christian Amsüss}}}, {{{Carsten Bormann}}}, {{{John Preuß Mattsson}}}, {{{Göran Selander}}} and {{{Rafa Marin-Lopez}}} for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{Carsten Bormann}}}, {{{John Preuß Mattsson}}}, {{{Göran Selander}}}, and {{{Rafa Marin-Lopez}}} for their feedback and comments.
 
 The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 project SIFIS-Home (Grant agreement 952652).
