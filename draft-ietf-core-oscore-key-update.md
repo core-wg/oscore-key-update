@@ -1373,9 +1373,23 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 --- back
 
+# Examples of OSCORE ID Updates Embedded in KUDOS # {#sec-id-update-in-kudos}
+
+## Forward Message Flow # {#sec-id-update-in-kudos-forward}
+
+TBD
+
+## Reverse Message Flow # {#sec-id-update-in-kudos-reverse}
+
+TBD
+
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -04 to -05 ## {#sec-04-05}
+
+* Clarifications and editorial improvements.
 
 ## Version -03 to -04 ## {#sec-03-04}
 
