@@ -51,7 +51,6 @@ normative:
   RFC8613:
   RFC8949:
   I-D.ietf-lake-edhoc:
-  <!--- I.D.ietf-core-oscore-key-limits: -->
 
 informative:
   RFC8446:
@@ -63,6 +62,7 @@ informative:
   RFC9176:
   RFC8615:
   I-D.irtf-cfrg-aead-limits:
+  I-D.ietf-core-oscore-key-limits:
   LwM2M:
     author:
       org: Open Mobile Alliance
@@ -89,7 +89,7 @@ This document defines Key Update for OSCORE (KUDOS), a lightweight procedure tha
 
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} provides end-to-end protection of CoAP {{RFC7252}} messages at the application-layer, ensuring message confidentiality and integrity, replay protection, as well as binding of response to request between a sender and a recipient.
 
-To ensure secure communication when using OSCORE, peers may need to update their shared keying material. Among other reasons, approaching key usage limits {{I-D.irtf-cfrg-aead-limits}} <!---{{ietf-core-oscore-key-limits}}--> requires updating the OSCORE keying material before communications can securely continue.
+To ensure secure communication when using OSCORE, peers may need to update their shared keying material. Among other reasons, approaching key usage limits {{I-D.irtf-cfrg-aead-limits}}{{I-D.ietf-core-oscore-key-limits}} requires updating the OSCORE keying material before communications can securely continue.
 
 This document updates {{RFC8613}} as follows.
 
@@ -123,7 +123,7 @@ This document additionally defines the following terminology.
 
 # Current Methods for Rekeying OSCORE {#sec-current-methods}
 
-Two peers communicating using OSCORE may choose to renew their shared keying information by establishing a new OSCORE Security Context for a variety of reasons. A particular reason is approaching limits set for safe key usage <!---{{ietf-core-oscore-key-limits}}-->. Practically, when the relevant limits have been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication. That is, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm.
+Two peers communicating using OSCORE may choose to renew their shared keying information by establishing a new OSCORE Security Context for a variety of reasons. A particular reason is approaching limits set for safe key usage {{I-D.ietf-core-oscore-key-limits}}. Practically, when the relevant limits have been reached for an OSCORE Security Context, the two peers have to establish a new OSCORE Security Context, in order to continue using OSCORE for secure communication. That is, the two peers have to establish new Sender and Recipient Keys, as the keys actually used by the AEAD algorithm.
 
 In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration time; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
 
@@ -303,7 +303,7 @@ struct {
 
 ## Key Update with Forward Secrecy # {#ssec-derive-ctx}
 
-This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. A peer may want to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, approaching limits for key usage <!---{{ietf-core-oscore-key-limits}}-->, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. The expiration time of an OSCORE Security Context and the key usage limits are as hard limits, at which point a peer MUST stop using the keying material in the OSCORE Security Context and has to perform a rekeying before resuming secure communication with the other peer. However, KUDOS can also be used for active rekeying, and a peer may run the KUDOS procedure at any point in time and for any reason.
+This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. A peer may want to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, approaching limits for key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. The expiration time of an OSCORE Security Context and the key usage limits are as hard limits, at which point a peer MUST stop using the keying material in the OSCORE Security Context and has to perform a rekeying before resuming secure communication with the other peer. However, KUDOS can also be used for active rekeying, and a peer may run the KUDOS procedure at any point in time and for any reason.
 
 Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
 
@@ -809,7 +809,7 @@ When enforcing such policies, the following applies.
 
 * When an amount of time defined by the policy has elapsed since the establishment of CTX\_NEW, the peer deletes CTX\_OLD.
 
-A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX\_OLD is expired; limits set for safe key usage have been reached <!---{{ietf-core-oscore-key-limits}}-->, for the Recipient Key of the Recipient Context of CTX\_OLD.
+A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX\_OLD is expired; limits set for safe key usage have been reached {{I-D.ietf-core-oscore-key-limits}}, for the Recipient Key of the Recipient Context of CTX\_OLD.
 
 ## Discussion # {#ssec-discussion}
 
