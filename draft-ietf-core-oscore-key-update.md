@@ -1017,11 +1017,6 @@ with CTX_A  | OSCORE Option: ..., kid:1         | Verify
             |    Application Payload            |
             | }                                 |
             |                                   |
-
-          // When integrated in KUDOS, CTX_1 is CTX_A,
-          // and there cannot be application payload.
-
-            |                                   |
             |            Response #1            |
             |<----------------------------------| Protect
 Verify      | OSCORE Option: ...                | with CTX_A
@@ -1031,15 +1026,6 @@ with CTX_A  | Encrypted_Payload {               |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
-            |                                   |
-
-           // When integrated in KUDOS, this message
-           // is protected using CTX_NEW, and there
-           // cannot be application payload.
-           //
-           // Then, CTX_B builds on CTX_NEW by updating
-           // the new Sender/Recipient IDs
-
             |                                   |
 CTX_B {     |                                   | CTX_B {
  SID = 78   |                                   |  SID = 42
@@ -1111,11 +1097,6 @@ with CTX_A  | OSCORE Option: ..., kid:1         | Verify
             |    Application Payload            |
             | }                                 |
             |                                   |
-
-          // When (to be) integrated in KUDOS,
-          // CTX_OLD is CTX_A
-
-            |                                   |
             |            Response #1            |
             |<----------------------------------| Protect
 Verify      | OSCORE Option: ...                | with CTX_A
@@ -1124,11 +1105,6 @@ with CTX_A  | Encrypted_Payload {               |
             |    Recipient-ID: 78               |
             |    Application Payload            |
             | }                                 |
-
-          // When integrated in KUDOS, this message is
-          // protected with CTX_1 instead, and
-          // there cannot be application payload.
-
             |                                   |
 CTX_A {     |                                   | CTX_A {
  SID = 1    |                                   |  SID = 0
@@ -1144,12 +1120,6 @@ with CTX_A  | OSCORE Option: ..., kid:1         | Verify
             |    Application Payload            |
             | }                                 |
             |                                   |
-
-          // When integrated in KUDOS, this message is
-          // protected with CTX_NEW instead, and
-          // there cannot be application payload.
-
-            |                                   |
             |            Response #2            |
             |<----------------------------------| Protect
 Verify      | OSCORE Option: ...                | with CTX_A
@@ -1157,12 +1127,6 @@ with CTX_A  | Encrypted_Payload {               |
             |    ...                            |
             |    Application Payload            |
             | }                                 |
-            |                                   |
-
-          // When integrated in KUDOS, this message is
-          // protected with CTX_NEW instead, and
-          // there cannot be application payload.
-
             |                                   |
 CTX_B {     |                                   | CTX_B {
  SID = 78   |                                   |  SID = 42
