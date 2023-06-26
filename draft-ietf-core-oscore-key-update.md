@@ -999,7 +999,7 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
    The new OSCORE Sender/Recipient IDs MUST NOT be used with the OSCORE Security Context CTX_OLD, and MUST NOT be used with the temporary OSCORE Security Context used to protect the first KUDOS message of a KUDOS execution.
 
-   The first use of the new OSCORE Sender/Recipient ID with the new OSCORE Security Context CTX_NEW occurs: for the KUDOS initiator, after having received from the responder and successfully verified the second KUDOS message of the KUDOS execution in question; for the KUDOS responder, after having sent to the KUDOS initiator the secodn KUDOS message of the KUDOS execution in question.
+   The first use of the new OSCORE Sender/Recipient IDs with the new OSCORE Security Context CTX_NEW occurs: for the KUDOS initiator, after having received from the KUDOS responder and successfully verified the second KUDOS message of the KUDOS execution in question; for the KUDOS responder, after having sent to the KUDOS initiator the second KUDOS message of the KUDOS execution in question.
 
 An initiator terminates an ongoing OSCORE IDs procedure with another peer as failed, in case, after having sent the first OSCORE IDs update message for the procedure in question, a pre-defined amount of time has elapsed without receiving and successfully verifying the second OSCORE IDs update message from the other peer. It is RECOMMENDED that such an amount of time is equal to MAX_TRANSMIT_WAIT (see {{Section 4.8.2 of RFC7252}}).
 
