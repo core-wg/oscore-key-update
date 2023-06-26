@@ -1011,6 +1011,8 @@ The Recipient-ID Option is of class E in terms of OSCORE processing (see {{Secti
 
 {{fig-id-update-client-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the forward message flow, with the client acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
+{{sec-id-update-in-kudos-forward}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the forward message flow.
+
 ~~~~~~~~~~~
           Client                             Server
        (initiator)                         (responder)
@@ -1112,6 +1114,8 @@ After that, one further exchange occurs, where both the CoAP request and the CoA
 ### Reverse Message Flow {#example-server-initiated-id-update}
 
 {{fig-id-update-server-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the reverse message flow, with the server acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+
+{{sec-id-update-in-kudos-reverse}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the reverse message flow.
 
 ~~~~~~~~~~~
           Client                             Server
@@ -1400,7 +1404,7 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 ## Forward Message Flow # {#sec-id-update-in-kudos-forward}
 
-{{fig-kudos-and-id-update-client-init}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the forward message flow. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+{{fig-kudos-and-id-update-client-init}} provides an example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the forward message flow. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
 ~~~~~~~~~~~
                      Client                Server
