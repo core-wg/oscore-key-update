@@ -391,6 +391,9 @@ Discard CTX_OLD         | }                    |
                         |                      |
                         |      Request #2      |
 Protect with CTX_NEW    |--------------------->| /temp
+                        | OSCORE {             |
+                        |  ...                 |
+                        | }                    |
                         | Encrypted Payload {  |
                         |  ...                 |
                         |  Application Payload |
@@ -403,12 +406,13 @@ Protect with CTX_NEW    |--------------------->| /temp
                         |                      |
                         |      Response #2     |
                         |<---------------------| Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 |
+Verify with CTX_NEW     | }                    |
                         | Encrypted Payload {  |
                         |  ...                 |
                         |  Application Payload |
                         | }                    |
-                        |                      |
-Verify with CTX_NEW     |                      |
                         |                      |
 ~~~~~~~~~~~
 {: #fig-message-exchange-client-init title="Example of the KUDOS forward message flow." artwork-align="center"}
@@ -506,9 +510,9 @@ During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS request
                         |                      |
                         |      Request #1      |
 Protect with CTX_OLD    |--------------------->| /temp
-                        |                      |
-                        |                      |
-                        |                      | Verify with CTX_OLD
+                        | OSCORE {             |
+                        |  ...                 |
+                        | }                    | Verify with CTX_OLD
                         |                      |
                         |                      | Generate N1
                         |                      |
@@ -552,13 +556,12 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
 
                         |      Response #2     |
                         |<---------------------| Protect with CTX_NEW
-                        |                      |
-                        |                      |
-Verify with CTX_NEW     |                      |
+                        | OSCORE {             |
+                        |  ...                 |
+Verify with CTX_NEW     | }                    |
                         |                      |
 Discard CTX_OLD         |                      |
                         |                      |
-
 ~~~~~~~~~~~
 {: #fig-message-exchange-server-init title="Example of the KUDOS reverse message flow" artwork-align="center"}
 
