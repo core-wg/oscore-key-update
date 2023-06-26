@@ -1011,8 +1011,6 @@ The Recipient-ID Option is of class E in terms of OSCORE processing (see {{Secti
 
 {{fig-id-update-client-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the forward message flow, with the client acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
-{{sec-id-update-in-kudos-forward}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the forward message flow.
-
 ~~~~~~~~~~~
           Client                             Server
        (initiator)                         (responder)
@@ -1114,8 +1112,6 @@ After that, one further exchange occurs, where both the CoAP request and the CoA
 ### Reverse Message Flow {#example-server-initiated-id-update}
 
 {{fig-id-update-server-init}} shows an example of the OSCORE IDs update procedure, run stand-alone and in the reverse message flow, with the server acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
-
-{{sec-id-update-in-kudos-reverse}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the reverse message flow.
 
 ~~~~~~~~~~~
           Client                             Server
@@ -1404,11 +1400,123 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 ## Forward Message Flow # {#sec-id-update-in-kudos-forward}
 
-TBD
+{{fig-kudos-and-id-update-client-init}} provides a different example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the forward message flow. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+
+~~~~~~~~~~~
+                     Client                Server
+                   (initiator)          (responder)
+                        |                    |
+Generate N1             |                    |
+                        |                    |
+CTX_1 =                 |                    |
+  updateCtx(X1, N1,     |                    |
+            CTX_OLD)    |                    |
+                        |                    |
+                        |     Request #1     |
+Protect with CTX_1      |------------------->| /.well-known/kudos
+                        |                    |
+                        | OSCORE Option:     | CTX_1 =
+                        |   ...              |  updateCtx(X1, N1,
+                        |   d flag: 1        |            CTX_OLD)
+                        |   X1               |
+                        |   Nonce: N1        | Verify with CTX_1
+                        |   ...              |
+                        |                    | Generate N2
+                        |                    |
+                        |                    | CTX_NEW =
+                        |                    |  updateCtx(Comb(X1,X2),
+                        |                    |            Comb(N1,N2),
+                        |                    |            CTX_OLD)
+                        |                    |
+                        |     Response #1    |
+                        |<-------------------| Protect with CTX_NEW
+CTX_NEW =               | OSCORE Option:     |
+ updateCtx(Comb(X1,X2), |   ...              |
+           Comb(N1,N2), |   Partial IV: 0    |
+              CTX_OLD)  |   ...              |
+                        |                    |
+Verify with CTX_NEW     |  d flag: 1         |
+                        |  X2                |
+Discard CTX_OLD         |  Nonce: N2         |
+                        |  ...               |
+                        |                    |
+
+// The actual key update process ends here.
+// The two peers can use the new Security Context CTX_NEW.
+
+                        |                    |
+                        |     Request #2     |
+Protect with CTX_NEW    |------------------->|
+                        |                    | Verify with CTX_NEW
+                        |                    |
+                        |                    | Discard CTX_OLD
+                        |                    |
+                        |     Response #2    |
+                        |<-------------------| Protect with CTX_NEW
+Verify with CTX_NEW     |                    |
+                        |                    |
+~~~~~~~~~~~
+{: #fig-kudos-and-id-update-client-init title="Example of the OSCORE IDs Update forward message flow integrated in a KUDOS execution." artwork-align="center"}
 
 ## Reverse Message Flow # {#sec-id-update-in-kudos-reverse}
 
-TBD
+{{fig-kudos-and-id-update-server-init}} provides an example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the reverse message flow. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
+
+~~~~~~~~~~~
+                      Client               Server
+                   (responder)          (initiator)
+                        |                    |
+                        |     Request #1     |
+Protect with CTX_OLD    |------------------->|
+                        |                    | Verify with CTX_OLD
+                        |                    |
+                        |                    | Generate N1
+                        |                    |
+                        |                    | CTX_1 =
+                        |                    |  updateCtx(X1, N1,
+                        |                    |            CTX_OLD)
+                        |                    |
+                        |     Response #1    |
+                        |<-------------------| Protect with CTX_1
+CTX_1 =                 | OSCORE Option:     |
+  updateCtx(X1, N1,     |   ...              |
+            CTX_OLD)    |   Partial IV: 0    |
+                        |   ...              |
+Verify with CTX_1       |   d flag: 1        |
+                        |   X1               |
+Generate N2             |   Nonce: N1        |
+                        |   ...              |
+CTX_NEW =               |                    |
+ updateCtx(Comb(X1,X2), |                    |
+           Comb(N1,N2   |                    |
+              CTX_OLD)  |                    |
+                        |                    |
+                        |     Request #2     |
+Protect with CTX_NEW    |------------------->| /.well-known/kudos
+                        |                    |
+                        | OSCORE Option:     | CTX_NEW =
+                        |   ...              |  updateCtx(Comb(X1,X2),
+                        |                    |            Comb(N1,N2),
+                        |   d flag: 1        |            CTX_OLD)
+                        |   X2               |
+                        |   Nonce: N1|N2     | Verify with CTX_NEW
+                        |   ...              |
+                        |                    | Discard CTX_OLD
+                        |                    |
+
+// The actual key update process ends here.
+// The two peers can use the new Security Context CTX_NEW.
+
+                        |     Response #2    |
+                        |<-------------------| Protect with CTX_NEW
+Verify with CTX_NEW     |                    |
+                        |                    |
+Discard CTX_OLD         |                    |
+                        |                    |
+
+~~~~~~~~~~~
+{: #fig-kudos-and-id-update-server-init title="Example of the OSCORE IDs Update reverse message flow integrated in a KUDOS execution." artwork-align="center"}
+
 
 # Document Updates # {#sec-document-updates}
 
