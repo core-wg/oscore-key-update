@@ -993,7 +993,13 @@ Furthermore, this procedure can be executed stand-alone, or instead seamlessly i
 
    As defined in {{id-update-additional-actions}}, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.
 
+   A peer can safely discard the old OSCORE Security Context including the old Sender/Recipient IDs after the following two events have occurred, in this order: first, the peer has sent to the other peer a message protected with the new OSCORE Security Context including the new Sender/Recipient IDs; then, the peer has received from the other peer and successfully verified a message protected with that new OSCORE Security Context.
+
 * In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure. That is, both KUDOS and the OSCORE IDs update procedure MUST be run either in their forward message flow or in their reverse message flow.
+
+   The new OSCORE Sender/Recipient IDs MUST NOT be used with the OSCORE Security Context CTX_OLD, and MUST NOT be used with the temporary OSCORE Security Context used to protect the first KUDOS message of a KUDOS execution.
+
+   The first use of the new OSCORE Sender/Recipient ID with the new OSCORE Security Context CTX_NEW occurs: for the KUDOS initiator, after having received from the responder and successfully verified the second KUDOS message of the KUDOS execution in question; for the KUDOS responder, after having sent to the KUDOS initiator the secodn KUDOS message of the KUDOS execution in question.
 
 An initiator terminates an ongoing OSCORE IDs procedure with another peer as failed, in case, after having sent the first OSCORE IDs update message for the procedure in question, a pre-defined amount of time has elapsed without receiving and successfully verifying the second OSCORE IDs update message from the other peer. It is RECOMMENDED that such an amount of time is equal to MAX_TRANSMIT_WAIT (see {{Section 4.8.2 of RFC7252}}).
 
