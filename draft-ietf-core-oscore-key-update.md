@@ -349,9 +349,10 @@ In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBO
                         |                      |
 Generate N1             |                      |
                         |                      |
-CTX_1 =                 |                      |
-  updateCtx(X1, N1,     |                      |
-            CTX_OLD)    |                      |
+CTX_1 = updateCtx(      |                      |
+        X1,             |                      |
+        N1,             |                      |
+        CTX_OLD)        |                      |
                         |                      |
                         |      Request #1      |
 Protect with CTX_1      |--------------------->| /.well-known/kudos
@@ -362,9 +363,9 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |  nonce: N1           |         N1,
                         |  ...                 |         CTX_OLD)
                         | }                    |
-                        |                      | Verify with CTX_1
-                        |                      |
-                        |                      | Generate N2
+                        | Encrypted Payload {  | Verify with CTX_1
+                        |  ...                 |
+                        | }                    | Generate N2
                         |                      |
                         |                      | CTX_NEW = updateCtx(
                         |                      |           Comb(X1,X2),
@@ -377,12 +378,14 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |  ...                 |
 CTX_NEW = updateCtx(    |  Partial IV: 0       |
           Comb(X1,X2),  |  ...                 |
-          Comb(N1,N2),  |                      |
-          CTX_OLD)      |  d flag: 1           |
-                        |  x: X2               |
-Verify with CTX_NEW     |  nonce: N2           |
+          Comb(N1,N2),  |  d flag: 1           |
+          CTX_OLD)      |  x: X2               |
+                        |  nonce: N2           |
+Verify with CTX_NEW     |  ...                 |
+                        | }                    |
+Discard CTX_OLD         | Encrypted Payload {  |
                         |  ...                 |
-Discard CTX_OLD         | }                    |
+                        | }                    |
                         |                      |
 
 // The actual key update process ends here.
@@ -393,16 +396,11 @@ Discard CTX_OLD         | }                    |
 Protect with CTX_NEW    |--------------------->| /temp
                         | OSCORE {             |
                         |  ...                 |
-                        | }                    |
+                        | }                    | Verify with CTX_NEW
                         | Encrypted Payload {  |
-                        |  ...                 |
+                        |  ...                 | Discard CTX_OLD
                         |  Application Payload |
                         | }                    |
-                        |                      |
-                        |                      |
-                        |                      | Verify with CTX_NEW
-                        |                      |
-                        |                      | Discard CTX_OLD
                         |                      |
                         |      Response #2     |
                         |<---------------------| Protect with CTX_NEW
@@ -513,11 +511,12 @@ Protect with CTX_OLD    |--------------------->| /temp
                         | OSCORE {             |
                         |  ...                 |
                         | }                    | Verify with CTX_OLD
-                        |                      |
-                        |                      | Generate N1
-                        |                      |
-                        |                      | CTX_1 = updateCtx(
-                        |                      |         X1, N1,
+                        | Encrypted Payload {  |
+                        |  ...                 | Generate N1
+                        |  Application Payload |
+                        | }                    | CTX_1 = updateCtx(
+                        |                      |         X1,
+                        |                      |         N1,
                         |                      |         CTX_OLD)
                         |                      |
                         |      Response #1     |
@@ -525,15 +524,16 @@ Protect with CTX_OLD    |--------------------->| /temp
                         | OSCORE {             |
                         |  ...                 |
 CTX_1 = updateCtx(      |  Partial IV: 0       |
-        X1, N1,         |  ...                 |
-        CTX_OLD)        |  d flag: 1           |
-                        |  x: X1               |
-Verify with CTX_1       |  nonce: N1           |
+        X1,             |  ...                 |
+        N1,             |  d flag: 1           |
+        CTX_OLD)        |  x: X1               |
+                        |  nonce: N1           |
+Verify with CTX_1       |  ...                 |
+                        | }                    |
+Generate N2             | Encrypted Payload {  |
                         |  ...                 |
-Generate N2             | }                    |
-                        |                      |
-CTX_NEW = updateCtx(    |                      |
-          Comb(X1,X2),  |                      |
+CTX_NEW = updateCtx(    |  Application Payload |
+          Comb(X1,X2),  | }                    |
           Comb(N1,N2),  |                      |
           CTX_OLD)      |                      |
                         |                      |
@@ -546,21 +546,23 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
                         |  nonce: N1|N2        |           Comb(N1,N2),
                         |  ...                 |           CTX_OLD)
                         | }                    |
-                        |                      | Verify with CTX_NEW
-                        |                      |
-                        |                      | Discard CTX_OLD
+                        | Encrypted Payload {  | Verify with CTX_NEW
+                        |  ...                 |
+                        | }                    | Discard CTX_OLD
                         |                      |
 
 // The actual key update process ends here.
 // The two peers can use the new Security Context CTX_NEW.
 
+                        |                      |
                         |      Response #2     |
                         |<---------------------| Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
 Verify with CTX_NEW     | }                    |
-                        |                      |
-Discard CTX_OLD         |                      |
+                        | Encrypted Payload {  |
+Discard CTX_OLD         |  ...                 |
+                        | }                    |
                         |                      |
 ~~~~~~~~~~~
 {: #fig-message-exchange-server-init title="Example of the KUDOS reverse message flow" artwork-align="center"}
@@ -1496,7 +1498,7 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         | }                    | Verify with CTX_1
                         | Encrypted Payload {  |
                         |  ...                 | Generate N2
-                        |  Recipient-ID: 0x78  |
+                        |  Recipient-ID: 0x42  |
                         |  ...                 | CTX_NEW = updateCtx(
                         | }                    |           Comb(X1,X2),
                         |                      |           Comb(N1,N2),
@@ -1506,22 +1508,22 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |<---------------------| Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
-CTX_NEW = updateCtx(    |  Partial IV: 0       | Update SID and
-          Comb(X1,X2),  |  ...                 | RID in CTX_NEW
+CTX_NEW = updateCtx(    |  Partial IV: 0       |
+          Comb(X1,X2),  |  ...                 |
           Comb(N1,N2),  |                      |
-          CTX_OLD)      |  d flag: 1           | CTX_NEW {
-                        |  x: X2               |  SID = 0x42
-Verify with CTX_NEW     |  nonce: N2           |  RID = 0x78
-                        |  ...                 | }
+          CTX_OLD)      |  d flag: 1           |
+                        |  x: X2               |
+Verify with CTX_NEW     |  nonce: N2           |
+                        |  ...                 |
 Discard CTX_OLD         | }                    |
-                        |                      |
-Update SID and          |                      |
-RID in CTX_NEW          |                      |
-                        |                      |
-CTX_NEW {               |                      |
- SID = 0x78             |                      |
- RID = 0x42             |                      |
-}                       |                      |
+                        | Encrypted Payload {  |
+Update SID and          |  ...                 | Update SID and
+RID in CTX_NEW          |  Recipient-ID: 0x78  | RID in CTX_NEW
+                        |  ...                 |
+CTX_NEW {               | }                    | CTX_NEW {
+ SID = 0x78             |                      |  SID = 0x42
+ RID = 0x42             |                      |  RID = 0x78
+}                       |                      | }
                         |                      |
 
 // The actual key update process ends here.
@@ -1543,10 +1545,10 @@ Protect with CTX_NEW    |--------------------->| /temp
                         |<---------------------| Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
-                        | }                    |
+Verify with CTX_NEW     | }                    |
                         | Encrypted Payload {  |
                         |  ...                 |
-Verify with CTX_NEW     |  Application Payload |
+                        |  Application Payload |
                         | }                    |
                         |                      |
 ~~~~~~~~~~~
@@ -1592,10 +1594,10 @@ Verify with CTX_1       |  ...                 |
                         | }                    |
 Generate N2             | Encrypted Payload {  |
                         |  ...                 |
-CTX_NEW =               |  Recipient-ID: 0x78  |
- updateCtx(Comb(X1,X2), |  ...                 |
-           Comb(N1,N2), | }                    |
-           CTX_OLD)     |                      |
+CTX_NEW = updateCtx(    |  Recipient-ID: 0x78  |
+          Comb(X1,X2),  |  ...                 |
+          Comb(N1,N2),  | }                    |
+          CTX_OLD)      |                      |
                         |                      |
                         |      Request #2      |
 Protect with CTX_NEW    |--------------------->| /.well-known/kudos
@@ -1610,15 +1612,15 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
                         | Encrypted Payload {  |
                         |  ...                 | Discard CTX_OLD
                         |  Recipient-ID: 0x42  |
-                        |  ...                 | Update SID and
-                        | }                    | RID in CTX_NEW
+                        |  ...                 |
+                        | }                    |
                         |                      |
 Update SID and          |                      | Update SID and
 RID in CTX_NEW          |                      | RID in CTX_NEW
                         |                      |
  CTX_NEW {              |                      | CTX_NEW {
-  SID = 0x42            |                      |  SID = 0x42
-  RID = 0x78            |                      |  RID = 0x78
+  SID = 0x78            |                      |  SID = 0x42
+  RID = 0x42            |                      |  RID = 0x78
  }                      |                      | }
                         |                      |
 
@@ -1633,6 +1635,27 @@ RID in CTX_NEW          |                      | RID in CTX_NEW
 Verify with CTX_NEW     | }                    |
                         | Encrypted Payload {  |
 Discard CTX_OLD         |  ...                 |
+                        | }                    |
+                        |                      |
+                        |      Request #3      |
+Protect with CTX_NEW    |--------------------->| /temp
+                        | OSCORE {             |
+                        |  ...                 |
+                        |  kid: 0x78           | Verify with CTX_NEW
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+                        |      Response #3     |
+                        |<---------------------| Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 |
+Verify with CTX_NEW     | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        |  Application Payload |
                         | }                    |
                         |                      |
 ~~~~~~~~~~~
