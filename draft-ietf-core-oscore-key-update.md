@@ -355,13 +355,14 @@ CTX_1 =                 |                    |
                         |                    |
                         |     Request #1     |
 Protect with CTX_1      |------------------->| /.well-known/kudos
+                        | OSCORE Option {    |
+                        |  ...               |
+                        |  d flag: 1         | CTX_1 =
+                        |  x: X1             |  updateCtx(X1, N1,
+                        |  nonce: N1         |            CTX_OLD)
+                        |  ...               |
+                        | }                  | Verify with CTX_1
                         |                    |
-                        | OSCORE Option:     | CTX_1 =
-                        |   ...              |  updateCtx(X1, N1,
-                        |   d flag: 1        |            CTX_OLD)
-                        |   X1               |
-                        |   Nonce: N1        | Verify with CTX_1
-                        |   ...              |
                         |                    | Generate N2
                         |                    |
                         |                    | CTX_NEW =
@@ -371,15 +372,16 @@ Protect with CTX_1      |------------------->| /.well-known/kudos
                         |                    |
                         |     Response #1    |
                         |<-------------------| Protect with CTX_NEW
-CTX_NEW =               | OSCORE Option:     |
- updateCtx(Comb(X1,X2), |   ...              |
-           Comb(N1,N2), |   Partial IV: 0    |
-              CTX_OLD)  |   ...              |
-                        |                    |
-Verify with CTX_NEW     |  d flag: 1         |
-                        |  X2                |
-Discard CTX_OLD         |  Nonce: N2         |
+                        | OSCORE Option {    |
                         |  ...               |
+CTX_NEW =               |  Partial IV: 0     |
+ updateCtx(Comb(X1,X2), |  ...               |
+           Comb(N1,N2), |                    |
+           CTX_OLD)     |  d flag: 1         |
+                        |  x: X2             |
+Verify with CTX_NEW     |  nonce: N2         |
+                        |  ...               |
+Discard CTX_OLD         | }                  |
                         |                    |
 
 // The actual key update process ends here.
@@ -387,13 +389,17 @@ Discard CTX_OLD         |  Nonce: N2         |
 
                         |                    |
                         |     Request #2     |
-Protect with CTX_NEW    |------------------->|
+Protect with CTX_NEW    |------------------->| /temp
+                        |                    |
+                        |                    |
                         |                    | Verify with CTX_NEW
                         |                    |
                         |                    | Discard CTX_OLD
                         |                    |
                         |     Response #2    |
                         |<-------------------| Protect with CTX_NEW
+                        |                    |
+                        |                    |
 Verify with CTX_NEW     |                    |
                         |                    |
 ~~~~~~~~~~~
@@ -491,7 +497,9 @@ During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS request
                    (responder)          (initiator)
                         |                    |
                         |     Request #1     |
-Protect with CTX_OLD    |------------------->|
+Protect with CTX_OLD    |------------------->| /temp
+                        |                    |
+                        |                    |
                         |                    | Verify with CTX_OLD
                         |                    |
                         |                    | Generate N1
@@ -502,29 +510,32 @@ Protect with CTX_OLD    |------------------->|
                         |                    |
                         |     Response #1    |
                         |<-------------------| Protect with CTX_1
-CTX_1 =                 | OSCORE Option:     |
-  updateCtx(X1, N1,     |   ...              |
-            CTX_OLD)    |   Partial IV: 0    |
-                        |   ...              |
-Verify with CTX_1       |   d flag: 1        |
-                        |   X1               |
-Generate N2             |   Nonce: N1        |
-                        |   ...              |
+                        | OSCORE Option {    |
+                        |  ...               |
+CTX_1 =                 |  Partial IV: 0     |
+  updateCtx(X1, N1,     |  ...               |
+            CTX_OLD)    |  d flag: 1         |
+                        |  x: X1             |
+Verify with CTX_1       |  nonce: N1         |
+                        |  ...               |
+Generate N2             | }                  |
+                        |                    |
 CTX_NEW =               |                    |
  updateCtx(Comb(X1,X2), |                    |
-           Comb(N1,N2   |                    |
-              CTX_OLD)  |                    |
+           Comb(N1,N2), |                    |
+           CTX_OLD)     |                    |
                         |                    |
                         |     Request #2     |
 Protect with CTX_NEW    |------------------->| /.well-known/kudos
+                        | OSCORE Option {    |
+                        |  ...               |
+                        |  d flag: 1         | CTX_NEW =
+                        |  x: X2             |  updateCtx(Comb(X1,X2),
+                        |  nonce: N1|N2      |            Comb(N1,N2),
+                        |  ...               |            CTX_OLD)
+                        | }                  |
+                        |                    | Verify with CTX_NEW
                         |                    |
-                        | OSCORE Option:     | CTX_NEW =
-                        |   ...              |  updateCtx(Comb(X1,X2),
-                        |                    |            Comb(N1,N2),
-                        |   d flag: 1        |            CTX_OLD)
-                        |   X2               |
-                        |   Nonce: N1|N2     | Verify with CTX_NEW
-                        |   ...              |
                         |                    | Discard CTX_OLD
                         |                    |
 
@@ -533,6 +544,8 @@ Protect with CTX_NEW    |------------------->| /.well-known/kudos
 
                         |     Response #2    |
                         |<-------------------| Protect with CTX_NEW
+                        |                    |
+                        |                    |
 Verify with CTX_NEW     |                    |
                         |                    |
 Discard CTX_OLD         |                    |
@@ -1023,23 +1036,28 @@ CTX_A {     |                                   | CTX_A {
 }           |                                   | }
             |                                   |
             |            Request #1             |
-Protect     |---------------------------------->|
-with CTX_A  | OSCORE Option: ..., kid: 0x01     | Verify
-            | Encrypted_Payload {               | with CTX_A
-            |    ...                            |
-            |    Recipient-ID: 0x42             |
-            |    ...                            |
-            |    Application Payload            |
+Protect     |---------------------------------->| /temp
+with CTX_A  | OSCORE Option {                   |
+            |  ...                              |
+            |  kid: 0x01                        | Verify
+            | }                                 | with CTX_A
+            | Encrypted_Payload {               |
+            |  ...                              |
+            |  Recipient-ID Option: 0x42        |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
             |            Response #1            |
             |<----------------------------------| Protect
-Verify      | OSCORE Option: ...                | with CTX_A
+            | OSCORE Option {                   | with CTX_A
+            |  ...                              |
+Verify      | }                                 |
 with CTX_A  | Encrypted_Payload {               |
-            |    ...                            |
-            |    Recipient-ID: 0x78             |
-            |    ...                            |
-            |    Application Payload            |
+            |  ...                              |
+            |  Recipient-ID Option: 0x78        |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
 CTX_B {     |                                   | CTX_B {
@@ -1048,40 +1066,51 @@ CTX_B {     |                                   | CTX_B {
 }           |                                   | }
             |                                   |
             |            Request #2             |
-Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
-            | Encrypted_Payload {               | with CTX_B
-            |    ...                            |
-            |    Application Payload            |
+Protect     |---------------------------------->| /temp
+with CTX_B  | OSCORE Option {                   |
+            |  ...                              |
+            |  kid: 0x78                        | Verify
+            | }                                 | with CTX_B
+            | Encrypted_Payload {               |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
             |            Response #2            |
             |<----------------------------------| Protect
-Verify      | OSCORE Option: ...                | with CTX_B
+            | OSCORE Option {                   | with CTX_B
+            |  ...                              |
+Verify      | }                                 |
 with CTX_B  | Encrypted_Payload {               |
-            |    ...                            |
-            |    Application Payload            |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
 Discard     |                                   |
 CTX_A       |                                   |
             |                                   |
             |            Request #3             |
-Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
-            | Encrypted_Payload {               | with CTX_B
-            |    ...                            |
-            |    Application Payload            |
+Protect     |---------------------------------->| /temp
+with CTX_B  | OSCORE Option {                   |
+            |  ...                              |
+            |  kid: 0x78                        | Verify
+            | }                                 | with CTX_B
+            | Encrypted_Payload {               |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
+            |                                   |
             |                                   | Discard
             |                                   | CTX_A
             |                                   |
             |            Response #3            |
             |<----------------------------------| Protect
-Verify      | OSCORE Option: ...                | with CTX_B
+            | OSCORE Option {                   | with CTX_B
+            |  ...                              |
+Verify      | }                                 |
 with CTX_B  | Encrypted_Payload {               |
-            |    ...                            |
-            |    Application Payload            |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
 ~~~~~~~~~~~
@@ -1127,29 +1156,39 @@ CTX_A {     |                                   | CTX_A {
 }           |                                   | }
             |                                   |
             |            Request #1             |
-Protect     |---------------------------------->|
-with CTX_A  | OSCORE Option: ..., kid: 0x01     | Verify
-            | Encrypted_Payload {               | with CTX_A
-            |    ...                            |
-            |    Application Payload            |
+Protect     |---------------------------------->| /temp
+with CTX_A  | OSCORE Option {                   |
+            |  ...                              |
+            |  kid: 0x01                        | Verify
+            | }                                 | with CTX_A
+            | Encrypted_Payload {               |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
             |            Response #1            |
             |<----------------------------------| Protect
-Verify      | OSCORE Option: ...                | with CTX_A
+            | OSCORE Option {                   | with CTX_A
+            |  ...                              |
+Verify      | }                                 |
 with CTX_A  | Encrypted_Payload {               |
-            |    ...                            |
-            |    Recipient-ID: 0x78             |
-            |    Application Payload            |
+            |  ...                              |
+            |  Recipient-ID Option: 0x78        |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
             |            Request #2             |
-Protect     |---------------------------------->|
-with CTX_A  | OSCORE Option: ..., kid: 0x01     | Verify
-            | Encrypted_Payload {               | with CTX_A
-            |    ...                            |
-            |    Recipient-ID: 0x42             |
-            |    Application Payload            |
+Protect     |---------------------------------->| /temp
+with CTX_A  | OSCORE Option {                   |
+            |  ...                              |
+            |  kid: 0x01                        | Verify
+            | }                                 | with CTX_A
+            | Encrypted_Payload {               |
+            |  ...                              |
+            |  Recipient-ID Option: 0x42        |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
             |                                   | CTX_B {
@@ -1159,10 +1198,12 @@ with CTX_A  | OSCORE Option: ..., kid: 0x01     | Verify
             |                                   |
             |            Response #2            |
             |<----------------------------------| Protect
-Verify      | OSCORE Option: ...                | with CTX_A
+            | OSCORE Option {                   | with CTX_A
+            |  ...                              |
+Verify      | }                                 |
 with CTX_A  | Encrypted_Payload {               |
-            |    ...                            |
-            |    Application Payload            |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
 CTX_B {     |                                   |
@@ -1171,30 +1212,38 @@ CTX_B {     |                                   |
 }           |                                   |
             |                                   |
             |            Request #3             |
-Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
-            | Encrypted_Payload {               | with CTX_B
-            |    ...                            |
-            |    Application Payload            |
+Protect     |---------------------------------->| /temp
+with CTX_B  | OSCORE Option {                   |
+            |  ...                              |
+            |  kid: 0x78                        | Verify
+            | }                                 | with CTX_B
+            | Encrypted_Payload {               |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
             |            Response #3            |
             |<----------------------------------| Protect
-Verify      | OSCORE Option: ...                | with CTX_B
+            | OSCORE Option {                   | with CTX_B
+            |  ...                              |
+Verify      | }                                 |
 with CTX_B  | Encrypted_Payload {               |
-            |    ...                            |
-            |    Application Payload            |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
 Discard     |                                   |
 CTX_A       |                                   |
             |                                   |
             |            Request #4             |
-Protect     |---------------------------------->|
-with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
-            | Encrypted_Payload {               | with CTX_B
-            |    ...                            |
-            |    Application Payload            |
+Protect     |---------------------------------->| /temp
+with CTX_B  | OSCORE Option {                   |
+            |  ...                              |
+            |  kid: 0x78                        | Verify
+            | }                                 | with CTX_B
+            | Encrypted_Payload {               |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
             |                                   | Discard
@@ -1202,10 +1251,12 @@ with CTX_B  | OSCORE Option: ..., kid: 0x78     | Verify
             |                                   |
             |            Response #4            |
             |<----------------------------------| Protect
-Verify      | OSCORE Option: ...                | with CTX_B
+            | OSCORE Option {                   | with CTX_B
+            |  ...                              |
+Verify      | }                                 |
 with CTX_B  | Encrypted_Payload {               |
-            |    ...                            |
-            |    Application Payload            |
+            |  ...                              |
+            |  Application Payload              |
             | }                                 |
             |                                   |
 ~~~~~~~~~~~
@@ -1407,43 +1458,52 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 {{fig-kudos-and-id-update-client-init}} provides an example of the OSCORE IDs update procedure, run integrated in an execution of KUDOS and in the forward message flow. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.
 
 ~~~~~~~~~~~
-                     Client                Server
-                   (initiator)          (responder)
-                        |                    |
-Generate N1             |                    |
-                        |                    |
-CTX_1 =                 |                    |
-  updateCtx(X1, N1,     |                    |
-            CTX_OLD)    |                    |
-                        |                    |
-                        |     Request #1     |
-Protect with CTX_1      |------------------->| /.well-known/kudos
-                        |                    |
-                        | OSCORE Option:     | CTX_1 =
-                        |   ...              |  updateCtx(X1, N1,
-                        |   d flag: 1        |            CTX_OLD)
-                        |   X1               |
-                        |   Nonce: N1        | Verify with CTX_1
-                        |   ...              |
-                        |                    | Generate N2
-                        |                    |
-                        |                    | CTX_NEW =
-                        |                    |  updateCtx(Comb(X1,X2),
-                        |                    |            Comb(N1,N2),
-                        |                    |            CTX_OLD)
-                        |                    |
-                        |     Response #1    |
-                        |<-------------------| Protect with CTX_NEW
-CTX_NEW =               | OSCORE Option:     |
- updateCtx(Comb(X1,X2), |   ...              |
-           Comb(N1,N2), |   Partial IV: 0    |
-              CTX_OLD)  |   ...              |
-                        |                    |
-Verify with CTX_NEW     |  d flag: 1         |
-                        |  X2                |
-Discard CTX_OLD         |  Nonce: N2         |
-                        |  ...               |
-                        |                    |
+                     Client                 Server
+                   (initiator)           (responder)
+                        |                     |
+CTX_OLD {               |                     | CTX_OLD {
+ SID = 0x01             |                     |  SID = 0x00
+ RID = 0x00             |                     |  RID = 0x01
+}                       |                     | }
+                        |                     |
+Generate N1             |                     |
+                        |                     |
+CTX_1 =                 |                     |
+  updateCtx(X1, N1,     |                     |
+            CTX_OLD)    |                     |
+                        |                     |
+                        |     Request #1      |
+Protect with CTX_1      |-------------------->| /.well-known/kudos
+                        |                     |
+                        | OSCORE Option {     |
+                        |   ...               | CTX_1 =
+                        |   d flag: 1         |  updateCtx(X1, N1,
+                        |   x: X1             |            CTX_OLD)
+                        |   nonce: N1         |
+                        |   ...               | Verify with CTX_1
+                        |   kid: 0x01         |
+                        | }                   | Generate N2
+                        | Encrypted_Payload { |
+                        |  ...                | CTX_NEW =
+                        |  Recipient-ID: 0x78 |  updateCtx(Comb(X1,X2),
+                        |  ...                |            Comb(N1,N2),
+                        | }                   |            CTX_OLD)
+                        |                     |
+                        |     Response #1     |
+                        |<--------------------| Protect with CTX_NEW
+CTX_NEW =               | OSCORE Option:      |
+ updateCtx(Comb(X1,X2), |   ...               |
+           Comb(N1,N2), |   Partial IV: 0     |
+              CTX_OLD)  |   ...               |
+                        |                     |
+Verify with CTX_NEW     |  d flag: 1          |
+                        |  X2                 |
+Discard CTX_OLD         |  Nonce: N2          |
+                        |  ...                |
+                        |                     |
+
+
+
 
 // The actual key update process ends here.
 // The two peers can use the new Security Context CTX_NEW.
