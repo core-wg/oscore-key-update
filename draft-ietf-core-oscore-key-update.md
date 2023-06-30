@@ -886,7 +886,7 @@ According to this specification, KUDOS is transferred in POST requests to the Ur
 
 ### Rekeying when using OSCORE together with SCHC
 
-When using the Static Context Header Compression and fragmentation (SCHC) framework together with OSCORE, the following points must be taken into account. Compression of the OSCORE Partial IV has implications for the frequency of rekeying. That is, if the Partial IV is compressed the communicating peers must perform rekeying more often, as the available Partial IV space becomes smaller due to the compression. For instance if only 3 bits of the Partial IV is sent then the maximum PIV before needing to rekey is only 2^3 - 1 = 7. Furthermore, any time the SCHC context rules are updated on an OSCORE endpoint, that endpoint must perform rekeying {{Section 9 of RFC8824}}.
+When using the Static Context Header Compression and fragmentation (SCHC) framework together with OSCORE, the following points must be taken into account. Compression of the OSCORE Partial IV has implications for the frequency of rekeying. That is, if the Partial IV is compressed, the communicating peers must perform rekeying more often, as the available Partial IV space becomes smaller due to the compression. For instance, if only 3 bits of the Partial IV is sent, then the maximum PIV before needing to rekey is only 2^3 - 1 = 7. Furthermore, any time the SCHC context rules are updated on an OSCORE endpoint, that endpoint must perform rekeying (see {{Section 9 of RFC8824}}).
 
 ## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
