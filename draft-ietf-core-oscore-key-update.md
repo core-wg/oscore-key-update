@@ -61,6 +61,7 @@ informative:
   RFC9203:
   RFC9176:
   RFC8615:
+  RFC8824:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
   LwM2M:
@@ -882,6 +883,10 @@ Assuming nonces of the same size in both messages of the same KUDOS execution, t
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
 According to this specification, KUDOS is transferred in POST requests to the Uri-Path: "/.well-known/kudos" (see {{well-known-kudos}}), and 2.04 (Changed) responses. An application may define its own path that can be discovered, e.g., using a resource directory {{RFC9176}}. Client applications can use the resource type "core.kudos" to discover a server's KUDOS resource, i.e., where to send KUDOS requests, see {{rt-kudos}}.
+
+### Rekeying when using OSCORE together with SCHC
+
+When using the Static Context Header Compression and fragmentation (SCHC) framework together with OSCORE, the following points must be taken into account. Compression of the OSCORE Partial IV has implications for the frequency of rekeying. That is, if the Partial IV is compressed the communicating peers must perform rekeying more often, as the available Partial IV space becomes smaller due to the compression. For instance if only 3 bits of the Partial IV is sent then the maximum PIV before needing to rekey is only 2^3 - 1 = 7. Furthermore, any time the SCHC context rules are updated on an OSCORE endpoint, that endpoint must perform rekeying {{Section 9 of RFC8824}}.
 
 ## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
