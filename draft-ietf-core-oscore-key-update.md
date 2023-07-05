@@ -1698,6 +1698,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Examples of OSCORE IDs update procedure integrated in KUDOS.
 
+* Considerations about using SCHC for CoAP with OSCORE.
+
 * Clarifications and editorial improvements.
 
 ## Version -03 to -04 ## {#sec-03-04}
