@@ -1040,7 +1040,7 @@ The Recipient ID-Option defined in this section has the properties summarized in
 | No.   | C | U | N | R | Name         | Format | Length | Default |
 +-------+---+---+---+---+--------------+--------+--------+---------+
 |       |   |   |   |   |              |        |        |         |
-| TBD24 |   |   |   |   | Recipient-ID | opaque | 0-32   | (none)  |
+| TBD24 |   |   |   |   | Recipient-ID | opaque | any    | (none)  |
 |       |   |   |   |   |              |        |        |         |
 +-------+---+---+---+---+--------------+--------+--------+---------+
           C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
@@ -1048,6 +1048,8 @@ The Recipient ID-Option defined in this section has the properties summarized in
 {: #fig-recipient-id-option title="The Recipient-ID Option." artwork-align="center"}
 
 Note to RFC Editor: Following the registration of the CoAP Option Number 24, please replace "TBD24" with "24" in the figure above. Then, please delete this paragraph.
+
+The option value can have an arbitrary length. However, implementations can limit its length to that of the longest supported Recipient ID.
 
 This document particularly defines how this option is used in messages protected with OSCORE. That is, when the option is included in an outgoing message, the option value specifies the new OSCORE Recipient ID that the sender endpoint intends to use with the other endpoint sharing the OSCORE Security Context.
 
@@ -1688,7 +1690,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -04 to -05 ## {#sec-04-05}
 
-* Increased maximum size of the Recipient-ID Option.
+* Arbitrary maximum size of the Recipient-ID Option.
 
 * Detailed lifecycle of the OSCORE IDs update procedure.
 
