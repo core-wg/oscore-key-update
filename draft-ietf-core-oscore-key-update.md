@@ -61,6 +61,7 @@ informative:
   RFC9203:
   RFC9176:
   RFC8615:
+  RFC8724:
   RFC8824:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
@@ -884,9 +885,15 @@ Assuming nonces of the same size in both messages of the same KUDOS execution, t
 
 According to this specification, KUDOS is transferred in POST requests to the Uri-Path: "/.well-known/kudos" (see {{well-known-kudos}}), and 2.04 (Changed) responses. An application may define its own path that can be discovered, e.g., using a resource directory {{RFC9176}}. Client applications can use the resource type "core.kudos" to discover a server's KUDOS resource, i.e., where to send KUDOS requests, see {{rt-kudos}}.
 
-### Rekeying when using OSCORE together with SCHC
+### Rekeying when Using SCHC with OSCORE
 
-When using the Static Context Header Compression and fragmentation (SCHC) framework together with OSCORE, the following points must be taken into account. Compression of the OSCORE Partial IV has implications for the frequency of rekeying. That is, if the Partial IV is compressed, the communicating peers must perform rekeying more often, as the available Partial IV space becomes smaller due to the compression. For instance, if only 3 bits of the Partial IV is sent, then the maximum PIV before needing to rekey is only 2^3 - 1 = 7. Furthermore, any time the SCHC context rules are updated on an OSCORE endpoint, that endpoint must perform rekeying (see {{Section 9 of RFC8824}}).
+In the interest of rekeying, the following points must be taken into account when using the Static Context Header Compression and fragmentation (SCHC) framework {{RFC8724}} for compressing CoAP messages protected with OSCORE, as defined in {{RFC8824}}.
+
+Compression of the OSCORE Partial IV has implications for the frequency of rekeying. That is, if the Partial IV is compressed, the communicating peers must perform rekeying more often, as the available Partial IV space becomes smaller due to the compression. For instance, if only 3 bits of the Partial IV are sent, then the maximum PIV before having to rekey is only 2^3 - 1 = 7.
+
+Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, that endpoint must perform a rekeying (see {{Section 9 of RFC8824}}).
+
+That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the used SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain from message compression.
 
 ## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
