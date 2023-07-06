@@ -587,7 +587,7 @@ If the verification succeeds, the server provides the updateCtx() function with 
 
 From then on, the two peers can protect their message exchanges by using CTX\_NEW. In particular, as shown in the example in {{fig-message-exchange-server-init}}, the server can send an OSCORE response protected with CTX\_NEW.
 
-In case the client does not successfully verify the response, the same error handling specified in {{Section 8.4 of RFC8613}} applies. This does not result in deleting CTX\_NEW. If the client successfully verifies the response using CTX\_NEW, the client deletes CTX\_OLD.
+In case the client does not successfully verify the response, the same error handling specified in {{Section 8.4 of RFC8613}} applies. This does not result in deleting CTX\_NEW. If the client successfully verifies the response using CTX\_NEW, the client deletes CTX\_OLD. Note that if the verification of the response fails, the client may want to send again the normal OSCORE request to the server it initially sent (to /temp in the example above), in order to ensure retrieval of the resource representation.
 
 More generally, as soon as the client successfully verifies an incoming message protected with CTX\_NEW, the client deletes CTX\_OLD.
 
