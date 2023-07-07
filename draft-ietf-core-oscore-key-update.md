@@ -445,7 +445,7 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
 ~~~~~~~~~~~~~~~~~~~~~~~
 {: #fig-kudos-x-n-example-mess-one title="Example of X, N and X_N computing for the first KUDOS message"}
 
-Then, the server verifies the request by using the Security Context CTX\_1. The server should only act upon this request (relaying it to the application) if its request method is idempotent, in order to prevent replay of Request #1 messages by an adversary.
+Then, the server verifies the request by using the Security Context CTX\_1. If the request was succesfully verified, the server SHOULD NOT relay this request to the application, unless the request method is idempotent, in order to prevent side-effects caused by a replay of Request #1 messages by an adversary.
 
 After that, the server generates a random value N2, and uses N = Comb(N1, N2) and X = Comb(X1, X2) together with CTX\_OLD, in order to derive the new Security Context CTX\_NEW.
 
