@@ -333,7 +333,9 @@ KUDOS may run with the initiator acting either as CoAP client or CoAP server. Th
 * The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
 
-The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long.
+The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is recommended to be at least 8 bytes long. Note that the probability of collision of nonce values is heightened by the birthday paradox, however considering a nonce length of 8 there will be an average collision after approximately 2^32 instances of Response #1 messages. Overall the lenght of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing smaller N1 and N2 values. These smaller values can be permitted, provided that their safety within the system can be assured.
+
+This situation, however, should not pose significant problems even for a constrained server operating at a capacity of one request per second, thus ensuring the reliability and robustness of the system even under such circumstances.
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX\_NEW.
 
