@@ -1692,6 +1692,22 @@ Verify with CTX_NEW     | }                    |
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -05 to -06 ## {#sec-05-06}
+
+* Extended text and elaborated on examples for OSCORE IDs update procedure.
+
+* Add considerations on rekeying when using OSCORE with SCHC.
+
+* Set maximum size of the Recipient-ID Option to be arbitrary.
+
+* Considerations on which KUDOS messages can have actionable payload/methods.
+
+* Recommendation and considerations on minimum length of nonces N1 & N2.
+
+* Note on what information needs to be written to non-volatile memory to handle reboots.
+
+* Suggest resending of initial request from client when KUDOS fails in reverse message flow.
+
 ## Version -04 to -05 ## {#sec-04-05}
 
 * Arbitrary maximum size of the Recipient-ID Option.
