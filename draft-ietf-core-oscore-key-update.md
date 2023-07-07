@@ -204,9 +204,9 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 * This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. This flag bit is specified in {{iana-cons-flag-bits}}.
 
-   When it is set to 1, the compressed COSE object contains a 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the length of 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution. Specifically, the encoding of 'x' is as follows:
+   When it is set to 1, the compressed COSE object contains a 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the size of 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution. Specifically, the encoding of 'x' is as follows:
 
-   * The four least significant bits encode the 'nonce' length in bytes minus 1, namely 'm'.
+   * The four least significant bits encode the 'nonce' size in bytes minus 1, namely 'm'.
 
    * The fifth least significant bit is the "No Forward Secrecy" 'p' bit. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also for peers that cannot support the FS mode. At the same time, two peers MUST run KUDOS in FS mode if they are both capable to, as per {{ssec-derive-ctx}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
 
@@ -313,7 +313,9 @@ The following specifically defines how KUDOS is run in its stateful FS mode achi
 
 In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX\_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in {{Section 3.1 of RFC8613}}, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in {{Section 3.2.1 of RFC8613}}. If the peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
 
-When running KUDOS, each peer contributes by generating a fresh value N1 or N2, and providing it to the other peer. Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
+When running KUDOS, each peer contributes by generating a random nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED.
+
+Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the replay window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
 Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages. Once CTX\_NEW has been derived, a peer deletes any OSCORE Security Context older than CTX\_OLD with the same ID Context. This can for instance occur in the forward message flow when the initiator has just received KUDOS Response #1 and immediately starts KUDOS again as initiator, before sending any non KUDOS messages which would give the responder key confirmation and allow it to safely discard CTX_OLD.
 
@@ -332,8 +334,6 @@ KUDOS may run with the initiator acting either as CoAP client or CoAP server. Th
 * The responder is always the first one deriving CTX\_NEW.
 * The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX\_OLD.
 * Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
-
-The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is recommended to be at least 8 bytes long. Note that the probability of collision of nonce values is heightened by the birthday paradox, however considering a nonce length of 8 there will be an average collision after approximately 2^32 instances of Response #1 messages. Overall the lenght of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing smaller N1 and N2 values. These smaller values can be permitted, provided that their safety within the system can be assured.
 
 This situation, however, should not pose significant problems even for a constrained server operating at a capacity of one request per second, thus ensuring the reliability and robustness of the system even under such circumstances.
 
@@ -1365,6 +1365,10 @@ This document mainly covers security considerations about using AEAD keys in OSC
 
 Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
 
+As mentioned in {{ssec-derive-ctx}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages. Overall the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. These smaller values can be permitted, provided that their safety within the system can be assured.
+
+The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is best for privacy (as opposed to, e.g., a counter, which might leak some information about the client).
+
 \[TODO: Add more considerations.\]
 
 # IANA Considerations # {#sec-iana}
@@ -1702,7 +1706,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Considerations on which KUDOS messages can have actionable payload/methods.
 
-* Recommendation and considerations on minimum length of nonces N1 & N2.
+* Recommendation and considerations on minimum size of nonces N1 & N2.
 
 * Note on what information needs to be written to non-volatile memory to handle reboots.
 
