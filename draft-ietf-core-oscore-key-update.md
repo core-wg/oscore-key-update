@@ -536,8 +536,8 @@ Verify with CTX_1       |  ...                 |
                         | }                    |
 Generate N2             | Encrypted Payload {  |
                         |  ...                 |
-CTX_NEW = updateCtx(    |  Application Payload |
-          Comb(X1,X2),  | }                    |
+CTX_NEW = updateCtx(    | }                    |
+          Comb(X1,X2),  |                      |
           Comb(N1,N2),  |                      |
           CTX_OLD)      |                      |
                         |                      |
@@ -552,6 +552,7 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_NEW
                         |  ...                 |
+                        |  Application Payload |
                         | }                    | Discard CTX_OLD
                         |                      |
 
@@ -566,6 +567,7 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
 Verify with CTX_NEW     | }                    |
                         | Encrypted Payload {  |
 Discard CTX_OLD         |  ...                 |
+                        |  Application Payload |
                         | }                    |
                         |                      |
 ~~~~~~~~~~~
@@ -1643,6 +1645,7 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
                         |  ...                 | Discard CTX_OLD
                         |  Recipient-ID: 0x42  |
                         |  ...                 |
+                        |  Application Payload |
                         | }                    |
                         |                      |
 Update SID and          |                      | Update SID and
@@ -1665,6 +1668,7 @@ RID in CTX_NEW          |                      | RID in CTX_NEW
 Verify with CTX_NEW     | }                    |
                         | Encrypted Payload {  |
 Discard CTX_OLD         |  ...                 |
+                        |  Application Payload |
                         | }                    |
                         |                      |
                         |      Request #3      |
