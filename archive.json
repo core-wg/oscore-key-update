@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-03T00:37:23.967495+00:00",
+  "timestamp": "2023-10-05T00:36:52.812332+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2549,9 +2549,17 @@
       ],
       "body": "See also discussion in issue #51\r\n",
       "createdAt": "2023-03-11T17:33:08Z",
-      "updatedAt": "2023-07-07T13:08:48Z",
+      "updatedAt": "2023-10-03T14:16:23Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Raise again during next IETF meeting.",
+          "createdAt": "2023-10-03T14:16:23Z",
+          "updatedAt": "2023-10-03T14:16:23Z"
+        }
+      ]
     },
     {
       "number": 81,
@@ -2812,6 +2820,38 @@
       "body": "It's not fully thought through, but you can probably do that better than I can if it seems worthy to you (and I urge you to consider benefits before sinking much time here):\r\n\r\nWould it be possible to do FS steps after a non-FS?\r\n\r\nWhen things start up, one device forces non-FS on the first KUDOS run (which, as per #88, is the first message exchanged). As per the rules of non-FS, things start from the bootstrap secret. But when then a request to do KUDOS is protected with a secret that is already not the bootstrap secret any more, could that use FS mode, and build on the previously established secret rather than on bootstrap?\r\n\r\nThat combination would not achieve full FS, for a device that is captured can, in combination with the full captured traffic, be used to decrypt all the traffic. But the combined mode would mean that the captured traffic needs to include all the KUDOS runs between the use of the startup secret and the message to be decoded, and not just the last KUDOS run before the message.\r\n\r\nApart from increasing the amount of data needed to decrypt a message, this also has the benefit that all but the first KUDOS runs can use the short counter nonces mentioned in #89. [edit: Note one only gets one of the two benefits -- counting nonces mean that a captured device can again be used to decode traffic even if KUDOS runs were missed in the data log].",
       "createdAt": "2023-07-26T21:34:57Z",
       "updatedAt": "2023-07-26T21:36:07Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 91,
+      "id": "I_kwDOGfmof85ysaZl",
+      "title": "Language issues",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/91",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "For instance, make sure to use the Oxford comma.",
+      "createdAt": "2023-10-03T14:13:23Z",
+      "updatedAt": "2023-10-03T14:13:23Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 92,
+      "id": "I_kwDOGfmof85ysbFP",
+      "title": "Mention EDHOC and OSCORE profile of ACE",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/92",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In section 2: Mention that EDHOC can also be run as part of the EDHOC and OSCORE profile of ACE.",
+      "createdAt": "2023-10-03T14:14:52Z",
+      "updatedAt": "2023-10-03T14:14:52Z",
       "closedAt": null,
       "comments": []
     }
