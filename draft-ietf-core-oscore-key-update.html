@@ -2159,12 +2159,13 @@ When receiving the error response, the initiator learns that the responder is a 
                 <li class="normal" id="section-4.5.2-7.4.2.2">
                   <p id="section-4.5.2-7.4.2.2.1">If the responder is a client, it sends to the initiator the second KUDOS message as a new request, which MUST be protected with the newly derived OSCORE Security Context CTX_NEW. In the newly sent request, the 'p' bit MUST be set to 1.<a href="#section-4.5.2-7.4.2.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.5.2-7.4.2.2.2">
-When receiving the new request above (i.e., with the 'p' bit set to 1 as a follow-up to the previous KUDOS response having the 'p' bit set to 0), the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode). The initiator should not send any response, nor should the responder expect a response, to such a request.<a href="#section-4.5.2-7.4.2.2.2" class="pilcrow">¶</a></p>
+When receiving the new request above (i.e., with the 'p' bit set to 1 as a follow-up to the previous KUDOS response having the 'p' bit set to 0), the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode). The initiator should not send any response to such a request, nor should the responder expect a response.<a href="#section-4.5.2-7.4.2.2.2" class="pilcrow">¶</a></p>
+<p id="section-4.5.2-7.4.2.2.3">
+In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and CTX_NEW. Note that both peers retain CTX_OLD for use during the next KUDOS execution in the no-FS mode. This is in contrast with the typical behavior where CTX_OLD is deleted upon reception of a message protected with CTX_NEW.<a href="#section-4.5.2-7.4.2.2.3" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
           </ul>
-<p id="section-4.5.2-8">In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and CTX_NEW.<a href="#section-4.5.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

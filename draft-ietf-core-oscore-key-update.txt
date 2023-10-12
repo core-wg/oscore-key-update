@@ -1456,11 +1456,15 @@ Table of Contents
          set to 1 as a follow-up to the previous KUDOS response having
          the 'p' bit set to 0), the initiator learns that the responder
          is a non-CAPABLE device (and hence not able to run KUDOS in FS
-         mode).  The initiator should not send any response, nor should
-         the responder expect a response, to such a request.
+         mode).  The initiator should not send any response to such a
+         request, nor should the responder expect a response.
 
-   In either case, both KUDOS peers delete the OSCORE Security Contexts
-   CTX_1 and CTX_NEW.
+         In either case, both KUDOS peers delete the OSCORE Security
+         Contexts CTX_1 and CTX_NEW.  Note that both peers retain
+         CTX_OLD for use during the next KUDOS execution in the no-FS
+         mode.  This is in contrast with the typical behavior where
+         CTX_OLD is deleted upon reception of a message protected with
+         CTX_NEW.
 
 4.6.  Preserving Observations Across Key Updates
 
