@@ -706,7 +706,7 @@ Note that:
 
 * A peer that is a non-CAPABLE device MUST support the no-FS mode.
 
-* A peer that is a CAPABLE device MUST support the FS mode and SHOULD support the no-FS mode.
+* A peer that is a CAPABLE device MUST support the FS mode and the no-FS mode.
 
 As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{I-D.ietf-lake-edhoc}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
