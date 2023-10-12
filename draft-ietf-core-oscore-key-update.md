@@ -330,7 +330,7 @@ Once a peer has successfully decrypted and verified an incoming message protecte
 
 The peer starting the KUDOS execution is denoted as initiator, while the other peer is denoted as responder.
 
-KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}). The following properties hold for both the forward and reverse message flow.
+KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}). A peer wishing to use KUDOS MUST support both the forward and reverse message flow. The following properties hold for both the forward and reverse message flow.
 
 * The initiator always offers the fresh value N1.
 * The responder always offers the fresh value N2
