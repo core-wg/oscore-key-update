@@ -2587,8 +2587,9 @@ Table of Contents
 7.3.  EDHOC External Authorization Data Registry
 
    IANA is asked to add the following entries to the "EDHOC External
-   Authorization Data" registry within the "Ephemeral Diffie-Hellman
-   Over COSE (EDHOC)" registry group.
+   Authorization Data" registry defined in Section 10.5. of
+   [I-D.ietf-lake-edhoc] within the "Ephemeral Diffie-Hellman Over COSE
+   (EDHOC)" registry group.
 
  +---------+--------------------------------------+--------------------+
  | Label   | Description                          | Reference          |
