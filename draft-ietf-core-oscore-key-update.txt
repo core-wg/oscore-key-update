@@ -1438,8 +1438,8 @@ Table of Contents
          (Service Unavailable) error response.  The response MUST be
          protected with the newly derived OSCORE Security Context
          CTX_NEW.  The diagnostic payload MAY provide additional
-         information.  In the error response, the 'p' bit MUST be set to
-         1.
+         information.  This response is a KUDOS message, and it MUST
+         have the 'd' bit and the 'p' bit set to 1.
 
          When receiving the error response, the initiator learns that
          the responder is a non-CAPABLE device (and hence not able to
@@ -1456,7 +1456,8 @@ Table of Contents
          set to 1 as a follow-up to the previous KUDOS response having
          the 'p' bit set to 0), the initiator learns that the responder
          is a non-CAPABLE device (and hence not able to run KUDOS in FS
-         mode).
+         mode).  The initiator should not send any response, nor should
+         the responder expect a response, to such a request.
 
    In either case, both KUDOS peers delete the OSCORE Security Contexts
    CTX_1 and CTX_NEW.
