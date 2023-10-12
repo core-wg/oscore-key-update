@@ -10,24 +10,24 @@
 <meta content="
        This document defines Key Update for OSCORE (KUDOS), a lightweight procedure that two CoAP endpoints can use to update their keying material by establishing a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option as well as the protection of CoAP response messages with OSCORE, and it deprecates the key update procedure specified in Appendix B.2 of RFC 8613. Thus, this document updates RFC 8613. Also, this document defines a procedure that two endpoints can use to update their OSCORE identifiers, run either stand-alone or during a KUDOS execution. 
     " name="description">
-<meta content="xml2rfc 3.17.4" name="generator">
+<meta content="xml2rfc 3.18.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-key-update-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.17.4
-    Python 3.11.4
+  xml2rfc 3.18.1
+    Python 3.11.5
     ConfigArgParse 1.5.3
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
-    lxml 4.9.2
-    platformdirs 3.8.0
+    lxml 4.9.3
+    platformdirs 3.11.0
     pycountry 22.3.5
     PyYAML 6.0
     requests 2.31.0
     setuptools 67.7.2
     six 1.16.0
-    wcwidth 0.2.6
+    wcwidth 0.2.8
 -->
 <link href="draft-ietf-core-oscore-key-update.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -650,7 +650,7 @@ sub, sup {
 }
 #toc nav li {
   line-height: 1.3em;
-  margin: 0.75em 0;
+  margin: 2px 0;
   padding-left: 1.2em;
   text-indent: -1.2em;
 }
@@ -743,7 +743,7 @@ hr.addr {
     z-index: 2;
     top: 0;
     right: 0;
-    padding: 0;
+    padding: 1px 0 0 0;
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
@@ -867,16 +867,13 @@ hr.addr {
     border-top: none;
     padding-top: 0;
   }
-  figure, pre {
+  figure, pre, .vcard {
     page-break-inside: avoid;
-  }
-  figure {
-    overflow: scroll;
   }
   h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
   }
-  h2+*, h3+*, h4+*, h5+*, h6+* {
+  :is(h2, h3, h4, h5, h6)+*, dd {
     page-break-before: avoid;
   }
   pre {
@@ -889,6 +886,9 @@ hr.addr {
   }
   td {
     border-top: 1px solid #ddd;
+  }
+  .toplink {
+    display: none;
   }
 }
 
@@ -990,28 +990,6 @@ address div.right {
   text-align: right;
 }
 
-/* Give the table caption label the same styling as the figcaption */
-
-@media print {
-  .toplink {
-    display: none;
-  }
-
-  /* avoid overwriting the top border line with the ToC header */
-  #toc {
-    padding-top: 1px;
-  }
-
-  /* Avoid page breaks inside dl and author address entries */
-  dd {
-    page-break-before: avoid;
-  }
-  .vcard {
-    page-break-inside: avoid;
-  }
-
-}
-
 /* Dark mode. */
 @media (prefers-color-scheme: dark) {
 :root {
@@ -1048,11 +1026,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Key Update for OSCORE (KUDOS)</td>
-<td class="right">July 2023</td>
+<td class="right">October 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 11 January 2024</td>
+<td class="center">Expires 14 April 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1046,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-07-10" class="published">10 July 2023</time>
+<time datetime="2023-10-12" class="published">12 October 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-01-11">11 January 2024</time></dd>
+<dd class="expires"><time datetime="2024-04-14">14 April 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1122,7 +1100,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 January 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 April 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1349,11 +1327,14 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-2">To ensure secure communication when using OSCORE, peers may need to update their shared keying material. Among other reasons, approaching key usage limits <span>[<a href="#I-D.irtf-cfrg-aead-limits" class="cite xref">I-D.irtf-cfrg-aead-limits</a>]</span><span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span> requires updating the OSCORE keying material before communications can securely continue.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This document updates <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as follows.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-4.1">It specifies KUDOS, a lightweight key update procedure that the two peers can use in order to update their current keying material and establish a new OSCORE Security Context. This deprecates and replaces the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.2" class="relref">Appendix B.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-1-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1-4.1">
+          <p id="section-1-4.1.1">It specifies KUDOS, a lightweight key update procedure that the two peers can use in order to update their current keying material and establish a new OSCORE Security Context. This deprecates and replaces the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.2" class="relref">Appendix B.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-4.2">With reference to the "OSCORE Flag Bits" registry defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-13.7" class="relref">Section 13.7</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as part of the "Constrained RESTful Environments (CoRE) Parameters" registry group, it updates the entries with Bit Position 0 and 1 (see <a href="#sec-iana" class="auto internal xref">Section 7</a>), both originally marked as "Reserved". That is, it defines and registers the usage of the OSCORE flag bit with Bit Position 0, as the one intended to expand the space for the OSCORE flag bits in the OSCORE Option (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). Also, it marks the bit with Bit Position of 1 as "Unassigned".<a href="#section-1-4.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-4.2">
+          <p id="section-1-4.2.1">With reference to the "OSCORE Flag Bits" registry defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-13.7" class="relref">Section 13.7</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as part of the "Constrained RESTful Environments (CoRE) Parameters" registry group, it updates the entries with Bit Position 0 and 1 (see <a href="#sec-iana" class="auto internal xref">Section 7</a>), both originally marked as "Reserved". That is, it defines and registers the usage of the OSCORE flag bit with Bit Position 0, as the one intended to expand the space for the OSCORE flag bits in the OSCORE Option (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). Also, it marks the bit with Bit Position of 1 as "Unassigned".<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-1-4.3">It updates the protection of CoAP responses with OSCORE originally specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3" class="relref">Section 8.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, as defined in <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a> of this document.<a href="#section-1-4.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-4.3">
+          <p id="section-1-4.3.1">It updates the protection of CoAP responses with OSCORE originally specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3" class="relref">Section 8.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, as defined in <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a> of this document.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-5">Furthermore, this document specifies a method that two peers can use to update their OSCORE identifiers. This can be run as a stand-alone procedure, or instead integrated in a KUDOS execution.<a href="#section-1-5" class="pilcrow">¶</a></p>
@@ -1363,20 +1344,26 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
         </h3>
 <p id="section-1.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">Readers are expected to be familiar with the terms and concepts related to CoAP <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, Observe <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>, CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>, OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> and EDHOC <span>[<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">Readers are expected to be familiar with the terms and concepts related to CoAP <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, Observe <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>, CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>, OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, and EDHOC <span>[<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 <p id="section-1.1-3">This document additionally defines the following terminology.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-4.1">Initiator: the peer starting the KUDOS execution, by sending the first KUDOS message.<a href="#section-1.1-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-4.1">
+            <p id="section-1.1-4.1.1">Initiator: the peer starting the KUDOS execution, by sending the first KUDOS message.<a href="#section-1.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.2">Responder: the peer that receives the first KUDOS message in a KUDOS execution.<a href="#section-1.1-4.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.2">
+            <p id="section-1.1-4.2.1">Responder: the peer that receives the first KUDOS message in a KUDOS execution.<a href="#section-1.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.3">Forward message flow: the KUDOS execution workflow where the initiator acts as CoAP client (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.1</a>).<a href="#section-1.1-4.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.3">
+            <p id="section-1.1-4.3.1">Forward message flow: the KUDOS execution workflow where the initiator acts as CoAP client (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.1</a>).<a href="#section-1.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.4">Reverse message flow: the KUDOS execution workflow where the initiator acts as CoAP server (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>).<a href="#section-1.1-4.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.4">
+            <p id="section-1.1-4.4.1">Reverse message flow: the KUDOS execution workflow where the initiator acts as CoAP server (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>).<a href="#section-1.1-4.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.5">FS mode: the KUDOS execution mode that achieves forward secrecy (see <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>).<a href="#section-1.1-4.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.5">
+            <p id="section-1.1-4.5.1">FS mode: the KUDOS execution mode that achieves forward secrecy (see <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>).<a href="#section-1.1-4.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.6">No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-1.1-4.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.6">
+            <p id="section-1.1-4.6.1">No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-1.1-4.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1452,15 +1439,20 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
 <p id="section-4-3">In order to run KUDOS, two peers perform a message exchange of OSCORE-protected CoAP messages. This message exchange between the two peers is defined in <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>, with particular reference to the stateful FS mode providing forward secrecy. Building on the same message exchange, the possible use of the stateless no-FS mode is defined in <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>, as intended to peers that are not able to write in non-volatile memory. Two peers MUST run KUDOS in FS mode if they are both capable to.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">The key update procedure has the following properties.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4-5.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message.<a href="#section-4-5.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4-5.1">
+          <p id="section-4-5.1.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message.<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-5.2">The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-4-5.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-5.2">
+          <p id="section-4-5.2.1">The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-5.3">The same ID Context value used in the old OSCORE Security Context is preserved in the new Security Context. Furthermore, the ID Context value never changes throughout the KUDOS execution.<a href="#section-4-5.3" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-5.3">
+          <p id="section-4-5.3.1">The same ID Context value used in the old OSCORE Security Context is preserved in the new Security Context. Furthermore, the ID Context value never changes throughout the KUDOS execution.<a href="#section-4-5.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-5.4">KUDOS is robust against a peer rebooting, and it especially avoids the reuse of AEAD (nonce, key) pairs.<a href="#section-4-5.4" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-5.4">
+          <p id="section-4-5.4.1">KUDOS is robust against a peer rebooting, and it especially avoids the reuse of AEAD (nonce, key) pairs.<a href="#section-4-5.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-5.5">KUDOS completes in one round trip. The two peers achieve mutual key confirmation in the following exchange, which is protected with the newly established OSCORE Security Context.<a href="#section-4-5.5" class="pilcrow">¶</a>
+        <li class="normal" id="section-4-5.5">
+          <p id="section-4-5.5.1">KUDOS completes in one round trip. The two peers achieve mutual key confirmation in the following exchange, which is protected with the newly established OSCORE Security Context.<a href="#section-4-5.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="ssec-oscore-option-extensions">
@@ -1480,19 +1472,24 @@ When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST
 <p id="section-4.1-2.2.2">
 When it is set to 1, the compressed COSE object contains a 'nonce', to be used for the steps defined in <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>. The 1 byte 'x' following 'kid context' (if any) encodes the size of 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution. Specifically, the encoding of 'x' is as follows:<a href="#section-4.1-2.2.2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.1-2.2.3.1">The four least significant bits encode the 'nonce' size in bytes minus 1, namely 'm'.<a href="#section-4.1-2.2.3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.1-2.2.3.1">
+                <p id="section-4.1-2.2.3.1.1">The four least significant bits encode the 'nonce' size in bytes minus 1, namely 'm'.<a href="#section-4.1-2.2.3.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-4.1-2.2.3.2">The fifth least significant bit is the "No Forward Secrecy" 'p' bit. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also for peers that cannot support the FS mode. At the same time, two peers MUST run KUDOS in FS mode if they are both capable to, as per <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>. The execution of KUDOS in no-FS mode is defined in <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>.<a href="#section-4.1-2.2.3.2" class="pilcrow">¶</a>
+              <li class="normal" id="section-4.1-2.2.3.2">
+                <p id="section-4.1-2.2.3.2.1">The fifth least significant bit is the "No Forward Secrecy" 'p' bit. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also for peers that cannot support the FS mode. At the same time, two peers MUST run KUDOS in FS mode if they are both capable to, as per <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>. The execution of KUDOS in no-FS mode is defined in <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>.<a href="#section-4.1-2.2.3.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-4.1-2.2.3.3">The sixth least significant bit is the "Preserve Observations" 'b' bit. The sender peer indicates its wish to preserve ongoing observations beyond the KUDOS execution or not, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in <a href="#preserving-observe" class="auto internal xref">Section 4.6</a>.<a href="#section-4.1-2.2.3.3" class="pilcrow">¶</a>
+              <li class="normal" id="section-4.1-2.2.3.3">
+                <p id="section-4.1-2.2.3.3.1">The sixth least significant bit is the "Preserve Observations" 'b' bit. The sender peer indicates its wish to preserve ongoing observations beyond the KUDOS execution or not, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in <a href="#preserving-observe" class="auto internal xref">Section 4.6</a>.<a href="#section-4.1-2.2.3.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-4.1-2.2.3.4">The seventh and eight least significant bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.1-2.2.3.4" class="pilcrow">¶</a>
+              <li class="normal" id="section-4.1-2.2.3.4">
+                <p id="section-4.1-2.2.3.4.1">The seventh and eight least significant bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.1-2.2.3.4.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 <p id="section-4.1-2.2.4">
 Hereafter, this document refers to a message where the 'd' flag is set to 0 as "non KUDOS (request/response) message", and to a message where the 'd' flag is set to 1 as "KUDOS (request/response) message".<a href="#section-4.1-2.2.4" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.1-2.3">The second-to-eighth least significant bits in the second byte of the OSCORE Option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.1-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-2.3">
+            <p id="section-4.1-2.3.1">The second-to-eighth least significant bits in the second byte of the OSCORE Option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.1-3"><a href="#fig-oscore-option" class="auto internal xref">Figure 1</a> shows the OSCORE Option value including also 'nonce'.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
@@ -1610,15 +1607,20 @@ struct {
 <p id="section-4.3-11">The peer starting the KUDOS execution is denoted as initiator, while the other peer is denoted as responder.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
 <p id="section-4.3-12">KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.1</a>) and the latter as the "reverse message flow" (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>). The following properties hold for both the forward and reverse message flow.<a href="#section-4.3-12" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3-13.1">The initiator always offers the fresh value N1.<a href="#section-4.3-13.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.3-13.1">
+            <p id="section-4.3-13.1.1">The initiator always offers the fresh value N1.<a href="#section-4.3-13.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.3-13.2">The responder always offers the fresh value N2<a href="#section-4.3-13.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-13.2">
+            <p id="section-4.3-13.2.1">The responder always offers the fresh value N2<a href="#section-4.3-13.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.3-13.3">The responder is always the first one deriving CTX_NEW.<a href="#section-4.3-13.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-13.3">
+            <p id="section-4.3-13.3.1">The responder is always the first one deriving CTX_NEW.<a href="#section-4.3-13.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.3-13.4">The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX_OLD.<a href="#section-4.3-13.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-13.4">
+            <p id="section-4.3-13.4.1">The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX_OLD.<a href="#section-4.3-13.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.3-13.5">Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX_OLD.<a href="#section-4.3-13.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-13.5">
+            <p id="section-4.3-13.5.1">Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX_OLD.<a href="#section-4.3-13.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.3-14">This situation, however, should not pose significant problems even for a constrained server operating at a capacity of one request per second, thus ensuring the reliability and robustness of the system even under such circumstances.<a href="#section-4.3-14" class="pilcrow">¶</a></p>
@@ -1914,9 +1916,11 @@ Discard CTX_OLD         |  ...                 |
 <p id="section-4.4.1-2">Then, PEER_1 starts a new KUDOS execution acting again as initiator, by sending the first KUDOS message as a CoAP request. This is protected with a temporary Security Context CTX_1, which is newly derived from the retained CTX_OLD, and from the new values X1 and N1 exchanged in the present KUDOS execution.<a href="#section-4.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.4.1-3">Upon receiving the first KUDOS message, PEER_2, acting again as responder, proceeds as follows.<a href="#section-4.4.1-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.4.1-4">
-<li id="section-4.4.1-4.1">PEER_2 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1'. This is derived from the Security Context CTX_NEW established during the latest successfully completed KUDOS execution.<a href="#section-4.4.1-4.1" class="pilcrow">¶</a>
+<li id="section-4.4.1-4.1">
+              <p id="section-4.4.1-4.1.1">PEER_2 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1'. This is derived from the Security Context CTX_NEW established during the latest successfully completed KUDOS execution.<a href="#section-4.4.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.4.1-4.2">The message verification inevitably fails. If PEER_2 is acting as CoAP server, it MUST NOT reply with an unprotected 4.01 (Unauthorized) CoAP response yet.<a href="#section-4.4.1-4.2" class="pilcrow">¶</a>
+            <li id="section-4.4.1-4.2">
+              <p id="section-4.4.1-4.2.1">The message verification inevitably fails. If PEER_2 is acting as CoAP server, it MUST NOT reply with an unprotected 4.01 (Unauthorized) CoAP response yet.<a href="#section-4.4.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-4.4.1-4.3">
               <p id="section-4.4.1-4.3.1">PEER_2 MUST attempt to verify the first KUDOS message by using a temporary Security Context CTX_1. This is newly derived from the Security Context CTX_OLD retained after the latest successfully completed KUDOS execution, and from the values X1 and N1 exchanged in the present KUDOS execution.<a href="#section-4.4.1-4.3.1" class="pilcrow">¶</a></p>
@@ -1937,9 +1941,11 @@ If the message verification succeeds, PEER_2: i) retains CTX_OLD from the latest
 <p id="section-4.4.2-2">Then, PEER_2 starts a new KUDOS execution, this time acting as initiator, by sending the first KUDOS message as a CoAP request. This is protected with a temporary Security Context CTX_1, which is newly derived from CTX_NEW established during the latest successfully completed KUDOS execution, as well as from the new values X1 and N1 exchanged in the present KUDOS execution.<a href="#section-4.4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.4.2-3">Upon receiving the first KUDOS message, PEER_1, this time acting as responder, proceeds as follows.<a href="#section-4.4.2-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.4.2-4">
-<li id="section-4.4.2-4.1">PEER_1 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1', which is derived from the retained Security Context CTX_OLD and from the value X1 and N1 exchanged in the present KUDOS execution.<a href="#section-4.4.2-4.1" class="pilcrow">¶</a>
+<li id="section-4.4.2-4.1">
+              <p id="section-4.4.2-4.1.1">PEER_1 attempts to verify the first KUDOS message by using a temporary Security Context CTX_1', which is derived from the retained Security Context CTX_OLD and from the value X1 and N1 exchanged in the present KUDOS execution.<a href="#section-4.4.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.4.2-4.2">The message verification inevitably fails. If PEER_1 is acting as CoAP server, it replies with an unprotected 4.01 (Unauthorized) CoAP response.<a href="#section-4.4.2-4.2" class="pilcrow">¶</a>
+            <li id="section-4.4.2-4.2">
+              <p id="section-4.4.2-4.2.1">The message verification inevitably fails. If PEER_1 is acting as CoAP server, it replies with an unprotected 4.01 (Unauthorized) CoAP response.<a href="#section-4.4.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-4.4.2-4.3">
               <p id="section-4.4.2-4.3.1">If PEER_2 does not receive the second KUDOS message for a pre-defined amount of time, or if it receives a 4.01 (Unauthorized) CoAP response when acting as CoAP client, then PEER_2 can start a new KUDOS execution for a maximum, pre-defined number of times.<a href="#section-4.4.2-4.3.1" class="pilcrow">¶</a></p>
@@ -1968,11 +1974,14 @@ If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as wel
           </h4>
 <p id="section-4.4.3-1">When KUDOS is run in the reverse message flow (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>), the two peers risk to run into a deadlock, if all the following conditions hold.<a href="#section-4.4.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.4.3-2.1">The client is a client-only device, i.e., it does not act as CoAP server and thus does not listen for incoming requests.<a href="#section-4.4.3-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.4.3-2.1">
+              <p id="section-4.4.3-2.1.1">The client is a client-only device, i.e., it does not act as CoAP server and thus does not listen for incoming requests.<a href="#section-4.4.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.4.3-2.2">The server needs to execute KUDOS, which, due to the previous point, can only be performed in its reverse message flow. That is, the server has to wait for an incoming non KUDOS request, in order to initiate KUDOS by replying with the first KUDOS message as a response.<a href="#section-4.4.3-2.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.4.3-2.2">
+              <p id="section-4.4.3-2.2.1">The server needs to execute KUDOS, which, due to the previous point, can only be performed in its reverse message flow. That is, the server has to wait for an incoming non KUDOS request, in order to initiate KUDOS by replying with the first KUDOS message as a response.<a href="#section-4.4.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.4.3-2.3">The client sends only Non-confirmable CoAP requests to the server and does not expect responses sent back as reply, hence freeing up a request's Token value once the request is sent.<a href="#section-4.4.3-2.3" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.4.3-2.3">
+              <p id="section-4.4.3-2.3.1">The client sends only Non-confirmable CoAP requests to the server and does not expect responses sent back as reply, hence freeing up a request's Token value once the request is sent.<a href="#section-4.4.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-4.4.3-3">In such a case, in order to avoid experiencing a deadlock situation where the server needs to execute KUDOS but cannot practically initiate it, a client-only device that supports KUDOS SHOULD intersperse Non-confirmable requests it sends to that server with confirmable requests.<a href="#section-4.4.3-3" class="pilcrow">¶</a></p>
@@ -1998,29 +2007,37 @@ If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as wel
 <p id="section-4.5.1-1">In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time. If that is not the case, the device is denoted as "non-CAPABLE".<a href="#section-4.5.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.5.1-2">The following terms are used to refer to OSCORE keying material.<a href="#section-4.5.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.1-3.1">Bootstrap Master Secret and Bootstrap Master Salt. If pre-provisioned during manufacturing or (re-)commissioning, these OSCORE Master Secret and Master Salt are initially stored on disk and are never going to be overwritten by the device.<a href="#section-4.5.1-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.1-3.1">
+              <p id="section-4.5.1-3.1.1">Bootstrap Master Secret and Bootstrap Master Salt. If pre-provisioned during manufacturing or (re-)commissioning, these OSCORE Master Secret and Master Salt are initially stored on disk and are never going to be overwritten by the device.<a href="#section-4.5.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.5.1-3.2">Latest Master Secret and Latest Master Salt. These OSCORE Master Secret and Master Salt can be dynamically updated by the device. In case of reboot, they are lost unless they have been stored on disk.<a href="#section-4.5.1-3.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.1-3.2">
+              <p id="section-4.5.1-3.2.1">Latest Master Secret and Latest Master Salt. These OSCORE Master Secret and Master Salt can be dynamically updated by the device. In case of reboot, they are lost unless they have been stored on disk.<a href="#section-4.5.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-4.5.1-4">Note that:<a href="#section-4.5.1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.1-5.1">A peer running KUDOS can have none of the pairs above associated with another peer, only one or both.<a href="#section-4.5.1-5.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.1-5.1">
+              <p id="section-4.5.1-5.1.1">A peer running KUDOS can have none of the pairs above associated with another peer, only one or both.<a href="#section-4.5.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.5.1-5.2">A peer that has neither of the pairs above associated with another peer, cannot run KUDOS in any mode with that other peer.<a href="#section-4.5.1-5.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.1-5.2">
+              <p id="section-4.5.1-5.2.1">A peer that has neither of the pairs above associated with another peer, cannot run KUDOS in any mode with that other peer.<a href="#section-4.5.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.5.1-5.3">
               <p id="section-4.5.1-5.3.1">A peer that has only one of the pairs above associated with another peer can attempt to run KUDOS with that other peer, but the procedure might fail depending on the other peer's capabilities. In particular:<a href="#section-4.5.1-5.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.1-5.3.2.1">In order to run KUDOS in FS mode, a peer must be a CAPABLE device. It follows that two peers have to both be CAPABLE devices in order to be able to run KUDOS in FS mode with one another.<a href="#section-4.5.1-5.3.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.1-5.3.2.1">
+                  <p id="section-4.5.1-5.3.2.1.1">In order to run KUDOS in FS mode, a peer must be a CAPABLE device. It follows that two peers have to both be CAPABLE devices in order to be able to run KUDOS in FS mode with one another.<a href="#section-4.5.1-5.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-4.5.1-5.3.2.2">In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.<a href="#section-4.5.1-5.3.2.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-4.5.1-5.3.2.2">
+                  <p id="section-4.5.1-5.3.2.2.1">In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.<a href="#section-4.5.1-5.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
-            <li class="normal" id="section-4.5.1-5.4">A peer that is a non-CAPABLE device MUST support the no-FS mode.<a href="#section-4.5.1-5.4" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.1-5.4">
+              <p id="section-4.5.1-5.4.1">A peer that is a non-CAPABLE device MUST support the no-FS mode.<a href="#section-4.5.1-5.4.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.5.1-5.5">A peer that is a CAPABLE device MUST support the FS mode and SHOULD support the no-FS mode.<a href="#section-4.5.1-5.5" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.1-5.5">
+              <p id="section-4.5.1-5.5.1">A peer that is a CAPABLE device MUST support the FS mode and SHOULD support the no-FS mode.<a href="#section-4.5.1-5.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-4.5.1-6">As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol <span>[<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:<a href="#section-4.5.1-6" class="pilcrow">¶</a></p>
@@ -2030,7 +2047,8 @@ If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as wel
 <p id="section-4.5.1-7.1.2">
 As an exception, this does not apply to possible temporary OSCORE Security Contexts used during a key update procedure, such as CTX_1 used during the KUDOS execution. That is, the OSCORE Master Secret and Master Salt from such temporary Security Contexts MUST NOT be stored on disk.<a href="#section-4.5.1-7.1.2" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.5.1-7.2">The peer MUST store Latest Master Secret and Latest Master Salt in volatile memory, thus making them available to OSCORE message processing and possible key update procedures.<a href="#section-4.5.1-7.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.1-7.2">
+              <p id="section-4.5.1-7.2.1">The peer MUST store Latest Master Secret and Latest Master Salt in volatile memory, thus making them available to OSCORE message processing and possible key update procedures.<a href="#section-4.5.1-7.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <div id="actions-after-device-reboot">
@@ -2043,9 +2061,11 @@ As an exception, this does not apply to possible temporary OSCORE Security Conte
 <li class="normal" id="section-4.5.1.1-2.1">
                 <p id="section-4.5.1.1-2.1.1">If a pair P1 is found, the peer A performs the following actions.<a href="#section-4.5.1.1-2.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.1.1-2.1.2.1">The peer A loads the Latest Master Secret and Latest Master Salt to volatile memory, and uses them to derive an OSCORE Security Context CTX_OLD.<a href="#section-4.5.1.1-2.1.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.1.1-2.1.2.1">
+                    <p id="section-4.5.1.1-2.1.2.1.1">The peer A loads the Latest Master Secret and Latest Master Salt to volatile memory, and uses them to derive an OSCORE Security Context CTX_OLD.<a href="#section-4.5.1.1-2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="normal" id="section-4.5.1.1-2.1.2.2">The peer A runs KUDOS with the other peer B, acting as initiator. If the peer A is a CAPABLE device, it stores on disk the Master Secret and Master Salt from the newly established OSCORE Security Context CTX_NEW, as Latest Master Secret and Latest Master Salt, respectively.<a href="#section-4.5.1.1-2.1.2.2" class="pilcrow">¶</a>
+                  <li class="normal" id="section-4.5.1.1-2.1.2.2">
+                    <p id="section-4.5.1.1-2.1.2.2.1">The peer A runs KUDOS with the other peer B, acting as initiator. If the peer A is a CAPABLE device, it stores on disk the Master Secret and Master Salt from the newly established OSCORE Security Context CTX_NEW, as Latest Master Secret and Latest Master Salt, respectively.<a href="#section-4.5.1.1-2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
@@ -2055,15 +2075,19 @@ As an exception, this does not apply to possible temporary OSCORE Security Conte
 <li class="normal" id="section-4.5.1.1-2.2.2.1">
                     <p id="section-4.5.1.1-2.2.2.1.1">If a pair P2 is found, the peer A performs the following actions.<a href="#section-4.5.1.1-2.2.2.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.1.1-2.2.2.1.2.1">The peer A loads the Bootstrap Master Secret and Bootstrap Master Salt to volatile memory, and uses them to derive an OSCORE Security Context CTX_OLD.<a href="#section-4.5.1.1-2.2.2.1.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.1.1-2.2.2.1.2.1">
+                        <p id="section-4.5.1.1-2.2.2.1.2.1.1">The peer A loads the Bootstrap Master Secret and Bootstrap Master Salt to volatile memory, and uses them to derive an OSCORE Security Context CTX_OLD.<a href="#section-4.5.1.1-2.2.2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="normal" id="section-4.5.1.1-2.2.2.1.2.2">If the peer A is a CAPABLE device, it stores on disk Bootstrap Master Secret and Bootstrap Master Salt as Latest Master Secret and Latest Master Salt, respectively. This supports the situation where A is a CAPABLE device and has never run KUDOS with the other peer B before.<a href="#section-4.5.1.1-2.2.2.1.2.2" class="pilcrow">¶</a>
+                      <li class="normal" id="section-4.5.1.1-2.2.2.1.2.2">
+                        <p id="section-4.5.1.1-2.2.2.1.2.2.1">If the peer A is a CAPABLE device, it stores on disk Bootstrap Master Secret and Bootstrap Master Salt as Latest Master Secret and Latest Master Salt, respectively. This supports the situation where A is a CAPABLE device and has never run KUDOS with the other peer B before.<a href="#section-4.5.1.1-2.2.2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                      <li class="normal" id="section-4.5.1.1-2.2.2.1.2.3">The peer A runs KUDOS with the other peer B, acting as initiator. If the peer A is a CAPABLE device, it stores on disk the Master Secret and Master Salt from the newly established OSCORE Security Context CTX_NEW, as Latest Master Secret and Latest Master Salt, respectively.<a href="#section-4.5.1.1-2.2.2.1.2.3" class="pilcrow">¶</a>
+                      <li class="normal" id="section-4.5.1.1-2.2.2.1.2.3">
+                        <p id="section-4.5.1.1-2.2.2.1.2.3.1">The peer A runs KUDOS with the other peer B, acting as initiator. If the peer A is a CAPABLE device, it stores on disk the Master Secret and Master Salt from the newly established OSCORE Security Context CTX_NEW, as Latest Master Secret and Latest Master Salt, respectively.<a href="#section-4.5.1.1-2.2.2.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
                     </ul>
 </li>
-                  <li class="normal" id="section-4.5.1.1-2.2.2.2">If a pair P2 is not found, the peer A has to use alternative ways to establish a first OSCORE Security Context CTX_NEW with the other peer B, e.g., by running the EDHOC protocol. After that, if A is a CAPABLE device, it stores on disk the OSCORE Master Secret and Master Salt from the newly established OSCORE Security Context CTX_NEW, as Latest Master Secret and Latest Master Salt, respectively.<a href="#section-4.5.1.1-2.2.2.2" class="pilcrow">¶</a>
+                  <li class="normal" id="section-4.5.1.1-2.2.2.2">
+                    <p id="section-4.5.1.1-2.2.2.2.1">If a pair P2 is not found, the peer A has to use alternative ways to establish a first OSCORE Security Context CTX_NEW with the other peer B, e.g., by running the EDHOC protocol. After that, if A is a CAPABLE device, it stores on disk the OSCORE Master Secret and Master Salt from the newly established OSCORE Security Context CTX_NEW, as Latest Master Secret and Latest Master Salt, respectively.<a href="#section-4.5.1.1-2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
@@ -2079,14 +2103,17 @@ As an exception, this does not apply to possible temporary OSCORE Security Conte
           </h4>
 <p id="section-4.5.2-1">During a KUDOS execution, the two peers agree on whether to perform the key update procedure in FS mode or no-FS mode, by leveraging the "No Forward Secrecy" bit, 'p', in the 'x' byte of the OSCORE Option value of the KUDOS messages (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). The 'p' bit practically determines what OSCORE Security Context to use as CTX_OLD during the KUDOS execution, consistently with the indicated mode.<a href="#section-4.5.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.2-2.1">If the 'p' bit is set to 0 (FS mode), the updateCtx() function used to derive CTX_1 or CTX_NEW considers as input CTX_OLD the current OSCORE Security Context shared with the other peer as is. In particular, CTX_OLD includes Latest Master Secret as OSCORE Master Secret and Latest Master Salt as OSCORE Master Salt.<a href="#section-4.5.2-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.2-2.1">
+              <p id="section-4.5.2-2.1.1">If the 'p' bit is set to 0 (FS mode), the updateCtx() function used to derive CTX_1 or CTX_NEW considers as input CTX_OLD the current OSCORE Security Context shared with the other peer as is. In particular, CTX_OLD includes Latest Master Secret as OSCORE Master Secret and Latest Master Salt as OSCORE Master Salt.<a href="#section-4.5.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.5.2-2.2">If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX_1 or CTX_NEW considers as input CTX_OLD the current OSCORE Security Context shared with the other peer, with the following difference: Bootstrap Master Secret is used as OSCORE Master Secret and Bootstrap Master Salt is used as OSCORE Master Salt. That is, every execution of KUDOS in no-FS mode between these two peers considers the same pair (Master Secret, Master Salt) in the OSCORE Security Context CTX_OLD provided as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.<a href="#section-4.5.2-2.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.2-2.2">
+              <p id="section-4.5.2-2.2.1">If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX_1 or CTX_NEW considers as input CTX_OLD the current OSCORE Security Context shared with the other peer, with the following difference: Bootstrap Master Secret is used as OSCORE Master Secret and Bootstrap Master Salt is used as OSCORE Master Salt. That is, every execution of KUDOS in no-FS mode between these two peers considers the same pair (Master Secret, Master Salt) in the OSCORE Security Context CTX_OLD provided as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.<a href="#section-4.5.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-4.5.2-3">A peer determines to run KUDOS either in FS or no-FS mode with another peer as follows.<a href="#section-4.5.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.2-4.1">If a peer A is not a CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value.<a href="#section-4.5.2-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.2-4.1">
+              <p id="section-4.5.2-4.1.1">If a peer A is not a CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value.<a href="#section-4.5.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.5.2-4.2">
               <p id="section-4.5.2-4.2.1">If a peer A is a CAPABLE device, it SHOULD run KUDOS only in FS mode and SHOULD NOT run KUDOS as initiator in no-FS mode. That is, when sending a KUDOS message, it SHOULD set to 0 the 'p' bit of the 'x' byte in the OSCORE Option value. An exception applies in the following cases.<a href="#section-4.5.2-4.2.1" class="pilcrow">¶</a></p>
@@ -2096,7 +2123,8 @@ As an exception, this does not apply to possible temporary OSCORE Security Conte
 <p id="section-4.5.2-4.2.2.1.2">
 Note that, if the peer A is a CAPABLE device, it is able to store such information about the other peer B on disk and it MUST do so. From then on, the peer A will perform every execution of KUDOS with the peer B in no-FS mode, including after a possible reboot.<a href="#section-4.5.2-4.2.2.1.2" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-4.5.2-4.2.2.2">The peer A is acting as responder and running KUDOS with another peer B without knowing its capabilities, and A receives a KUDOS message where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1.<a href="#section-4.5.2-4.2.2.2" class="pilcrow">¶</a>
+                <li class="normal" id="section-4.5.2-4.2.2.2">
+                  <p id="section-4.5.2-4.2.2.2.1">The peer A is acting as responder and running KUDOS with another peer B without knowing its capabilities, and A receives a KUDOS message where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1.<a href="#section-4.5.2-4.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -2109,11 +2137,14 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
 <p id="section-4.5.2-5">Within the limitations above, two peers running KUDOS generate the new OSCORE Security Context CTX_NEW according to the mode indicated per the bit 'p' set by the responder in the second KUDOS message.<a href="#section-4.5.2-5" class="pilcrow">¶</a></p>
 <p id="section-4.5.2-6">If, after having received the first KUDOS message, the responder can continue performing KUDOS, the bit 'p' in the reply message has the same value as in the bit 'p' set by the initiator, unless the value is 0 and the responder is a non-CAPABLE device. More specifically:<a href="#section-4.5.2-6" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.5.2-7.1">If both peers are CAPABLE devices, they will run KUDOS in FS mode. That is, both initiator and responder sets the 'p' bit to 0 in the respective sent KUDOS message.<a href="#section-4.5.2-7.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.5.2-7.1">
+              <p id="section-4.5.2-7.1.1">If both peers are CAPABLE devices, they will run KUDOS in FS mode. That is, both initiator and responder sets the 'p' bit to 0 in the respective sent KUDOS message.<a href="#section-4.5.2-7.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.5.2-7.2">If both peers are non-CAPABLE devices or only the peer acting as initiator is a non-CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.<a href="#section-4.5.2-7.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.2-7.2">
+              <p id="section-4.5.2-7.2.1">If both peers are non-CAPABLE devices or only the peer acting as initiator is a non-CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.<a href="#section-4.5.2-7.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.5.2-7.3">If only the peer acting as initiator is a CAPABLE device and it has knowledge of the other peer being a non-CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.<a href="#section-4.5.2-7.3" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.5.2-7.3">
+              <p id="section-4.5.2-7.3.1">If only the peer acting as initiator is a CAPABLE device and it has knowledge of the other peer being a non-CAPABLE device, they will run KUDOS in no-FS mode. That is, both initiator and responder sets the 'p' bit to 1 in the respective sent KUDOS message.<a href="#section-4.5.2-7.3.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.5.2-7.4">
               <p id="section-4.5.2-7.4.1">If only the peer acting as initiator is a CAPABLE device and it has no knowledge of the other peer being a non-CAPABLE device, they will not run KUDOS in FS mode and will rather set to ground for possibly retrying in no-FS mode. In particular, the initiator sets the 'p' bit of its sent KUDOS message to 0. Then:<a href="#section-4.5.2-7.4.1" class="pilcrow">¶</a></p>
@@ -2161,13 +2192,17 @@ When receiving the new request above (i.e., with the 'p' bit set to 1 as a follo
 <p id="section-4.6.1-7">If a peer acting as initiator has sent the first KUDOS message with the bit 'b' set to 0, the peer MUST ignore the bit 'b' in the follow-up KUDOS message that it receives from the other peer.<a href="#section-4.6.1-7" class="pilcrow">¶</a></p>
 <p id="section-4.6.1-8">After successfully completing the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX_NEW), both peers have expressed their interest in preserving their common ongoing observations if and only if the bit 'b' was set to 1 in both the exchanged KUDOS messages. In such a case, each peer X performs the following actions.<a href="#section-4.6.1-8" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.6.1-9">
-<li id="section-4.6.1-9.1">The peer X considers all the still ongoing observations that it has with the other peer, such that X acts as client in those observations. If there are no such observations, the peer X takes no further actions. Otherwise, it moves to step 2.<a href="#section-4.6.1-9.1" class="pilcrow">¶</a>
+<li id="section-4.6.1-9.1">
+              <p id="section-4.6.1-9.1.1">The peer X considers all the still ongoing observations that it has with the other peer, such that X acts as client in those observations. If there are no such observations, the peer X takes no further actions. Otherwise, it moves to step 2.<a href="#section-4.6.1-9.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.6.1-9.2">The peer X considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations determined at step 1.<a href="#section-4.6.1-9.2" class="pilcrow">¶</a>
+            <li id="section-4.6.1-9.2">
+              <p id="section-4.6.1-9.2.1">The peer X considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations determined at step 1.<a href="#section-4.6.1-9.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.6.1-9.3">The peer X determines the value PIV* as the highest OSCORE Partial IV value among those considered at step 2.<a href="#section-4.6.1-9.3" class="pilcrow">¶</a>
+            <li id="section-4.6.1-9.3">
+              <p id="section-4.6.1-9.3.1">The peer X determines the value PIV* as the highest OSCORE Partial IV value among those considered at step 2.<a href="#section-4.6.1-9.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.6.1-9.4">In the Sender Context of the OSCORE Security Context shared with the other peer, the peer X sets its own Sender Sequence Number to (PIV* + 1), rather than to 0.<a href="#section-4.6.1-9.4" class="pilcrow">¶</a>
+            <li id="section-4.6.1-9.4">
+              <p id="section-4.6.1-9.4.1">In the Sender Context of the OSCORE Security Context shared with the other peer, the peer X sets its own Sender Sequence Number to (PIV* + 1), rather than to 0.<a href="#section-4.6.1-9.4.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 <p id="section-4.6.1-10">As a result, each peer X will "jump" beyond the OSCORE Partial IV (PIV) values that are occupied and in use for ongoing observations with the other peer where X acts as client.<a href="#section-4.6.1-10" class="pilcrow">¶</a></p>
@@ -2186,11 +2221,14 @@ When receiving the new request above (i.e., with the 'p' bit set to 1 as a follo
 <p id="section-4.7-1">Applications MAY define policies that allow a peer to temporarily keep the old Security Context CTX_OLD beyond having established the new Security Context CTX_NEW and having achieved key confirmation, rather than simply overwriting CTX_OLD with CTX_NEW. This allows the peer to decrypt late, still on-the-fly incoming messages protected with CTX_OLD.<a href="#section-4.7-1" class="pilcrow">¶</a></p>
 <p id="section-4.7-2">When enforcing such policies, the following applies.<a href="#section-4.7-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.7-3.1">Outgoing non KUDOS messages MUST be protected by using only CTX_NEW.<a href="#section-4.7-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.7-3.1">
+            <p id="section-4.7-3.1.1">Outgoing non KUDOS messages MUST be protected by using only CTX_NEW.<a href="#section-4.7-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.7-3.2">Incoming non KUDOS messages MUST first be attempted to decrypt by using CTX_NEW. If decryption fails, a second attempt can use CTX_OLD.<a href="#section-4.7-3.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.7-3.2">
+            <p id="section-4.7-3.2.1">Incoming non KUDOS messages MUST first be attempted to decrypt by using CTX_NEW. If decryption fails, a second attempt can use CTX_OLD.<a href="#section-4.7-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.7-3.3">When an amount of time defined by the policy has elapsed since the establishment of CTX_NEW, the peer deletes CTX_OLD.<a href="#section-4.7-3.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.7-3.3">
+            <p id="section-4.7-3.3.1">When an amount of time defined by the policy has elapsed since the establishment of CTX_NEW, the peer deletes CTX_OLD.<a href="#section-4.7-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.7-4">A peer MUST NOT retain CTX_OLD beyond the establishment of CTX_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX_OLD is expired; limits set for safe key usage have been reached <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>, for the Recipient Key of the Recipient Context of CTX_OLD.<a href="#section-4.7-4" class="pilcrow">¶</a></p>
@@ -2221,11 +2259,14 @@ When receiving the new request above (i.e., with the 'p' bit set to 1 as a follo
           </h4>
 <p id="section-4.8.2-1">Each of the two KUDOS messages displays a small communication overhead. This is determined by the following, additional information conveyed in the OSCORE option (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>).<a href="#section-4.8.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.8.2-2.1">The second byte of the OSCORE option.<a href="#section-4.8.2-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.8.2-2.1">
+              <p id="section-4.8.2-2.1.1">The second byte of the OSCORE option.<a href="#section-4.8.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.8.2-2.2">The byte 'x' of the OSCORE option.<a href="#section-4.8.2-2.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.8.2-2.2">
+              <p id="section-4.8.2-2.2.1">The byte 'x' of the OSCORE option.<a href="#section-4.8.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.8.2-2.3">The nonce conveyed in the 'nonce' field of the OSCORE option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.<a href="#section-4.8.2-2.3" class="pilcrow">¶</a>
+            <li class="normal" id="section-4.8.2-2.3">
+              <p id="section-4.8.2-2.3.1">The nonce conveyed in the 'nonce' field of the OSCORE option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.<a href="#section-4.8.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-4.8.2-3">Assuming nonces of the same size in both messages of the same KUDOS execution, this results in the following minimum, typical, and maximum communication overhead, when considering a nonce with size 1, 8, and 16 bytes, respectively. All the indicated values are in bytes.<a href="#section-4.8.2-3" class="pilcrow">¶</a></p>
@@ -2271,7 +2312,7 @@ When receiving the new request above (i.e., with the 'p' bit set to 1 as a follo
         <h3 id="name-signaling-kudos-support-in-">
 <a href="#section-4.9" class="section-number selfRef">4.9. </a><a href="#name-signaling-kudos-support-in-" class="section-name selfRef">Signaling KUDOS support in EDHOC</a>
         </h3>
-<p id="section-4.9-1">The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-20#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an optional 'ead_value' encoded as a CBOR bstr.<a href="#section-4.9-1" class="pilcrow">¶</a></p>
+<p id="section-4.9-1">The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an optional 'ead_value' encoded as a CBOR bstr.<a href="#section-4.9-1" class="pilcrow">¶</a></p>
 <p id="section-4.9-2">This document defines a new EDHOC EAD item KUDOS_EAD and registers its 'ead_label' in <a href="#iana-edhoc-aad" class="auto internal xref">Section 7.3</a>. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, irrespective of the modes they support. The possible values of the 'ead_value' are as follows:<a href="#section-4.9-2" class="pilcrow">¶</a></p>
 <div class="alignCenter art-text artwork" id="section-4.9-3">
 <pre>
@@ -2302,13 +2343,17 @@ When receiving the new request above (i.e., with the 'p' bit set to 1 as a follo
 <p id="section-4.9-7">When the KUDOS_EAD item is included in EDHOC message_2 with 'ead_value' NONE, a recipient peer that supports the KUDOS_EAD item MUST NOT specify whether it supports KUDOS in EDHOC message_3.<a href="#section-4.9-7" class="pilcrow">¶</a></p>
 <p id="section-4.9-8">In the following cases, the recipient peer silently ignores the KUDOS_EAD item specified in the received EDHOC message, and does not include a KUDOS_EAD item in the next EDHOC message it sends (if any).<a href="#section-4.9-8" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.9-9.1">The recipient peer does not support the KUDOS_EAD item.<a href="#section-4.9-9.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.9-9.1">
+            <p id="section-4.9-9.1.1">The recipient peer does not support the KUDOS_EAD item.<a href="#section-4.9-9.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.9-9.2">The KUDOS_EAD item is included in EDHOC message_1 with 'ead_value' different than ASK<a href="#section-4.9-9.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.9-9.2">
+            <p id="section-4.9-9.2.1">The KUDOS_EAD item is included in EDHOC message_1 with 'ead_value' different than ASK<a href="#section-4.9-9.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.9-9.3">The KUDOS_EAD item is included in EDHOC message_2 or message_3 with 'ead_value' ASK.<a href="#section-4.9-9.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.9-9.3">
+            <p id="section-4.9-9.3.1">The KUDOS_EAD item is included in EDHOC message_2 or message_3 with 'ead_value' ASK.<a href="#section-4.9-9.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-4.9-9.4">The KUDOS_EAD item is included in EDHOC message_4.<a href="#section-4.9-9.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.9-9.4">
+            <p id="section-4.9-9.4.1">The KUDOS_EAD item is included in EDHOC message_4.<a href="#section-4.9-9.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.9-10">That is, by specifying 'ead_value' ASK in EDHOC message_1, a peer A can indicate to the other peer B that it wishes to know if B supports KUDOS and in what mode(s). In the following EDHOC message_2, B indicates whether it supports KUDOS and in what mode(s), by specifying either NONE, FULL or PART as 'ead_value'. Specifying the 'ead_value' FULL or PART in EDHOC message_2 also asks A to indicate whether it supports KUDOS in EDHOC message_3.<a href="#section-4.9-10" class="pilcrow">¶</a></p>
@@ -2387,9 +2432,11 @@ The first use of the new OSCORE Sender/Recipient IDs with the new OSCORE Securit
 <p id="section-5-7">An initiator terminates an ongoing OSCORE IDs procedure with another peer as failed, in case, after having sent the first OSCORE IDs update message for the procedure in question, a pre-defined amount of time has elapsed without receiving and successfully verifying the second OSCORE IDs update message from the other peer. It is RECOMMENDED that such an amount of time is equal to MAX_TRANSMIT_WAIT (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.8.2" class="relref">Section 4.8.2</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>).<a href="#section-5-7" class="pilcrow">¶</a></p>
 <p id="section-5-8">A peer terminates an ongoing OSCORE IDs procedure with another peer as successful, in any of the following two cases.<a href="#section-5-8" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5-9.1">The peer is acting as initiator, and it has received and successfully verified the second OSCORE IDs update message from the other peer.<a href="#section-5-9.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5-9.1">
+          <p id="section-5-9.1.1">The peer is acting as initiator, and it has received and successfully verified the second OSCORE IDs update message from the other peer.<a href="#section-5-9.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-9.2">The peer is acting as responder, and it has sent the second OSCORE IDs update message to the other peer.<a href="#section-5-9.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-5-9.2">
+          <p id="section-5-9.2.1">The peer is acting as responder, and it has sent the second OSCORE IDs update message to the other peer.<a href="#section-5-9.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-5-10">A peer MUST NOT initiate an OSCORE IDs procedure with another peer, if it has another such procedure ongoing with that other peer.<a href="#section-5-10" class="pilcrow">¶</a></p>
@@ -2703,9 +2750,11 @@ with CTX_B  | Encrypted Payload {               |
 <p id="section-5.1.3-2">More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt, ID Context) of CTX_OLD. This can happen, for instance, after a device reboot.<a href="#section-5.1.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.1.3-3">Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer performs the following additional steps.<a href="#section-5.1.3-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.1.3-4.1">When a peer sends an OSCORE IDs update message, the value of the Recipient-ID Option that the peer specifies as its new intended OSCORE Recipient ID MUST fulfill both the following conditions: it is currently available as Recipient ID to use for the peer (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">Section 3.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>); and the peer has never used it as Recipient ID with the current triplet (Master Secret, Master Salt, ID Context).<a href="#section-5.1.3-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5.1.3-4.1">
+              <p id="section-5.1.3-4.1.1">When a peer sends an OSCORE IDs update message, the value of the Recipient-ID Option that the peer specifies as its new intended OSCORE Recipient ID MUST fulfill both the following conditions: it is currently available as Recipient ID to use for the peer (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">Section 3.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>); and the peer has never used it as Recipient ID with the current triplet (Master Secret, Master Salt, ID Context).<a href="#section-5.1.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-5.1.3-4.2">When receiving an OSCORE IDs update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with the current triplet (Master Secret, Master Salt, ID Context).<a href="#section-5.1.3-4.2" class="pilcrow">¶</a>
+            <li class="normal" id="section-5.1.3-4.2">
+              <p id="section-5.1.3-4.2.1">When receiving an OSCORE IDs update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with the current triplet (Master Secret, Master Salt, ID Context).<a href="#section-5.1.3-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-5.1.3-5">In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt, ID Context) since the latest update of the OSCORE Master Secret (e.g., performed by running KUDOS).<a href="#section-5.1.3-5" class="pilcrow">¶</a></p>
@@ -2723,18 +2772,22 @@ with CTX_B  | Encrypted Payload {               |
 <li class="normal" id="section-5.2-2.1">
             <p id="section-5.2-2.1.1">If a peer intends to keep active beyond an update of its Sender ID the observations where it is acting as CoAP client, then the peer:<a href="#section-5.2-2.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.2-2.1.2.1">MUST store the value of the 'kid' parameter from the original Observe requests, and retain it for the whole duration of the observations, throughout which the client MUST NOT update the stored value associated with the corresponding Observe registration request; and<a href="#section-5.2-2.1.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5.2-2.1.2.1">
+                <p id="section-5.2-2.1.2.1.1">MUST store the value of the 'kid' parameter from the original Observe requests, and retain it for the whole duration of the observations, throughout which the client MUST NOT update the stored value associated with the corresponding Observe registration request; and<a href="#section-5.2-2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-5.2-2.1.2.2">MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), when verifying notifications for that observation as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.4.2" class="relref">Section 8.4.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-5.2-2.1.2.2" class="pilcrow">¶</a>
+              <li class="normal" id="section-5.2-2.1.2.2">
+                <p id="section-5.2-2.1.2.2.1">MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), when verifying notifications for that observation as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.4.2" class="relref">Section 8.4.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-5.2-2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
           <li class="normal" id="section-5.2-2.2">
             <p id="section-5.2-2.2.1">If a peer is acting as CoAP server in an ongoing observation, then the peer:<a href="#section-5.2-2.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.2-2.2.2.1">MUST store the value of the 'kid' parameter from the original Observe registration request, and retain it for the whole duration of the observation, throughout which the peer MUST NOT update the stored value associated with the corresponding Observe registration request; and<a href="#section-5.2-2.2.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5.2-2.2.2.1">
+                <p id="section-5.2-2.2.2.1.1">MUST store the value of the 'kid' parameter from the original Observe registration request, and retain it for the whole duration of the observation, throughout which the peer MUST NOT update the stored value associated with the corresponding Observe registration request; and<a href="#section-5.2-2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-5.2-2.2.2.2">MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), when protecting notifications for that observation as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3.1" class="relref">Section 8.3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-5.2-2.2.2.2" class="pilcrow">¶</a>
+              <li class="normal" id="section-5.2-2.2.2.2">
+                <p id="section-5.2-2.2.2.2.1">MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), when protecting notifications for that observation as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3.1" class="relref">Section 8.3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-5.2-2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -2875,13 +2928,17 @@ with CTX_B  | Encrypted Payload {               |
         </h3>
 <p id="section-7.4-1">IANA is asked to add the 'kudos' well-known URI to the Well-Known URIs registry as defined by <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.4-2.1">URI suffix: kudos<a href="#section-7.4-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-7.4-2.1">
+            <p id="section-7.4-2.1.1">URI suffix: kudos<a href="#section-7.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.4-2.2">Change controller: IETF<a href="#section-7.4-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-7.4-2.2">
+            <p id="section-7.4-2.2.1">Change controller: IETF<a href="#section-7.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.4-2.3">Specification document(s): [RFC-XXXX]<a href="#section-7.4-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-7.4-2.3">
+            <p id="section-7.4-2.3.1">Specification document(s): [RFC-XXXX]<a href="#section-7.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.4-2.4">Related information: None<a href="#section-7.4-2.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-7.4-2.4">
+            <p id="section-7.4-2.4.1">Related information: None<a href="#section-7.4-2.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2893,11 +2950,14 @@ with CTX_B  | Encrypted Payload {               |
         </h3>
 <p id="section-7.5-1">IANA is requested to add the resource type "core.kudos" to the "Resource Type (rt=) Link Target Attribute Values" registry under the registry group "Constrained RESTful Environments (CoRE) Parameters".<a href="#section-7.5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.5-2.1">Value: "core.kudos"<a href="#section-7.5-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-7.5-2.1">
+            <p id="section-7.5-2.1.1">Value: "core.kudos"<a href="#section-7.5-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.5-2.2">Description: KUDOS resource.<a href="#section-7.5-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-7.5-2.2">
+            <p id="section-7.5-2.2.1">Description: KUDOS resource.<a href="#section-7.5-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.5-2.3">Reference: [RFC-XXXX]<a href="#section-7.5-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-7.5-2.3">
+            <p id="section-7.5-2.3.1">Reference: [RFC-XXXX]<a href="#section-7.5-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2908,6 +2968,7 @@ with CTX_B  | Encrypted Payload {               |
       <h2 id="name-references">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
 <section id="section-8.1">
         <h3 id="name-normative-references">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
@@ -2915,7 +2976,7 @@ with CTX_B  | Encrypted Payload {               |
 <dl class="references">
 <dt id="I-D.ietf-lake-edhoc">[I-D.ietf-lake-edhoc]</dt>
         <dd>
-<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lake-edhoc-20</span>, <time datetime="2023-07-07" class="refDate">7 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-20">https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-20</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lake-edhoc-22</span>, <time datetime="2023-08-25" class="refDate">25 August 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22">https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -2947,6 +3008,8 @@ with CTX_B  | Encrypted Payload {               |
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
+<div id="sec-informative-references">
 <section id="section-8.2">
         <h3 id="name-informative-references">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
@@ -2954,7 +3017,7 @@ with CTX_B  | Encrypted Payload {               |
 <dl class="references">
 <dt id="I-D.ietf-core-oscore-key-limits">[I-D.ietf-core-oscore-key-limits]</dt>
         <dd>
-<span class="refAuthor">Höglund, R.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Usage Limits for OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-key-limits-00</span>, <time datetime="2023-03-13" class="refDate">13 March 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-00">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-00</a>&gt;</span>. </dd>
+<span class="refAuthor">Höglund, R.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Usage Limits for OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-key-limits-01</span>, <time datetime="2023-07-10" class="refDate">10 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-01">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-01</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.irtf-cfrg-aead-limits">[I-D.irtf-cfrg-aead-limits]</dt>
         <dd>
@@ -3010,6 +3073,7 @@ with CTX_B  | Encrypted Payload {               |
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
 </section>
 <div id="sec-id-update-in-kudos">
 <section id="appendix-A">
@@ -3247,23 +3311,32 @@ Verify with CTX_NEW     | }                    |
 <a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.1-1.1">Note on client retransmissions if KUDOS execution fails in reverse message flow.<a href="#appendix-B.1-1.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B.1-1.1">
+            <p id="appendix-B.1-1.1.1">Note on client retransmissions if KUDOS execution fails in reverse message flow.<a href="#appendix-B.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.2">Specify what information needs to be written to non-volatile memory to handle reboots.<a href="#appendix-B.1-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.2">
+            <p id="appendix-B.1-1.2.1">Specify what information needs to be written to non-volatile memory to handle reboots.<a href="#appendix-B.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.3">Extended recommendations and considerations on minimum size of nonces N1 &amp; N2.<a href="#appendix-B.1-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.3">
+            <p id="appendix-B.1-1.3.1">Extended recommendations and considerations on minimum size of nonces N1 &amp; N2.<a href="#appendix-B.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.4">Arbitrary maximum size of the Recipient-ID Option.<a href="#appendix-B.1-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.4">
+            <p id="appendix-B.1-1.4.1">Arbitrary maximum size of the Recipient-ID Option.<a href="#appendix-B.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.5">Detailed lifecycle of the OSCORE IDs update procedure.<a href="#appendix-B.1-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.5">
+            <p id="appendix-B.1-1.5.1">Detailed lifecycle of the OSCORE IDs update procedure.<a href="#appendix-B.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.6">Described examples of OSCORE IDs update procedure.<a href="#appendix-B.1-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.6">
+            <p id="appendix-B.1-1.6.1">Described examples of OSCORE IDs update procedure.<a href="#appendix-B.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.7">Examples of OSCORE IDs update procedure integrated in KUDOS.<a href="#appendix-B.1-1.7" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.7">
+            <p id="appendix-B.1-1.7.1">Examples of OSCORE IDs update procedure integrated in KUDOS.<a href="#appendix-B.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.8">Considerations about using SCHC for CoAP with OSCORE.<a href="#appendix-B.1-1.8" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.8">
+            <p id="appendix-B.1-1.8.1">Considerations about using SCHC for CoAP with OSCORE.<a href="#appendix-B.1-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.9">Clarifications and editorial improvements.<a href="#appendix-B.1-1.9" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.1-1.9">
+            <p id="appendix-B.1-1.9.1">Clarifications and editorial improvements.<a href="#appendix-B.1-1.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3274,29 +3347,41 @@ Verify with CTX_NEW     | }                    |
 <a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.2-1.1">Removed content about key usage limits.<a href="#appendix-B.2-1.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B.2-1.1">
+            <p id="appendix-B.2-1.1.1">Removed content about key usage limits.<a href="#appendix-B.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.2">Use of "forward message flow" and "reverse message flow".<a href="#appendix-B.2-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.2">
+            <p id="appendix-B.2-1.2.1">Use of "forward message flow" and "reverse message flow".<a href="#appendix-B.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.3">Update to RFC 8613 extended to include protection of responses.<a href="#appendix-B.2-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.3">
+            <p id="appendix-B.2-1.3.1">Update to RFC 8613 extended to include protection of responses.<a href="#appendix-B.2-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.4">Include EDHOC_KeyUpdate() in the methods for rekeying.<a href="#appendix-B.2-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.4">
+            <p id="appendix-B.2-1.4.1">Include EDHOC_KeyUpdate() in the methods for rekeying.<a href="#appendix-B.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.5">Describe reasons for using the OSCORE ID update procedure.<a href="#appendix-B.2-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.5">
+            <p id="appendix-B.2-1.5.1">Describe reasons for using the OSCORE ID update procedure.<a href="#appendix-B.2-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.6">Clarifications on deletion of CTX_OLD and CTX_NEW.<a href="#appendix-B.2-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.6">
+            <p id="appendix-B.2-1.6.1">Clarifications on deletion of CTX_OLD and CTX_NEW.<a href="#appendix-B.2-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.7">Added new section on preventing deadlocks.<a href="#appendix-B.2-1.7" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.7">
+            <p id="appendix-B.2-1.7.1">Added new section on preventing deadlocks.<a href="#appendix-B.2-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.8">Clarified that peers can decide to run KUDOS at any point.<a href="#appendix-B.2-1.8" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.8">
+            <p id="appendix-B.2-1.8.1">Clarified that peers can decide to run KUDOS at any point.<a href="#appendix-B.2-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.9">Defined preservation of observations beyond OSCORE ID updates.<a href="#appendix-B.2-1.9" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.9">
+            <p id="appendix-B.2-1.9.1">Defined preservation of observations beyond OSCORE ID updates.<a href="#appendix-B.2-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.10">Revised discussion section, including also communication overhead.<a href="#appendix-B.2-1.10" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.10">
+            <p id="appendix-B.2-1.10.1">Revised discussion section, including also communication overhead.<a href="#appendix-B.2-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.11">Defined a well-known KUDOS resource and a KUDOS resource type.<a href="#appendix-B.2-1.11" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.11">
+            <p id="appendix-B.2-1.11.1">Defined a well-known KUDOS resource and a KUDOS resource type.<a href="#appendix-B.2-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.12">Editorial improvements.<a href="#appendix-B.2-1.12" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.2-1.12">
+            <p id="appendix-B.2-1.12.1">Editorial improvements.<a href="#appendix-B.2-1.12.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3307,21 +3392,29 @@ Verify with CTX_NEW     | }                    |
 <a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.3-1.1">Use of the OSCORE flag bit 0 to signal more flag bits.<a href="#appendix-B.3-1.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B.3-1.1">
+            <p id="appendix-B.3-1.1.1">Use of the OSCORE flag bit 0 to signal more flag bits.<a href="#appendix-B.3-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.2">In UpdateCtx(), open for future key derivation different than HKDF.<a href="#appendix-B.3-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.3-1.2">
+            <p id="appendix-B.3-1.2.1">In UpdateCtx(), open for future key derivation different than HKDF.<a href="#appendix-B.3-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.3">Simplified updateCtx() to use only Expand(); used to be METHOD 2.<a href="#appendix-B.3-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.3-1.3">
+            <p id="appendix-B.3-1.3.1">Simplified updateCtx() to use only Expand(); used to be METHOD 2.<a href="#appendix-B.3-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.4">Included the Partial IV if the second KUDOS message is a response.<a href="#appendix-B.3-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.3-1.4">
+            <p id="appendix-B.3-1.4.1">Included the Partial IV if the second KUDOS message is a response.<a href="#appendix-B.3-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.5">Added signaling of support for KUDOS in EDHOC.<a href="#appendix-B.3-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.3-1.5">
+            <p id="appendix-B.3-1.5.1">Added signaling of support for KUDOS in EDHOC.<a href="#appendix-B.3-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.6">Clarifications on terminology and reasons for rekeying.<a href="#appendix-B.3-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.3-1.6">
+            <p id="appendix-B.3-1.6.1">Clarifications on terminology and reasons for rekeying.<a href="#appendix-B.3-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.7">Updated IANA considerations.<a href="#appendix-B.3-1.7" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.3-1.7">
+            <p id="appendix-B.3-1.7.1">Updated IANA considerations.<a href="#appendix-B.3-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.8">Editorial improvements.<a href="#appendix-B.3-1.8" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.3-1.8">
+            <p id="appendix-B.3-1.8.1">Editorial improvements.<a href="#appendix-B.3-1.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3332,25 +3425,35 @@ Verify with CTX_NEW     | }                    |
 <a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.4-1.1">Extended terminology.<a href="#appendix-B.4-1.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B.4-1.1">
+            <p id="appendix-B.4-1.1.1">Extended terminology.<a href="#appendix-B.4-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.2">Moved procedure for preserving observations across key updates to main body.<a href="#appendix-B.4-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.2">
+            <p id="appendix-B.4-1.2.1">Moved procedure for preserving observations across key updates to main body.<a href="#appendix-B.4-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.3">Moved procedure to update OSCORE Sender/Recipient IDs to main body.<a href="#appendix-B.4-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.3">
+            <p id="appendix-B.4-1.3.1">Moved procedure to update OSCORE Sender/Recipient IDs to main body.<a href="#appendix-B.4-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.4">Moved key update without forward secrecy section to main body.<a href="#appendix-B.4-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.4">
+            <p id="appendix-B.4-1.4.1">Moved key update without forward secrecy section to main body.<a href="#appendix-B.4-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.5">Define signaling bits present in the 'x' byte.<a href="#appendix-B.4-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.5">
+            <p id="appendix-B.4-1.5.1">Define signaling bits present in the 'x' byte.<a href="#appendix-B.4-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.6">Modifications and alignment of updateCtx() with EDHOC.<a href="#appendix-B.4-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.6">
+            <p id="appendix-B.4-1.6.1">Modifications and alignment of updateCtx() with EDHOC.<a href="#appendix-B.4-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.7">Rules for deletion of old EDHOC keys PRK_out and PRK_exporter.<a href="#appendix-B.4-1.7" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.7">
+            <p id="appendix-B.4-1.7.1">Rules for deletion of old EDHOC keys PRK_out and PRK_exporter.<a href="#appendix-B.4-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.8">Describe CBOR wrapping of involved nonces with examples.<a href="#appendix-B.4-1.8" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.8">
+            <p id="appendix-B.4-1.8.1">Describe CBOR wrapping of involved nonces with examples.<a href="#appendix-B.4-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.9">Renamed 'id detail' to 'nonce'.<a href="#appendix-B.4-1.9" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.9">
+            <p id="appendix-B.4-1.9.1">Renamed 'id detail' to 'nonce'.<a href="#appendix-B.4-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.10">Editorial improvements.<a href="#appendix-B.4-1.10" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.4-1.10">
+            <p id="appendix-B.4-1.10.1">Editorial improvements.<a href="#appendix-B.4-1.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3361,17 +3464,23 @@ Verify with CTX_NEW     | }                    |
 <a href="#appendix-B.5" class="section-number selfRef">B.5. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.5-1.1">Recommendation on limits for CCM_8. Details in Appendix.<a href="#appendix-B.5-1.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B.5-1.1">
+            <p id="appendix-B.5-1.1.1">Recommendation on limits for CCM_8. Details in Appendix.<a href="#appendix-B.5-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.2">Improved message processing, also covering corner cases.<a href="#appendix-B.5-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.5-1.2">
+            <p id="appendix-B.5-1.2.1">Improved message processing, also covering corner cases.<a href="#appendix-B.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.3">Example of method to estimate and not store 'count_q'.<a href="#appendix-B.5-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.5-1.3">
+            <p id="appendix-B.5-1.3.1">Example of method to estimate and not store 'count_q'.<a href="#appendix-B.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.4">Added procedure to update OSCORE Sender/Recipient IDs.<a href="#appendix-B.5-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.5-1.4">
+            <p id="appendix-B.5-1.4.1">Added procedure to update OSCORE Sender/Recipient IDs.<a href="#appendix-B.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.5">Added method for preserving observations across key updates.<a href="#appendix-B.5-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.5-1.5">
+            <p id="appendix-B.5-1.5.1">Added method for preserving observations across key updates.<a href="#appendix-B.5-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.6">Added key update without forward secrecy.<a href="#appendix-B.5-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="appendix-B.5-1.6">
+            <p id="appendix-B.5-1.6.1">Added key update without forward secrecy.<a href="#appendix-B.5-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
