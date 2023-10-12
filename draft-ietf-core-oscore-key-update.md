@@ -424,7 +424,7 @@ Verify with CTX_NEW     | }                    |
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
-Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos-desc}}), by targeting the resource at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
+Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos-desc}}) at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
@@ -594,7 +594,7 @@ If the verification succeeds, the server provides the updateCtx() function with 
 
 From then on, the two peers can protect their message exchanges by using CTX\_NEW. In particular, as shown in the example in {{fig-message-exchange-server-init}}, the server can send an OSCORE response protected with CTX\_NEW.
 
-In case the client does not successfully verify the response, the same error handling specified in {{Section 8.4 of RFC8613}} applies. This does not result in deleting CTX\_NEW. If the client successfully verifies the response using CTX\_NEW, the client deletes CTX\_OLD. Note that if the verification of the response fails, the client may want to send again the normal OSCORE request to the server it initially sent (to /temp in the example above), in order to ensure retrieval of the resource representation.
+In case the client does not successfully verify the response, the same error handling specified in {{Section 8.4 of RFC8613}} applies. This does not result in deleting CTX\_NEW. If the client successfully verifies the response using CTX\_NEW, the client deletes CTX\_OLD. Note that, if the verification of the response fails, the client may want to send again the normal OSCORE request to the server it initially sent (to /temp in the example above), in order to ensure the retrieval of the resource representation.
 
 More generally, as soon as the client successfully verifies an incoming message protected with CTX\_NEW, the client deletes CTX\_OLD.
 
@@ -712,7 +712,7 @@ As a general rule, once successfully generated a new OSCORE Security Context CTX
 
 * If the peer is a CAPABLE device, it SHOULD store Latest Master Secret and Latest Master Salt on disk.
 
-   As an exception, this does not apply to possible temporary OSCORE Security Contexts used during a key update procedure, such as CTX\_1 used during the KUDOS execution. That is, the OSCORE Master Secret and Master Salt from such temporary Security Contexts MUST NOT be stored on disk.
+   As an exception, this does not apply to possible temporary OSCORE Security Contexts used during a key update procedure, such as CTX\_1 used during the KUDOS execution. That is, the OSCORE Master Secret and Master Salt from such temporary Security Contexts are not stored on disk.
 
 * The peer MUST store Latest Master Secret and Latest Master Salt in volatile memory, thus making them available to OSCORE message processing and possible key update procedures.
 
@@ -752,7 +752,7 @@ A peer determines to run KUDOS either in FS or no-FS mode with another peer as f
 
 * If a peer A is a CAPABLE device, it SHOULD run KUDOS only in FS mode and SHOULD NOT run KUDOS as initiator in no-FS mode. That is, when sending a KUDOS message, it SHOULD set to 0 the 'p' bit of the 'x' byte in the OSCORE Option value. An exception applies in the following cases.
 
-   * The peer A is running KUDOS with another peer B, which A has learned to not a non-CAPABLE device (and hence not able to run KUDOS in FS mode).
+   * The peer A is running KUDOS with another peer B, which A has learned to be a non-CAPABLE device (and hence not able to run KUDOS in FS mode).
 
       Note that, if the peer A is a CAPABLE device, it is able to store such information about the other peer B on disk and it MUST do so. From then on, the peer A will perform every execution of KUDOS with the peer B in no-FS mode, including after a possible reboot.
 
@@ -764,7 +764,7 @@ A peer determines to run KUDOS either in FS or no-FS mode with another peer as f
 
 Within the limitations above, two peers running KUDOS generate the new OSCORE Security Context CTX\_NEW according to the mode indicated per the bit 'p' set by the responder in the second KUDOS message.
 
-If, after having received the first KUDOS message, the responder can continue performing KUDOS, the bit 'p' in the reply message has the same value as in the bit 'p' set by the initiator, unless the value is 0 and the responder is a non-CAPABLE device. More specifically:
+If, after having received the first KUDOS message, the responder can continue performing KUDOS, the bit 'p' in the reply message has the same value as in the bit 'p' set by the initiator, unless such latter value is 0 and the responder is a non-CAPABLE device. More specifically:
 
 * If both peers are CAPABLE devices, they will run KUDOS in FS mode. That is, both initiator and responder sets the 'p' bit to 0 in the respective sent KUDOS message.
 
@@ -788,7 +788,7 @@ In either case, both KUDOS peers delete the OSCORE Security Contexts CTX\_1 and 
 
 As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old OSCORE Security Context CTX\_OLD.
 
-This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, beyond the completion of a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, i.e., against an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
+This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, beyond the completion of a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, e.g., against an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
 
 The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-management}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, just as defined in {{ssec-derive-ctx}}.
 
@@ -856,11 +856,11 @@ Since the JRC uses ID Context values as identifiers of network nodes, namely "pl
 
 ### KUDOS Interleaved with Other Message Exchanges
 
-During a KUDOS execution a peer that is a CoAP Client must be ready to receive CoAP responses protected with a different OSCORE Security Context than the one that was used to protect the corresponding request.
+During a KUDOS execution, a peer that is a CoAP Client must be ready to receive CoAP responses that are not KUDOS messages and that are protected with a different OSCORE Security Context than the one that was used to protect the corresponding request.
 
 This can happen, for instance, when a CoAP client sends a request and, shortly after that, it executes KUDOS. In such a case, the CoAP request is protected with CTX\_OLD, while the CoAP response from the server is protected with CTX\_NEW. Another case is when incoming responses are Observe notifications protected with CTX\_NEW, while the corresponding request from the CoAP client that started the observation was protected with CTX\_OLD.
 
-Also, this can happen when running KUDOS in the reverse message flow, if the client uses NSTART > 1 and one of its requests triggers a KUDOS execution, i.e., the server replies with the first KUDOS message by acting as responder. The other requests would be latest served by the server after KUDOS has been completed.
+Another case is when running KUDOS in the reverse message flow, if the client uses NSTART > 1 and one of its requests triggers a KUDOS execution, i.e., the server replies with the first KUDOS message by acting as responder. The other requests would be latest served by the server after KUDOS has been completed.
 
 ### Communication Overhead
 
