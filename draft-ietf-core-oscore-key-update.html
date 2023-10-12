@@ -1488,7 +1488,7 @@ When it is set to 1, the compressed COSE object contains a 'nonce', to be used f
 </li>
             </ul>
 <p id="section-4.1-2.2.4">
-Hereafter, this document refers to a message where the 'd' flag is set to 0 as "non KUDOS (request/response) message", and to a message where the 'd' flag is set to 1 as "KUDOS (request/response) message".<a href="#section-4.1-2.2.4" class="pilcrow">¶</a></p>
+Hereafter, a message is refered to as a "KUDOS (request/response) message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is refered to as a "non KUDOS (request/response) message".<a href="#section-4.1-2.2.4" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.3">
             <p id="section-4.1-2.3.1">The second-to-eighth least significant bits in the second byte of the OSCORE Option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
