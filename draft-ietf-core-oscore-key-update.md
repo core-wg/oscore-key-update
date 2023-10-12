@@ -231,7 +231,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 
  <- 1 byte -> <----- s bytes ------> <- 1 byte -> <--- m + 1 bytes --->
-+------------+----------------------+---------------------------------+
++------------+----------------------+------------+--------------------+
 | s (if any) | kid context (if any) | x (if any) | nonce (if any)     |
 +------------+----------------------+------------+--------------------+
                                    /              \____
@@ -285,7 +285,7 @@ updateCtx(X, N, CTX_IN) {
   MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
                                    X_N, oscore_key_length)
                = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
-                             oscore_key_length)
+                              oscore_key_length)
 
   MSALT_NEW = N;
 
@@ -432,21 +432,21 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
 
 ~~~~~~~~~~~~~~~~~~~~~~~
    X1 and N1 expressed as raw values
-   X1 = 0x80
+   X1 = 0x07
    N1 = 0x018a278f7faab55a
 
    updateCtx() is called with
-   X = 0x80
+   X = 0x07
    N = 0x018a278f7faab55a
 
    In updateCtx(), X_cbor and N_cbor are built as CBOR byte strings
-   X_cbor = 0x4180               (h'80')
+   X_cbor = 0x4107               (h'07')
    N_cbor = 0x48018a278f7faab55a (h'018a278f7faab55a')
 
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
-   X_N = 0x418048018a278f7faab55a
+   X_N = 0x410748018a278f7faab55a
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-one title="Example of X, N and X_N computing for the first KUDOS message"}
+{: #fig-kudos-x-n-example-mess-one title="Example of X, N and X_N when processing the first KUDOS message"}
 
 Then, the server verifies the request by using the Security Context CTX\_1.
 
@@ -456,30 +456,30 @@ An example of this nonce processing on the server with values for N1, X1, N2, an
 
 ~~~~~~~~~~~~~~~~~~~~~~~
    X1, X2, N1, and N2 expressed as raw values
-   X1 = 0x80
-   X2 = 0x80
+   X1 = 0x07
+   X2 = 0x07
    N1 = 0x018a278f7faab55a
    N2 = 0x25a8991cd700ac01
 
    X1, X2, N1, and N2 as CBOR byte strings
-   X1 = 0x4180 (h'80')
-   X2 = 0x4180 (h'80')
+   X1 = 0x4107 (h'07')
+   X2 = 0x4107 (h'07')
    N1 = 0x48018a278f7faab55a (h'018a278f7faab55a')
    N2 = 0x4825a8991cd700ac01 (h'25a8991cd700ac01')
 
    updateCtx() is called with
-   X = 0x41804180
+   X = 0x41074107
    N = 0x48018a278f7faab55a4825a8991cd700ac01
 
    In updateCtx(), X_cbor and N_cbor are built as CBOR byte strings
-   X_cbor = 0x4441804180 (h'41804180')
+   X_cbor = 0x4441074107 (h'41074107')
    N_cbor = 0x5248018a278f7faab55a4825a8991cd700ac01
             (h'48018a278f7faab55a4825a8991cd700ac01')
 
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
-   X_N = 0x44418041805248018a278f7faab55a4825a8991cd700ac01
+   X_N = 0x44410741075248018a278f7faab55a4825a8991cd700ac01
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-two title="Example of X, N and X_N computing for the second KUDOS message"}
+{: #fig-kudos-x-n-example-mess-two title="Example of X, N and X_N when processing the second KUDOS message"}
 
 Then, the server sends an OSCORE response to the client, protected with CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
