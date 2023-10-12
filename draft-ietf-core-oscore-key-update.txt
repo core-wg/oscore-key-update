@@ -883,9 +883,8 @@ Table of Contents
    OSCORE Partial IV.
 
    During an ongoing KUDOS execution the client MUST NOT send any non-
-   KUDOS requests to the server.  This could otherwise be possible, if
-   the client is using a value of NSTART greater than 1 (see Section 4.7
-   of [RFC7252]).
+   KUDOS requests to the server, even when NSTART is greater than 1 (see
+   Section 4.7 of [RFC7252]).
 
 4.3.2.  Reverse Message Flow
 
@@ -1049,9 +1048,8 @@ Table of Contents
    protected using the same OSCORE Partial IV.
 
    During an ongoing KUDOS execution the client MUST NOT send any non-
-   KUDOS requests to the server.  This could otherwise be possible, if
-   the client is using a value of NSTART greater than 1 (see Section 4.7
-   of [RFC7252]).
+   KUDOS requests to the server, even when NSTART is greater than 1 (see
+   Section 4.7 of [RFC7252]).
 
 4.4.  Avoiding Deadlocks
 
@@ -1370,10 +1368,9 @@ Table of Contents
       the 'p' bit of the 'x' byte in the OSCORE Option value.
 
    *  If a peer A is a CAPABLE device, it SHOULD run KUDOS only in FS
-      mode and SHOULD NOT run KUDOS as initiator in no-FS mode.  That
-      is, when sending a KUDOS message, it SHOULD set to 0 the 'p' bit
-      of the 'x' byte in the OSCORE Option value.  An exception applies
-      in the following cases.
+      mode.  That is, when sending a KUDOS message, it SHOULD set to 0
+      the 'p' bit of the 'x' byte in the OSCORE Option value.  An
+      exception applies in the following cases.
 
       -  The peer A is running KUDOS with another peer B, which A has
          learned to be a non-CAPABLE device (and hence not able to run
@@ -1570,11 +1567,11 @@ Table of Contents
    To this end, the peer should also assess the new value that PIV*
    would take after a successful completion of KUDOS, in case ongoing
    observations with the other peer are going to be preserved.  If the
-   peer considers such a new value of PIV* to be too close to the
-   maximum possible value admitted for the OSCORE Partial IV, then the
-   peer may choose to run KUDOS with no intention to preserve its
-   ongoing observations with the other peer, in order to "start over"
-   from a fresh, entirely unused PIV space.
+   peer considers such a new value of PIV* to be too close to or equal
+   to the maximum possible value admitted for the OSCORE Partial IV,
+   then the peer may choose to run KUDOS with no intention to preserve
+   its ongoing observations with the other peer, in order to "start
+   over" from a fresh, entirely unused PIV space.
 
    Application policies can further influence whether attempting to
    preserve observations beyond a key update is appropriate or not.
@@ -2491,7 +2488,7 @@ Table of Contents
 
    The nonces exchanged in the KUDOS messages are sent in the clear, so
    using random nonces is best for privacy (as opposed to, e.g., a
-   counter, which might leak some information about the client).
+   counter, which might leak some information about the peers).
 
    [TODO: Add more considerations.]
 
