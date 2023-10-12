@@ -469,7 +469,7 @@ Table of Contents
    Master Secret and Master Salt for CTX_OUT.  In particular, the new
    Master Secret is derived through a KUDOS-Expand() step, which takes
    as input the Master Secret value from the Security Context CTX_IN,
-   the literal string "key update", X_N and the length of the Master
+   the literal string "key update", X_N, and the length of the Master
    Secret.  Instead, the new Master Salt takes N as value.
 
    The definition of KUDOS-Expand depends on the key derivation function
@@ -783,8 +783,8 @@ Table of Contents
       In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
       X_N = 0x410748018a278f7faab55a
 
-     Figure 4: Example of X, N and X_N when processing the first KUDOS
-                                  message
+        Figure 4: Example of X, N, and X_N when processing the first
+                               KUDOS message
 
    Then, the server verifies the request by using the Security Context
    CTX_1.
@@ -820,7 +820,7 @@ Table of Contents
       In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
       X_N = 0x44410741075248018a278f7faab55a4825a8991cd700ac01
 
-        Figure 5: Example of X, N and X_N when processing the second
+       Figure 5: Example of X, N, and X_N when processing the second
                                KUDOS message
 
    Then, the server sends an OSCORE response to the client, protected
@@ -1792,7 +1792,7 @@ Table of Contents
    can indicate to the other peer B that it wishes to know if B supports
    KUDOS and in what mode(s).  In the following EDHOC message_2, B
    indicates whether it supports KUDOS and in what mode(s), by
-   specifying either NONE, FULL or PART as 'ead_value'.  Specifying the
+   specifying either NONE, FULL, or PART as 'ead_value'.  Specifying the
    'ead_value' FULL or PART in EDHOC message_2 also asks A to indicate
    whether it supports KUDOS in EDHOC message_3.
 
