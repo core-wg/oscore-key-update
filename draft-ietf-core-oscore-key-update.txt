@@ -281,6 +281,10 @@ Table of Contents
       pseudo-random key.  Usage of EDHOC_KeyUpdate preserves forward
       secrecy.
 
+      Note that EDHOC may be ran standalone, or as part of other
+      protocols, such as the EDHOC and OSCORE profile of ACE
+      [I-D.ietf-ace-edhoc-oscore-profile].
+
    *  If one peer is acting as LwM2M Client and the other peer as LwM2M
       Server, according to the OMA Lightweight Machine to Machine Core
       specification [LwM2M], then the LwM2M Client peer may take the
@@ -2660,6 +2664,16 @@ Table of Contents
               <https://www.rfc-editor.org/rfc/rfc8949>.
 
 8.2.  Informative References
+
+   [I-D.ietf-ace-edhoc-oscore-profile]
+              Selander, G., Mattsson, J. P., Tiloca, M., and R. Höglund,
+              "Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object
+              Security for Constrained Environments (OSCORE) Profile for
+              Authentication and Authorization for Constrained
+              Environments (ACE)", Work in Progress, Internet-Draft,
+              draft-ietf-ace-edhoc-oscore-profile-02, 7 July 2023,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
+              edhoc-oscore-profile-02>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",

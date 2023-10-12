@@ -1404,6 +1404,8 @@ Then, the two peers can use the established pseudo-random key to derive external
 This procedure additionally provides forward secrecy.<a href="#section-2-5.3.3" class="pilcrow">¶</a></p>
 <p id="section-2-5.3.4">
 EDHOC also specifies an optional function, EDHOC_KeyUpdate, to perform a key update in a more efficient way than re-running EDHOC. The two communicating peers call EDHOC_KeyUpdate with equivalent input, which results in derivation of a new shared pseudo-random key. Usage of EDHOC_KeyUpdate preserves forward secrecy.<a href="#section-2-5.3.4" class="pilcrow">¶</a></p>
+<p id="section-2-5.3.5">
+Note that EDHOC may be ran standalone, or as part of other protocols, such as the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-2-5.3.5" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-2-5.4">
           <p id="section-2-5.4.1">If one peer is acting as LwM2M Client and the other peer as LwM2M Server, according to the OMA Lightweight Machine to Machine Core specification <span>[<a href="#LwM2M" class="cite xref">LwM2M</a>]</span>, then the LwM2M Client peer may take the initiative to bootstrap again with the LwM2M Bootstrap Server, and receive again an OSCORE Security Context. Alternatively, the LwM2M Server can instruct the LwM2M Client to initiate this procedure.<a href="#section-2-5.4.1" class="pilcrow">¶</a></p>
@@ -3015,6 +3017,10 @@ with CTX_B  | Encrypted Payload {               |
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="I-D.ietf-ace-edhoc-oscore-profile">[I-D.ietf-ace-edhoc-oscore-profile]</dt>
+        <dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-02</span>, <time datetime="2023-07-07" class="refDate">7 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-02">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-02</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-key-limits">[I-D.ietf-core-oscore-key-limits]</dt>
         <dd>
 <span class="refAuthor">Höglund, R.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Usage Limits for OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-key-limits-01</span>, <time datetime="2023-07-10" class="refDate">10 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-01">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-01</a>&gt;</span>. </dd>
