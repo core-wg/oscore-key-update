@@ -1363,7 +1363,7 @@ Table of Contents
    A peer determines to run KUDOS either in FS or no-FS mode with
    another peer as follows.
 
-   *  If a peer A is not a CAPABLE device, it MUST run KUDOS only in no-
+   *  If a peer A is a non-CAPABLE device, it MUST run KUDOS only in no-
       FS mode.  That is, when sending a KUDOS message, it MUST set to 1
       the 'p' bit of the 'x' byte in the OSCORE Option value.
 
@@ -1399,7 +1399,7 @@ Table of Contents
       such information about the other peer B on disk and it MUST do so.
       This ensures that the peer A will perform every execution of KUDOS
       with the peer B in FS mode.  In turn, this prevents a possible
-      downgrading attack, aimed at making A believe that B is not a
+      downgrading attack, aimed at making A believe that B is a non-
       CAPABLE device, and thus to run KUDOS in no-FS mode although the
       FS mode can actually be used by both peers.
 
