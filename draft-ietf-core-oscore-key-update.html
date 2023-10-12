@@ -1506,7 +1506,7 @@ Hereafter, a message is refered to as a "KUDOS (request/response) message", if a
 
 
  &lt;- 1 byte -&gt; &lt;----- s bytes ------&gt; &lt;- 1 byte -&gt; &lt;--- m + 1 bytes ---&gt;
-+------------+----------------------+---------------------------------+
++------------+----------------------+------------+--------------------+
 | s (if any) | kid context (if any) | x (if any) | nonce (if any)     |
 +------------+----------------------+------------+--------------------+
                                    /              \____
@@ -1565,7 +1565,7 @@ updateCtx(X, N, CTX_IN) {
   MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
                                    X_N, oscore_key_length)
                = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
-                             oscore_key_length)
+                              oscore_key_length)
 
   MSALT_NEW = N;
 
@@ -1717,64 +1717,64 @@ Verify with CTX_NEW     | }                    |
 <p id="section-4.3.1-4">Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see <a href="#well-known-kudos-desc" class="auto internal xref">Section 4.8.3</a>), by targeting the resource at "/.well-known/kudos". The client protects this CoAP request using CTX_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). After that, the client deletes CTX_1.<a href="#section-4.3.1-4" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-5">Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1 and CTX_OLD, in order to derive the temporary Security Context CTX_1.<a href="#section-4.3.1-5" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-6"><a href="#fig-kudos-x-n-example-mess-one" class="auto internal xref">Figure 4</a> shows an example of how the two peers compute X and N provided as input to the updateCtx() function, and how they compute X_N within the updateCtx() function, when deriving CTX_1 (see <a href="#ssec-update-function" class="auto internal xref">Section 4.2</a>).<a href="#section-4.3.1-6" class="pilcrow">¶</a></p>
-<span id="name-example-of-x-n-and-x_n-comp"></span><div id="fig-kudos-x-n-example-mess-one">
+<span id="name-example-of-x-n-and-x_n-when"></span><div id="fig-kudos-x-n-example-mess-one">
 <figure id="figure-4">
             <div class="alignLeft art-text artwork" id="section-4.3.1-7.1">
 <pre>
    X1 and N1 expressed as raw values
-   X1 = 0x80
+   X1 = 0x07
    N1 = 0x018a278f7faab55a
 
    updateCtx() is called with
-   X = 0x80
+   X = 0x07
    N = 0x018a278f7faab55a
 
    In updateCtx(), X_cbor and N_cbor are built as CBOR byte strings
-   X_cbor = 0x4180               (h'80')
+   X_cbor = 0x4107               (h'07')
    N_cbor = 0x48018a278f7faab55a (h'018a278f7faab55a')
 
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
-   X_N = 0x418048018a278f7faab55a
+   X_N = 0x410748018a278f7faab55a
 </pre>
 </div>
 <figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
-<a href="#name-example-of-x-n-and-x_n-comp" class="selfRef">Example of X, N and X_N computing for the first KUDOS message</a>
+<a href="#name-example-of-x-n-and-x_n-when" class="selfRef">Example of X, N and X_N when processing the first KUDOS message</a>
             </figcaption></figure>
 </div>
 <p id="section-4.3.1-8">Then, the server verifies the request by using the Security Context CTX_1.<a href="#section-4.3.1-8" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-9">After that, the server generates a random value N2, and uses N = Comb(N1, N2) and X = Comb(X1, X2) together with CTX_OLD, in order to derive the new Security Context CTX_NEW.<a href="#section-4.3.1-9" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-10">An example of this nonce processing on the server with values for N1, X1, N2, and X2 is presented in <a href="#fig-kudos-x-n-example-mess-two" class="auto internal xref">Figure 5</a>.<a href="#section-4.3.1-10" class="pilcrow">¶</a></p>
-<span id="name-example-of-x-n-and-x_n-compu"></span><div id="fig-kudos-x-n-example-mess-two">
+<span id="name-example-of-x-n-and-x_n-when-"></span><div id="fig-kudos-x-n-example-mess-two">
 <figure id="figure-5">
             <div class="alignLeft art-text artwork" id="section-4.3.1-11.1">
 <pre>
    X1, X2, N1, and N2 expressed as raw values
-   X1 = 0x80
-   X2 = 0x80
+   X1 = 0x07
+   X2 = 0x07
    N1 = 0x018a278f7faab55a
    N2 = 0x25a8991cd700ac01
 
    X1, X2, N1, and N2 as CBOR byte strings
-   X1 = 0x4180 (h'80')
-   X2 = 0x4180 (h'80')
+   X1 = 0x4107 (h'07')
+   X2 = 0x4107 (h'07')
    N1 = 0x48018a278f7faab55a (h'018a278f7faab55a')
    N2 = 0x4825a8991cd700ac01 (h'25a8991cd700ac01')
 
    updateCtx() is called with
-   X = 0x41804180
+   X = 0x41074107
    N = 0x48018a278f7faab55a4825a8991cd700ac01
 
    In updateCtx(), X_cbor and N_cbor are built as CBOR byte strings
-   X_cbor = 0x4441804180 (h'41804180')
+   X_cbor = 0x4441074107 (h'41074107')
    N_cbor = 0x5248018a278f7faab55a4825a8991cd700ac01
             (h'48018a278f7faab55a4825a8991cd700ac01')
 
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
-   X_N = 0x44418041805248018a278f7faab55a4825a8991cd700ac01
+   X_N = 0x44410741075248018a278f7faab55a4825a8991cd700ac01
 </pre>
 </div>
 <figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
-<a href="#name-example-of-x-n-and-x_n-compu" class="selfRef">Example of X, N and X_N computing for the second KUDOS message</a>
+<a href="#name-example-of-x-n-and-x_n-when-" class="selfRef">Example of X, N and X_N when processing the second KUDOS message</a>
             </figcaption></figure>
 </div>
 <p id="section-4.3.1-12">Then, the server sends an OSCORE response to the client, protected with CTX_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a>, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX_1.<a href="#section-4.3.1-12" class="pilcrow">¶</a></p>
