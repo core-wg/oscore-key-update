@@ -65,6 +65,7 @@ informative:
   RFC8824:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
+  I-D.ietf-ace-edhoc-oscore-profile:
   LwM2M:
     author:
       org: Open Mobile Alliance
@@ -154,6 +155,8 @@ Other specifications define a number of ways for rekeying OSCORE, as summarized 
    This procedure additionally provides forward secrecy.
 
    EDHOC also specifies an optional function, EDHOC\_KeyUpdate, to perform a key update in a more efficient way than re-running EDHOC. The two communicating peers call EDHOC\_KeyUpdate with equivalent input, which results in derivation of a new shared pseudo-random key. Usage of EDHOC\_KeyUpdate preserves forward secrecy.
+
+   Note that EDHOC may be ran standalone, or as part of other protocols, such as the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}.
 
 * If one peer is acting as LwM2M Client and the other peer as LwM2M Server, according to the OMA Lightweight Machine to Machine Core specification {{LwM2M}}, then the LwM2M Client peer may take the initiative to bootstrap again with the LwM2M Bootstrap Server, and receive again an OSCORE Security Context. Alternatively, the LwM2M Server can instruct the LwM2M Client to initiate this procedure.
 
