@@ -249,7 +249,7 @@ The updateCtx() function shown in {{function-update}} takes as input three param
 
 As a first step, the updateCtx() function builds the two CBOR byte strings X\_cbor and N\_cbor, with value the input parameter X and N, respectively. Then, it builds X\_N, as the byte concatenation of X\_cbor and N\_cbor.
 
-After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT. In particular, the new Master Secret is derived through a KUDOS-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N and the length of the Master Secret. Instead, the new Master Salt takes N as value.
+After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT. In particular, the new Master Secret is derived through a KUDOS-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N, and the length of the Master Secret. Instead, the new Master Salt takes N as value.
 
    The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX_IN.
 
@@ -446,7 +446,7 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
    X_N = 0x410748018a278f7faab55a
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-one title="Example of X, N and X_N when processing the first KUDOS message"}
+{: #fig-kudos-x-n-example-mess-one title="Example of X, N, and X_N when processing the first KUDOS message"}
 
 Then, the server verifies the request by using the Security Context CTX\_1.
 
@@ -479,7 +479,7 @@ An example of this nonce processing on the server with values for N1, X1, N2, an
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
    X_N = 0x44410741075248018a278f7faab55a4825a8991cd700ac01
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-two title="Example of X, N and X_N when processing the second KUDOS message"}
+{: #fig-kudos-x-n-example-mess-two title="Example of X, N, and X_N when processing the second KUDOS message"}
 
 Then, the server sends an OSCORE response to the client, protected with CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
@@ -949,7 +949,7 @@ In the following cases, the recipient peer silently ignores the KUDOS\_EAD item 
 
    * The KUDOS\_EAD item is included in EDHOC message_4.
 
-That is, by specifying 'ead_value' ASK in EDHOC message_1, a peer A can indicate to the other peer B that it wishes to know if B supports KUDOS and in what mode(s). In the following EDHOC message_2, B indicates whether it supports KUDOS and in what mode(s), by specifying either NONE, FULL or PART as 'ead_value'. Specifying the 'ead_value' FULL or PART in EDHOC message_2 also asks A to indicate whether it supports KUDOS in EDHOC message_3.
+That is, by specifying 'ead_value' ASK in EDHOC message_1, a peer A can indicate to the other peer B that it wishes to know if B supports KUDOS and in what mode(s). In the following EDHOC message_2, B indicates whether it supports KUDOS and in what mode(s), by specifying either NONE, FULL, or PART as 'ead_value'. Specifying the 'ead_value' FULL or PART in EDHOC message_2 also asks A to indicate whether it supports KUDOS in EDHOC message_3.
 
 To further illustrate the functionality, two examples are presented below as EDHOC executions where only the new KUDOS\_EAD item is shown when present, and assuming that no other EAD items are used by the two peers.
 
