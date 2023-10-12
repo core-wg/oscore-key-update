@@ -627,8 +627,9 @@ Table of Contents
    KUDOS may run with the initiator acting either as CoAP client or CoAP
    server.  The former case is denoted as the "forward message flow"
    (see Section 4.3.1) and the latter as the "reverse message flow" (see
-   Section 4.3.2).  The following properties hold for both the forward
-   and reverse message flow.
+   Section 4.3.2).  A peer wishing to use KUDOS MUST support both the
+   forward and reverse message flow.  The following properties hold for
+   both the forward and reverse message flow.
 
    *  The initiator always offers the fresh value N1.
 
