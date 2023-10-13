@@ -774,15 +774,15 @@ If, after having received the first KUDOS message, the responder can continue pe
 
 * If only the peer acting as initiator is a CAPABLE device and it has no knowledge of the other peer being a non-CAPABLE device, they will not run KUDOS in FS mode and will rather set to ground for possibly retrying in no-FS mode. In particular, the initiator sets the 'p' bit of its sent KUDOS message to 0. Then:
 
-   * If the responder is a server, it MUST reply with a 5.03 (Service Unavailable) error response. The response MUST be protected with the newly derived OSCORE Security Context CTX\_NEW. The diagnostic payload MAY provide additional information. This response is a KUDOS message, and it MUST have the 'd' bit and the 'p' bit set to 1.
+   * If the responder is a server, it MUST consider the KUDOS execution unsuccessful and MUST reply with a 5.03 (Service Unavailable) error response. The response MUST be protected with the newly derived OSCORE Security Context CTX\_NEW. The diagnostic payload MAY provide additional information. This response is a KUDOS message, and it MUST have the 'd' bit and the 'p' bit set to 1.
 
-      When receiving the error response, the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode). The initiator MAY try running KUDOS again. If it does so, the initiator MUST set the 'p' bit to 1, when sending a new request as first KUDOS message.
+      When receiving the error response, the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode), since the 'p' bit in the error response is set to 1, while the 'p' bit in the corresponding request was set to 0. Hence, the initiator MUST consider the KUDOS execution unsuccessful, and MAY try running KUDOS again. If it does so, the initiator MUST set the 'p' bit to 1, when sending a new request as first KUDOS message.
 
-   * If the responder is a client, it sends to the initiator the second KUDOS message as a new request, which MUST be protected with the newly derived OSCORE Security Context CTX_NEW. In the newly sent request, the 'p' bit MUST be set to 1.
+   * If the responder is a client, it MUST consider the KUDOS execution unsuccessful and MUST send to the initiator the second KUDOS message as a new request, which MUST be protected with the newly derived OSCORE Security Context CTX_NEW. In the newly sent request, the 'p' bit MUST be set to 1.
 
-      When receiving the new request above (i.e., with the 'p' bit set to 1 as a follow-up to the previous KUDOS response having the 'p' bit set to 0), the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode). The initiator should not send any response to such a request, nor should the responder expect a response.
+      When receiving the new request above, the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode), since the 'p' bit in the request is set to 1, while the 'p' bit in the response previously sent as first KUDOS message was set to 0. Also, the initiator SHOULD NOT send any response to such a request, and the responder SHOULD NOT expect any such response.
 
-      In either case, both KUDOS peers delete the OSCORE Security Contexts CTX\_1 and CTX\_NEW. Note that both peers retain CTX\_OLD for use during the next KUDOS execution in the no-FS mode. This is in contrast with the typical behavior where CTX\_OLD is deleted upon reception of a message protected with CTX_NEW.
+   In either case, both KUDOS peers delete the OSCORE Security Contexts CTX\_1 and CTX\_NEW. Also, both peers MUST retain CTX\_OLD for use during the next KUDOS execution in the no-FS mode. This is in contrast with the typical behavior where CTX\_OLD is deleted upon reception of a message protected with CTX_NEW.
 
 ## Preserving Observations Across Key Updates # {#preserving-observe}
 
