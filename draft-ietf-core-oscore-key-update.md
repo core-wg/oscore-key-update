@@ -187,7 +187,7 @@ In order to run KUDOS, two peers perform a message exchange of OSCORE-protected 
 
 The key update procedure has the following properties.
 
-* KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message.
+* KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow {{ssec-derive-ctx}}, or reverse message flow {{no-fs-mode}}, respectively. A peer that supports KUDOS MUST support both the forward and reverse message flow.
 
 * The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see {{no-fs-mode}}).
 
@@ -252,7 +252,7 @@ As a first step, the updateCtx() function builds the two CBOR byte strings X\_cb
 After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT. In particular, the new Master Secret is derived through a KUDOS-Expand() step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N, and the length of the Master Secret. Instead, the new Master Salt takes N as value.
 
    The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX_IN.
-
+either peer
    If the key derivation function is an HKDF Algorithm (see {{Section 3.1 of RFC8613}}), then KUDOS-Expand is mapped to HKDF-Expand {{RFC5869}}, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX_IN.
 
          KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length) =
@@ -330,7 +330,7 @@ Once a peer has successfully decrypted and verified an incoming message protecte
 
 The peer starting the KUDOS execution is denoted as initiator, while the other peer is denoted as responder.
 
-KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}). A peer wishing to use KUDOS MUST support both the forward and reverse message flow. The following properties hold for both the forward and reverse message flow.
+KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}). The following properties hold for both the forward and reverse message flow.
 
 * The initiator always offers the fresh value N1.
 * The responder always offers the fresh value N2
