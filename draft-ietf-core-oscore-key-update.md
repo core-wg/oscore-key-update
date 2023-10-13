@@ -245,7 +245,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 ## Function for Security Context Update # {#ssec-update-function}
 
-The updateCtx() function shown in {{function-update}} takes as input three parameters X, N and CTX\_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-derive-ctx-client-init}}), while CTX\_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX\_OUT.
+The updateCtx() function shown in {{function-update}} takes as input three parameters X, N and CTX\_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-oscore-option-extensions}}), while CTX\_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX\_OUT.
 
 As a first step, the updateCtx() function builds the two CBOR byte strings X\_cbor and N\_cbor, with value the input parameter X and N, respectively. Then, it builds X\_N, as the byte concatenation of X\_cbor and N\_cbor.
 
