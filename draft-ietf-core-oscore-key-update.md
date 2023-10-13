@@ -1464,7 +1464,7 @@ In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit P
 
 ## EDHOC External Authorization Data Registry {#iana-edhoc-aad}
 
-IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in {{Section 10.5. of I-D.ietf-lake-edhoc}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
+IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in {{Section 10.5 of I-D.ietf-lake-edhoc}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
 
 ~~~~~~~~~~~
 +---------+--------------------------------------+--------------------+
