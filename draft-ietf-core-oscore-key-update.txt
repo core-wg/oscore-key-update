@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                         12 October 2023
-Expires: 14 April 2024
+Intended status: Standards Track                         13 October 2023
+Expires: 15 April 2024
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 April 2024.
+   This Internet-Draft will expire on 15 April 2024.
 
 Copyright Notice
 
@@ -282,7 +282,7 @@ Table of Contents
       secrecy.
 
       Note that EDHOC may be ran standalone, or as part of other
-      protocols, such as the EDHOC and OSCORE profile of ACE
+      workflows, such as in the EDHOC and OSCORE profile of ACE
       [I-D.ietf-ace-edhoc-oscore-profile].
 
    *  If one peer is acting as LwM2M Client and the other peer as LwM2M
@@ -351,7 +351,10 @@ Table of Contents
 
    *  KUDOS can be initiated by either peer.  In particular, the CoAP
       client or the CoAP server may start KUDOS by sending the first
-      rekeying message.
+      rekeying message, by running KUDOS in the forward message flow
+      Section 4.3, or reverse message flow Section 4.5, respectively.  A
+      peer that supports KUDOS MUST support both the forward and reverse
+      message flow.
 
    *  The new OSCORE Security Context enjoys forward secrecy, unless
       KUDOS is run in no-FS mode (see Section 4.5).
@@ -418,10 +421,10 @@ Table of Contents
          decompression fails as specified in item 2 of Section 8.2 of
          [RFC8613].
 
-      Hereafter, a message is refered to as a "KUDOS (request/response)
+      Hereafter, a message is referred to as a "KUDOS (request/response)
       message", if and only if the second byte of flags is present and
       the 'd' bit is set to 1.  If that is not the case, the message is
-      refered to as a "non KUDOS (request/response) message".
+      referred to as a "non KUDOS (request/response) message".
 
    *  The second-to-eighth least significant bits in the second byte of
       the OSCORE Option containing the OSCORE flag bits are reserved for
@@ -456,7 +459,7 @@ Table of Contents
    The updateCtx() function shown in Figure 2 takes as input three
    parameters X, N and CTX_IN.  In particular, X and N are built from
    the 'x' and 'nonce' fields transported in the OSCORE Option value of
-   the exchanged KUDOS messages (see Section 4.3.1), while CTX_IN is the
+   the exchanged KUDOS messages (see Section 4.1), while CTX_IN is the
    OSCORE Security Context to update.  The function returns a new OSCORE
    Security Context CTX_OUT.
 
@@ -473,8 +476,7 @@ Table of Contents
    Secret.  Instead, the new Master Salt takes N as value.
 
    The definition of KUDOS-Expand depends on the key derivation function
-   used for OSCORE by the two peers, as specified in CTX_IN.
-
+   used for OSCORE by the two peers, as specified in CTX_IN. either peer
    If the key derivation function is an HKDF Algorithm (see Section 3.1
    of [RFC8613]), then KUDOS-Expand is mapped to HKDF-Expand [RFC5869],
    as shown below.  Also, the hash algorithm is the same one used by the
@@ -627,9 +629,8 @@ Table of Contents
    KUDOS may run with the initiator acting either as CoAP client or CoAP
    server.  The former case is denoted as the "forward message flow"
    (see Section 4.3.1) and the latter as the "reverse message flow" (see
-   Section 4.3.2).  A peer wishing to use KUDOS MUST support both the
-   forward and reverse message flow.  The following properties hold for
-   both the forward and reverse message flow.
+   Section 4.3.2).  The following properties hold for both the forward
+   and reverse message flow.
 
    *  The initiator always offers the fresh value N1.
 
@@ -1435,37 +1436,42 @@ Table of Contents
       for possibly retrying in no-FS mode.  In particular, the initiator
       sets the 'p' bit of its sent KUDOS message to 0.  Then:
 
-      -  If the responder is a server, it MUST reply with a 5.03
-         (Service Unavailable) error response.  The response MUST be
-         protected with the newly derived OSCORE Security Context
-         CTX_NEW.  The diagnostic payload MAY provide additional
-         information.  This response is a KUDOS message, and it MUST
-         have the 'd' bit and the 'p' bit set to 1.
+      -  If the responder is a server, it MUST consider the KUDOS
+         execution unsuccessful and MUST reply with a 5.03 (Service
+         Unavailable) error response.  The response MUST be protected
+         with the newly derived OSCORE Security Context CTX_NEW.  The
+         diagnostic payload MAY provide additional information.  This
+         response is a KUDOS message, and it MUST have the 'd' bit and
+         the 'p' bit set to 1.
 
          When receiving the error response, the initiator learns that
          the responder is a non-CAPABLE device (and hence not able to
-         run KUDOS in FS mode).  The initiator MAY try running KUDOS
-         again.  If it does so, the initiator MUST set the 'p' bit to 1,
-         when sending a new request as first KUDOS message.
+         run KUDOS in FS mode), since the 'p' bit in the error response
+         is set to 1, while the 'p' bit in the corresponding request was
+         set to 0.  Hence, the initiator MUST consider the KUDOS
+         execution unsuccessful, and MAY try running KUDOS again.  If it
+         does so, the initiator MUST set the 'p' bit to 1, when sending
+         a new request as first KUDOS message.
 
-      -  If the responder is a client, it sends to the initiator the
+      -  If the responder is a client, it MUST consider the KUDOS
+         execution unsuccessful and MUST send to the initiator the
          second KUDOS message as a new request, which MUST be protected
          with the newly derived OSCORE Security Context CTX_NEW.  In the
          newly sent request, the 'p' bit MUST be set to 1.
 
-         When receiving the new request above (i.e., with the 'p' bit
-         set to 1 as a follow-up to the previous KUDOS response having
-         the 'p' bit set to 0), the initiator learns that the responder
-         is a non-CAPABLE device (and hence not able to run KUDOS in FS
-         mode).  The initiator should not send any response to such a
-         request, nor should the responder expect a response.
+         When receiving the new request above, the initiator learns that
+         the responder is a non-CAPABLE device (and hence not able to
+         run KUDOS in FS mode), since the 'p' bit in the request is set
+         to 1, while the 'p' bit in the response previously sent as
+         first KUDOS message was set to 0.  Also, the initiator SHOULD
+         NOT send any response to such a request, and the responder
+         SHOULD NOT expect any such response.
 
-         In either case, both KUDOS peers delete the OSCORE Security
-         Contexts CTX_1 and CTX_NEW.  Note that both peers retain
-         CTX_OLD for use during the next KUDOS execution in the no-FS
-         mode.  This is in contrast with the typical behavior where
-         CTX_OLD is deleted upon reception of a message protected with
-         CTX_NEW.
+      In either case, both KUDOS peers delete the OSCORE Security
+      Contexts CTX_1 and CTX_NEW.  Also, both peers MUST retain CTX_OLD
+      for use during the next KUDOS execution in the no-FS mode.  This
+      is in contrast with the typical behavior where CTX_OLD is deleted
+      upon reception of a message protected with CTX_NEW.
 
 4.6.  Preserving Observations Across Key Updates
 
@@ -2587,7 +2593,7 @@ Table of Contents
 7.3.  EDHOC External Authorization Data Registry
 
    IANA is asked to add the following entries to the "EDHOC External
-   Authorization Data" registry defined in Section 10.5. of
+   Authorization Data" registry defined in Section 10.5 of
    [I-D.ietf-lake-edhoc] within the "Ephemeral Diffie-Hellman Over COSE
    (EDHOC)" registry group.
 

@@ -1030,7 +1030,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 14 April 2024</td>
+<td class="center">Expires 15 April 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1046,12 +1046,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-10-12" class="published">12 October 2023</time>
+<time datetime="2023-10-13" class="published">13 October 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-04-14">14 April 2024</time></dd>
+<dd class="expires"><time datetime="2024-04-15">15 April 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1100,7 +1100,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 14 April 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 April 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1405,7 +1405,7 @@ This procedure additionally provides forward secrecy.<a href="#section-2-5.3.3" 
 <p id="section-2-5.3.4">
 EDHOC also specifies an optional function, EDHOC_KeyUpdate, to perform a key update in a more efficient way than re-running EDHOC. The two communicating peers call EDHOC_KeyUpdate with equivalent input, which results in derivation of a new shared pseudo-random key. Usage of EDHOC_KeyUpdate preserves forward secrecy.<a href="#section-2-5.3.4" class="pilcrow">¶</a></p>
 <p id="section-2-5.3.5">
-Note that EDHOC may be ran standalone, or as part of other protocols, such as the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-2-5.3.5" class="pilcrow">¶</a></p>
+Note that EDHOC may be ran standalone, or as part of other workflows, such as in the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-2-5.3.5" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-2-5.4">
           <p id="section-2-5.4.1">If one peer is acting as LwM2M Client and the other peer as LwM2M Server, according to the OMA Lightweight Machine to Machine Core specification <span>[<a href="#LwM2M" class="cite xref">LwM2M</a>]</span>, then the LwM2M Client peer may take the initiative to bootstrap again with the LwM2M Bootstrap Server, and receive again an OSCORE Security Context. Alternatively, the LwM2M Server can instruct the LwM2M Client to initiate this procedure.<a href="#section-2-5.4.1" class="pilcrow">¶</a></p>
@@ -1442,7 +1442,7 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
 <p id="section-4-4">The key update procedure has the following properties.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-5.1">
-          <p id="section-4-5.1.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message.<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
+          <p id="section-4-5.1.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>, or reverse message flow <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>, respectively. A peer that supports KUDOS MUST support both the forward and reverse message flow.<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-5.2">
           <p id="section-4-5.2.1">The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
@@ -1488,7 +1488,7 @@ When it is set to 1, the compressed COSE object contains a 'nonce', to be used f
 </li>
             </ul>
 <p id="section-4.1-2.2.4">
-Hereafter, a message is refered to as a "KUDOS (request/response) message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is refered to as a "non KUDOS (request/response) message".<a href="#section-4.1-2.2.4" class="pilcrow">¶</a></p>
+Hereafter, a message is referred to as a "KUDOS (request/response) message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is referred to as a "non KUDOS (request/response) message".<a href="#section-4.1-2.2.4" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.3">
             <p id="section-4.1-2.3.1">The second-to-eighth least significant bits in the second byte of the OSCORE Option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
@@ -1528,24 +1528,25 @@ Hereafter, a message is refered to as a "KUDOS (request/response) message", if a
         <h3 id="name-function-for-security-conte">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-function-for-security-conte" class="section-name selfRef">Function for Security Context Update</a>
         </h3>
-<p id="section-4.2-1">The updateCtx() function shown in <a href="#function-update" class="auto internal xref">Figure 2</a> takes as input three parameters X, N and CTX_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.1</a>), while CTX_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX_OUT.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-1">The updateCtx() function shown in <a href="#function-update" class="auto internal xref">Figure 2</a> takes as input three parameters X, N and CTX_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>), while CTX_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX_OUT.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">As a first step, the updateCtx() function builds the two CBOR byte strings X_cbor and N_cbor, with value the input parameter X and N, respectively. Then, it builds X_N, as the byte concatenation of X_cbor and N_cbor.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX_OUT. In particular, the new Master Secret is derived through a KUDOS-Expand() step, which takes as input the Master Secret value from the Security Context CTX_IN, the literal string "key update", X_N, and the length of the Master Secret. Instead, the new Master Salt takes N as value.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.2-4">The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX_IN.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.2-5">If the key derivation function is an HKDF Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), then KUDOS-Expand is mapped to HKDF-Expand <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX_IN.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.2-6">
+<p id="section-4.2-4">The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX_IN.
+either peer
+   If the key derivation function is an HKDF Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), then KUDOS-Expand is mapped to HKDF-Expand <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span>, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX_IN.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.2-5">
 <pre>
      KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length) =
         HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length)
-</pre><a href="#section-4.2-6" class="pilcrow">¶</a>
+</pre><a href="#section-4.2-5" class="pilcrow">¶</a>
 </div>
-<p id="section-4.2-7">If a future specification updates <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> by admitting different key derivation functions than HKDF Algorithms (e.g., KMAC as based on the SHAKE128 or SHAKE256 hash functions), that specification has to update also the present document in order to define the mapping between such key derivation functions and KUDOS-Expand.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
-<p id="section-4.2-8">When an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>) and used for computing new keying material in case of key update (see <span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.3" class="relref">Section 4.6.3</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>).<a href="#section-4.2-8" class="pilcrow">¶</a></p>
-<p id="section-4.2-9">After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX_OUT as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2" class="relref">Section 3.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. Any other parameter required for the derivation takes the same value as in the Security Context CTX_IN. Finally, the function returns the newly derived Security Context CTX_OUT.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
-<p id="section-4.2-10">Since the updateCtx() function also takes X as input, the derivation of CTX_OUT also considers as input the information from the 'x' field transported in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that, if successfully completed, a KUDOS execution occurs as intended by the two peers.<a href="#section-4.2-10" class="pilcrow">¶</a></p>
+<p id="section-4.2-6">If a future specification updates <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> by admitting different key derivation functions than HKDF Algorithms (e.g., KMAC as based on the SHAKE128 or SHAKE256 hash functions), that specification has to update also the present document in order to define the mapping between such key derivation functions and KUDOS-Expand.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.2-7">When an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see <span><a href="https://rfc-editor.org/rfc/rfc8446#section-7.1" class="relref">Section 7.1</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>) and used for computing new keying material in case of key update (see <span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.3" class="relref">Section 4.6.3</a> of [<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>).<a href="#section-4.2-7" class="pilcrow">¶</a></p>
+<p id="section-4.2-8">After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX_OUT as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2" class="relref">Section 3.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. Any other parameter required for the derivation takes the same value as in the Security Context CTX_IN. Finally, the function returns the newly derived Security Context CTX_OUT.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
+<p id="section-4.2-9">Since the updateCtx() function also takes X as input, the derivation of CTX_OUT also considers as input the information from the 'x' field transported in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that, if successfully completed, a KUDOS execution occurs as intended by the two peers.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
 <span id="name-function-for-deriving-a-new"></span><div id="function-update">
 <figure id="figure-2">
-          <div class="alignCenter art-text artwork" id="section-4.2-11.1">
+          <div class="alignCenter art-text artwork" id="section-4.2-10.1">
 <pre>
 updateCtx(X, N, CTX_IN) {
 
@@ -1607,7 +1608,7 @@ struct {
 <p id="section-4.3-9">Note that, even though that peer had no real reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see <span><a href="https://rfc-editor.org/rfc/rfc7641#section-3.6" class="relref">Section 3.6</a> of [<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>).<a href="#section-4.3-9" class="pilcrow">¶</a></p>
 <p id="section-4.3-10">Once a peer has successfully decrypted and verified an incoming message protected with CTX_NEW, that peer MUST discard the old Security Context CTX_OLD.<a href="#section-4.3-10" class="pilcrow">¶</a></p>
 <p id="section-4.3-11">The peer starting the KUDOS execution is denoted as initiator, while the other peer is denoted as responder.<a href="#section-4.3-11" class="pilcrow">¶</a></p>
-<p id="section-4.3-12">KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.1</a>) and the latter as the "reverse message flow" (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>). A peer wishing to use KUDOS MUST support both the forward and reverse message flow. The following properties hold for both the forward and reverse message flow.<a href="#section-4.3-12" class="pilcrow">¶</a></p>
+<p id="section-4.3-12">KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.1</a>) and the latter as the "reverse message flow" (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>). The following properties hold for both the forward and reverse message flow.<a href="#section-4.3-12" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3-13.1">
             <p id="section-4.3-13.1.1">The initiator always offers the fresh value N1.<a href="#section-4.3-13.1.1" class="pilcrow">¶</a></p>
@@ -2152,18 +2153,18 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
               <p id="section-4.5.2-7.4.1">If only the peer acting as initiator is a CAPABLE device and it has no knowledge of the other peer being a non-CAPABLE device, they will not run KUDOS in FS mode and will rather set to ground for possibly retrying in no-FS mode. In particular, the initiator sets the 'p' bit of its sent KUDOS message to 0. Then:<a href="#section-4.5.2-7.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.5.2-7.4.2.1">
-                  <p id="section-4.5.2-7.4.2.1.1">If the responder is a server, it MUST reply with a 5.03 (Service Unavailable) error response. The response MUST be protected with the newly derived OSCORE Security Context CTX_NEW. The diagnostic payload MAY provide additional information. This response is a KUDOS message, and it MUST have the 'd' bit and the 'p' bit set to 1.<a href="#section-4.5.2-7.4.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-4.5.2-7.4.2.1.1">If the responder is a server, it MUST consider the KUDOS execution unsuccessful and MUST reply with a 5.03 (Service Unavailable) error response. The response MUST be protected with the newly derived OSCORE Security Context CTX_NEW. The diagnostic payload MAY provide additional information. This response is a KUDOS message, and it MUST have the 'd' bit and the 'p' bit set to 1.<a href="#section-4.5.2-7.4.2.1.1" class="pilcrow">¶</a></p>
 <p id="section-4.5.2-7.4.2.1.2">
-When receiving the error response, the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode). The initiator MAY try running KUDOS again. If it does so, the initiator MUST set the 'p' bit to 1, when sending a new request as first KUDOS message.<a href="#section-4.5.2-7.4.2.1.2" class="pilcrow">¶</a></p>
+When receiving the error response, the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode), since the 'p' bit in the error response is set to 1, while the 'p' bit in the corresponding request was set to 0. Hence, the initiator MUST consider the KUDOS execution unsuccessful, and MAY try running KUDOS again. If it does so, the initiator MUST set the 'p' bit to 1, when sending a new request as first KUDOS message.<a href="#section-4.5.2-7.4.2.1.2" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-4.5.2-7.4.2.2">
-                  <p id="section-4.5.2-7.4.2.2.1">If the responder is a client, it sends to the initiator the second KUDOS message as a new request, which MUST be protected with the newly derived OSCORE Security Context CTX_NEW. In the newly sent request, the 'p' bit MUST be set to 1.<a href="#section-4.5.2-7.4.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-4.5.2-7.4.2.2.1">If the responder is a client, it MUST consider the KUDOS execution unsuccessful and MUST send to the initiator the second KUDOS message as a new request, which MUST be protected with the newly derived OSCORE Security Context CTX_NEW. In the newly sent request, the 'p' bit MUST be set to 1.<a href="#section-4.5.2-7.4.2.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.5.2-7.4.2.2.2">
-When receiving the new request above (i.e., with the 'p' bit set to 1 as a follow-up to the previous KUDOS response having the 'p' bit set to 0), the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode). The initiator should not send any response to such a request, nor should the responder expect a response.<a href="#section-4.5.2-7.4.2.2.2" class="pilcrow">¶</a></p>
-<p id="section-4.5.2-7.4.2.2.3">
-In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and CTX_NEW. Note that both peers retain CTX_OLD for use during the next KUDOS execution in the no-FS mode. This is in contrast with the typical behavior where CTX_OLD is deleted upon reception of a message protected with CTX_NEW.<a href="#section-4.5.2-7.4.2.2.3" class="pilcrow">¶</a></p>
+When receiving the new request above, the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode), since the 'p' bit in the request is set to 1, while the 'p' bit in the response previously sent as first KUDOS message was set to 0. Also, the initiator SHOULD NOT send any response to such a request, and the responder SHOULD NOT expect any such response.<a href="#section-4.5.2-7.4.2.2.2" class="pilcrow">¶</a></p>
 </li>
               </ul>
+<p id="section-4.5.2-7.4.3">
+In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and CTX_NEW. Also, both peers MUST retain CTX_OLD for use during the next KUDOS execution in the no-FS mode. This is in contrast with the typical behavior where CTX_OLD is deleted upon reception of a message protected with CTX_NEW.<a href="#section-4.5.2-7.4.3" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -2911,7 +2912,7 @@ with CTX_B  | Encrypted Payload {               |
         <h3 id="name-edhoc-external-authorizatio">
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-edhoc-external-authorizatio" class="section-name selfRef">EDHOC External Authorization Data Registry</a>
         </h3>
-<p id="section-7.3-1">IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22#section-10.5." class="relref">Section 10.5.</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span> within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-1">IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22#section-10.5" class="relref">Section 10.5</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span> within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-7.3-2">
 <pre>
 +---------+--------------------------------------+--------------------+
