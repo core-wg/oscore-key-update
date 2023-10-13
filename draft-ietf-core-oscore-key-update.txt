@@ -1336,6 +1336,13 @@ Table of Contents
          Security Context CTX_NEW, as Latest Master Secret and Latest
          Master Salt, respectively.
 
+   Following a state loss (e.g., due to a reboot), a device MUST first
+   complete a successful KUDOS execution (with either of the workflows)
+   before exchanging OSCORE-protected application data with another
+   peer.  An exception is a CAPABLE device implementing a functionality
+   for safely reusing old keying material, such as the one defined in
+   Appendix B.1 of [RFC8613].
+
 4.5.2.  Selection of KUDOS Mode
 
    During a KUDOS execution, the two peers agree on whether to perform
