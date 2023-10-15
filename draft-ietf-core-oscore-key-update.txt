@@ -114,11 +114,12 @@ Table of Contents
      A.1.  Forward Message Flow
      A.2.  Reverse Message Flow
    Appendix B.  Document Updates
-     B.1.  Version -04 to -05
-     B.2.  Version -03 to -04
-     B.3.  Version -02 to -03
-     B.4.  Version -01 to -02
-     B.5.  Version -00 to -01
+     B.1.  Version -05 to -06
+     B.2.  Version -04 to -05
+     B.3.  Version -03 to -04
+     B.4.  Version -02 to -03
+     B.5.  Version -01 to -02
+     B.6.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2986,7 +2987,24 @@ Appendix B.  Document Updates
 
    RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
-B.1.  Version -04 to -05
+B.1.  Version -05 to -06
+
+   *  Mandate support for both the forward and reverse message flow.
+
+   *  Mention the EDHOC and OSCORE profile of ACE as method for
+      rekeying.
+
+   *  Clarify definition of KUDOS (request/response) message.
+
+   *  Mandate support for the no-FS mode on CAPABLE devices.
+
+   *  Explain when KUDOS fails during selection of mode.
+
+   *  Explicitly forbid using old keying material after reboot.
+
+   *  Editorial improvements.
+
+B.2.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -3009,7 +3027,7 @@ B.1.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-B.2.  Version -03 to -04
+B.3.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3035,7 +3053,7 @@ B.2.  Version -03 to -04
 
    *  Editorial improvements.
 
-B.3.  Version -02 to -03
+B.4.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3054,7 +3072,7 @@ B.3.  Version -02 to -03
 
    *  Editorial improvements.
 
-B.4.  Version -01 to -02
+B.5.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3078,7 +3096,7 @@ B.4.  Version -01 to -02
 
    *  Editorial improvements.
 
-B.5.  Version -00 to -01
+B.6.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
