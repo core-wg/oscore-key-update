@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-12T00:34:56.434422+00:00",
+  "timestamp": "2023-10-15T00:39:49.402602+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -1242,12 +1242,10 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "Raise"
-      ],
+      "labels": [],
       "body": "May be good for future extensibility\r\n\r\nOne bit in the 'x' byte could be for extending it",
       "createdAt": "2022-07-07T18:03:14Z",
-      "updatedAt": "2023-07-08T13:51:15Z",
+      "updatedAt": "2023-10-12T09:04:39Z",
       "closedAt": null,
       "comments": []
     },
@@ -2570,12 +2568,10 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "Raise"
-      ],
+      "labels": [],
       "body": "Similarly to what was done in Group OSCORE.",
       "createdAt": "2023-06-27T15:27:39Z",
-      "updatedAt": "2023-07-08T13:51:13Z",
+      "updatedAt": "2023-10-12T09:04:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -2627,12 +2623,11 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "Processing",
-        "Raise"
+        "Processing"
       ],
       "body": "Meaning can the Request #1 be actionable? (Possibly only if idempotent) ",
       "createdAt": "2023-07-07T16:53:21Z",
-      "updatedAt": "2023-07-26T20:31:51Z",
+      "updatedAt": "2023-10-12T09:04:18Z",
       "closedAt": null,
       "comments": [
         {
@@ -2679,15 +2674,15 @@
       "id": "I_kwDOGfmof85sIS7p",
       "title": "Mandate implementation of both flows in both direction?",
       "url": "https://github.com/core-wg/oscore-key-update/issues/85",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Shall we do this, or leave it free?",
       "createdAt": "2023-07-20T14:20:53Z",
-      "updatedAt": "2023-07-26T20:32:07Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-12T09:41:11Z",
+      "closedAt": "2023-10-12T09:41:11Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2717,15 +2712,15 @@
       "id": "I_kwDOGfmof85sb_m2",
       "title": "Cite the document that creates the EDHOC External Authorization Data Registry",
       "url": "https://github.com/core-wg/oscore-key-update/issues/86",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Triggered by a mail from Amanda Baber (IANA) on July 22.\r\n\r\n> Because the EDHOC registry in Section 7.3 hasn't been created yet, it would be useful to cite the document that creates it.",
       "createdAt": "2023-07-24T23:10:43Z",
-      "updatedAt": "2023-07-24T23:10:43Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-12T14:45:35Z",
+      "closedAt": "2023-10-12T14:45:35Z",
       "comments": []
     },
     {
@@ -2733,15 +2728,15 @@
       "id": "I_kwDOGfmof85sqieN",
       "title": "MUST discard CTX_OLD",
       "url": "https://github.com/core-wg/oscore-key-update/issues/87",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chrysn",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "\"Once a peer has successfully decrypted and verified an incoming message protected with CTX_NEW, that peer MUST discard the old Security Context CTX_OLD.\"\r\n\r\nWhen in non-FS mode and CTX_OLD is the original context, the peer can't do that.",
       "createdAt": "2023-07-26T20:11:14Z",
-      "updatedAt": "2023-07-26T20:29:17Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-13T15:24:06Z",
+      "closedAt": "2023-10-13T15:24:06Z",
       "comments": [
         {
           "author": "marco-tiloca-sics",
@@ -2749,6 +2744,13 @@
           "body": "Good catch! Even though Section 4.3 \"Key Update with Forward Secrecy\" including that text is about the FS mode, it's good that it gives a heads-up about this point.\r\n\r\nThen I think that this point can be also restated in Section 4.5.1 \"Handling and Use of Keying Material\". The \"original context\" CTX_OLD is the one including the Bootstrap Master Secret and Bootstrap Master Salt.",
           "createdAt": "2023-07-26T20:29:16Z",
           "updatedAt": "2023-07-26T20:29:16Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We now have text about when not to delete CTX_OLD in the section \"Selection of KUDOS Mode\". That may be sufficient.",
+          "createdAt": "2023-10-12T14:40:18Z",
+          "updatedAt": "2023-10-12T14:40:18Z"
         }
       ]
     },
@@ -2757,15 +2759,15 @@
       "id": "I_kwDOGfmof85sqsAO",
       "title": "non-FS mode: Spell out practical consequences",
       "url": "https://github.com/core-wg/oscore-key-update/issues/88",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chrysn",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "I think it's not immediately obvious that from the limitations around non-FS mode it follows that the original OSCORE context can actually not be used at all for encryption.\r\n\r\nThe text may need some integration and editing, but my idea is in this direction:\r\n\r\n> A device that forces non-FS mode for lack of storage can usually not encrypt any message with the old context (the exception being devices that can increment a counter but not a key). Those devices will start KUDOS with the first message they send at startup, be it a request or a response.",
       "createdAt": "2023-07-26T20:41:41Z",
-      "updatedAt": "2023-07-26T20:59:04Z",
-      "closedAt": null,
+      "updatedAt": "2023-10-13T15:52:49Z",
+      "closedAt": "2023-10-13T15:52:49Z",
       "comments": [
         {
           "author": "marco-tiloca-sics",
@@ -2785,10 +2787,12 @@
       "author": "chrysn",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Raise"
+      ],
       "body": "Doing some thought experiments I found that there'd be a scenarios in which I'd not use random nonces:\r\n\r\nIf I'm persisting the context anyway, I can also persist a counter. Then, rather than using a random nonce that needs to be large to avoid collisions, I'll just pull a new number from that counter, and it's just as well not reuse.\r\n\r\n(I thought that there'd be two, and a non-CAPABLE host could use a random nonce once and then crank up through numbers, but they can't because once in non-FS mode it's always the boostrap secret, and it has to be that way because otherwise the peer couldn't tell whether we're starting from bootstrap or starting from the last established keys).\r\n\r\nFrom a short grepping I think that there are no normative references to random nonces, but some appear factual rather than informative (eg. \"First, the client generates a random value N1\"), so it's a bit unclear whether it's allowed. (They're discouraged for sure for privacy reasons, but that may not be as relevant to some applications as it is to others).",
       "createdAt": "2023-07-26T21:28:33Z",
-      "updatedAt": "2023-07-26T21:39:13Z",
+      "updatedAt": "2023-10-13T15:31:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -2804,6 +2808,20 @@
           "body": "Oh, sorry for the duplicate; that escaped my search.",
           "createdAt": "2023-07-26T21:39:12Z",
           "updatedAt": "2023-07-26T21:39:12Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This can be raised during the meeting, mentioning the OSCORE profile of ACE that is doing the same thing. However in that draft the security considerations open the door for using counters",
+          "createdAt": "2023-10-13T15:26:39Z",
+          "updatedAt": "2023-10-13T15:26:39Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Proposal: non-CAPABLE devices MUST use random values, a CAPABLE device SHOULD use random values (but may use counters if it enforces measures to ensure their freshness and accepts the privacy implications).",
+          "createdAt": "2023-10-13T15:31:18Z",
+          "updatedAt": "2023-10-13T15:31:18Z"
         }
       ]
     },
@@ -2828,32 +2846,48 @@
       "id": "I_kwDOGfmof85ysaZl",
       "title": "Language issues",
       "url": "https://github.com/core-wg/oscore-key-update/issues/91",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "For instance, make sure to use the Oxford comma.",
       "createdAt": "2023-10-03T14:13:23Z",
-      "updatedAt": "2023-10-03T14:13:23Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2023-10-12T09:49:07Z",
+      "closedAt": "2023-10-12T09:49:06Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I close this as an issue, we can just keep it in mind.",
+          "createdAt": "2023-10-12T09:49:06Z",
+          "updatedAt": "2023-10-12T09:49:06Z"
+        }
+      ]
     },
     {
       "number": 92,
       "id": "I_kwDOGfmof85ysbFP",
       "title": "Mention EDHOC and OSCORE profile of ACE",
       "url": "https://github.com/core-wg/oscore-key-update/issues/92",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "In section 2: Mention that EDHOC can also be run as part of the EDHOC and OSCORE profile of ACE.",
       "createdAt": "2023-10-03T14:14:52Z",
-      "updatedAt": "2023-10-03T14:14:52Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2023-10-12T09:05:19Z",
+      "closedAt": "2023-10-12T09:05:18Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done in commit 3320bcb1d4416a5767c9b67fc903b5c12aff4823",
+          "createdAt": "2023-10-12T09:05:18Z",
+          "updatedAt": "2023-10-12T09:05:18Z"
+        }
+      ]
     }
   ],
   "pulls": []
