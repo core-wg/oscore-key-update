@@ -1704,6 +1704,22 @@ Verify with CTX_NEW     | }                    |
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -05 to -06 ## {#sec-05-06}
+
+* Mandate support for both the forward and reverse message flow.
+
+* Mention the EDHOC and OSCORE profile of ACE as method for rekeying.
+
+* Clarify definition of KUDOS (request/response) message.
+
+* Mandate support for the no-FS mode on CAPABLE devices.
+
+* Explain when KUDOS fails during selection of mode.
+
+* Explicitly forbid using old keying material after reboot.
+
+* Editorial improvements.
+
 ## Version -04 to -05 ## {#sec-04-05}
 
 * Note on client retransmissions if KUDOS execution fails in reverse message flow.
