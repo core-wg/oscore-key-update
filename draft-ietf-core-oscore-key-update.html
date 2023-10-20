@@ -1449,7 +1449,7 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
 <p id="section-4-4">The key update procedure has the following properties.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-5.1">
-          <p id="section-4-5.1.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a> or reverse message flow <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>, respectively. A peer that supports KUDOS MUST support both the forward message flow and the reverse message flow.<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
+          <p id="section-4-5.1.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a> or reverse message flow <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>, respectively. A peer that supports KUDOS MUST support both the forward message flow and the reverse message flow.<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-5.2">
           <p id="section-4-5.2.1">The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
@@ -1498,7 +1498,7 @@ When it is set to 1, the compressed COSE object contains a 'nonce', to be used f
 Hereafter, a message is referred to as a "KUDOS (request/response) message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is referred to as a "non KUDOS (request/response) message".<a href="#section-4.1-2.2.4" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.3">
-            <p id="section-4.1-2.3.1">The seventh least significant bit of the byte 'x' is used for the sender peer to indicate that the byte 'x' and the 'nonce' field are further followed by a byte 'y' and an 'old_nonce' field. This bit SHALL only be set when running KUDOS in the reverse message flow <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>.<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.3.1">The seventh least significant bit of the byte 'x' is used for the sender peer to indicate that the byte 'x' and the 'nonce' field are further followed by a byte 'y' and an 'old_nonce' field. This bit SHALL only be set when running KUDOS in the reverse message flow <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.2</a>.<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-2.3.2.1">
                 <p id="section-4.1-2.3.2.1.1">The four least significant bits of the 'y' byte encode the 'old_nonce' size in bytes minus 1.<a href="#section-4.1-2.3.2.1.1" class="pilcrow">¶</a></p>
