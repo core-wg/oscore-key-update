@@ -186,7 +186,7 @@ In order to run KUDOS, two peers perform a message exchange of OSCORE-protected 
 
 The key update procedure has the following properties.
 
-* KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow {{ssec-derive-ctx}} or reverse message flow {{no-fs-mode}}, respectively. A peer that supports KUDOS MUST support both the forward message flow and the reverse message flow.
+* KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow {{ssec-derive-ctx}} or reverse message flow {{ssec-derive-ctx-server-init}}, respectively. A peer that supports KUDOS MUST support both the forward message flow and the reverse message flow.
 
 * The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see {{no-fs-mode}}).
 
@@ -218,7 +218,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    Hereafter, a message is referred to as a "KUDOS (request/response) message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is referred to as a "non KUDOS (request/response) message".
 
-* The seventh least significant bit of the byte 'x' is used for the sender peer to indicate that the byte 'x' and the 'nonce' field are further followed by a byte 'y' and an 'old_nonce' field. This bit SHALL only be set when running KUDOS in the reverse message flow {{no-fs-mode}}.
+* The seventh least significant bit of the byte 'x' is used for the sender peer to indicate that the byte 'x' and the 'nonce' field are further followed by a byte 'y' and an 'old_nonce' field. This bit SHALL only be set when running KUDOS in the reverse message flow {{ssec-derive-ctx-server-init}}.
 
    * The four least significant bits of the 'y' byte encode the 'old\_nonce' size in bytes minus 1.
 
