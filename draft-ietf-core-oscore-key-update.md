@@ -194,7 +194,7 @@ The key update procedure has the following properties.
 
 * KUDOS is robust against a peer rebooting, and it especially avoids the reuse of AEAD (nonce, key) pairs.
 
-* KUDOS completes in one round trip. The two peers achieve mutual key confirmation in the following exchange, which is protected with the newly established OSCORE Security Context.
+* KUDOS completes in one round trip by exchanging two CoAP messages. The two peers achieve mutual key confirmation in the following exchange, which is protected with the newly established OSCORE Security Context.
 
 ## Extensions to the OSCORE Option # {#ssec-oscore-option-extensions}
 
@@ -206,7 +206,11 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 * This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. This flag bit is specified in {{iana-cons-flag-bits}}.
 
-   When it is set to 1, the compressed COSE object contains a 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. The 1 byte 'x' following 'kid context' (if any) encodes the size of 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution. Specifically, the encoding of 'x' is as follows:
+   When it is set to 1, the compressed COSE object contains a field 'x' and a field 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. In particular, the 1 byte 'x' following 'kid context' (if any) encodes the size of the following field 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution.
+
+   Hereafter, a message is referred to as a "KUDOS (request/response) message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is referred to as a "non KUDOS (request/response) message".
+
+   The encoding of 'x' is as follows:
 
    * The four least significant bits encode the 'nonce' size in bytes minus 1, namely 'm'.
 
@@ -214,13 +218,13 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    * The sixth least significant bit is the "Preserve Observations" 'b' bit. The sender peer indicates its wish to preserve ongoing observations beyond the KUDOS execution or not, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
 
+   * The seventh least significant bit is the 'z' bit. When it is set to 1, the compressed COSE object contains a field 'y' and a field 'old\_nonce', to be used for the steps defined in {{ssec-derive-ctx}}. In particular, the 1 byte 'y' following 'nonce' encodes the size of the following field 'old\_nonce'. This bit SHALL only be set in the second KUDOS message and only if it is a CoAP request. For an example see the execution of KUDOS in the reverse message flow shown in {{fig-message-exchange-server-init}}.
+
    * The eight least significant bit is reserved for future use. This bit SHALL be set to zero when not in use. According to this specification, if this bit is set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
 
-   Hereafter, a message is referred to as a "KUDOS (request/response) message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is referred to as a "non KUDOS (request/response) message".
+   The encoding of 'y' is as follows:
 
-* The seventh least significant bit of the byte 'x' is used for the sender peer to indicate that the byte 'x' and the 'nonce' field are further followed by a byte 'y' and an 'old_nonce' field. This bit SHALL only be set when running KUDOS in the reverse message flow {{ssec-derive-ctx-server-init}}.
-
-   * The four least significant bits of the 'y' byte encode the 'old\_nonce' size in bytes minus 1.
+   * The four least significant bits of the 'y' byte encode the 'old\_nonce' size in bytes minus 1, namely 'w'.
 
    * The fifth to seventh least significant bits SHALL be set to zero when not in use. According to this specification, if these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}
 
@@ -245,7 +249,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
                                   /                    |
                                  /   0 1 2 3 4 5 6 7   |
 +------------------+             |  +-+-+-+-+-+-+-+-+  |
-| kid (if any) ... |             |  |0|0|b|p|   m   |  |
+| kid (if any) ... |             |  |0|z|b|p|   m   |  |
 +------------------+             |  +-+-+-+-+-+-+-+-+  |
 ~~~~~~~~~~~
 {: #fig-oscore-option title="The OSCORE Option value, including 'nonce'" artwork-align="center"}
