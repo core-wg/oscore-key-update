@@ -610,11 +610,18 @@ Table of Contents
 
    Furthermore, X1 and X2 are the value of the 'x' byte specified in the
    OSCORE Option of the first and second KUDOS message, respectively.
-   As defined in Section 4.3.1, these values are used by the peers to
-   build the input N and X to the updateCtx() function, in order to
-   derive a new OSCORE Security Context.  As for any new OSCORE Security
-   Context, the Sender Sequence Number and the Replay Window are re-
-   initialized accordingly (see Section 3.2.2 of [RFC8613]).
+   The X1 and X2 values are calculated by the peers based on the length
+   of nonce N1 and N2, and the specific settings the peer wishes to run
+   KUDOS with.  As defined in Section 4.3.1, these values are used by
+   the peers to build the input N and X to the updateCtx() function, in
+   order to derive a new OSCORE Security Context.  As for any new OSCORE
+   Security Context, the Sender Sequence Number and the Replay Window
+   are re-initialized accordingly (see Section 3.2.2 of [RFC8613]).
+
+   After a peer has generated or received the random value N1, and after
+   a peer has calculated or received the value X1, it shall retain these
+   in memory until it has received and processed the second KUDOS
+   message.
 
    Once a peer has successfully derived the new OSCORE Security Context
    CTX_NEW, that peer MUST use CTX_NEW to protect outgoing non KUDOS
