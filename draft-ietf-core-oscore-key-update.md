@@ -200,7 +200,7 @@ The key update procedure has the following properties.
 
 In order to support the message exchange for establishing a new OSCORE Security Context, this document extends the use of the OSCORE Option originally defined in {{RFC8613}} as follows.
 
-* This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
+* This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in {{iana-cons-flag-bits}}.
 
    When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the OSCORE flag bits 8-15.
 
@@ -232,7 +232,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 * The second-to-eighth least significant bits in the second byte of the OSCORE Option containing the OSCORE flag bits are reserved for future use. These bits SHALL be set to zero when not in use. According to this specification, if any of these bits are set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
 
-{{fig-oscore-option}} shows the OSCORE Option value including also 'nonce'.
+{{fig-oscore-option}} shows extended OSCORE Option value, with the possible presence of 'nonce' and 'old_nonce'.
 
 ~~~~~~~~~~~
  0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
@@ -248,11 +248,22 @@ In order to support the message exchange for establishing a new OSCORE Security 
                                    /              \____
                                   /                    |
                                  /   0 1 2 3 4 5 6 7   |
-+------------------+             |  +-+-+-+-+-+-+-+-+  |
-| kid (if any) ... |             |  |0|z|b|p|   m   |  |
-+------------------+             |  +-+-+-+-+-+-+-+-+  |
+                                 |  +-+-+-+-+-+-+-+-+  |
+                                 |  |0|z|b|p|   m   |  |
+                                 |  +-+-+-+-+-+-+-+-+  |
+
+    <- 1 byte -> <--- w + 1 bytes --->
+   +------------+---------------------+------------------+
+   | y (if any) | old_nonce (if any)  | kid (if any) ... |
+   +------------+---------------------+------------------+
+  /              \____
+ /                    |
+/   0 1 2 3 4 5 6 7   |
+|  +-+-+-+-+-+-+-+-+  |
+|  |0|0|0|0|   w   |  |
+|  +-+-+-+-+-+-+-+-+  |
 ~~~~~~~~~~~
-{: #fig-oscore-option title="The OSCORE Option value, including 'nonce'" artwork-align="center"}
+{: #fig-oscore-option title="The extended OSCORE Option value, with the possible presence of 'nonce' and 'old_nonce'" artwork-align="center"}
 
 ## Function for Security Context Update # {#ssec-update-function}
 
@@ -518,7 +529,7 @@ If there are any, the client MUST NOT initiate the KUDOS execution, before eithe
 
 Later on, this prevents a non KUDOS response protected with CTX\_NEW from cryptographically matching with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
 
-During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see Section 4.7 of [RFC7252]).
+During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see {{Section 4.7 of RFC7252}}).
 
 ### Reverse Message Flow {#ssec-derive-ctx-server-init}
 
@@ -565,8 +576,10 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
                         |  ...                 |
                         |  d flag: 1           | CTX_NEW = updateCtx(
                         |  x: X2               |           Comb(X1,X2),
-                        |  nonce: N1|N2        |           Comb(N1,N2),
-                        |  ...                 |           CTX_OLD)
+                        |  nonce: N2           |           Comb(N1,N2),
+                        |  y: w                |           CTX_OLD)
+                        |  old_nonce: N1       |
+                        |  ...                 |
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_NEW
                         |  ...                 |
@@ -1657,8 +1670,10 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
                         |  ...                 |
                         |  d flag: 1           | CTX_NEW = updateCtx(
                         |  x: X2               |           Comb(X1,X2),
-                        |  nonce: N1|N2        |           Comb(N1,N2),
-                        |  kid: 0x01           |           CTX_OLD)
+                        |  nonce: N2           |           Comb(N1,N2),
+                        |  y: w                |           CTX_OLD)
+                        |  old_nonce: N1       |
+                        |  kid: 0x01           |
                         |  ...                 |
                         | }                    | Verify with CTX_NEW
                         | Encrypted Payload {  |
@@ -1727,6 +1742,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Mention the EDHOC and OSCORE profile of ACE as method for rekeying.
 
 * Clarify definition of KUDOS (request/response) message.
+
+* Further extend the OSCORE option to transport N1 in the second KUDOS message as a request.
 
 * Mandate support for the no-FS mode on CAPABLE devices.
 
