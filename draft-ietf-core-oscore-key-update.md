@@ -425,7 +425,7 @@ First, the client generates a random value N1, and uses the nonce N = N1 and X =
 
 Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos-desc}}) at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
-Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the request, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
+Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the OSCORE Option, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
 {{fig-kudos-x-n-example-mess-one}} shows an example of how the two peers compute X and N provided as input to the updateCtx() function, and how they compute X\_N within the updateCtx() function, when deriving CTX\_1 (see {{ssec-update-function}}).
 
@@ -482,7 +482,7 @@ An example of this nonce processing on the server with values for N1, X1, N2, an
 
 Then, the server sends an OSCORE response to the client, protected with CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
-Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the response, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request that it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX\_OLD, in order to derive CTX\_NEW. Finally, the client verifies the response by using CTX\_NEW and deletes CTX\_OLD.
+Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the OSCORE Option, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request that it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX\_OLD, in order to derive CTX\_NEW. Finally, the client verifies the response by using CTX\_NEW and deletes CTX\_OLD.
 
 From then on, the two peers can protect their message exchanges by using CTX\_NEW. As soon as the server successfully verifies an incoming message protected with CTX\_NEW, the server deletes CTX\_OLD.
 
@@ -581,13 +581,13 @@ Upon receiving the OSCORE request and after having verified it with CTX\_OLD as 
 
 Then, the server sends an OSCORE response to the client, protected with CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the server deletes CTX\_1. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
-Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the response, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
+Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the OSCORE Option, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
 Then, the client verifies the response by using the Security Context CTX\_1.
 
 After that, the client generates a random value N2, and provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the client sends an OSCORE request to the server, protected with CTX\_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N1 \| N2 as 'nonce'. After that, the client deletes CTX\_1.
 
-Upon receiving the OSCORE request, the server retrieves the value N1 \| N2 from the request and the value X2 from the 'x' byte of the OSCORE Option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 \| N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1.
+Upon receiving the OSCORE request, the server retrieves the values N1 and N2 from the OSCORE Option and the value X2 from the 'x' byte of the OSCORE Option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 \| N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1.
 
 If the verification succeeds, the server provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Finally, the server verifies the request by using CTX\_NEW and deletes CTX\_OLD.
 
