@@ -372,6 +372,8 @@ CTX_1 = updateCtx(      |                      |
 Protect with CTX_1      |--------------------->| /.well-known/kudos
                         | OSCORE {             |
                         |  ...                 |
+                        |  Partial IV: 0       |
+                        |  ...                 |
                         |  d flag: 1           | CTX_1 = updateCtx(
                         |  x: X1               |         X1,
                         |  nonce: N1           |         N1,
@@ -431,7 +433,7 @@ Verify with CTX_NEW     | }                    |
 
 First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
-Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos-desc}}) at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
+Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos-desc}}) at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. When the client protects this request using OSCORE, it MUST use 0 as the value of Partial IV. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
 Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the OSCORE Option, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
