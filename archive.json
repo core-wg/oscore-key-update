@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-19T00:36:55.614996+00:00",
+  "timestamp": "2023-10-22T00:39:35.811146+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2888,6 +2888,42 @@
           "updatedAt": "2023-10-12T09:05:18Z"
         }
       ]
+    },
+    {
+      "number": 93,
+      "id": "I_kwDOGfmof850cq16",
+      "title": "Let KUDOS messages be regular application messages",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/93",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "Raise"
+      ],
+      "body": "- KUDOS request messages can target any resource at the server\r\n- In the forward message flow, the client would send the application message that it currently wants to send as a KUDOS message\r\n- The caveat is that the server cannot be sure the request is fresh, thus it may want to respond with 4.01\r\n\r\nEither we state that a 4.01 response means that the client should re-send its latest sent request, or the echo procedure can be utilized.\r\n\r\nSee also:\r\nhttps://mailarchive.ietf.org/arch/msg/core/VRpad8f_cSye84txUnuTxYLDczw/",
+      "createdAt": "2023-10-20T07:05:53Z",
+      "updatedAt": "2023-10-20T17:08:04Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 94,
+      "id": "I_kwDOGfmof850csPk",
+      "title": "Allow a more flexible message flow",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/94",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "Raise"
+      ],
+      "body": "We can allow KUDOS exchanges to not necessarily be based on request/response pairs, but rather allow for a more flexible message flows.\r\n\r\nFor instance Christian gave the following example where both KUDOS messages can be requests:\r\n1. EP -> RD: POST /.well-known/rd - _KUDOS message 1_\r\n2. RD -> EP: GET /.well-known/core - _KUDOS message 2_\r\n3. EP -> RD: response with payload of .well-known/core\r\n4. RD -> EP: response to the POST\r\n\r\nAnother example is where the second KUDOS message is a response to a different request than the first KUDOS message. This could for instance be the case for notifications, where the client sends a request and the server then sends a notification (which is not a response to the initial client request).\r\n\r\nSee also:\r\nhttps://mailarchive.ietf.org/arch/msg/core/VRpad8f_cSye84txUnuTxYLDczw/",
+      "createdAt": "2023-10-20T07:10:18Z",
+      "updatedAt": "2023-10-20T17:08:17Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": []
