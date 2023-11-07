@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-05T00:40:09.166212+00:00",
+  "timestamp": "2023-11-07T00:37:50.548864+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -114,302 +114,6 @@
       ]
     },
     {
-      "number": 3,
-      "id": "I_kwDOGfmof85E14l3",
-      "title": "Consider constrained devices and saving count_q and count_v regularly",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/3",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "How often must they be stored? Consider Appendix B.1 and saving the SSN.",
-      "createdAt": "2022-03-01T07:32:25Z",
-      "updatedAt": "2022-03-01T07:58:23Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "See Appendix B.1 for OSCORE: https://tools.ietf.org/html/rfc8613#appendix-B.1",
-          "createdAt": "2022-03-01T07:32:29Z",
-          "updatedAt": "2022-03-01T07:32:29Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "This can wait until issue \"Each client can count q up to half(?) the q limit as an optimization\" is closed.",
-          "createdAt": "2022-03-01T07:32:50Z",
-          "updatedAt": "2022-03-01T07:32:50Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Explore further the idea from Carsten mentioned during the CoRE interim on April 28. This was about utilizing the clock (on devices which have one) to not have to save count_q and count_v in some situations.\r\n\r\nWe can also clarify that saving the counters every N is just a suggestion for implementers. Different solutions may be acceptable. The key point is making sure to not lose or underestimate the counters after reboot (while overestimating them can be fine to some extent).",
-          "createdAt": "2022-03-01T07:32:57Z",
-          "updatedAt": "2022-03-01T07:32:57Z"
-        }
-      ]
-    },
-    {
-      "number": 4,
-      "id": "I_kwDOGfmof85E14uP",
-      "title": "Consider raising adding q and v limits already in COSE registry with the algorithms",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/4",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "",
-      "createdAt": "2022-03-01T07:33:11Z",
-      "updatedAt": "2022-03-01T07:58:15Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Could be in COSE registry, this document or elsewhere. For now intention is to keep in this document.",
-          "createdAt": "2022-03-01T07:33:23Z",
-          "updatedAt": "2022-03-01T07:33:23Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Feedback from CoRE interim April 28: This sounds to be less relevant as the limits will end up being specific to OSCORE.",
-          "createdAt": "2022-03-01T07:33:27Z",
-          "updatedAt": "2022-03-01T07:33:27Z"
-        }
-      ]
-    },
-    {
-      "number": 5,
-      "id": "I_kwDOGfmof85E14z0",
-      "title": "Each client can count q up to half(?) the q limit as an optimization",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/5",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "As suggested during the CoRE interim. This works fine with responses with no partial IV since they will be counted in that senders q counter. Each request can only have max one response without PIV. For Observe notifications they will have a PIV (except maybe the first).",
-      "createdAt": "2022-03-01T07:33:43Z",
-      "updatedAt": "2022-03-01T07:58:10Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "\"Pure\" servers do not need to count q, since the client will count for them? Server only needs to count responses with Partial IV? Ask Christian to clarify.",
-          "createdAt": "2022-03-01T07:33:52Z",
-          "updatedAt": "2022-03-01T07:33:52Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Do we even need to halve q?",
-          "createdAt": "2022-03-01T07:34:26Z",
-          "updatedAt": "2022-03-01T07:34:26Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Savings is that server does not need to count q for responses without Partial IV? So SSN can be used directly on server.",
-          "createdAt": "2022-03-01T07:34:31Z",
-          "updatedAt": "2022-03-01T07:34:31Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Also need to look at SSN + replay window (received requests implying responses sent without partial IV)",
-          "createdAt": "2022-03-01T07:34:34Z",
-          "updatedAt": "2022-03-01T07:34:34Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Revisit this with Christian\r\n\r\nPoint is that counting up to half q means counting your own messages with PIV and the other parties messages without PIV. So the client and server counts each other's messages without PIV.\r\n\r\nNo messages should be missed in the counting. (Whether they are observations or not.)\r\n\r\nCases: Observation Echo procedure",
-          "createdAt": "2022-03-01T07:34:41Z",
-          "updatedAt": "2022-03-01T07:34:41Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Needs further discussion.",
-          "createdAt": "2022-03-01T07:34:46Z",
-          "updatedAt": "2022-03-01T07:34:46Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "The point is you don't even need a count_q, just use your SSN?",
-          "createdAt": "2022-03-01T07:34:49Z",
-          "updatedAt": "2022-03-01T07:34:49Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "https://hackmd.io/sOliRiyGQT-OmjxbprN9XA",
-          "createdAt": "2022-03-01T07:34:54Z",
-          "updatedAt": "2022-03-01T07:34:54Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "What is the maximum overestimation for the solution in the HackMD? Feedback from G\u00f6ran during the CoRE interim on April 28 was 2x (double), which makes sense to me also.",
-          "createdAt": "2022-03-01T07:34:58Z",
-          "updatedAt": "2022-03-01T07:34:58Z"
-        }
-      ]
-    },
-    {
-      "number": 6,
-      "id": "I_kwDOGfmof85E15FT",
-      "title": "Consider different probabilities p_q and p_v for OSCORE specifically?",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/6",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "",
-      "createdAt": "2022-03-01T07:35:24Z",
-      "updatedAt": "2022-03-01T07:57:06Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Feedback from John during the CoRE interim on April 28 was that we should not consider different probabilities. Rather the focus is more on fundamentally defining new limits for OSCORE, largely disregarding the formulas from the CFRG document.",
-          "createdAt": "2022-03-01T07:35:29Z",
-          "updatedAt": "2022-03-01T07:35:29Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Essentially we will work in the reverse compared to what we are currently doing, updating the table in 2.1.1 to calculate CA and IA from a set l, q and v value to show that the resulting probabilities are safe.",
-          "createdAt": "2022-03-01T07:35:32Z",
-          "updatedAt": "2022-03-01T07:35:32Z"
-        }
-      ]
-    },
-    {
-      "number": 7,
-      "id": "I_kwDOGfmof85E15Jq",
-      "title": "Sync with EDHOC in LAKE and John's work",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/7",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "",
-      "createdAt": "2022-03-01T07:35:48Z",
-      "updatedAt": "2022-03-01T07:56:59Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "See also issue \"Redefine 'l', 'limit_q', and 'limit_v' specifically for OSCORE\"",
-          "createdAt": "2022-03-01T07:36:01Z",
-          "updatedAt": "2022-03-01T07:36:01Z"
-        }
-      ]
-    },
-    {
-      "number": 8,
-      "id": "I_kwDOGfmof85E15RG",
-      "title": "Discussion on the lifetime of a Security Context",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/8",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [],
-      "body": "Created by: Marco Tiloca\r\n\r\nThis can go again in Section 3.1.\r\n\r\nThe absolute time used as value of 'exp' has to be determined when locally installing the Security Context at time t_1, by adding a lifetime value to t_1. That lifetime can be a default value (possibly different between the two peers), or agreed in-band as part of the synchronized Security Context establishment (e.g. an OSCORE LwM2M object), or part of the used EDHOC Applicability Statement.",
-      "createdAt": "2022-03-01T07:36:34Z",
-      "updatedAt": "2022-04-12T15:30:12Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Feedback from John during CoRE interim April 28: We should clarify what \"lifetime of a Context\"/\"expiration of a Context\" means. In particular this refers to the Sender/Recipient keys used and the fact that they have \"expired\" and shall no longer be used.",
-          "createdAt": "2022-03-01T07:36:40Z",
-          "updatedAt": "2022-03-01T07:36:40Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Perhaps relevant.\r\n\r\n> The TLS 1.2 spec says: \"An upper limit of 24 hours is suggested for session ID lifetimes, since an attacker who obtains a master_secret may be able to impersonate the compromised party until the corresponding session ID is retired.\"",
-          "createdAt": "2022-04-12T15:30:12Z",
-          "updatedAt": "2022-04-12T15:30:12Z"
-        }
-      ]
-    },
-    {
-      "number": 9,
-      "id": "I_kwDOGfmof85E15e4",
-      "title": "How do the q & v limits and the chosen 'l' affect applications?",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/9",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "Feedback from CoRE interim on April 28: How does the limits we set, and the value 'l' (Maximum length of each message in blocks) affect various applications?",
-      "createdAt": "2022-03-01T07:37:50Z",
-      "updatedAt": "2022-03-01T07:56:35Z",
-      "closedAt": null,
-      "comments": []
-    },
-    {
-      "number": 10,
-      "id": "I_kwDOGfmof85E15j2",
-      "title": "Redefine 'l', 'limit_q', and 'limit_v' specifically for OSCORE",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/10",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "Based on feedback from John during the CoRE interim on April 28.\r\n\r\nCurrently we are using l = 2^10, dropping that to 2^8 may be beneficial.\r\n\r\nFurthermore we can define set values for 'limit_q' and 'limit_v', not relying on the CFRG document.\r\n\r\nFor instance setting an overall value for 'limit_q' to 2^20 (which is lower than all the calculated limits for q we have currently).\r\n\r\nAs long as we reduce values, like reducing the size of l and the size of 'limit_q' things should be easy to motivate as we are erring more on the side of caution.\r\n\r\nWhen it comes to redefining 'limit_v' we actually want to increase this value and here is where we need a good motivation. We can start a discussion on the mailing list based on the figures John presented. He also promised to contribute material in the form of a PR to the draft.",
-      "createdAt": "2022-03-01T07:38:19Z",
-      "updatedAt": "2022-03-01T07:56:28Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "After further discussions we can use l = 2^8, q = 2^20 and v = 2^20, also considering the material presented by John during a SAAG meeting. See https://datatracker.ietf.org/meeting/110/materials/slides-110-saag-analysis-of-usage-limits-of-aead-algorithms-00.pdf\r\n\r\nThis can mean that we use the formulas for calculating IA and CA from the CFRG document with these values and show that the resulting probabilities are safe (<2^-64).",
-          "createdAt": "2022-03-01T07:38:44Z",
-          "updatedAt": "2022-03-01T07:38:44Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Double check calculations in the table, especially for AES CCM 8 with John.",
-          "createdAt": "2022-03-01T07:38:49Z",
-          "updatedAt": "2022-03-01T07:38:49Z"
-        }
-      ]
-    },
-    {
       "number": 11,
       "id": "I_kwDOGfmof85E15xO",
       "title": "Consider using a sequence number instead of R2",
@@ -443,86 +147,6 @@
       ]
     },
     {
-      "number": 12,
-      "id": "I_kwDOGfmof85E155I",
-      "title": "Explain exceptions where l needs to be larger than 2^8",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/12",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "For instance TCP CoAP blockwise BERT.\r\n\r\nIn general if a message size larger than 4096 is desired (16 byte block size * 2^8 blocks per message), a higher l must be chosen. We can cover how appropriate values for v and q can be calculated when a larger l is chosen.",
-      "createdAt": "2022-03-01T07:40:10Z",
-      "updatedAt": "2022-03-01T07:56:23Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Explain more on how different l value affect the CA and IA (and how q & v can be changed to compensate).",
-          "createdAt": "2022-03-01T07:40:15Z",
-          "updatedAt": "2022-03-01T07:40:15Z"
-        }
-      ]
-    },
-    {
-      "number": 13,
-      "id": "I_kwDOGfmof85E15-T",
-      "title": "Say in OSCORE Messages Processing to not send a message with COSE plaintext + MAC + possible padding larger than block size * l",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/13",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "Note in OSCORE Messages Processing to never send a message larger than block size * l.\r\n\r\nMeaning the COSE plaintext + MAC + possible padding should not exceed (the block-size for the algorithm used multiplied with l). Since we set a limit for the l value. You basically have 3 limits; q, v, and l.\r\n\r\nYou can precalculate to estimate the size, if it becomes too large you use block-wise.",
-      "createdAt": "2022-03-01T07:40:38Z",
-      "updatedAt": "2022-03-01T07:55:58Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "I added an initial note on this. We could expand more on this and describe pre-calculation, and choosing block-wise if it becomes too large.\r\n\r\nIf large size has to be transferred implementations may consider using the block-wise transfer (if supported). We could expand more on this and describe pre-calculation, and choosing block-wise if it becomes too large.\r\n\r\nIf large size has to be trasnfered implementations may consider using the block-wise transfer (if supported). REFERENCE.",
-          "createdAt": "2022-03-01T07:41:31Z",
-          "updatedAt": "2022-03-01T07:41:31Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Use TAG instead of MAC.\r\n\r\nSay \"authentication tag\"",
-          "createdAt": "2022-03-01T07:41:35Z",
-          "updatedAt": "2022-03-01T07:41:35Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Say \"total size\"\r\n\r\nSay \"cipher padding\"",
-          "createdAt": "2022-03-01T07:41:39Z",
-          "updatedAt": "2022-03-01T07:41:39Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Add reference to COSE struct document.",
-          "createdAt": "2022-03-01T07:41:42Z",
-          "updatedAt": "2022-03-01T07:41:42Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Text has now been updated further in 6339baf7. Reference to COSE and explanation of block-wise remain to do.",
-          "createdAt": "2022-03-01T07:41:59Z",
-          "updatedAt": "2022-03-01T07:41:59Z"
-        }
-      ]
-    },
-    {
       "number": 14,
       "id": "I_kwDOGfmof85E16SA",
       "title": "Add recommendations on minimum length of R1 and R2",
@@ -550,93 +174,6 @@
           "body": "We have a brief mention of minimum lenghts:\r\n_The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long._",
           "createdAt": "2022-07-08T16:02:18Z",
           "updatedAt": "2022-07-08T16:02:18Z"
-        }
-      ]
-    },
-    {
-      "number": 15,
-      "id": "I_kwDOGfmof85E16Xg",
-      "title": "Update content to reflect new version of draft-irtf-cfrg-aead-limits",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/15",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "The content related to the limits should be updated to reflect the changes to the CFRG draft:\r\n\r\nhttps://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-03\r\n\r\nFor instance the definition/description of 'l' has changed.",
-      "createdAt": "2022-03-01T07:42:49Z",
-      "updatedAt": "2022-12-27T14:32:16Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Also update according to new table with numbers for q and v: https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-03#section-5.5 Also the 2^-50 recommendeation.",
-          "createdAt": "2022-03-01T07:42:55Z",
-          "updatedAt": "2022-03-01T07:42:55Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Update second section of the table to have l = 2^7",
-          "createdAt": "2022-03-01T07:42:58Z",
-          "updatedAt": "2022-03-01T07:42:58Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Add rows from v = 2^14",
-          "createdAt": "2022-03-01T07:43:03Z",
-          "updatedAt": "2022-03-01T07:43:03Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Calculate IA and CA based on CFRG table.",
-          "createdAt": "2022-03-01T07:43:06Z",
-          "updatedAt": "2022-03-01T07:43:06Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Should be fine now?",
-          "createdAt": "2022-07-08T16:01:08Z",
-          "updatedAt": "2022-07-08T16:01:08Z"
-        },
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "Check latest version: draft-irtf-cfrg-aead-limits-05\r\n",
-          "createdAt": "2022-12-27T14:32:16Z",
-          "updatedAt": "2022-12-27T14:32:16Z"
-        }
-      ]
-    },
-    {
-      "number": 16,
-      "id": "I_kwDOGfmof85E16de",
-      "title": "Using clock instead of saving counters",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/16",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "Idea from Carsten from previous IETF meeting: \"Use clock instead of saving counters\"",
-      "createdAt": "2022-03-01T07:43:24Z",
-      "updatedAt": "2022-03-01T07:55:42Z",
-      "closedAt": null,
-      "comments": [
-        {
-          "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
-          "body": "We can check recording for details.",
-          "createdAt": "2022-03-01T07:43:28Z",
-          "updatedAt": "2022-03-01T07:43:28Z"
         }
       ]
     },
@@ -689,42 +226,6 @@
       ]
     },
     {
-      "number": 19,
-      "id": "I_kwDOGfmof85E16pR",
-      "title": "Add note on relevance of 'l' limit",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/19",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "From CoRE interim on October 13 Christian commented:\r\n\r\n> Probably the 'l' limit does not matter so much for us, given the possibility of inner blockwise limiting to 1 KB and outer blockwise bringing more limits. That should releave the pressure from having the best 'l' limit since this is all very specific to OSCORE anyway.\r\n\r\nSo we could perhaps note that an 'l' limit resulting in a size limit of around 1 KB is quite likely fine for normal OSCORE (due to how inner blockwise is done).",
-      "createdAt": "2022-03-01T07:44:35Z",
-      "updatedAt": "2022-03-01T07:55:35Z",
-      "closedAt": null,
-      "comments": []
-    },
-    {
-      "number": 20,
-      "id": "I_kwDOGfmof85E16xB",
-      "title": "Latest feedback from John on the limits and probabilities",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/20",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits"
-      ],
-      "body": "**Got the feedback below from John via mail. We should take it into account for future versions.**\r\n\r\n> These probabilities must be acceptably low\r\n\r\nI don\u2019t think this is true. The advantage per key is a quite useless measure for security protocols/use cases with several keys and maybe ever several connections. Keeping these probabilities low does not increase security when advantage functions are linear.\r\n\r\nI would not talk so much of the CA IA probabilities per key on slide 4-5. These are not very relevant measures for OSCORE, especially not OSCORE with rekeying. A relevant measure instead of IA per key would be forgery probability per forgery attempt (or perharps per number of byte sent.)",
-      "createdAt": "2022-03-01T07:45:16Z",
-      "updatedAt": "2022-03-01T07:55:26Z",
-      "closedAt": null,
-      "comments": []
-    },
-    {
       "number": 21,
       "id": "I_kwDOGfmof85E160b",
       "title": "Add mode without PFS (to retain stateless operations)",
@@ -733,9 +234,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "See\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/core/EL0yHxQrP2DQwHxo6ojnQedvFbY/",
       "createdAt": "2022-03-01T07:45:37Z",
       "updatedAt": "2022-07-08T15:55:00Z",
@@ -766,9 +265,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Possible extension",
       "createdAt": "2022-03-01T07:45:50Z",
       "updatedAt": "2022-07-08T08:21:10Z",
@@ -813,9 +310,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Check comments from Christian during IETF 112 CoRE session.",
       "createdAt": "2022-03-01T07:46:06Z",
       "updatedAt": "2022-07-08T08:20:23Z",
@@ -938,7 +433,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "0: Don't send non-KUDOS messages while KUDOS running.\r\n\r\n1: An outgoing non-KUDOS message is always protected with the most recent security context.\r\n\r\n2: Client must be ready to receive responses protected with key material different than that used to protect the corresponding request. This is the case if KUDOS is ran in between a request a corresponding response. For client-initiated KUDOS this can happen where the responses are observe notifications. For the server-initiated version, this can happen if the client uses NSTART > 1 and one of the requests results to be a KUDOS trigger. While the other requests would be server later by the server (after KUDOS) is done.\r\n\r\n3: \"Stuck-party\": This can happen when the server-initiated version of KUDOS is used. Client is client-only, and only sending NON requests (not expecting a response). In this case the client never listens for responses, and thus doesn't get (process) KUDOS message [#1](https://github.com/rikard-sics/draft-hoeglund-oscore-rekeying-limits/-/issues/1) from the server. So rekeying can never start. To avoid this deadlock we can say that every X messages should listen for a response, or be CON.",
@@ -980,9 +474,7 @@
       "assignees": [
         "rikard-sics"
       ],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Can a server/client process messages while KUDOS is running? If yes, do so. If no, queue them and attempt to do it when KUDOS is done (if possible)",
       "createdAt": "2022-03-01T07:48:02Z",
       "updatedAt": "2022-10-19T12:17:05Z",
@@ -1070,9 +562,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "From telco with G\u00f6ran on May 23.",
       "createdAt": "2022-05-23T14:38:14Z",
       "updatedAt": "2022-06-30T21:22:01Z",
@@ -1088,9 +578,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "",
       "createdAt": "2022-05-23T16:34:38Z",
       "updatedAt": "2022-06-30T07:25:27Z",
@@ -1106,9 +594,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Keep epoch-related things in the Appendix",
       "createdAt": "2022-05-23T16:36:08Z",
       "updatedAt": "2022-06-30T21:21:57Z",
@@ -1124,9 +610,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "If EDHOC-Exporter(label, context, length) is executed on the peers with different nonce (for instance due to manipulation), the PRK_out and PRK_exporter can get out of sync. Somehow the old PRK_out needs to be saved, or new ones created in branches.\r\n\r\nNote that this could possibly be solved in EDHOC.",
       "createdAt": "2022-06-17T11:24:04Z",
       "updatedAt": "2022-11-03T11:48:26Z",
@@ -1157,9 +641,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "To choose from the two modes in the updateCtx(N, CTX_IN) function.",
       "createdAt": "2022-06-17T11:27:03Z",
       "updatedAt": "2022-11-03T11:50:46Z",
@@ -1183,9 +665,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "",
       "createdAt": "2022-06-17T12:30:38Z",
       "updatedAt": "2022-06-17T12:37:02Z",
@@ -1209,9 +689,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "",
       "createdAt": "2022-07-07T18:01:52Z",
       "updatedAt": "2022-07-08T08:19:15Z",
@@ -1258,9 +736,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Makes sense to make the name more specific as use of 'id detail' is KUDOS specific currently\r\n\r\nName can be changed to 'nonce'",
       "createdAt": "2022-07-07T18:04:01Z",
       "updatedAt": "2022-07-08T08:15:27Z",
@@ -1316,9 +792,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Add also the term \"KUDOS mode\" meaning FS or no-FS mode",
       "createdAt": "2022-07-07T18:06:01Z",
       "updatedAt": "2022-07-08T08:28:54Z",
@@ -1334,9 +808,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "In section ssec-derive-ctx-client-init",
       "createdAt": "2022-07-07T18:06:58Z",
       "updatedAt": "2022-07-09T15:48:14Z",
@@ -1384,9 +856,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "See comment:\r\nhttps://github.com/core-wg/oscore-key-update/commit/19259eed0b85e5fcbf798a87659f2751e4c48e50#r78095037",
       "createdAt": "2022-07-12T15:44:18Z",
       "updatedAt": "2022-12-21T16:10:24Z",
@@ -1497,9 +967,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Common beginning, then EDHOC and HKDF-case.",
       "createdAt": "2022-07-19T15:25:14Z",
       "updatedAt": "2022-10-07T18:20:12Z",
@@ -1558,9 +1026,7 @@
       "assignees": [
         "marco-tiloca-sics"
       ],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Is it fine to only use METHOD 2?\r\n\r\nBased on feedback from Christian during IETF 114.",
       "createdAt": "2022-07-26T20:34:45Z",
       "updatedAt": "2022-10-12T17:01:02Z",
@@ -1704,32 +1170,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "A newly derived CTX_NEW replaces any potential already stored CTX_NEW.",
       "createdAt": "2022-07-27T15:42:06Z",
       "updatedAt": "2023-03-10T07:36:27Z",
       "closedAt": "2023-03-10T07:36:27Z",
-      "comments": []
-    },
-    {
-      "number": 53,
-      "id": "I_kwDOGfmof85OrfA0",
-      "title": "Reduce scope of the limits section and point more to the CFRG document?",
-      "url": "https://github.com/core-wg/oscore-key-update/issues/53",
-      "state": "OPEN",
-      "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
-      "assignees": [],
-      "labels": [
-        "Limits",
-        "Limits split"
-      ],
-      "body": "We could reduce the scope of the limits section and only cover there the counting logic and OSCORE-relevant processing. Then for the rest we point to the document in CFRG .\r\nhttps://datatracker.ietf.org/doc/draft-irtf-cfrg-aead-limits/05/",
-      "createdAt": "2022-07-27T19:14:31Z",
-      "updatedAt": "2022-12-26T17:23:28Z",
-      "closedAt": null,
       "comments": []
     },
     {
@@ -1741,9 +1187,7 @@
       "author": "chrysn",
       "authorAssociation": "MEMBER",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "KUDOS is run on a single key shared by two parties, and AIU whether or not KUDOS can be used is a piece of information that is placed into an OSCORE node along with the algorithm, the IDs, the key material and the window size (which currently no key establishment method bothered to allow changing).\r\n\r\nIf that is correct, maybe we can do away with the run-time negotiation of whether or not to use PFS mode, and whatever tells the node that KUDOS is allowed here, that negotiation could also produce the variant of KUDOS (whether it is with or without PFS) as an output.\r\n\r\nThis would remove a piece of runtime complexity, in particular removing code paths I expect to receive very little testing.\r\n\r\n(And by the way, what is the default of whether or not KUDOS is supported when OSCORE is negotiated from EDHOC? What if the OSCORE key comes from ACE-OSCORE? Maybe the EAD item could phrase the information in a similar way as the ACE CWT does).",
       "createdAt": "2022-07-28T14:19:08Z",
       "updatedAt": "2022-12-21T16:11:13Z",
@@ -1769,9 +1213,7 @@
       "assignees": [
         "rikard-sics"
       ],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "May be a good idea",
       "createdAt": "2022-09-09T07:48:08Z",
       "updatedAt": "2022-10-20T06:58:27Z",
@@ -1825,9 +1267,7 @@
       "assignees": [
         "marco-tiloca-sics"
       ],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "See mail from Christian\r\nhttps://mailarchive.ietf.org/arch/msg/core/x_Ix5a4PV-XcrvmLECtsC_CmoYs/",
       "createdAt": "2022-09-09T08:39:42Z",
       "updatedAt": "2022-10-11T14:14:23Z",
@@ -1860,9 +1300,7 @@
       "assignees": [
         "rikard-sics"
       ],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "E.g. a non-CAPABLE device must support no-FS mode.\r\nA CAPABLE device must support FS mode and should support no-FS mode.",
       "createdAt": "2022-09-26T16:44:37Z",
       "updatedAt": "2022-10-19T13:41:22Z",
@@ -1878,9 +1316,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Add text on generic considerations for when changing the security context between request decryption and response encryption (in section 2.3.1).\r\n\r\nCan take inspiration from Group OSCORE draft:\r\n_In step 3, if the server is using a different Security Context for the response compared to what was used to verify the request (see [Section 3.2](https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-15#section-3.2)), then the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the AEAD nonce from the request from being reused._\r\nhttps://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-15#section-8.3\r\n\r\nAlso add a specific note that server should include PIV in Response 2 for KUDOS.\r\n\r\n",
       "createdAt": "2022-09-27T10:22:27Z",
       "updatedAt": "2023-03-11T17:38:18Z",
@@ -1913,9 +1349,7 @@
       "assignees": [
         "marco-tiloca-sics"
       ],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "We may need to change the pseudocode in updateCtx(), and in general point to using the same method that OSCORE is using for the key derivation.",
       "createdAt": "2022-09-28T17:31:07Z",
       "updatedAt": "2022-10-11T15:18:50Z",
@@ -1948,9 +1382,7 @@
       "assignees": [
         "marco-tiloca-sics"
       ],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "Align this section to what the register says:\r\nhttps://core-wg.github.io/oscore-key-update/draft-ietf-core-oscore-key-update.html#section-7.2",
       "createdAt": "2022-10-07T15:12:18Z",
       "updatedAt": "2022-10-11T13:05:29Z",
@@ -2021,7 +1453,6 @@
         "marco-tiloca-sics"
       ],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "Meaning Response 1 in the Client-Initiated Key Update.\r\n\r\nDue to security issue",
@@ -2135,7 +1566,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Comments"
       ],
       "body": "How do our limits and 'exp' compare to the soft and hard lifetime of IPsec?\r\n\r\nWe can clarify that what is hard about the limits and 'exp' is to do no further message processing. Running KUDOS is still fine after they have been reached.\r\n\r\nCan we mention more strongly the recommendation to rekey well ahead of time before reaching the limits? And that how long before can be up to application policies.\r\n\r\n(Based on feedback from Rafa Marin-Lopez)",
@@ -2162,7 +1592,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "Feedback from IETF 115 London CoRE session on Monday November 7:\r\nG\u00f6ran: _Is it worth implementing this signaling in EDHOC? Is it necessary in order to then use KUDOS? There is a tradeoff between adding nice features and adding complexities._\r\n\r\nWhat we could do is highlight that this is optional functionality, it is in no way necessary to have support for this, or to use this, to be able to run KUDOS.",
@@ -2230,7 +1659,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "Two relevant things can be worth mentioning related to SCHC:\r\n- When the Partial IV value is compressed, a device will have to rekey more frequently. For instance if only 3 bits of the Partial IV is sent then the maximum PIV before needing to rekey is only 7. (So in essence usage of SCHC can lower the maximum Sender Sequence Number).\r\n- Any time the SCHC context Rules are updated on an OSCORE endpoint, that endpoint must perform rekeying.\r\n\r\nReference:\r\nhttps://datatracker.ietf.org/doc/html/rfc8824#section-9",
@@ -2248,9 +1676,7 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "KUDOS"
-      ],
+      "labels": [],
       "body": "As discussed during IETF London.",
       "createdAt": "2022-12-09T14:20:32Z",
       "updatedAt": "2023-01-06T07:20:14Z",
@@ -2282,7 +1708,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Comments"
       ],
       "body": "When we mention request/response/message/KUDOS-message it should be clear that it is a CoAP message. This could perhaps be clarified early on like in the section _ssec-update-function_",
@@ -2309,7 +1734,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Comments"
       ],
       "body": "In the client-initiated version, when the client sends the request to initiate KUDOS it needs to target a resource. Either sending the request to an actual resource existing on the other peer, or sending it to a dedicated resource to be used just for rekeying.\r\n\r\nIt may be a good idea that we define a well-known KUDOS resource (e.g. /.well-known/kudos) in the draft text, to make it clear what resource the client should use.",
@@ -2343,7 +1767,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Comments"
       ],
       "body": "Make it clear that peers can do \"active rekeying\" and trigger KUDOS whenever they want.\r\n\r\nIt can be about the peer using the OSCORE Security Context to send a request and at that point noticing it has expired, or reached the key usage limits. But it can also be that a peer has a separate thread monitoring the state of its contexts and automatically triggers a rekeying when needed (or using a callback method called on expiration/reaching the limits)",
@@ -2370,7 +1793,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Comments"
       ],
       "body": "Add in the current list we have now.\r\n\r\n(Based on feedback from Rafa Marin-Lopez)",
@@ -2389,7 +1811,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "Give some calculations to show examples of typical sizes for the KUDOS messages. Either the total size, or the added overhead that usage of KUDOS produces.",
@@ -2449,7 +1870,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "_Client-Initiated_ can become _Forward message flow_\r\n_Server-Initiated_ can become _Reverse message flow_",
@@ -2476,7 +1896,6 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "KUDOS",
         "Processing"
       ],
       "body": "",
