@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-19T00:41:51.091195+00:00",
+  "timestamp": "2023-11-21T00:39:43.212219+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2341,6 +2341,22 @@
       "body": "We can allow KUDOS exchanges to not necessarily be based on request/response pairs, but rather allow for a more flexible message flows.\r\n\r\nFor instance Christian gave the following example where both KUDOS messages can be requests:\r\n1. EP -> RD: POST /.well-known/rd - _KUDOS message 1_\r\n2. RD -> EP: GET /.well-known/core - _KUDOS message 2_\r\n3. EP -> RD: response with payload of .well-known/core\r\n4. RD -> EP: response to the POST\r\n\r\nAnother example is where the second KUDOS message is a response to a different request than the first KUDOS message. This could for instance be the case for notifications, where the client sends a request and the server then sends a notification (which is not a response to the initial client request).\r\n\r\nSee also:\r\nhttps://mailarchive.ietf.org/arch/msg/core/VRpad8f_cSye84txUnuTxYLDczw/",
       "createdAt": "2023-10-20T07:10:18Z",
       "updatedAt": "2023-10-20T17:08:17Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 95,
+      "id": "I_kwDOGfmof853ZdYq",
+      "title": "Allow larger nonce lengths",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/95",
+      "state": "OPEN",
+      "author": "chrysn",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "KUDOS would be a fine base to do away with a lot of text in deterministic OSCORE (https://gitlab.com/chrysn/core-cachable-oscore/-/issues/38).\r\n\r\nTrouble is, we'd need nonces that can be longer than 16 bytes. (16 bytes may be fine, given that a 128bit birthday starts hitting at 2**64 requests, but full hashes are longer). Would it make sense to use CoAP extension nibble semantics on `m`, where 13 means \"+1 byte\", 14 means \"+2 bytes\" and 15 is reserved? (No, >256 byte nonces are absolutlely weird, but implementations will have some limit on nonce length anyway, and it may be a fine recommendation that anything > 12 will rarely be needed except when another implemented spec demands it).\r\n\r\nIn the interest of outer blockwising, it may be worth considering to send the nonce(s) in the payload (similar to how CoAP-EDHOC does it), but please only consider this if there are better reasons to do it than just this request.\r\n\r\n(Note to self: I haven't fully looked into how this would all work precisely; in particular, gotta check whether we can get away with no nonces in the response).",
+      "createdAt": "2023-11-20T23:05:42Z",
+      "updatedAt": "2023-11-20T23:05:42Z",
       "closedAt": null,
       "comments": []
     }
