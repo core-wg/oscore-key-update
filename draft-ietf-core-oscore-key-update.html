@@ -10,24 +10,24 @@
 <meta content="
        This document defines Key Update for OSCORE (KUDOS), a lightweight procedure that two CoAP endpoints can use to update their keying material by establishing a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option as well as the protection of CoAP response messages with OSCORE, and it deprecates the key update procedure specified in Appendix B.2 of RFC 8613. Thus, this document updates RFC 8613. Also, this document defines a procedure that two endpoints can use to update their OSCORE identifiers, run either stand-alone or during a KUDOS execution. 
     " name="description">
-<meta content="xml2rfc 3.18.2" name="generator">
+<meta content="xml2rfc 3.19.4" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-key-update-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.18.2
+  xml2rfc 3.19.4
     Python 3.11.6
-    ConfigArgParse 1.5.3
+    ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 3.11.0
+    platformdirs 4.2.0
     pycountry 22.3.5
-    PyYAML 6.0
+    PyYAML 6.0.1
     requests 2.31.0
-    setuptools 67.7.2
+    setuptools 68.2.2
     six 1.16.0
-    wcwidth 0.2.8
+    wcwidth 0.2.13
 -->
 <link href="draft-ietf-core-oscore-key-update.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1026,11 +1026,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Key Update for OSCORE (KUDOS)</td>
-<td class="right">October 2023</td>
+<td class="right">February 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 22 April 2024</td>
+<td class="center">Expires 25 August 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1046,12 +1046,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-10-20" class="published">20 October 2023</time>
+<time datetime="2024-02-22" class="published">22 February 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-04-22">22 April 2024</time></dd>
+<dd class="expires"><time datetime="2024-08-25">25 August 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1100,7 +1100,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 April 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1109,7 +1109,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2023 IETF Trust and the persons identified as the
+            Copyright (c) 2024 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1222,100 +1222,70 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-update-of-oscore-sender-rec" class="internal xref">Update of OSCORE Sender/Recipient IDs</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-the-recipient-id-option" class="internal xref">The Recipient-ID Option</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.1">
-                    <p id="section-toc.1-1.5.2.1.2.1.1"><a href="#section-5.1.1" class="auto internal xref">5.1.1</a>.  <a href="#name-forward-message-flow-2" class="internal xref">Forward Message Flow</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-coap-option-numbers-registr" class="internal xref">CoAP Option Numbers Registry</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.2">
-                    <p id="section-toc.1-1.5.2.1.2.2.1"><a href="#section-5.1.2" class="auto internal xref">5.1.2</a>.  <a href="#name-reverse-message-flow-2" class="internal xref">Reverse Message Flow</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-oscore-flag-bits-registry" class="internal xref">OSCORE Flag Bits Registry</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.3">
-                    <p id="section-toc.1-1.5.2.1.2.3.1"><a href="#section-5.1.3" class="auto internal xref">5.1.3</a>.  <a href="#name-additional-actions-for-stan" class="internal xref">Additional Actions for Stand-Alone Execution</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-edhoc-external-authorizatio" class="internal xref">EDHOC External Authorization Data Registry</a></p>
 </li>
-                </ul>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-the-well-known-uri-registry" class="internal xref">The Well-Known URI Registry</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-preserving-observations-acro" class="internal xref">Preserving Observations Across ID Updates</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-resource-type-rt-link-targe" class="internal xref">Resource Type (rt=) Link Target Attribute Values Registry</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
-</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
-                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-coap-option-numbers-registr" class="internal xref">CoAP Option Numbers Registry</a></p>
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
-                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-oscore-flag-bits-registry" class="internal xref">OSCORE Flag Bits Registry</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-edhoc-external-authorizatio" class="internal xref">EDHOC External Authorization Data Registry</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
-                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-the-well-known-uri-registry" class="internal xref">The Well-Known URI Registry</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5">
-                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-resource-type-rt-link-targe" class="internal xref">Resource Type (rt=) Link Target Attribute Values Registry</a></p>
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+                <p id="section-toc.1-1.8.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-version-06-to-07" class="internal xref">Version -06 to -07</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
+                <p id="section-toc.1-1.8.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.5">
+                <p id="section-toc.1-1.8.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.6">
+                <p id="section-toc.1-1.8.2.6.1"><a href="#appendix-A.6" class="auto internal xref">A.6</a>.  <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.7">
+                <p id="section-toc.1-1.8.2.7.1"><a href="#appendix-A.7" class="auto internal xref">A.7</a>.  <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-examples-of-oscore-id-updat" class="internal xref">Examples of OSCORE ID Updates Integrated in KUDOS</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-forward-message-flow-3" class="internal xref">Forward Message Flow</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-reverse-message-flow-3" class="internal xref">Reverse Message Flow</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
-                <p id="section-toc.1-1.10.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
-                <p id="section-toc.1-1.10.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
-                <p id="section-toc.1-1.10.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
-                <p id="section-toc.1-1.10.2.4.1"><a href="#appendix-B.4" class="auto internal xref">B.4</a>.  <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.5">
-                <p id="section-toc.1-1.10.2.5.1"><a href="#appendix-B.5" class="auto internal xref">B.5</a>.  <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.6">
-                <p id="section-toc.1-1.10.2.6.1"><a href="#appendix-B.6" class="auto internal xref">B.6</a>.  <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
-</li>
-            </ul>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1334,7 +1304,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
           <p id="section-1-4.1.1">It specifies KUDOS, a lightweight key update procedure that the two peers can use in order to update their current keying material and establish a new OSCORE Security Context. This deprecates and replaces the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.2" class="relref">Appendix B.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.2">
-          <p id="section-1-4.2.1">With reference to the "OSCORE Flag Bits" registry defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-13.7" class="relref">Section 13.7</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as part of the "Constrained RESTful Environments (CoRE) Parameters" registry group, it updates the entries with Bit Position 0 and 1 (see <a href="#sec-iana" class="auto internal xref">Section 7</a>), both originally marked as "Reserved". That is, it defines and registers the usage of the OSCORE flag bit with Bit Position 0, as the one intended to expand the space for the OSCORE flag bits in the OSCORE Option (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). Also, it marks the bit with Bit Position of 1 as "Unassigned".<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.2.1">With reference to the "OSCORE Flag Bits" registry defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-13.7" class="relref">Section 13.7</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as part of the "Constrained RESTful Environments (CoRE) Parameters" registry group, it updates the entries with Bit Position 0 and 1 (see <a href="#sec-iana" class="auto internal xref">Section 6</a>), both originally marked as "Reserved". That is, it defines and registers the usage of the OSCORE flag bit with Bit Position 0, as the one intended to expand the space for the OSCORE flag bits in the OSCORE Option (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). Also, it marks the bit with Bit Position of 1 as "Unassigned".<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.3">
           <p id="section-1-4.3.1">It updates the protection of CoAP responses with OSCORE originally specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3" class="relref">Section 8.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, as defined in <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a> of this document.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
@@ -1472,12 +1442,12 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
 <p id="section-4.1-1">In order to support the message exchange for establishing a new OSCORE Security Context, this document extends the use of the OSCORE Option originally defined in <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as follows.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-2.1">
-            <p id="section-4.1-2.1.1">This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in <a href="#iana-cons-flag-bits" class="auto internal xref">Section 7.2</a>.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.1.1">This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in <a href="#iana-cons-flag-bits" class="auto internal xref">Section 6.2</a>.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.1.2">
 When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the OSCORE flag bits 8-15.<a href="#section-4.1-2.1.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.2">
-            <p id="section-4.1-2.2.1">This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. This flag bit is specified in <a href="#iana-cons-flag-bits" class="auto internal xref">Section 7.2</a>.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.2.1">This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. This flag bit is specified in <a href="#iana-cons-flag-bits" class="auto internal xref">Section 6.2</a>.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.2.2">
 When it is set to 1, the compressed COSE object contains a field 'x' and a field 'nonce', to be used for the steps defined in <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>. In particular, the 1 byte 'x' following 'kid context' (if any) encodes the size of the following field 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution.<a href="#section-4.1-2.2.2" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.2.3">
@@ -2340,7 +2310,7 @@ In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and C
           <h4 id="name-well-known-kudos-resource">
 <a href="#section-4.8.3" class="section-number selfRef">4.8.3. </a><a href="#name-well-known-kudos-resource" class="section-name selfRef">Well-Known KUDOS Resource</a>
           </h4>
-<p id="section-4.8.3-1">According to this specification, KUDOS is transferred in POST requests to the Uri-Path: "/.well-known/kudos" (see <a href="#well-known-kudos" class="auto internal xref">Section 7.4</a>), and 2.04 (Changed) responses. An application may define its own path that can be discovered, e.g., using a resource directory <span>[<a href="#RFC9176" class="cite xref">RFC9176</a>]</span>. Client applications can use the resource type "core.kudos" to discover a server's KUDOS resource, i.e., where to send KUDOS requests, see <a href="#rt-kudos" class="auto internal xref">Section 7.5</a>.<a href="#section-4.8.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.8.3-1">According to this specification, KUDOS is transferred in POST requests to the Uri-Path: "/.well-known/kudos" (see <a href="#well-known-kudos" class="auto internal xref">Section 6.4</a>), and 2.04 (Changed) responses. An application may define its own path that can be discovered, e.g., using a resource directory <span>[<a href="#RFC9176" class="cite xref">RFC9176</a>]</span>. Client applications can use the resource type "core.kudos" to discover a server's KUDOS resource, i.e., where to send KUDOS requests, see <a href="#rt-kudos" class="auto internal xref">Section 6.5</a>.<a href="#section-4.8.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="rekeying-when-using-schc-with-oscore">
@@ -2361,8 +2331,8 @@ In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and C
         <h3 id="name-signaling-kudos-support-in-">
 <a href="#section-4.9" class="section-number selfRef">4.9. </a><a href="#name-signaling-kudos-support-in-" class="section-name selfRef">Signaling KUDOS support in EDHOC</a>
         </h3>
-<p id="section-4.9-1">The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an optional 'ead_value' encoded as a CBOR bstr.<a href="#section-4.9-1" class="pilcrow">¶</a></p>
-<p id="section-4.9-2">This document defines a new EDHOC EAD item KUDOS_EAD and registers its 'ead_label' in <a href="#iana-edhoc-aad" class="auto internal xref">Section 7.3</a>. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, irrespective of the modes they support. The possible values of the 'ead_value' are as follows:<a href="#section-4.9-2" class="pilcrow">¶</a></p>
+<p id="section-4.9-1">The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-23#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an optional 'ead_value' encoded as a CBOR bstr.<a href="#section-4.9-1" class="pilcrow">¶</a></p>
+<p id="section-4.9-2">This document defines a new EDHOC EAD item KUDOS_EAD and registers its 'ead_label' in <a href="#iana-edhoc-aad" class="auto internal xref">Section 6.3</a>. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, irrespective of the modes they support. The possible values of the 'ead_value' are as follows:<a href="#section-4.9-2" class="pilcrow">¶</a></p>
 <div class="alignCenter art-text artwork" id="section-4.9-3">
 <pre>
 +------+----------+----------------------------------------------+
@@ -2450,445 +2420,50 @@ Initiator                                         Responder
 </div>
 </section>
 </div>
-<div id="update-oscore-ids">
-<section id="section-5">
-      <h2 id="name-update-of-oscore-sender-rec">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-update-of-oscore-sender-rec" class="section-name selfRef">Update of OSCORE Sender/Recipient IDs</a>
-      </h2>
-<p id="section-5-1">This section defines a procedure that two peers can perform, in order to update the OSCORE Sender/Recipient IDs that they use in their shared OSCORE Security Context.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">This results in privacy benefits, as it helps mitigate the ability of an adversary to correlate the two peers' communication between two points in time or between paths. For instance, two peers may want to use this procedure before switching to a different network for their communication, in order to make it more difficult to understand that the continued communication over the new network is taking place between the same two peers.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<p id="section-5-3">When performing an update of OSCORE Sender/Recipient IDs, a peer provides its new intended OSCORE Recipient ID to the other peer, by means of the Recipient-ID Option defined in <a href="#sec-recipient-id-option" class="auto internal xref">Section 5.1</a>. Hereafter, this document refers to a message including the Recipient-ID Option as an "OSCORE IDs update (request/response) message".<a href="#section-5-3" class="pilcrow">¶</a></p>
-<p id="section-5-4">This procedure can be initiated by either peer, i.e., the CoAP client or the CoAP server may start it by sending the first OSCORE IDs update message. Like in KUDOS, the former case is denoted as the "forward message flow" and the latter as the "reverse message flow".<a href="#section-5-4" class="pilcrow">¶</a></p>
-<p id="section-5-5">Furthermore, this procedure can be executed stand-alone, or instead seamlessly integrated in an execution of KUDOS (see <a href="#sec-rekeying-method" class="auto internal xref">Section 4</a>) using its FS mode or no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-5-5" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5-6.1">
-          <p id="section-5-6.1.1">In the former stand-alone case, updating the OSCORE Sender/Recipient IDs effectively results in updating part of the current OSCORE Security Context.<a href="#section-5-6.1.1" class="pilcrow">¶</a></p>
-<p id="section-5-6.1.2">
-That is, both peers derive a new Sender Key, Recipient Key, and Common IV, as defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2" class="relref">Section 3.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. Also, both peer re-initialize the Sender Sequence Number and the Replay Window accordingly, as defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. Since the same Master Secret is preserved, forward secrecy is not achieved.<a href="#section-5-6.1.2" class="pilcrow">¶</a></p>
-<p id="section-5-6.1.3">
-As defined in <a href="#id-update-additional-actions" class="auto internal xref">Section 5.1.3</a>, the two peers must take additional actions to ensure a safe execution of the OSCORE IDs update procedure.<a href="#section-5-6.1.3" class="pilcrow">¶</a></p>
-<p id="section-5-6.1.4">
-A peer can safely discard the old OSCORE Security Context including the old Sender/Recipient IDs after the following two events have occurred, in this order: first, the peer has sent to the other peer a message protected with the new OSCORE Security Context including the new Sender/Recipient IDs; then, the peer has received from the other peer and successfully verified a message protected with that new OSCORE Security Context.<a href="#section-5-6.1.4" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-5-6.2">
-          <p id="section-5-6.2.1">In the latter integrated case, the KUDOS initiator (responder) also acts as initiator (responder) for the OSCORE IDs update procedure. That is, both KUDOS and the OSCORE IDs update procedure MUST be run either in their forward message flow or in their reverse message flow.<a href="#section-5-6.2.1" class="pilcrow">¶</a></p>
-<p id="section-5-6.2.2">
-The new OSCORE Sender/Recipient IDs MUST NOT be used with the OSCORE Security Context CTX_OLD, and MUST NOT be used with the temporary OSCORE Security Context used to protect the first KUDOS message of a KUDOS execution.<a href="#section-5-6.2.2" class="pilcrow">¶</a></p>
-<p id="section-5-6.2.3">
-The first use of the new OSCORE Sender/Recipient IDs with the new OSCORE Security Context CTX_NEW occurs: for the KUDOS initiator, after having received from the KUDOS responder and successfully verified the second KUDOS message of the KUDOS execution in question; for the KUDOS responder, after having sent to the KUDOS initiator the second KUDOS message of the KUDOS execution in question.<a href="#section-5-6.2.3" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-5-7">An initiator terminates an ongoing OSCORE IDs procedure with another peer as failed, in case, after having sent the first OSCORE IDs update message for the procedure in question, a pre-defined amount of time has elapsed without receiving and successfully verifying the second OSCORE IDs update message from the other peer. It is RECOMMENDED that such an amount of time is equal to MAX_TRANSMIT_WAIT (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.8.2" class="relref">Section 4.8.2</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>).<a href="#section-5-7" class="pilcrow">¶</a></p>
-<p id="section-5-8">A peer terminates an ongoing OSCORE IDs procedure with another peer as successful, in any of the following two cases.<a href="#section-5-8" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5-9.1">
-          <p id="section-5-9.1.1">The peer is acting as initiator, and it has received and successfully verified the second OSCORE IDs update message from the other peer.<a href="#section-5-9.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-5-9.2">
-          <p id="section-5-9.2.1">The peer is acting as responder, and it has sent the second OSCORE IDs update message to the other peer.<a href="#section-5-9.2.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-5-10">A peer MUST NOT initiate an OSCORE IDs procedure with another peer, if it has another such procedure ongoing with that other peer.<a href="#section-5-10" class="pilcrow">¶</a></p>
-<p id="section-5-11">Upon receiving a valid OSCORE IDs update message, a responder that supports the OSCORE IDs update procedure MUST send the second OSCORE IDs update message, except in the following case.<a href="#section-5-11" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5-12.1">
-          <p id="section-5-12.1.1">The received OSCORE IDs update messages is not a KUDOS message (i.e., the OSCORE IDs update procedure is being performed stand-alone) and the responder has no eligible Recipient ID to offer to the initiator (see <a href="#id-update-additional-actions" class="auto internal xref">Section 5.1.3</a>).<a href="#section-5-12.1.1" class="pilcrow">¶</a></p>
-<p id="section-5-12.1.2">
-If the responder is a server, the responder MUST also reply to the received OSCORE IDs update request message with a protected 5.03 (Service Unavailable) error response. The error response MUST NOT include the Recipient-ID Option, and its diagnostic payload MAY provide additional information.<a href="#section-5-12.1.2" class="pilcrow">¶</a></p>
-<p id="section-5-12.1.3">
-When receiving the error response, the initiator terminates the OSCORE IDs procedure as failed.<a href="#section-5-12.1.3" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<div id="sec-recipient-id-option">
-<section id="section-5.1">
-        <h3 id="name-the-recipient-id-option">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-the-recipient-id-option" class="section-name selfRef">The Recipient-ID Option</a>
-        </h3>
-<p id="section-5.1-1">The Recipient ID-Option defined in this section has the properties summarized in <a href="#fig-recipient-id-option" class="auto internal xref">Figure 7</a>, which extends Table 4 of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>. That is, the option is elective, safe to forward, part of the cache key, and non repeatable.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<span id="name-the-recipient-id-option-2"></span><div id="fig-recipient-id-option">
-<figure id="figure-7">
-          <div class="alignCenter art-text artwork" id="section-5.1-2.1">
-<pre>
-+-------+---+---+---+---+--------------+--------+--------+---------+
-| No.   | C | U | N | R | Name         | Format | Length | Default |
-+-------+---+---+---+---+--------------+--------+--------+---------+
-|       |   |   |   |   |              |        |        |         |
-| TBD24 |   |   |   |   | Recipient-ID | opaque | any    | (none)  |
-|       |   |   |   |   |              |        |        |         |
-+-------+---+---+---+---+--------------+--------+--------+---------+
-          C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable
-</pre>
-</div>
-<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
-<a href="#name-the-recipient-id-option-2" class="selfRef">The Recipient-ID Option.</a>
-          </figcaption></figure>
-</div>
-<p id="section-5.1-3">Note to RFC Editor: Following the registration of the CoAP Option Number 24, please replace "TBD24" with "24" in the figure above. Then, please delete this paragraph.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.1-4">The option value can have an arbitrary length. Implementations can limit its length to that of the longest supported Recipient ID.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
-<p id="section-5.1-5">This document particularly defines how this option is used in messages protected with OSCORE. That is, when the option is included in an outgoing message, the option value specifies the new OSCORE Recipient ID that the sender endpoint intends to use with the other endpoint sharing the OSCORE Security Context.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
-<p id="section-5.1-6">Therefore, the maximum lenght of the option value is equal to the maximum lenght of OSCORE Sender/Recipient IDs. As defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">Section 3.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, this is determined by the size of the AEAD nonce of the used AEAD Algorithm in the OSCORE Security Context.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
-<p id="section-5.1-7">The Recipient-ID Option is of class E in terms of OSCORE processing (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>).<a href="#section-5.1-7" class="pilcrow">¶</a></p>
-<div id="example-client-initiated-id-update">
-<section id="section-5.1.1">
-          <h4 id="name-forward-message-flow-2">
-<a href="#section-5.1.1" class="section-number selfRef">5.1.1. </a><a href="#name-forward-message-flow-2" class="section-name selfRef">Forward Message Flow</a>
-          </h4>
-<p id="section-5.1.1-1"><a href="#fig-id-update-client-init" class="auto internal xref">Figure 8</a> shows an example of the OSCORE IDs update procedure, run stand-alone and in the forward message flow, with the client acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-2"><a href="#sec-id-update-in-kudos-forward" class="auto internal xref">Appendix A.1</a> provides a different example of the OSCORE IDs update procedure, as run integrated in an execution of KUDOS and in the forward message flow.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
-<span id="name-example-of-the-oscore-ids-u"></span><div id="fig-id-update-client-init">
-<figure id="figure-8">
-            <div class="alignCenter art-text artwork" id="section-5.1.1-3.1">
-<pre>
-          Client                             Server
-       (initiator)                         (responder)
-            |                                   |
-CTX_A {     |                                   | CTX_A {
- SID = 0x01 |                                   |  SID = 0x00
- RID = 0x00 |                                   |  RID = 0x01
-}           |                                   | }
-            |                                   |
-            |            Request #1             |
-Protect     |----------------------------------&gt;| /temp
-with CTX_A  | OSCORE {                          |
-            |  ...                              |
-            |  kid: 0x01                        | Verify
-            | }                                 | with CTX_A
-            | Encrypted Payload {               |
-            |  ...                              |
-            |  Recipient-ID: 0x42               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |            Response #1            |
-            |&lt;----------------------------------| Protect
-            | OSCORE {                          | with CTX_A
-            |  ...                              |
-Verify      | }                                 |
-with CTX_A  | Encrypted Payload {               |
-            |  ...                              |
-            |  Recipient-ID: 0x78               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-CTX_B {     |                                   | CTX_B {
- SID = 0x78 |                                   |  SID = 0x42
- RID = 0x42 |                                   |  RID = 0x78
-}           |                                   | }
-            |                                   |
-            |            Request #2             |
-Protect     |----------------------------------&gt;| /temp
-with CTX_B  | OSCORE {                          |
-            |  ...                              |
-            |  kid: 0x78                        | Verify
-            | }                                 | with CTX_B
-            | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |            Response #2            |
-            |&lt;----------------------------------| Protect
-            | OSCORE {                          | with CTX_B
-            |  ...                              |
-Verify      | }                                 |
-with CTX_B  | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-Discard     |                                   |
-CTX_A       |                                   |
-            |                                   |
-            |            Request #3             |
-Protect     |----------------------------------&gt;| /temp
-with CTX_B  | OSCORE {                          |
-            |  ...                              |
-            |  kid: 0x78                        | Verify
-            | }                                 | with CTX_B
-            | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |                                   | Discard
-            |                                   | CTX_A
-            |                                   |
-            |            Response #3            |
-            |&lt;----------------------------------| Protect
-            | OSCORE {                          | with CTX_B
-            |  ...                              |
-Verify      | }                                 |
-with CTX_B  | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-</pre>
-</div>
-<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
-<a href="#name-example-of-the-oscore-ids-u" class="selfRef">Example of the OSCORE IDs Update forward message flow</a>
-            </figcaption></figure>
-</div>
-<p id="section-5.1.1-4">Before the OSCORE IDs update procedure starts, the client (the server) shares with the server (the client) an OSCORE Security Context CTX_A with Sender ID 0x01 (0x00) and Recipient ID 0x00 (0x01).<a href="#section-5.1.1-4" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-5">When starting the OSCORE IDs update procedure, the client determines its new intended OSCORE Recipient ID 0x42. Then, the client prepares a CoAP request targeting an application resource at the server. The request includes the Recipient-ID Option, with value the client's new Recipient ID 0x42.<a href="#section-5.1.1-5" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-6">The client protects the request with CTX_A, i.e., by using the keying material derived from the current client's Sender ID 0x01. The protected request specifies the client's current Sender ID 0x01 in the 'kid' field of the OSCORE Option. After that, the client sends the request to the server as Request #1.<a href="#section-5.1.1-6" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-7">Upon receiving, decrypting, and successfully verifying the OSCORE message Request #1, the server retrieves the value 0x42 from the Recipient-ID Option, and determines its new intended OSCORE Recipient ID 0x78. Then, the server prepares a CoAP response including the Recipient-ID Option, with value the server's new Recipient ID 0x78.<a href="#section-5.1.1-7" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-8">The server protects the response with CTX_A, i.e., by using the keying material derived from the current server's Sender ID 0x00. After that, the server sends the response to the client.<a href="#section-5.1.1-8" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-9">Then, the server considers 0x42 and 0x78 as its new Sender ID and Recipient ID to use with the client, respectively. As shown in the example, the server practically installs a new OSCORE Security Context CTX_B where: i) its Sender ID and Recipient ID are 0x42 and 0x78, respectively; ii) the Sender Sequence Number and the Replay Window are re-initialized (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>); iii) anything else is like in the OSCORE Security Context used to encrypt the OSCORE message Response #1.<a href="#section-5.1.1-9" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-10">Upon receiving, decrypting, and successfully verifying the OSCORE message Response #1, the client considers 0x78 and 0x42 as the new Sender ID and Recipient ID to use with the server, respectively. As shown in the example, the client practically installs a new OSCORE Security Context CTX_B where: i) its Sender ID and Recipient ID are 0x78 and 0x42, respectively; ii) the Sender Sequence Number and the Replay Window are re-initialized (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>); iii) anything else is like in the OSCORE Security Context used to decrypt the OSCORE message Response #1.<a href="#section-5.1.1-10" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-11">From then on, the client and the server can exchange messages protected with the OSCORE Security Context CTX_B, i.e., according to the new OSCORE Sender/Recipient IDs and using new keying material derived from those.<a href="#section-5.1.1-11" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-12">That is, the client sends the OSCORE message Request #2, which is protected with CTX_B and specifies the new client's Sender ID 0x78 in the 'kid' field of the OSCORE Option.<a href="#section-5.1.1-12" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-13">Upon receiving the OSCORE message Request #2, the server retrieves the OSCORE Security Context CTX_B, according to its new Recipient ID 0x78 specified in the 'kid' field of the OSCORE Option. Then, the server decrypts and verifies the response by using CTX_B. Finally, the server prepares a CoAP response Response #2, protects it with CTX_B, and sends it to the client.<a href="#section-5.1.1-13" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-14">Upon receiving the OSCORE message Response #2, the client decrypts and verifies it with the OSCORE Security Context CTX_B. In case of successfull verification, the client confirms that the server is aligned with the new OSCORE Sender/Recipient IDs, and thus discards the OSCORE Security Context CTX_A.<a href="#section-5.1.1-14" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-15">After that, one further exchange occurs, where both the CoAP request and the CoAP response are protected with the OSCORE Security Context CTX_B. In particular, upon receiving, decrypting, and successfully verifying the OSCORE message Request #3, the server confirms that the client is aligned with the new OSCORE Sender/Recipient IDs, and thus discards the OSCORE Security Context CTX_A.<a href="#section-5.1.1-15" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="example-server-initiated-id-update">
-<section id="section-5.1.2">
-          <h4 id="name-reverse-message-flow-2">
-<a href="#section-5.1.2" class="section-number selfRef">5.1.2. </a><a href="#name-reverse-message-flow-2" class="section-name selfRef">Reverse Message Flow</a>
-          </h4>
-<p id="section-5.1.2-1"><a href="#fig-id-update-server-init" class="auto internal xref">Figure 9</a> shows an example of the OSCORE IDs update procedure, run stand-alone and in the reverse message flow, with the server acting as initiator. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.<a href="#section-5.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-2"><a href="#sec-id-update-in-kudos-reverse" class="auto internal xref">Appendix A.2</a> provides a different example of the OSCORE IDs update procedure, as run integrated in an execution of KUDOS and in the reverse message flow.<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
-<span id="name-example-of-the-oscore-ids-up"></span><div id="fig-id-update-server-init">
-<figure id="figure-9">
-            <div class="alignCenter art-text artwork" id="section-5.1.2-3.1">
-<pre>
-          Client                             Server
-       (responder)                         (initiator)
-            |                                   |
-CTX_A {     |                                   | CTX_A {
- SID = 0x01 |                                   |  SID = 0x00
- RID = 0x00 |                                   |  RID = 0x01
-}           |                                   | }
-            |                                   |
-            |            Request #1             |
-Protect     |----------------------------------&gt;| /temp
-with CTX_A  | OSCORE {                          |
-            |  ...                              |
-            |  kid: 0x01                        | Verify
-            | }                                 | with CTX_A
-            | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |            Response #1            |
-            |&lt;----------------------------------| Protect
-            | OSCORE {                          | with CTX_A
-            |  ...                              |
-Verify      | }                                 |
-with CTX_A  | Encrypted Payload {               |
-            |  ...                              |
-            |  Recipient-ID: 0x78               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |            Request #2             |
-Protect     |----------------------------------&gt;| /temp
-with CTX_A  | OSCORE {                          |
-            |  ...                              |
-            |  kid: 0x01                        | Verify
-            | }                                 | with CTX_A
-            | Encrypted Payload {               |
-            |  ...                              |
-            |  Recipient-ID: 0x42               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |                                   | CTX_B {
-            |                                   |  SID = 0x42
-            |                                   |  RID = 0x78
-            |                                   | }
-            |                                   |
-            |            Response #2            |
-            |&lt;----------------------------------| Protect
-            | OSCORE {                          | with CTX_A
-            |  ...                              |
-Verify      | }                                 |
-with CTX_A  | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-CTX_B {     |                                   |
- SID = 0x78 |                                   |
- RID = 0x42 |                                   |
-}           |                                   |
-            |                                   |
-            |            Request #3             |
-Protect     |----------------------------------&gt;| /temp
-with CTX_B  | OSCORE {                          |
-            |  ...                              |
-            |  kid: 0x78                        | Verify
-            | }                                 | with CTX_B
-            | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |            Response #3            |
-            |&lt;----------------------------------| Protect
-            | OSCORE {                          | with CTX_B
-            |  ...                              |
-Verify      | }                                 |
-with CTX_B  | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-Discard     |                                   |
-CTX_A       |                                   |
-            |                                   |
-            |            Request #4             |
-Protect     |----------------------------------&gt;| /temp
-with CTX_B  | OSCORE {                          |
-            |  ...                              |
-            |  kid: 0x78                        | Verify
-            | }                                 | with CTX_B
-            | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-            |                                   | Discard
-            |                                   | CTX_A
-            |                                   |
-            |            Response #4            |
-            |&lt;----------------------------------| Protect
-            | OSCORE {                          | with CTX_B
-            |  ...                              |
-Verify      | }                                 |
-with CTX_B  | Encrypted Payload {               |
-            |  ...                              |
-            |  Application Payload              |
-            | }                                 |
-            |                                   |
-</pre>
-</div>
-<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
-<a href="#name-example-of-the-oscore-ids-up" class="selfRef">Example of the OSCORE IDs Update reverse message flow</a>
-            </figcaption></figure>
-</div>
-<p id="section-5.1.2-4">Before the OSCORE IDs update procedure starts, the client (the server) shares with the server (the client) an OSCORE Security Context CTX_A with Sender ID 0x01 (0x00) and Recipient ID 0x00 (0x01).<a href="#section-5.1.2-4" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-5">At first, the client prepares a CoAP Request #1 targeting an application resource at the server. The client protects the request with CTX_A, i.e., by using the keying material derived from the current client's Sender ID 0x01. The protected request specifies the client's current Sender ID 0x01 in the 'kid' field of the OSCORE Option. After that, the client sends the request to the server as Request #1.<a href="#section-5.1.2-5" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-6">Upon receiving, decrypting, and successfully verifying the OSCORE message Request #1, the server decides to start an OSCORE IDs update procedure. To this end, the server determines its new intended OSCORE Recipient ID 0x78. Then, the server prepares a CoAP response as a reply to the just received request and including the Recipient-ID Option, with value the server's new Recipient ID 0x78.<a href="#section-5.1.2-6" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-7">The server protects the response with CTX_A, i.e., by using the keying material derived from the current server's Sender ID 0x00. After that, the server sends the response to the client as Response #1.<a href="#section-5.1.2-7" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-8">Upon receiving, decrypting, and successfully verifying the OSCORE message Response #1, the client retrieves the value 0x78 from the Recipient-ID Option, and determines its new intended OSCORE Recipient ID 0x42. Then, the client prepares a CoAP request targeting an application resource at the server. The request includes the Recipient-ID Option, with value the client's new Recipient ID 0x42.<a href="#section-5.1.2-8" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-9">The client protects the request with CTX_A, i.e., by using the keying material derived from the current client's Sender ID 0x01. The protected request specifies the client's current Sender ID 0x01 in the 'kid' field of the OSCORE Option. After that, the client sends the request to the server as Request #2.<a href="#section-5.1.2-9" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-10">Upon receiving, decrypting, and successfully verifying the OSCORE message Request #2, the server retrieves the value 0x42 from the Recipient-ID Option. Then the server considers 0x42 and 0x78 as the new Sender ID and Recipient ID to use with the client, respectively. As shown in the example, the server practically installs a new OSCORE Security Context CTX_B where: i) its Sender ID and Recipient ID are 0x42 and 0x78, respectively; ii) the Sender Sequence Number and the Replay Window are re-initialized (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>); iii) anything else is like in the OSCORE Security Context used to encrypt the OSCORE message Request #2.<a href="#section-5.1.2-10" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-11">Then, the server prepares a CoAP response, as a reply to the just received request, and protects it with CTX_A, i.e., by using the keying material derived from the current server's Sender ID 0x00. After that, the server sends the response to the client as Response #2.<a href="#section-5.1.2-11" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-12">Upon receiving, decrypting, and successfully verifying the OSCORE message Response #2, the client considers 0x78 and 0x42 as the new Sender ID and Recipient ID to use with the server, respectively. As shown in the example, the client practically installs a new OSCORE Security Context CTX_B where: i) its Sender ID and Recipient ID are 0x78 and 0x42, respectively; ii) the Sender Sequence Number and the Replay Window are re-initialized (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>); iii) anything else is like in the OSCORE Security Context used to decrypt the OSCORE response.<a href="#section-5.1.2-12" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-13">From then on, the client and the server can exchange messages protected with the OSCORE Security Context CTX_B, i.e., according to the new OSCORE Sender/Recipient IDs and using new keying material derived from those.<a href="#section-5.1.2-13" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-14">That is, the client sends the OSCORE message Request #3, which is protected with CTX_B and specifies the new client's Sender ID 0x78 in the 'kid' field of the OSCORE Option.<a href="#section-5.1.2-14" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-15">Upon receiving the OSCORE message Request #3, the server retrieves the OSCORE Security Context CTX_B, according to its new Recipient ID 0x78 specified in the 'kid' field of the OSCORE Option. Then, the server decrypts and verifies the response by using CTX_B. Finally, the server prepares a CoAP response, protects it with CTX_B, and sends it to the client as Response #3.<a href="#section-5.1.2-15" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-16">Upon receiving the OSCORE message Response #3, the client decrypts and verifies it with the OSCORE Security Context CTX_B. In case of successfull verification, the client confirms that the server is aligned with the new OSCORE Sender/Recipient IDs, and thus discards the OSCORE Security Context CTX_A.<a href="#section-5.1.2-16" class="pilcrow">¶</a></p>
-<p id="section-5.1.2-17">After that, one further exchange occurs, where both the CoAP request and the CoAP response are protected with the OSCORE Security Context CTX_B. In particular, upon receiving, decrypting, and successfully verifying the OSCORE message Request #4, the server confirms that the client is aligned with the new OSCORE Sender/Recipient IDs, and thus discards the OSCORE Security Context CTX_A.<a href="#section-5.1.2-17" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="id-update-additional-actions">
-<section id="section-5.1.3">
-          <h4 id="name-additional-actions-for-stan">
-<a href="#section-5.1.3" class="section-number selfRef">5.1.3. </a><a href="#name-additional-actions-for-stan" class="section-name selfRef">Additional Actions for Stand-Alone Execution</a>
-          </h4>
-<p id="section-5.1.3-1">After having experienced a loss of state, a peer MUST NOT participate in a stand-alone OSCORE IDs update procedure with another peer, until having performed a full-fledged establishment/renewal of an OSCORE Security Context with the other peer (e.g., by running KUDOS or the EDHOC protocol <span>[<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span>).<a href="#section-5.1.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-2">More precisely, a peer has experienced a loss of state if it cannot access the latest snapshot of the latest OSCORE Security Context CTX_OLD or the whole set of OSCORE Sender/Recipient IDs that have been used with the triplet (Master Secret, Master Salt, ID Context) of CTX_OLD. This can happen, for instance, after a device reboot.<a href="#section-5.1.3-2" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-3">Furthermore, when participating in a stand-alone OSCORE IDs update procedure, a peer performs the following additional steps.<a href="#section-5.1.3-3" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.1.3-4.1">
-              <p id="section-5.1.3-4.1.1">When a peer sends an OSCORE IDs update message, the value of the Recipient-ID Option that the peer specifies as its new intended OSCORE Recipient ID MUST fulfill both the following conditions: it is currently available as Recipient ID to use for the peer (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">Section 3.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>); and the peer has never used it as Recipient ID with the current triplet (Master Secret, Master Salt, ID Context).<a href="#section-5.1.3-4.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-5.1.3-4.2">
-              <p id="section-5.1.3-4.2.1">When receiving an OSCORE IDs update message, the peer MUST abort the procedure if it has already used the identifier specified in the Recipient-ID Option as its own Sender ID with the current triplet (Master Secret, Master Salt, ID Context).<a href="#section-5.1.3-4.2.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-<p id="section-5.1.3-5">In order to fulfill the conditions above, a peer has to keep track of the OSCORE Sender/Recipient IDs that it has used with the current triplet (Master Secret, Master Salt, ID Context) since the latest update of the OSCORE Master Secret (e.g., performed by running KUDOS).<a href="#section-5.1.3-5" class="pilcrow">¶</a></p>
-</section>
-</div>
-</section>
-</div>
-<div id="preserving-observations-across-id-updates">
-<section id="section-5.2">
-        <h3 id="name-preserving-observations-acro">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-preserving-observations-acro" class="section-name selfRef">Preserving Observations Across ID Updates</a>
-        </h3>
-<p id="section-5.2-1">When running the OSCORE IDs Update procedure stand-alone or integrated in an execution of KUDOS, the following holds if Observe <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> is supported, in order to preserve ongoing observations beyond a change of OSCORE identifiers.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.2-2.1">
-            <p id="section-5.2-2.1.1">If a peer intends to keep active beyond an update of its Sender ID the observations where it is acting as CoAP client, then the peer:<a href="#section-5.2-2.1.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.2-2.1.2.1">
-                <p id="section-5.2-2.1.2.1.1">MUST store the value of the 'kid' parameter from the original Observe requests, and retain it for the whole duration of the observations, throughout which the client MUST NOT update the stored value associated with the corresponding Observe registration request; and<a href="#section-5.2-2.1.2.1.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-5.2-2.1.2.2">
-                <p id="section-5.2-2.1.2.2.1">MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), when verifying notifications for that observation as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.4.2" class="relref">Section 8.4.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-5.2-2.1.2.2.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-          <li class="normal" id="section-5.2-2.2">
-            <p id="section-5.2-2.2.1">If a peer is acting as CoAP server in an ongoing observation, then the peer:<a href="#section-5.2-2.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5.2-2.2.2.1">
-                <p id="section-5.2-2.2.2.1.1">MUST store the value of the 'kid' parameter from the original Observe registration request, and retain it for the whole duration of the observation, throughout which the peer MUST NOT update the stored value associated with the corresponding Observe registration request; and<a href="#section-5.2-2.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-5.2-2.2.2.2">
-                <p id="section-5.2-2.2.2.2.1">MUST use the stored value of the 'kid' parameter from the original Observe registration request as value for the 'request_kid' parameter in the external_aad structure (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), when protecting notifications for that observation as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3.1" class="relref">Section 8.3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-5.2-2.2.2.2.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
-</section>
-</div>
-</section>
-</div>
 <div id="security-considerations">
-<section id="section-6">
+<section id="section-5">
       <h2 id="name-security-considerations">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-6-1">This document mainly covers security considerations about using AEAD keys in OSCORE and their usage limits, in addition to the security considerations of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">As mentioned in <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages. Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. These smaller values can be permitted, provided that their safety within the system can be assured.<a href="#section-6-3" class="pilcrow">¶</a></p>
-<p id="section-6-4">The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is best for privacy (as opposed to, e.g., a counter, which might leak some information about the peers).<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5">[TODO: Add more considerations.]<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-5-1">This document mainly covers security considerations about using AEAD keys in OSCORE and their usage limits, in addition to the security considerations of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-3">As mentioned in <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages. Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. These smaller values can be permitted, provided that their safety within the system can be assured.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is best for privacy (as opposed to, e.g., a counter, which might leak some information about the peers).<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-5-5">[TODO: Add more considerations.]<a href="#section-5-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-iana">
-<section id="section-7">
+<section id="section-6">
       <h2 id="name-iana-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-7-1">This document has the following actions for IANA.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">Note to RFC Editor: Please replace all occurrences of "[RFC-XXXX]" with the RFC number of this specification and delete this paragraph.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-6-1">This document has the following actions for IANA.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">Note to RFC Editor: Please replace all occurrences of "[RFC-XXXX]" with the RFC number of this specification and delete this paragraph.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="iana-coap-options">
-<section id="section-7.1">
+<section id="section-6.1">
         <h3 id="name-coap-option-numbers-registr">
-<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-coap-option-numbers-registr" class="section-name selfRef">CoAP Option Numbers Registry</a>
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-coap-option-numbers-registr" class="section-name selfRef">CoAP Option Numbers Registry</a>
         </h3>
-<p id="section-7.1-1">IANA is asked to enter the following option number to the "CoAP Option Numbers" registry within the "CoRE Parameters" registry group.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<div class="alignCenter art-text artwork" id="section-7.1-2">
+<p id="section-6.1-1">IANA is asked to enter the following option number to the "CoAP Option Numbers" registry within the "CoRE Parameters" registry group.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<div class="alignCenter art-text artwork" id="section-6.1-2">
 <pre>
 +--------+--------------+------------+
 | Number |     Name     | Reference  |
 +--------+--------------+------------+
 | TBD24  | Recipient-ID | [RFC-XXXX] |
 +--------+--------------+------------+
-</pre><a href="#section-7.1-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-7.1-3">Note to RFC Editor: Following the registration of the CoAP Option Number 24, please replace "TBD24" with "24" in the table above. Then, please delete this paragraph.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">Note to RFC Editor: Following the registration of the CoAP Option Number 24, please replace "TBD24" with "24" in the table above. Then, please delete this paragraph.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-cons-flag-bits">
-<section id="section-7.2">
+<section id="section-6.2">
         <h3 id="name-oscore-flag-bits-registry">
-<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-oscore-flag-bits-registry" class="section-name selfRef">OSCORE Flag Bits Registry</a>
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-oscore-flag-bits-registry" class="section-name selfRef">OSCORE Flag Bits Registry</a>
         </h3>
-<p id="section-7.2-1">IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-7.2-2">
+<p id="section-6.2-1">IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.2-2">
 <pre>
 +----------+-------------+-------------------------------+------------+
 | Bit      | Name        | Description                   | Reference  |
@@ -2937,10 +2512,10 @@ with CTX_B  | Encrypted Payload {               |
 |          |             | flag bits 56-63               |            |
 |          |             |                               |            |
 +----------+-------------+-------------------------------+------------+
-</pre><a href="#section-7.2-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-7.2-3">In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit Position of 1, i.e., to update the entry as follows.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-7.2-4">
+<p id="section-6.2-3">In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit Position of 1, i.e., to update the entry as follows.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.2-4">
 <pre>
 +----------+------------------+--------------------------+------------+
 | Bit      | Name             | Description              | Reference  |
@@ -2948,17 +2523,17 @@ with CTX_B  | Encrypted Payload {               |
 +----------+------------------+--------------------------+------------+
 |     1    | Unassigned       |                          |            |
 +----------+------------------+--------------------------+------------+
-</pre><a href="#section-7.2-4" class="pilcrow">¶</a>
+</pre><a href="#section-6.2-4" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="iana-edhoc-aad">
-<section id="section-7.3">
+<section id="section-6.3">
         <h3 id="name-edhoc-external-authorizatio">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-edhoc-external-authorizatio" class="section-name selfRef">EDHOC External Authorization Data Registry</a>
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-edhoc-external-authorizatio" class="section-name selfRef">EDHOC External Authorization Data Registry</a>
         </h3>
-<p id="section-7.3-1">IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22#section-10.5" class="relref">Section 10.5</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span> within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-7.3-2">
+<p id="section-6.3-1">IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-23#section-10.5" class="relref">Section 10.5</a> of [<a href="#I-D.ietf-lake-edhoc" class="cite xref">I-D.ietf-lake-edhoc</a>]</span> within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.3-2">
 <pre>
 +---------+--------------------------------------+--------------------+
 | Label   | Description                          | Reference          |
@@ -2966,66 +2541,66 @@ with CTX_B  | Encrypted Payload {               |
 | TBD1    | Indicates whether this peer supports | [RFC-XXXX]         |
 |         | KUDOS and in which mode(s)           |                    |
 +---------+--------------------------------------+--------------------+
-</pre><a href="#section-7.3-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.3-2" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="well-known-kudos">
-<section id="section-7.4">
+<section id="section-6.4">
         <h3 id="name-the-well-known-uri-registry">
-<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-the-well-known-uri-registry" class="section-name selfRef">The Well-Known URI Registry</a>
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-the-well-known-uri-registry" class="section-name selfRef">The Well-Known URI Registry</a>
         </h3>
-<p id="section-7.4-1">IANA is asked to add the 'kudos' well-known URI to the Well-Known URIs registry as defined by <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+<p id="section-6.4-1">IANA is asked to add the 'kudos' well-known URI to the Well-Known URIs registry as defined by <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.4-2.1">
-            <p id="section-7.4-2.1.1">URI suffix: kudos<a href="#section-7.4-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.4-2.1">
+            <p id="section-6.4-2.1.1">URI suffix: kudos<a href="#section-6.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.4-2.2">
-            <p id="section-7.4-2.2.1">Change controller: IETF<a href="#section-7.4-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.4-2.2">
+            <p id="section-6.4-2.2.1">Change controller: IETF<a href="#section-6.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.4-2.3">
-            <p id="section-7.4-2.3.1">Specification document(s): [RFC-XXXX]<a href="#section-7.4-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.4-2.3">
+            <p id="section-6.4-2.3.1">Specification document(s): [RFC-XXXX]<a href="#section-6.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.4-2.4">
-            <p id="section-7.4-2.4.1">Related information: None<a href="#section-7.4-2.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.4-2.4">
+            <p id="section-6.4-2.4.1">Related information: None<a href="#section-6.4-2.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="rt-kudos">
-<section id="section-7.5">
+<section id="section-6.5">
         <h3 id="name-resource-type-rt-link-targe">
-<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-resource-type-rt-link-targe" class="section-name selfRef">Resource Type (rt=) Link Target Attribute Values Registry</a>
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-resource-type-rt-link-targe" class="section-name selfRef">Resource Type (rt=) Link Target Attribute Values Registry</a>
         </h3>
-<p id="section-7.5-1">IANA is requested to add the resource type "core.kudos" to the "Resource Type (rt=) Link Target Attribute Values" registry under the registry group "Constrained RESTful Environments (CoRE) Parameters".<a href="#section-7.5-1" class="pilcrow">¶</a></p>
+<p id="section-6.5-1">IANA is requested to add the resource type "core.kudos" to the "Resource Type (rt=) Link Target Attribute Values" registry under the registry group "Constrained RESTful Environments (CoRE) Parameters".<a href="#section-6.5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.5-2.1">
-            <p id="section-7.5-2.1.1">Value: "core.kudos"<a href="#section-7.5-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-6.5-2.1">
+            <p id="section-6.5-2.1.1">Value: "core.kudos"<a href="#section-6.5-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.5-2.2">
-            <p id="section-7.5-2.2.1">Description: KUDOS resource.<a href="#section-7.5-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.5-2.2">
+            <p id="section-6.5-2.2.1">Description: KUDOS resource.<a href="#section-6.5-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.5-2.3">
-            <p id="section-7.5-2.3.1">Reference: [RFC-XXXX]<a href="#section-7.5-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-6.5-2.3">
+            <p id="section-6.5-2.3.1">Reference: [RFC-XXXX]<a href="#section-6.5-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 </section>
 </div>
-<section id="section-8">
+<section id="section-7">
       <h2 id="name-references">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-8.1">
+<section id="section-7.1">
         <h3 id="name-normative-references">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.ietf-lake-edhoc">[I-D.ietf-lake-edhoc]</dt>
         <dd>
-<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lake-edhoc-22</span>, <time datetime="2023-08-25" class="refDate">25 August 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22">https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-22</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-lake-edhoc-23</span>, <time datetime="2024-01-22" class="refDate">22 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-23">https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-23</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -3059,18 +2634,18 @@ with CTX_B  | Encrypted Payload {               |
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-8.2">
+<section id="section-7.2">
         <h3 id="name-informative-references">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.ietf-ace-edhoc-oscore-profile">[I-D.ietf-ace-edhoc-oscore-profile]</dt>
         <dd>
-<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-02</span>, <time datetime="2023-07-07" class="refDate">7 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-02">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-03</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-03">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-key-limits">[I-D.ietf-core-oscore-key-limits]</dt>
         <dd>
-<span class="refAuthor">Höglund, R.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Usage Limits for OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-key-limits-01</span>, <time datetime="2023-07-10" class="refDate">10 July 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-01">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Höglund, R.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Usage Limits for OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-key-limits-02</span>, <time datetime="2024-01-10" class="refDate">10 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-02">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.irtf-cfrg-aead-limits">[I-D.irtf-cfrg-aead-limits]</dt>
         <dd>
@@ -3128,447 +2703,233 @@ with CTX_B  | Encrypted Payload {               |
 </section>
 </div>
 </section>
-<div id="sec-id-update-in-kudos">
-<section id="appendix-A">
-      <h2 id="name-examples-of-oscore-id-updat">
-<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-examples-of-oscore-id-updat" class="section-name selfRef">Examples of OSCORE ID Updates Integrated in KUDOS</a>
-      </h2>
-<div id="sec-id-update-in-kudos-forward">
-<section id="appendix-A.1">
-        <h3 id="name-forward-message-flow-3">
-<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-forward-message-flow-3" class="section-name selfRef">Forward Message Flow</a>
-        </h3>
-<p id="appendix-A.1-1"><a href="#fig-kudos-and-id-update-client-init" class="auto internal xref">Figure 10</a> provides an example of the OSCORE IDs update procedure, as run integrated in an execution of KUDOS and in the forward message flow. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
-<span id="name-example-of-the-oscore-ids-upd"></span><div id="fig-kudos-and-id-update-client-init">
-<figure id="figure-10">
-          <div class="alignCenter art-text artwork" id="appendix-A.1-2.1">
-<pre>
-                     Client                  Server
-                   (initiator)            (responder)
-                        |                      |
-CTX_OLD {               |                      | CTX_OLD {
- SID = 0x01             |                      |  SID = 0x00
- RID = 0x00             |                      |  RID = 0x01
-}                       |                      | }
-                        |                      |
-Generate N1             |                      |
-                        |                      |
-CTX_1 = updateCtx(      |                      |
-        X1,             |                      |
-        N1,             |                      |
-        CTX_OLD)        |                      |
-                        |                      |
-                        |      Request #1      |
-Protect with CTX_1      |---------------------&gt;| /.well-known/kudos
-                        | OSCORE {             |
-                        |  ...                 |
-                        |  d flag: 1           | CTX_1 = updateCtx(
-                        |  x: X1               |         X1,
-                        |  nonce: N1           |         N1,
-                        |  ...                 |         CTX_OLD)
-                        |  kid: 0x01           |
-                        | }                    | Verify with CTX_1
-                        | Encrypted Payload {  |
-                        |  ...                 | Generate N2
-                        |  Recipient-ID: 0x42  |
-                        |  ...                 | CTX_NEW = updateCtx(
-                        | }                    |           Comb(X1,X2),
-                        |                      |           Comb(N1,N2),
-                        |                      |           CTX_OLD)
-                        |                      |
-                        |      Response #1     |
-                        |&lt;---------------------| Protect with CTX_NEW
-                        | OSCORE {             |
-                        |  ...                 |
-CTX_NEW = updateCtx(    |  Partial IV: 0       |
-          Comb(X1,X2),  |  ...                 |
-          Comb(N1,N2),  |                      |
-          CTX_OLD)      |  d flag: 1           |
-                        |  x: X2               |
-Verify with CTX_NEW     |  nonce: N2           |
-                        |  ...                 |
-Discard CTX_OLD         | }                    |
-                        | Encrypted Payload {  |
-Update SID and          |  ...                 | Update SID and
-RID in CTX_NEW          |  Recipient-ID: 0x78  | RID in CTX_NEW
-                        |  ...                 |
-CTX_NEW {               | }                    | CTX_NEW {
- SID = 0x78             |                      |  SID = 0x42
- RID = 0x42             |                      |  RID = 0x78
-}                       |                      | }
-                        |                      |
-
-// The actual key update process ends here.
-// The two peers can use the new Security Context CTX_NEW.
-
-                        |                      |
-                        |      Request #2      |
-Protect with CTX_NEW    |---------------------&gt;| /temp
-                        | OSCORE {             |
-                        |  ...                 |
-                        |  kid: 0x78           | Verify with CTX_NEW
-                        | }                    |
-                        | Encrypted Payload {  | Discard CTX_OLD
-                        |  ...                 |
-                        |  Application Payload |
-                        | }                    |
-                        |                      |
-                        |      Response #2     |
-                        |&lt;---------------------| Protect with CTX_NEW
-                        | OSCORE {             |
-                        |  ...                 |
-Verify with CTX_NEW     | }                    |
-                        | Encrypted Payload {  |
-                        |  ...                 |
-                        |  Application Payload |
-                        | }                    |
-                        |                      |
-</pre>
-</div>
-<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
-<a href="#name-example-of-the-oscore-ids-upd" class="selfRef">Example of the OSCORE IDs Update forward message flow integrated in a KUDOS execution.</a>
-          </figcaption></figure>
-</div>
-</section>
-</div>
-<div id="sec-id-update-in-kudos-reverse">
-<section id="appendix-A.2">
-        <h3 id="name-reverse-message-flow-3">
-<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-reverse-message-flow-3" class="section-name selfRef">Reverse Message Flow</a>
-        </h3>
-<p id="appendix-A.2-1"><a href="#fig-kudos-and-id-update-server-init" class="auto internal xref">Figure 11</a> provides an example of the OSCORE IDs update procedure, as run integrated in an execution of KUDOS and in the reverse message flow. On each peer, SID and RID denote the OSCORE Sender ID and Recipient ID of that peer, respectively.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
-<span id="name-example-of-the-oscore-ids-upda"></span><div id="fig-kudos-and-id-update-server-init">
-<figure id="figure-11">
-          <div class="alignCenter art-text artwork" id="appendix-A.2-2.1">
-<pre>
-                      Client                 Server
-                   (responder)            (initiator)
-                        |                      |
-CTX_OLD {               |                      | CTX_OLD {
- SID = 0x01             |                      |  SID = 0x00
- RID = 0x00             |                      |  RID = 0x01
-}                       |                      | }
-                        |                      |
-                        |      Request #1      |
-Protect with CTX_OLD    |---------------------&gt;| /temp
-                        | OSCORE {             |
-                        |  ...                 |
-                        |  kid: 0x01           |
-                        | }                    | Verify with CTX_OLD
-                        | Encrypted Payload {  |
-                        |  ...                 | Generate N1
-                        |  Application Payload |
-                        | }                    | CTX_1 = updateCtx(
-                        |                      |         X1,
-                        |                      |         N1,
-                        |                      |         CTX_OLD)
-                        |                      |
-                        |      Response #1     |
-                        |&lt;---------------------| Protect with CTX_1
-                        | OSCORE {             |
-                        |  ...                 |
-CTX_1 = updateCtx(      |  Partial IV: 0       |
-        X1,             |  ...                 |
-        N1,             |  d flag: 1           |
-        CTX_OLD)        |  x: X1               |
-                        |  nonce: N1           |
-Verify with CTX_1       |  ...                 |
-                        | }                    |
-Generate N2             | Encrypted Payload {  |
-                        |  ...                 |
-CTX_NEW = updateCtx(    |  Recipient-ID: 0x78  |
-          Comb(X1,X2),  |  ...                 |
-          Comb(N1,N2),  | }                    |
-          CTX_OLD)      |                      |
-                        |                      |
-                        |      Request #2      |
-Protect with CTX_NEW    |---------------------&gt;| /.well-known/kudos
-                        | OSCORE {             |
-                        |  ...                 |
-                        |  d flag: 1           | CTX_NEW = updateCtx(
-                        |  x: X2               |           Comb(X1,X2),
-                        |  nonce: N2           |           Comb(N1,N2),
-                        |  y: w                |           CTX_OLD)
-                        |  old_nonce: N1       |
-                        |  kid: 0x01           |
-                        |  ...                 |
-                        | }                    | Verify with CTX_NEW
-                        | Encrypted Payload {  |
-                        |  ...                 | Discard CTX_OLD
-                        |  Recipient-ID: 0x42  |
-                        |  ...                 |
-                        |  Application Payload |
-                        | }                    |
-                        |                      |
-Update SID and          |                      | Update SID and
-RID in CTX_NEW          |                      | RID in CTX_NEW
-                        |                      |
- CTX_NEW {              |                      | CTX_NEW {
-  SID = 0x78            |                      |  SID = 0x42
-  RID = 0x42            |                      |  RID = 0x78
- }                      |                      | }
-                        |                      |
-
-// The actual key update process ends here.
-// The two peers can use the new Security Context CTX_NEW.
-
-                        |                      |
-                        |      Response #2     |
-                        |&lt;---------------------| Protect with CTX_NEW
-                        | OSCORE {             |
-                        |  ...                 |
-Verify with CTX_NEW     | }                    |
-                        | Encrypted Payload {  |
-Discard CTX_OLD         |  ...                 |
-                        |  Application Payload |
-                        | }                    |
-                        |                      |
-                        |      Request #3      |
-Protect with CTX_NEW    |---------------------&gt;| /temp
-                        | OSCORE {             |
-                        |  ...                 |
-                        |  kid: 0x78           | Verify with CTX_NEW
-                        | }                    |
-                        | Encrypted Payload {  |
-                        |  ...                 |
-                        |  Application Payload |
-                        | }                    |
-                        |                      |
-                        |      Response #3     |
-                        |&lt;---------------------| Protect with CTX_NEW
-                        | OSCORE {             |
-                        |  ...                 |
-Verify with CTX_NEW     | }                    |
-                        | Encrypted Payload {  |
-                        |  ...                 |
-                        |  Application Payload |
-                        | }                    |
-                        |                      |
-</pre>
-</div>
-<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
-<a href="#name-example-of-the-oscore-ids-upda" class="selfRef">Example of the OSCORE IDs Update reverse message flow integrated in a KUDOS execution.</a>
-          </figcaption></figure>
-</div>
-</section>
-</div>
-</section>
-</div>
 <div id="sec-document-updates">
-<section id="appendix-B">
+<section id="appendix-A">
       <h2 id="name-document-updates">
-<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-document-updates" class="section-name selfRef">Document Updates</a>
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-document-updates" class="section-name selfRef">Document Updates</a>
       </h2>
-<p id="appendix-B-1">RFC EDITOR: PLEASE REMOVE THIS SECTION.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
-<div id="sec-05-06">
-<section id="appendix-B.1">
-        <h3 id="name-version-05-to-06">
-<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
+<p id="appendix-A-1">RFC EDITOR: PLEASE REMOVE THIS SECTION.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<div id="sec-06-07">
+<section id="appendix-A.1">
+        <h3 id="name-version-06-to-07">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-version-06-to-07" class="section-name selfRef">Version -06 to -07</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.1-1.1">
-            <p id="appendix-B.1-1.1.1">Mandate support for both the forward and reverse message flow.<a href="#appendix-B.1-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.1-1.1">
+            <p id="appendix-A.1-1.1.1">Removed material about the ID update procedure, which will be split out into a separate draft.<a href="#appendix-A.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.2">
-            <p id="appendix-B.1-1.2.1">Mention the EDHOC and OSCORE profile of ACE as method for rekeying.<a href="#appendix-B.1-1.2.1" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="sec-05-06">
+<section id="appendix-A.2">
+        <h3 id="name-version-05-to-06">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-A.2-1.1">
+            <p id="appendix-A.2-1.1.1">Mandate support for both the forward and reverse message flow.<a href="#appendix-A.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.3">
-            <p id="appendix-B.1-1.3.1">Clarify definition of KUDOS (request/response) message.<a href="#appendix-B.1-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.2-1.2">
+            <p id="appendix-A.2-1.2.1">Mention the EDHOC and OSCORE profile of ACE as method for rekeying.<a href="#appendix-A.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.4">
-            <p id="appendix-B.1-1.4.1">Further extend the OSCORE option to transport N1 in the second KUDOS message as a request.<a href="#appendix-B.1-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.2-1.3">
+            <p id="appendix-A.2-1.3.1">Clarify definition of KUDOS (request/response) message.<a href="#appendix-A.2-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.5">
-            <p id="appendix-B.1-1.5.1">Mandate support for the no-FS mode on CAPABLE devices.<a href="#appendix-B.1-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.2-1.4">
+            <p id="appendix-A.2-1.4.1">Further extend the OSCORE option to transport N1 in the second KUDOS message as a request.<a href="#appendix-A.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.6">
-            <p id="appendix-B.1-1.6.1">Explain when KUDOS fails during selection of mode.<a href="#appendix-B.1-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.2-1.5">
+            <p id="appendix-A.2-1.5.1">Mandate support for the no-FS mode on CAPABLE devices.<a href="#appendix-A.2-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.7">
-            <p id="appendix-B.1-1.7.1">Explicitly forbid using old keying material after reboot.<a href="#appendix-B.1-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.2-1.6">
+            <p id="appendix-A.2-1.6.1">Explain when KUDOS fails during selection of mode.<a href="#appendix-A.2-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.1-1.8">
-            <p id="appendix-B.1-1.8.1">Editorial improvements.<a href="#appendix-B.1-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.2-1.7">
+            <p id="appendix-A.2-1.7.1">Explicitly forbid using old keying material after reboot.<a href="#appendix-A.2-1.7.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.2-1.8">
+            <p id="appendix-A.2-1.8.1">Editorial improvements.<a href="#appendix-A.2-1.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-04-05">
-<section id="appendix-B.2">
+<section id="appendix-A.3">
         <h3 id="name-version-04-to-05">
-<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.2-1.1">
-            <p id="appendix-B.2-1.1.1">Note on client retransmissions if KUDOS execution fails in reverse message flow.<a href="#appendix-B.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.3-1.1">
+            <p id="appendix-A.3-1.1.1">Note on client retransmissions if KUDOS execution fails in reverse message flow.<a href="#appendix-A.3-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.2">
-            <p id="appendix-B.2-1.2.1">Specify what information needs to be written to non-volatile memory to handle reboots.<a href="#appendix-B.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.2">
+            <p id="appendix-A.3-1.2.1">Specify what information needs to be written to non-volatile memory to handle reboots.<a href="#appendix-A.3-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.3">
-            <p id="appendix-B.2-1.3.1">Extended recommendations and considerations on minimum size of nonces N1 &amp; N2.<a href="#appendix-B.2-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.3">
+            <p id="appendix-A.3-1.3.1">Extended recommendations and considerations on minimum size of nonces N1 &amp; N2.<a href="#appendix-A.3-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.4">
-            <p id="appendix-B.2-1.4.1">Arbitrary maximum size of the Recipient-ID Option.<a href="#appendix-B.2-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.4">
+            <p id="appendix-A.3-1.4.1">Arbitrary maximum size of the Recipient-ID Option.<a href="#appendix-A.3-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.5">
-            <p id="appendix-B.2-1.5.1">Detailed lifecycle of the OSCORE IDs update procedure.<a href="#appendix-B.2-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.5">
+            <p id="appendix-A.3-1.5.1">Detailed lifecycle of the OSCORE IDs update procedure.<a href="#appendix-A.3-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.6">
-            <p id="appendix-B.2-1.6.1">Described examples of OSCORE IDs update procedure.<a href="#appendix-B.2-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.6">
+            <p id="appendix-A.3-1.6.1">Described examples of OSCORE IDs update procedure.<a href="#appendix-A.3-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.7">
-            <p id="appendix-B.2-1.7.1">Examples of OSCORE IDs update procedure integrated in KUDOS.<a href="#appendix-B.2-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.7">
+            <p id="appendix-A.3-1.7.1">Examples of OSCORE IDs update procedure integrated in KUDOS.<a href="#appendix-A.3-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.8">
-            <p id="appendix-B.2-1.8.1">Considerations about using SCHC for CoAP with OSCORE.<a href="#appendix-B.2-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.8">
+            <p id="appendix-A.3-1.8.1">Considerations about using SCHC for CoAP with OSCORE.<a href="#appendix-A.3-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.2-1.9">
-            <p id="appendix-B.2-1.9.1">Clarifications and editorial improvements.<a href="#appendix-B.2-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.3-1.9">
+            <p id="appendix-A.3-1.9.1">Clarifications and editorial improvements.<a href="#appendix-A.3-1.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-03-04">
-<section id="appendix-B.3">
+<section id="appendix-A.4">
         <h3 id="name-version-03-to-04">
-<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
+<a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.3-1.1">
-            <p id="appendix-B.3-1.1.1">Removed content about key usage limits.<a href="#appendix-B.3-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.4-1.1">
+            <p id="appendix-A.4-1.1.1">Removed content about key usage limits.<a href="#appendix-A.4-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.2">
-            <p id="appendix-B.3-1.2.1">Use of "forward message flow" and "reverse message flow".<a href="#appendix-B.3-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.2">
+            <p id="appendix-A.4-1.2.1">Use of "forward message flow" and "reverse message flow".<a href="#appendix-A.4-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.3">
-            <p id="appendix-B.3-1.3.1">Update to RFC 8613 extended to include protection of responses.<a href="#appendix-B.3-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.3">
+            <p id="appendix-A.4-1.3.1">Update to RFC 8613 extended to include protection of responses.<a href="#appendix-A.4-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.4">
-            <p id="appendix-B.3-1.4.1">Include EDHOC_KeyUpdate() in the methods for rekeying.<a href="#appendix-B.3-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.4">
+            <p id="appendix-A.4-1.4.1">Include EDHOC_KeyUpdate() in the methods for rekeying.<a href="#appendix-A.4-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.5">
-            <p id="appendix-B.3-1.5.1">Describe reasons for using the OSCORE ID update procedure.<a href="#appendix-B.3-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.5">
+            <p id="appendix-A.4-1.5.1">Describe reasons for using the OSCORE ID update procedure.<a href="#appendix-A.4-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.6">
-            <p id="appendix-B.3-1.6.1">Clarifications on deletion of CTX_OLD and CTX_NEW.<a href="#appendix-B.3-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.6">
+            <p id="appendix-A.4-1.6.1">Clarifications on deletion of CTX_OLD and CTX_NEW.<a href="#appendix-A.4-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.7">
-            <p id="appendix-B.3-1.7.1">Added new section on preventing deadlocks.<a href="#appendix-B.3-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.7">
+            <p id="appendix-A.4-1.7.1">Added new section on preventing deadlocks.<a href="#appendix-A.4-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.8">
-            <p id="appendix-B.3-1.8.1">Clarified that peers can decide to run KUDOS at any point.<a href="#appendix-B.3-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.8">
+            <p id="appendix-A.4-1.8.1">Clarified that peers can decide to run KUDOS at any point.<a href="#appendix-A.4-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.9">
-            <p id="appendix-B.3-1.9.1">Defined preservation of observations beyond OSCORE ID updates.<a href="#appendix-B.3-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.9">
+            <p id="appendix-A.4-1.9.1">Defined preservation of observations beyond OSCORE ID updates.<a href="#appendix-A.4-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.10">
-            <p id="appendix-B.3-1.10.1">Revised discussion section, including also communication overhead.<a href="#appendix-B.3-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.10">
+            <p id="appendix-A.4-1.10.1">Revised discussion section, including also communication overhead.<a href="#appendix-A.4-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.11">
-            <p id="appendix-B.3-1.11.1">Defined a well-known KUDOS resource and a KUDOS resource type.<a href="#appendix-B.3-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.11">
+            <p id="appendix-A.4-1.11.1">Defined a well-known KUDOS resource and a KUDOS resource type.<a href="#appendix-A.4-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.3-1.12">
-            <p id="appendix-B.3-1.12.1">Editorial improvements.<a href="#appendix-B.3-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.4-1.12">
+            <p id="appendix-A.4-1.12.1">Editorial improvements.<a href="#appendix-A.4-1.12.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-02-03">
-<section id="appendix-B.4">
+<section id="appendix-A.5">
         <h3 id="name-version-02-to-03">
-<a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
+<a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.4-1.1">
-            <p id="appendix-B.4-1.1.1">Use of the OSCORE flag bit 0 to signal more flag bits.<a href="#appendix-B.4-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.5-1.1">
+            <p id="appendix-A.5-1.1.1">Use of the OSCORE flag bit 0 to signal more flag bits.<a href="#appendix-A.5-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.2">
-            <p id="appendix-B.4-1.2.1">In UpdateCtx(), open for future key derivation different than HKDF.<a href="#appendix-B.4-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.5-1.2">
+            <p id="appendix-A.5-1.2.1">In UpdateCtx(), open for future key derivation different than HKDF.<a href="#appendix-A.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.3">
-            <p id="appendix-B.4-1.3.1">Simplified updateCtx() to use only Expand(); used to be METHOD 2.<a href="#appendix-B.4-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.5-1.3">
+            <p id="appendix-A.5-1.3.1">Simplified updateCtx() to use only Expand(); used to be METHOD 2.<a href="#appendix-A.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.4">
-            <p id="appendix-B.4-1.4.1">Included the Partial IV if the second KUDOS message is a response.<a href="#appendix-B.4-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.5-1.4">
+            <p id="appendix-A.5-1.4.1">Included the Partial IV if the second KUDOS message is a response.<a href="#appendix-A.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.5">
-            <p id="appendix-B.4-1.5.1">Added signaling of support for KUDOS in EDHOC.<a href="#appendix-B.4-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.5-1.5">
+            <p id="appendix-A.5-1.5.1">Added signaling of support for KUDOS in EDHOC.<a href="#appendix-A.5-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.6">
-            <p id="appendix-B.4-1.6.1">Clarifications on terminology and reasons for rekeying.<a href="#appendix-B.4-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.5-1.6">
+            <p id="appendix-A.5-1.6.1">Clarifications on terminology and reasons for rekeying.<a href="#appendix-A.5-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.7">
-            <p id="appendix-B.4-1.7.1">Updated IANA considerations.<a href="#appendix-B.4-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.5-1.7">
+            <p id="appendix-A.5-1.7.1">Updated IANA considerations.<a href="#appendix-A.5-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.4-1.8">
-            <p id="appendix-B.4-1.8.1">Editorial improvements.<a href="#appendix-B.4-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.5-1.8">
+            <p id="appendix-A.5-1.8.1">Editorial improvements.<a href="#appendix-A.5-1.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-01-02">
-<section id="appendix-B.5">
+<section id="appendix-A.6">
         <h3 id="name-version-01-to-02">
-<a href="#appendix-B.5" class="section-number selfRef">B.5. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
+<a href="#appendix-A.6" class="section-number selfRef">A.6. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.5-1.1">
-            <p id="appendix-B.5-1.1.1">Extended terminology.<a href="#appendix-B.5-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.6-1.1">
+            <p id="appendix-A.6-1.1.1">Extended terminology.<a href="#appendix-A.6-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.2">
-            <p id="appendix-B.5-1.2.1">Moved procedure for preserving observations across key updates to main body.<a href="#appendix-B.5-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.2">
+            <p id="appendix-A.6-1.2.1">Moved procedure for preserving observations across key updates to main body.<a href="#appendix-A.6-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.3">
-            <p id="appendix-B.5-1.3.1">Moved procedure to update OSCORE Sender/Recipient IDs to main body.<a href="#appendix-B.5-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.3">
+            <p id="appendix-A.6-1.3.1">Moved procedure to update OSCORE Sender/Recipient IDs to main body.<a href="#appendix-A.6-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.4">
-            <p id="appendix-B.5-1.4.1">Moved key update without forward secrecy section to main body.<a href="#appendix-B.5-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.4">
+            <p id="appendix-A.6-1.4.1">Moved key update without forward secrecy section to main body.<a href="#appendix-A.6-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.5">
-            <p id="appendix-B.5-1.5.1">Define signaling bits present in the 'x' byte.<a href="#appendix-B.5-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.5">
+            <p id="appendix-A.6-1.5.1">Define signaling bits present in the 'x' byte.<a href="#appendix-A.6-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.6">
-            <p id="appendix-B.5-1.6.1">Modifications and alignment of updateCtx() with EDHOC.<a href="#appendix-B.5-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.6">
+            <p id="appendix-A.6-1.6.1">Modifications and alignment of updateCtx() with EDHOC.<a href="#appendix-A.6-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.7">
-            <p id="appendix-B.5-1.7.1">Rules for deletion of old EDHOC keys PRK_out and PRK_exporter.<a href="#appendix-B.5-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.7">
+            <p id="appendix-A.6-1.7.1">Rules for deletion of old EDHOC keys PRK_out and PRK_exporter.<a href="#appendix-A.6-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.8">
-            <p id="appendix-B.5-1.8.1">Describe CBOR wrapping of involved nonces with examples.<a href="#appendix-B.5-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.8">
+            <p id="appendix-A.6-1.8.1">Describe CBOR wrapping of involved nonces with examples.<a href="#appendix-A.6-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.9">
-            <p id="appendix-B.5-1.9.1">Renamed 'id detail' to 'nonce'.<a href="#appendix-B.5-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.9">
+            <p id="appendix-A.6-1.9.1">Renamed 'id detail' to 'nonce'.<a href="#appendix-A.6-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.5-1.10">
-            <p id="appendix-B.5-1.10.1">Editorial improvements.<a href="#appendix-B.5-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.6-1.10">
+            <p id="appendix-A.6-1.10.1">Editorial improvements.<a href="#appendix-A.6-1.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-00-01">
-<section id="appendix-B.6">
+<section id="appendix-A.7">
         <h3 id="name-version-00-to-01">
-<a href="#appendix-B.6" class="section-number selfRef">B.6. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
+<a href="#appendix-A.7" class="section-number selfRef">A.7. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-B.6-1.1">
-            <p id="appendix-B.6-1.1.1">Recommendation on limits for CCM_8. Details in Appendix.<a href="#appendix-B.6-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-A.7-1.1">
+            <p id="appendix-A.7-1.1.1">Recommendation on limits for CCM_8. Details in Appendix.<a href="#appendix-A.7-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.6-1.2">
-            <p id="appendix-B.6-1.2.1">Improved message processing, also covering corner cases.<a href="#appendix-B.6-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-1.2">
+            <p id="appendix-A.7-1.2.1">Improved message processing, also covering corner cases.<a href="#appendix-A.7-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.6-1.3">
-            <p id="appendix-B.6-1.3.1">Example of method to estimate and not store 'count_q'.<a href="#appendix-B.6-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-1.3">
+            <p id="appendix-A.7-1.3.1">Example of method to estimate and not store 'count_q'.<a href="#appendix-A.7-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.6-1.4">
-            <p id="appendix-B.6-1.4.1">Added procedure to update OSCORE Sender/Recipient IDs.<a href="#appendix-B.6-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-1.4">
+            <p id="appendix-A.7-1.4.1">Added procedure to update OSCORE Sender/Recipient IDs.<a href="#appendix-A.7-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.6-1.5">
-            <p id="appendix-B.6-1.5.1">Added method for preserving observations across key updates.<a href="#appendix-B.6-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-1.5">
+            <p id="appendix-A.7-1.5.1">Added method for preserving observations across key updates.<a href="#appendix-A.7-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-B.6-1.6">
-            <p id="appendix-B.6-1.6.1">Added key update without forward secrecy.<a href="#appendix-B.6-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-A.7-1.6">
+            <p id="appendix-A.7-1.6.1">Added key update without forward secrecy.<a href="#appendix-A.7-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3576,16 +2937,16 @@ Verify with CTX_NEW     | }                    |
 </section>
 </div>
 <div id="acknowledgments">
-<section id="appendix-C">
+<section id="appendix-B">
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-C-1">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Rafa Marin-Lopez</span>, <span class="contact-name">John Preuß Mattsson</span>, and <span class="contact-name">Göran Selander</span> for their feedback and comments.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
-<p id="appendix-C-2">The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259).<a href="#appendix-C-2" class="pilcrow">¶</a></p>
+<p id="appendix-B-1">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Rafa Marin-Lopez</span>, <span class="contact-name">John Preuß Mattsson</span>, and <span class="contact-name">Göran Selander</span> for their feedback and comments.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-2">The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; and by the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259).<a href="#appendix-B-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-D">
+<section id="appendix-C">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
