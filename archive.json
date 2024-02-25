@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-22T00:36:58.469871+00:00",
+  "timestamp": "2024-02-25T00:40:19.454813+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -1965,7 +1965,7 @@
       ],
       "body": "See also discussion in issue #51\r\n",
       "createdAt": "2023-03-11T17:33:08Z",
-      "updatedAt": "2024-01-16T09:20:14Z",
+      "updatedAt": "2024-02-22T10:38:28Z",
       "closedAt": null,
       "comments": [
         {
@@ -1981,6 +1981,13 @@
           "body": "This was raised during IETF 118 and agreed on. We should do the splitting into a new document of the ID update content.",
           "createdAt": "2024-01-16T09:20:09Z",
           "updatedAt": "2024-01-16T09:20:09Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The material in the current draft about the OSCORE ID update procedure has now been removed in commit f93abc2a0c36dd59318a9a424feb64ff9bc37ae0",
+          "createdAt": "2024-02-22T10:38:27Z",
+          "updatedAt": "2024-02-22T10:38:27Z"
         }
       ]
     },
