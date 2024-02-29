@@ -372,7 +372,7 @@ In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBO
 
 ### Forward Message Flow {#ssec-derive-ctx-client-init}
 
-{{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator.
+{{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator. Even though in this example the first KUDOS message is a request and the second is a response, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. {{ssec-derive-ctx-client-init-requests-only}} shows an example where both KUDOS messages are CoAP requests.
 
 ~~~~~~~~~~~
                      Client                  Server
@@ -1151,6 +1151,84 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 --- back
 
+# Forward Message Flow using two CoAP Requests {#ssec-derive-ctx-client-init-requests-only}
+
+This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and both KUDOS messages being CoAP requests.
+
+~~~~~~~~~~~
+                     Client                  Server
+                   (initiator)            (responder)
+                        |                      |
+Generate N1             |                      |
+                        |                      |
+CTX_1 = updateCtx(      |                      |
+        X1,             |                      |
+        N1,             |                      |
+        CTX_OLD)        |                      |
+                        |                      |
+                        |      Request #1      |
+Protect with CTX_1      |--------------------->| /.well-known/kudos
+                        | OSCORE {             |
+                        |  ...                 |
+                        |  Partial IV: 0       |
+                        |  ...                 |
+                        |  d flag: 1           | CTX_1 = updateCtx(
+                        |  x: X1               |         X1,
+                        |  nonce: N1           |         N1,
+                        |  ...                 |         CTX_OLD)
+                        | }                    |
+                        | Encrypted Payload {  | Verify with CTX_1
+                        |  ...                 |
+                        | }                    | Generate N2
+                        |                      |
+                        |                      | CTX_NEW = updateCtx(
+                        |                      |           Comb(X1,X2),
+                        |                      |           Comb(N1,N2),
+                        |                      |           CTX_OLD)
+                        |                      |
+                        |      Request #2      |
+     /.well-known/kudos |<---------------------| Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 |
+CTX_NEW = updateCtx(    |  Partial IV: 0       |
+          Comb(X1,X2),  |  ...                 |
+          Comb(N1,N2),  |  d flag: 1           |
+          CTX_OLD)      |  x: X2               |
+                        |  nonce: N2           |
+Verify with CTX_NEW     |  ...                 |
+                        | }                    |
+Discard CTX_OLD         | Encrypted Payload {  |
+                        |  ...                 |
+                        | }                    |
+                        |                      |
+
+// The actual key update process ends here.
+// The two peers can use the new Security Context CTX_NEW.
+
+                        |                      |
+                        |      Response #1     |
+Protect with CTX_NEW    |--------------------->|
+                        | OSCORE {             |
+                        |  ...                 |
+                        | }                    | Verify with CTX_NEW
+                        | Encrypted Payload {  |
+                        |  ...                 | Discard CTX_OLD
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+                        |      Response #2     |
+                        |<---------------------| Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 |
+Verify with CTX_NEW     | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+~~~~~~~~~~~
+{: #fig-message-exchange-client-init-requests-only title="Example of the KUDOS forward message flow where both KUDOS messages are requests." artwork-align="center"}
+
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
@@ -1160,6 +1238,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Removed material about the ID update procedure, which has been split out into a separate draft.
 
 * Allow non-random nonces for CAPABLE devices.
+
+* Add example showing flexible message flow with two KUDOS messages as CoAP requests.
 
 ## Version -05 to -06 ## {#sec-05-06}
 
