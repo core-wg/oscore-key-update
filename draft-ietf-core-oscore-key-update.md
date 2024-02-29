@@ -1039,7 +1039,7 @@ Depending on the specific key update procedure used to establish a new OSCORE Se
 
 As mentioned in {{ssec-derive-ctx}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages. Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. These smaller values can be permitted, provided that their safety within the system can be assured.
 
-The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is best for privacy (as opposed to, e.g., a counter, which might leak some information about the peers).
+The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy (as opposed to, e.g., a counter, which might leak some information about the peers). However, if a peer is able to store counter values persistently and is willing to accept the privacy implications, counters can also be used.
 
 \[TODO: Add more considerations.\]
 
@@ -1158,6 +1158,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -06 to -07 ## {#sec-06-07}
 
 * Removed material about the ID update procedure, which has been split out into a separate draft.
+
+* Allow non-random nonces for CAPABLE devices.
 
 ## Version -05 to -06 ## {#sec-05-06}
 
