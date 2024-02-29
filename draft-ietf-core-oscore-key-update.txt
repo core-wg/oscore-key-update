@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                        22 February 2024
-Expires: 25 August 2024
+Intended status: Standards Track                        29 February 2024
+Expires: 1 September 2024
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 August 2024.
+   This Internet-Draft will expire on 1 September 2024.
 
 Copyright Notice
 
@@ -96,11 +96,10 @@ Table of Contents
      4.9.  Signaling KUDOS support in EDHOC
    5.  Security Considerations
    6.  IANA Considerations
-     6.1.  CoAP Option Numbers Registry
-     6.2.  OSCORE Flag Bits Registry
-     6.3.  EDHOC External Authorization Data Registry
-     6.4.  The Well-Known URI Registry
-     6.5.  Resource Type (rt=) Link Target Attribute Values Registry
+     6.1.  OSCORE Flag Bits Registry
+     6.2.  EDHOC External Authorization Data Registry
+     6.3.  The Well-Known URI Registry
+     6.4.  Resource Type (rt=) Link Target Attribute Values Registry
    7.  References
      7.1.  Normative References
      7.2.  Informative References
@@ -374,7 +373,7 @@ Table of Contents
       bit, called "Extension-1 Flag", in the first byte of the OSCORE
       Option containing the OSCORE flag bits.  The registration of this
       flag bit in the "OSCORE Flag Bits" registry is specified in
-      Section 6.2.
+      Section 6.1.
 
       When the Extension-1 Flag is set to 1, the second byte of the
       OSCORE Option MUST include the OSCORE flag bits 8-15.
@@ -382,7 +381,7 @@ Table of Contents
    *  This document defines the usage of the least significant bit
       "Nonce Flag", 'd', in the second byte of the OSCORE Option
       containing the OSCORE flag bits 8-15.  This flag bit is specified
-      in Section 6.2.
+      in Section 6.1.
 
       When it is set to 1, the compressed COSE object contains a field
       'x' and a field 'nonce', to be used for the steps defined in
@@ -1751,12 +1750,12 @@ Table of Contents
 4.8.3.  Well-Known KUDOS Resource
 
    According to this specification, KUDOS is transferred in POST
-   requests to the Uri-Path: "/.well-known/kudos" (see Section 6.4), and
+   requests to the Uri-Path: "/.well-known/kudos" (see Section 6.3), and
    2.04 (Changed) responses.  An application may define its own path
    that can be discovered, e.g., using a resource directory [RFC9176].
    Client applications can use the resource type "core.kudos" to
    discover a server's KUDOS resource, i.e., where to send KUDOS
-   requests, see Section 6.5.
+   requests, see Section 6.4.
 
 4.8.4.  Rekeying when Using SCHC with OSCORE
 
@@ -1792,7 +1791,7 @@ Table of Contents
    'ead_value' encoded as a CBOR bstr.
 
    This document defines a new EDHOC EAD item KUDOS_EAD and registers
-   its 'ead_label' in Section 6.3.  By including this EAD item in an
+   its 'ead_label' in Section 6.2.  By including this EAD item in an
    outgoing EDHOC message, a sender peer can indicate whether it
    supports KUDOS and in which modes, as well as query the other peer
    about its support.  Note that peers do not have to use this EDHOC EAD
@@ -1954,22 +1953,7 @@ Table of Contents
    Note to RFC Editor: Please replace all occurrences of "[RFC-XXXX]"
    with the RFC number of this specification and delete this paragraph.
 
-6.1.  CoAP Option Numbers Registry
-
-   IANA is asked to enter the following option number to the "CoAP
-   Option Numbers" registry within the "CoRE Parameters" registry group.
-
-                  +--------+--------------+------------+
-                  | Number |     Name     | Reference  |
-                  +--------+--------------+------------+
-                  | TBD24  | Recipient-ID | [RFC-XXXX] |
-                  +--------+--------------+------------+
-
-   Note to RFC Editor: Following the registration of the CoAP Option
-   Number 24, please replace "TBD24" with "24" in the table above.
-   Then, please delete this paragraph.
-
-6.2.  OSCORE Flag Bits Registry
+6.1.  OSCORE Flag Bits Registry
 
    IANA is asked to add the following entries to the "OSCORE Flag Bits"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -2033,7 +2017,7 @@ Table of Contents
  |     1    | Unassigned       |                          |            |
  +----------+------------------+--------------------------+------------+
 
-6.3.  EDHOC External Authorization Data Registry
+6.2.  EDHOC External Authorization Data Registry
 
    IANA is asked to add the following entries to the "EDHOC External
    Authorization Data" registry defined in Section 10.5 of
@@ -2047,7 +2031,7 @@ Table of Contents
  |         | KUDOS and in which mode(s)           |                    |
  +---------+--------------------------------------+--------------------+
 
-6.4.  The Well-Known URI Registry
+6.3.  The Well-Known URI Registry
 
    IANA is asked to add the 'kudos' well-known URI to the Well-Known
    URIs registry as defined by [RFC8615].
@@ -2060,7 +2044,7 @@ Table of Contents
 
    *  Related information: None
 
-6.5.  Resource Type (rt=) Link Target Attribute Values Registry
+6.4.  Resource Type (rt=) Link Target Attribute Values Registry
 
    IANA is requested to add the resource type "core.kudos" to the
    "Resource Type (rt=) Link Target Attribute Values" registry under the
@@ -2219,7 +2203,7 @@ Appendix A.  Document Updates
 
 A.1.  Version -06 to -07
 
-   *  Removed material about the ID update procedure, which will be
+   *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
 
 A.2.  Version -05 to -06
