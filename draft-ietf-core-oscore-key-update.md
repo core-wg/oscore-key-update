@@ -1045,21 +1045,6 @@ This document has the following actions for IANA.
 
 Note to RFC Editor: Please replace all occurrences of "{{&SELF}}" with the RFC number of this specification and delete this paragraph.
 
-## CoAP Option Numbers Registry ## {#iana-coap-options}
-
-IANA is asked to enter the following option number to the "CoAP Option Numbers" registry within the "CoRE Parameters" registry group.
-
-~~~~~~~~~~~
-+--------+--------------+------------+
-| Number |     Name     | Reference  |
-+--------+--------------+------------+
-| TBD24  | Recipient-ID | [RFC-XXXX] |
-+--------+--------------+------------+
-~~~~~~~~~~~
-{: artwork-align="center"}
-
-Note to RFC Editor: Following the registration of the CoAP Option Number 24, please replace "TBD24" with "24" in the table above. Then, please delete this paragraph.
-
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
 IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
@@ -1168,7 +1153,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
-* Removed material about the ID update procedure, which will be split out into a separate draft.
+* Removed material about the ID update procedure, which has been split out into a separate draft.
 
 ## Version -05 to -06 ## {#sec-05-06}
 
