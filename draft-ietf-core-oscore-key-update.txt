@@ -103,14 +103,15 @@ Table of Contents
    7.  References
      7.1.  Normative References
      7.2.  Informative References
-   Appendix A.  Document Updates
-     A.1.  Version -06 to -07
-     A.2.  Version -05 to -06
-     A.3.  Version -04 to -05
-     A.4.  Version -03 to -04
-     A.5.  Version -02 to -03
-     A.6.  Version -01 to -02
-     A.7.  Version -00 to -01
+   Appendix A.  Forward Message Flow using two CoAP Requests
+   Appendix B.  Document Updates
+     B.1.  Version -06 to -07
+     B.2.  Version -05 to -06
+     B.3.  Version -04 to -05
+     B.4.  Version -03 to -04
+     B.5.  Version -02 to -03
+     B.6.  Version -01 to -02
+     B.7.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -619,7 +620,10 @@ Table of Contents
    When running KUDOS, each peer contributes by generating a random
    nonce value N1 or N2, and providing it to the other peer.  The size
    of the nonces N1 and N2 is application specific, and the use of 8
-   byte nonce values is RECOMMENDED.
+   byte nonce values is RECOMMENDED.  Note that while we refer to the
+   nonce values N1 and N2 as random values, in specific cases it can be
+   fine for a peer to use a counter value instead of a random value for
+   N1 or N2 (see Section 4.5.1).
 
    Furthermore, X1 and X2 are the value of the 'x' byte specified in the
    OSCORE Option of the first and second KUDOS message, respectively.
@@ -717,7 +721,12 @@ Table of Contents
 4.3.1.  Forward Message Flow
 
    Figure 3 shows an example of KUDOS run in the forward message flow,
-   with the client acting as KUDOS initiator.
+   with the client acting as KUDOS initiator.  Even though in this
+   example the first KUDOS message is a request and the second is a
+   response, KUDOS is not constrained to this request/response model and
+   a KUDOS execution can be performed with any combination of CoAP
+   requests and responses.  Appendix A shows an example where both KUDOS
+   messages are CoAP requests.
 
                       Client                  Server
                     (initiator)            (responder)
@@ -1313,8 +1322,15 @@ Table of Contents
 
    *  A peer that is a non-CAPABLE device MUST support the no-FS mode.
 
+   *  A peer that is a non-CAPABLE device MUST use random values for N1
+      and N2.
+
    *  A peer that is a CAPABLE device MUST support the FS mode and the
       no-FS mode.
+
+   *  A peer that is a CAPABLE device SHOULD use random values for N1
+      and N2, but may use counters if it enforces measures to ensure
+      their freshness and accepts the privacy implications.
 
    As a general rule, once successfully generated a new OSCORE Security
    Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS
@@ -1941,8 +1957,11 @@ Table of Contents
    within the system can be assured.
 
    The nonces exchanged in the KUDOS messages are sent in the clear, so
-   using random nonces is best for privacy (as opposed to, e.g., a
-   counter, which might leak some information about the peers).
+   using random nonces is preferable for maintaining privacy (as opposed
+   to, e.g., a counter, which might leak some information about the
+   peers).  However, if a peer is able to store counter values
+   persistently and is willing to accept the privacy implications,
+   counters can also be used.
 
    [TODO: Add more considerations.]
 
@@ -2197,16 +2216,101 @@ Table of Contents
               DOI 10.17487/RFC9203, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9203>.
 
-Appendix A.  Document Updates
+Appendix A.  Forward Message Flow using two CoAP Requests
+
+   This section presents an example of KUDOS run in the forward message
+   flow, with the client acting as KUDOS initiator, and both KUDOS
+   messages being CoAP requests.
+
+                      Client                  Server
+                    (initiator)            (responder)
+                         |                      |
+ Generate N1             |                      |
+                         |                      |
+ CTX_1 = updateCtx(      |                      |
+         X1,             |                      |
+         N1,             |                      |
+         CTX_OLD)        |                      |
+                         |                      |
+                         |      Request #1      |
+ Protect with CTX_1      |--------------------->| /.well-known/kudos
+                         | OSCORE {             |
+                         |  ...                 |
+                         |  Partial IV: 0       |
+                         |  ...                 |
+                         |  d flag: 1           | CTX_1 = updateCtx(
+                         |  x: X1               |         X1,
+                         |  nonce: N1           |         N1,
+                         |  ...                 |         CTX_OLD)
+                         | }                    |
+                         | Encrypted Payload {  | Verify with CTX_1
+                         |  ...                 |
+                         | }                    | Generate N2
+                         |                      |
+                         |                      | CTX_NEW = updateCtx(
+                         |                      |           Comb(X1,X2),
+                         |                      |           Comb(N1,N2),
+                         |                      |           CTX_OLD)
+                         |                      |
+                         |      Request #2      |
+      /.well-known/kudos |<---------------------| Protect with CTX_NEW
+                         | OSCORE {             |
+                         |  ...                 |
+ CTX_NEW = updateCtx(    |  Partial IV: 0       |
+           Comb(X1,X2),  |  ...                 |
+           Comb(N1,N2),  |  d flag: 1           |
+           CTX_OLD)      |  x: X2               |
+                         |  nonce: N2           |
+ Verify with CTX_NEW     |  ...                 |
+                         | }                    |
+ Discard CTX_OLD         | Encrypted Payload {  |
+                         |  ...                 |
+                         | }                    |
+                         |                      |
+
+ // The actual key update process ends here.
+ // The two peers can use the new Security Context CTX_NEW.
+
+                         |                      |
+                         |      Response #1     |
+ Protect with CTX_NEW    |--------------------->|
+                         | OSCORE {             |
+                         |  ...                 |
+                         | }                    | Verify with CTX_NEW
+                         | Encrypted Payload {  |
+                         |  ...                 | Discard CTX_OLD
+                         |  Application Payload |
+                         | }                    |
+                         |                      |
+                         |      Response #2     |
+                         |<---------------------| Protect with CTX_NEW
+                         | OSCORE {             |
+                         |  ...                 |
+ Verify with CTX_NEW     | }                    |
+                         | Encrypted Payload {  |
+                         |  ...                 |
+                         |  Application Payload |
+                         | }                    |
+                         |                      |
+
+     Figure 7: Example of the KUDOS forward message flow where both
+                      KUDOS messages are requests.
+
+Appendix B.  Document Updates
 
    RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
-A.1.  Version -06 to -07
+B.1.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
 
-A.2.  Version -05 to -06
+   *  Allow non-random nonces for CAPABLE devices.
+
+   *  Add example showing flexible message flow with two KUDOS messages
+      as CoAP requests.
+
+B.2.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -2226,7 +2330,7 @@ A.2.  Version -05 to -06
 
    *  Editorial improvements.
 
-A.3.  Version -04 to -05
+B.3.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -2249,7 +2353,7 @@ A.3.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-A.4.  Version -03 to -04
+B.4.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -2275,7 +2379,7 @@ A.4.  Version -03 to -04
 
    *  Editorial improvements.
 
-A.5.  Version -02 to -03
+B.5.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -2294,7 +2398,7 @@ A.5.  Version -02 to -03
 
    *  Editorial improvements.
 
-A.6.  Version -01 to -02
+B.6.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -2318,7 +2422,7 @@ A.6.  Version -01 to -02
 
    *  Editorial improvements.
 
-A.7.  Version -00 to -01
+B.7.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
