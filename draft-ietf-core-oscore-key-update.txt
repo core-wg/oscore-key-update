@@ -2439,6 +2439,8 @@ C.1.  Version -06 to -07
    *  Add example showing flexible message flow with two KUDOS messages
       as CoAP requests.
 
+   *  Enable sending KUDOS messages as regular application messages
+
 C.2.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
