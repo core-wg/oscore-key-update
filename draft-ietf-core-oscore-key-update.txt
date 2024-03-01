@@ -2265,7 +2265,7 @@ Appendix A.  Forward Message Flow using two CoAP Requests
    flow, with the client acting as KUDOS initiator, and both KUDOS
    messages being CoAP requests.
 
-                      Client                  Server
+                   Client/Server          Client/Server
                     (initiator)            (responder)
                          |                      |
  Generate N1             |                      |
