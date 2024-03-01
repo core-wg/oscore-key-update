@@ -104,14 +104,16 @@ Table of Contents
      7.1.  Normative References
      7.2.  Informative References
    Appendix A.  Forward Message Flow using two CoAP Requests
-   Appendix B.  Document Updates
-     B.1.  Version -06 to -07
-     B.2.  Version -05 to -06
-     B.3.  Version -04 to -05
-     B.4.  Version -03 to -04
-     B.5.  Version -02 to -03
-     B.6.  Version -01 to -02
-     B.7.  Version -00 to -01
+   Appendix B.  Forward Message Flow Targeting Arbitrary Resource at
+           Server
+   Appendix C.  Document Updates
+     C.1.  Version -06 to -07
+     C.2.  Version -05 to -06
+     C.3.  Version -04 to -05
+     C.4.  Version -03 to -04
+     C.5.  Version -02 to -03
+     C.6.  Version -01 to -02
+     C.7.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -695,6 +697,21 @@ Table of Contents
    second, thus ensuring the reliability and robustness of the system
    even under such circumstances.
 
+   A KUDOS message that is a CoAP request can target 2 different types
+   of resources: i) A well-known KUDOS resource (see
+   Section Section 4.8.3) or an analogous one using resource type
+   "core.kudos" (see Section Section 4.8.3).  In such case no
+   application processing is expected and no payload should be included
+   in the request (before OSCORE protection). ii) A real application
+   resource, meaning any resource the server makes available which is
+   not a well-known KUDOS resource or analogous.  In such case the
+   request can include payload (before OSCORE protection) and normal
+   application processing should occur.  Following the same logic, any
+   CoAP response can be a KUDOS message.  If the response is produced by
+   a resource well-known KUDOS resource (or analogous) then no plain
+   payload is expected, while in any other case a payload may be
+   present.
+
    Once a peer acting as initiator (responder) has sent (received) the
    first KUDOS message, that peer MUST NOT send a non KUDOS message to
    the other peer, until having completed the key update process on its
@@ -917,6 +934,21 @@ Table of Contents
    the KUDOS forward message flow as defined in this section.  That is,
    one of the two peers implementing a CoAP client will send KUDOS
    Request #1 in Figure 3.
+
+   When KUDOS Request #1 targets a normal resource (that is not a well-
+   known KUDOS or analogous resource), then if the server requires
+   freshness it can respond with a 4.01 (Unauthorized) error response
+   protected with CTX_NEW as KUDOS Response #1.  This signals to the
+   client that the server is continuing the KUDOS procedure but wishes
+   to verify the freshness of the application-level operations the
+   client requested in KUDOS Request #1.  In such case the client can
+   resend its original request but now protected with CTX_NEW wishes as
+   Request #2.  This procedure is neccessary as the server cannot be
+   sure that KUDOS Request #1 is fresh.  An alternative is to use the
+   CoAP Echo option as defined in [RFC9175] which the procedure defined
+   in this paragraph is analogous in functionality to.  An example of a
+   KUDOS execution where KUDOS Request #1 targets a normal resource is
+   shown in Appendix B.
 
 4.3.1.1.  Avoiding In-Transit Requests During a Key Update
 
@@ -1773,6 +1805,12 @@ Table of Contents
    discover a server's KUDOS resource, i.e., where to send KUDOS
    requests, see Section 6.4.
 
+   If a client wishes to execute the KUDOS procedure as initiator,
+   without actually triggering any application processing on the server,
+   the first KUDOS message must target the resource located at "/.well-
+   known/kudos" or an analogous resource using resource type
+   "core.kudos".
+
 4.8.4.  Rekeying when Using SCHC with OSCORE
 
    In the interest of rekeying, the following points must be taken into
@@ -2197,6 +2235,12 @@ Table of Contents
               RFC 9031, DOI 10.17487/RFC9031, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9031>.
 
+   [RFC9175]  Amsüss, C., Preuß Mattsson, J., and G. Selander,
+              "Constrained Application Protocol (CoAP): Echo, Request-
+              Tag, and Token Processing", RFC 9175,
+              DOI 10.17487/RFC9175, February 2022,
+              <https://www.rfc-editor.org/rfc/rfc9175>.
+
    [RFC9176]  Amsüss, C., Ed., Shelby, Z., Koster, M., Bormann, C., and
               P. van der Stok, "Constrained RESTful Environments (CoRE)
               Resource Directory", RFC 9176, DOI 10.17487/RFC9176, April
@@ -2295,11 +2339,97 @@ Appendix A.  Forward Message Flow using two CoAP Requests
      Figure 7: Example of the KUDOS forward message flow where both
                       KUDOS messages are requests.
 
-Appendix B.  Document Updates
+Appendix B.  Forward Message Flow Targeting Arbitrary Resource at Server
+
+   This section presents an example of KUDOS run in the forward message
+   flow, with the client acting as KUDOS initiator, and targeting a
+   normal resource with KUDOS Request #1.  Note the presence of an
+   application payload in KUDOS Request #1 and the fact that KUDOS
+   Response #1 is a 4.01 (Unauthorized) message (inside the encrypted
+   payload as the response code is protected by OSCORE).
+
+                      Client                  Server
+                    (initiator)            (responder)
+                         |                      |
+ Generate N1             |                      |
+                         |                      |
+ CTX_1 = updateCtx(      |                      |
+         X1,             |                      |
+         N1,             |                      |
+         CTX_OLD)        |                      |
+                         |                      |
+                         |      Request #1      |
+ Protect with CTX_1      |--------------------->| /temp
+                         | OSCORE {             |
+                         |  ...                 |
+                         |  Partial IV: 0       |
+                         |  ...                 |
+                         |  d flag: 1           | CTX_1 = updateCtx(
+                         |  x: X1               |         X1,
+                         |  nonce: N1           |         N1,
+                         |  ...                 |         CTX_OLD)
+                         | }                    |
+                         | Encrypted Payload {  | Verify with CTX_1
+                         |  ...                 |
+                         |  Application Payload |
+                         | }                    | Generate N2
+                         |                      |
+                         |                      | CTX_NEW = updateCtx(
+                         |                      |           Comb(X1,X2),
+                         |                      |           Comb(N1,N2),
+                         |                      |           CTX_OLD)
+                         |                      |
+                         |      Response #1     |
+                         |<---------------------| Protect with CTX_NEW
+                         | OSCORE {             |
+                         |  ...                 |
+ CTX_NEW = updateCtx(    |  Partial IV: 0       |
+           Comb(X1,X2),  |  ...                 |
+           Comb(N1,N2),  |  d flag: 1           |
+           CTX_OLD)      |  x: X2               |
+                         |  nonce: N2           |
+ Verify with CTX_NEW     |  ...                 |
+                         | }                    |
+ Discard CTX_OLD         | Encrypted Payload {  |
+                         |  4.01 (Unauthorized) |
+                         |  ...                 |
+                         |  Application Payload |
+                         | }                    |
+                         |                      |
+
+ // The actual key update process ends here.
+ // The two peers can use the new Security Context CTX_NEW.
+
+                         |                      |
+                         |      Request #2      |
+ Protect with CTX_NEW    |--------------------->| /temp
+                         | OSCORE {             |
+                         |  ...                 |
+                         | }                    | Verify with CTX_NEW
+                         | Encrypted Payload {  |
+                         |  ...                 | Discard CTX_OLD
+                         |  Application Payload |
+                         | }                    |
+                         |                      |
+                         |      Response #2     |
+                         |<---------------------| Protect with CTX_NEW
+                         | OSCORE {             |
+                         |  ...                 |
+ Verify with CTX_NEW     | }                    |
+                         | Encrypted Payload {  |
+                         |  ...                 |
+                         |  Application Payload |
+                         | }                    |
+                         |                      |
+
+    Figure 8: Example of the KUDOS forward message flow where KUDOS
+                 Request #1 targets a normal resource.
+
+Appendix C.  Document Updates
 
    RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
-B.1.  Version -06 to -07
+C.1.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -2309,7 +2439,7 @@ B.1.  Version -06 to -07
    *  Add example showing flexible message flow with two KUDOS messages
       as CoAP requests.
 
-B.2.  Version -05 to -06
+C.2.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -2329,7 +2459,7 @@ B.2.  Version -05 to -06
 
    *  Editorial improvements.
 
-B.3.  Version -04 to -05
+C.3.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -2352,7 +2482,7 @@ B.3.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-B.4.  Version -03 to -04
+C.4.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -2378,7 +2508,7 @@ B.4.  Version -03 to -04
 
    *  Editorial improvements.
 
-B.5.  Version -02 to -03
+C.5.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -2397,7 +2527,7 @@ B.5.  Version -02 to -03
 
    *  Editorial improvements.
 
-B.6.  Version -01 to -02
+C.6.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -2421,7 +2551,7 @@ B.6.  Version -01 to -02
 
    *  Editorial improvements.
 
-B.7.  Version -00 to -01
+C.7.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
