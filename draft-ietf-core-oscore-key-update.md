@@ -338,11 +338,11 @@ The following specifically defines how KUDOS is run in its stateful FS mode achi
 
 In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX\_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in {{Section 3.1 of RFC8613}}, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in {{Section 3.2.1 of RFC8613}}. If the peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
 
-When running KUDOS, each peer contributes by generating a random nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. Note that while we refer to the nonce values N1 and N2 as random values, in specific cases it can be fine for a peer to use a counter value instead of a random value for N1 or N2 (see {{key-material-handling}}).
+When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 SHOULD be random values, however an exception where this does not need to be the case is described later in Section {{key-material-handling}}.
 
 Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. The X1 and X2 values are calculated by the sender peer based on: the length of nonce N1 and N2, specified in the 'nonce' field of the OSCORE Option of the first and second KUDOS message, respectively; as well as on the specific settings the peer wishes to run KUDOS with. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
-After a peer has generated or received the random value N1, and after a peer has calculated or received the value X1, it shall retain these in memory until it has received and processed the second KUDOS message.
+After a peer has generated or received the value N1, and after a peer has calculated or received the value X1, it shall retain these in memory until it has received and processed the second KUDOS message.
 
 Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages. Once CTX\_NEW has been derived, a peer deletes any OSCORE Security Context older than CTX\_OLD with the same ID Context. This can for instance occur in the forward message flow when the initiator has just received KUDOS Response #1 and immediately starts KUDOS again as initiator, before sending any non KUDOS messages which would give the responder key confirmation and allow it to safely discard CTX_OLD.
 
@@ -448,7 +448,7 @@ Verify with CTX_NEW     | }                    |
 ~~~~~~~~~~~
 {: #fig-message-exchange-client-init title="Example of the KUDOS forward message flow." artwork-align="center"}
 
-First, the client generates a random value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
+First, the client generates a value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX\_OLD, in order to derive a temporary Security Context CTX\_1.
 
 Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see {{well-known-kudos-desc}}) at "/.well-known/kudos". The client protects this CoAP request using CTX\_1 and sends it to the server. When the client protects this request using OSCORE, it MUST use 0 as the value of Partial IV. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the client deletes CTX\_1.
 
@@ -476,7 +476,7 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
 
 Then, the server verifies the request by using the Security Context CTX\_1.
 
-After that, the server generates a random value N2, and uses N = Comb(N1, N2) and X = Comb(X1, X2) together with CTX\_OLD, in order to derive the new Security Context CTX\_NEW.
+After that, the server generates a value N2, and uses N = Comb(N1, N2) and X = Comb(X1, X2) together with CTX\_OLD, in order to derive the new Security Context CTX\_NEW.
 
 An example of this nonce processing on the server with values for N1, X1, N2, and X2 is presented in {{fig-kudos-x-n-example-mess-two}}.
 
@@ -606,7 +606,7 @@ Discard CTX_OLD         |  ...                 |
 
 First, the client sends a normal OSCORE request to the server, protected with the old Security Context CTX\_OLD and with the 'd' flag bit set to 0.
 
-Upon receiving the OSCORE request and after having verified it with CTX\_OLD as usual, the server generates a random value N1 and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
+Upon receiving the OSCORE request and after having verified it with CTX\_OLD as usual, the server generates a value N1 and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
 Then, the server sends an OSCORE response to the client, protected with CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the server deletes CTX\_1. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
@@ -614,7 +614,7 @@ Upon receiving the OSCORE response, the client retrieves the value N1 from the '
 
 Then, the client verifies the response by using the Security Context CTX\_1.
 
-After that, the client generates a random value N2, and provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the client sends an OSCORE request to the server, protected with CTX\_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N2 as 'nonce' and N1 as 'old\_nonce'. After that, the client deletes CTX\_1.
+After that, the client generates a value N2, and provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX\_OLD, in order to derive the new Security Context CTX\_NEW. Then, the client sends an OSCORE request to the server, protected with CTX\_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N2 as 'nonce' and N1 as 'old\_nonce'. After that, the client deletes CTX\_1.
 
 Upon receiving the OSCORE request, the server retrieves the values N1 from the 'old\_nonce' field of the OSCORE Option, the value N2 from the 'nonce' field of the OSCORE Option, and the value X2 from the 'x' byte of the OSCORE Option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 \| N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1.
 
@@ -734,11 +734,9 @@ Note that:
 
 * A peer that is a non-CAPABLE device MUST support the no-FS mode.
 
-* A peer that is a non-CAPABLE device MUST use random values for N1 and N2.
-
 * A peer that is a CAPABLE device MUST support the FS mode and the no-FS mode.
 
-* A peer that is a CAPABLE device SHOULD use random values for N1 and N2, but may use counters if it enforces measures to ensure their freshness and accepts the privacy implications.
+* As an exception to the nonces being generated as random values (see Section {{ssec-derive-ctx}}), a peer that is a CAPABLE device may use a value obtained from a monotonically incremented counter as nonce N1 or N2 if it enforces measures to ensure their freshness. Note that this has privacy implications which are elaborated on in Section {{sec-cons}}. Counter values need to be stored in persistant memory, thus non-CAPABLE devices are not able to safely use a counter value as nonce.
 
 As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{I-D.ietf-lake-edhoc}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
@@ -1031,7 +1029,7 @@ Initiator                                         Responder
 
 In this second example, the Initiator asks the EDHOC Responder about its support for KUDOS ('ead_value' = ASK). In EDHOC message_2, the Responder indicates that it does not support KUDOS at all ('ead_value' = NONE). Finally, in EDHOC message_3, the Initiator does not include the KUDOS\_EAD item, since it already knows that using KUDOS with the other peer will not be possible. After the EDHOC execution has successfully finished, the Initiator is aware that the Responder does not support KUDOS, which the two peers are not going to use with each other.
 
-# Security Considerations
+# Security Considerations {#sec-cons}
 
 This document mainly covers security considerations about using AEAD keys in OSCORE and their usage limits, in addition to the security considerations of {{RFC8613}}.
 
@@ -1039,7 +1037,7 @@ Depending on the specific key update procedure used to establish a new OSCORE Se
 
 As mentioned in {{ssec-derive-ctx}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages. Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. These smaller values can be permitted, provided that their safety within the system can be assured.
 
-The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy (as opposed to, e.g., a counter, which might leak some information about the peers). However, if a peer is able to store counter values persistently and is willing to accept the privacy implications, counters can also be used.
+The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy. If instead a counter value is used, this can leak some information about the peers. Specifically, using counters will reveal the frequency of rekeying procedures performed.
 
 \[TODO: Add more considerations.\]
 
