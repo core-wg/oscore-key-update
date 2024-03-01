@@ -1162,7 +1162,7 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and both KUDOS messages being CoAP requests.
 
 ~~~~~~~~~~~
-                     Client                  Server
+                  Client/Server          Client/Server
                    (initiator)            (responder)
                         |                      |
 Generate N1             |                      |
