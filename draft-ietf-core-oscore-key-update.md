@@ -1328,6 +1328,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Add example showing flexible message flow with two KUDOS messages as CoAP requests.
 
+* Enable sending KUDOS messages as regular application messages
+
 ## Version -05 to -06 ## {#sec-05-06}
 
 * Mandate support for both the forward and reverse message flow.
