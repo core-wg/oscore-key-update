@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            1 March 2024
-Expires: 2 September 2024
+Intended status: Standards Track                            2 March 2024
+Expires: 3 September 2024
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2024.
+   This Internet-Draft will expire on 3 September 2024.
 
 Copyright Notice
 
@@ -624,9 +624,8 @@ Table of Contents
    When running KUDOS, each peer contributes by generating a nonce value
    N1 or N2, and providing it to the other peer.  The size of the nonces
    N1 and N2 is application specific, and the use of 8 byte nonce values
-   is RECOMMENDED.  The nonces N1 and N2 SHOULD be random values,
-   however an exception where this does not need to be the case is
-   described later in Section Section 4.5.1.
+   is RECOMMENDED.  The nonces N1 and N2 SHOULD be random values.  An
+   exception is described later in Section Section 4.5.1.
 
    Furthermore, X1 and X2 are the value of the 'x' byte specified in the
    OSCORE Option of the first and second KUDOS message, respectively.
@@ -1360,13 +1359,16 @@ Table of Contents
       no-FS mode.
 
    *  As an exception to the nonces being generated as random values
-      (see Section Section 4.3), a peer that is a CAPABLE device may use
+      (see Section Section 4.3), a peer that is a CAPABLE device MAY use
       a value obtained from a monotonically incremented counter as nonce
-      N1 or N2 if it enforces measures to ensure their freshness.  Note
-      that this has privacy implications which are elaborated on in
-      Section Section 5.  Counter values need to be stored in persistant
-      memory, thus non-CAPABLE devices are not able to safely use a
-      counter value as nonce.
+      N1 or N2.  In such a case the peer must enforce measures to ensure
+      freshness of the values, for example the peers can use the same
+      procedure described in Appendix B.1.1 of [RFC8613] for Sender
+      Sequence Numbers.  The use of counters as nonces has privacy
+      implications, which are described in Section Section 5.  The
+      latest used counter value needs to be stored in persistant memory,
+      and since non-CAPABLE devices are unable to store to persistant
+      memory they are unable to safely use a counter value as nonce.
 
    As a general rule, once successfully generated a new OSCORE Security
    Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS
