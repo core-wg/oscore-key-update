@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-02-29T00:36:59.492100+00:00",
+  "timestamp": "2024-03-03T00:39:24.236684+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -96,12 +96,10 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [
-        "NextStep"
-      ],
+      "labels": [],
       "body": "Add further Security Considerations if necessary.",
       "createdAt": "2022-03-01T07:32:02Z",
-      "updatedAt": "2023-07-07T18:07:39Z",
+      "updatedAt": "2024-02-29T14:51:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -118,7 +116,7 @@
       "id": "I_kwDOGfmof85E15xO",
       "title": "Consider using a sequence number instead of R2",
       "url": "https://github.com/core-wg/oscore-key-update/issues/11",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -127,8 +125,8 @@
       ],
       "body": "As suggested by John during a meeting on April 29",
       "createdAt": "2022-03-01T07:39:29Z",
-      "updatedAt": "2023-07-08T13:52:01Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-01T16:50:44Z",
+      "closedAt": "2024-03-01T16:50:30Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -143,6 +141,20 @@
           "body": "We could possibly check the recording",
           "createdAt": "2022-03-01T07:39:49Z",
           "updatedAt": "2022-03-01T07:39:49Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We now allow using counters as nonce values for CAPABLE devices that are willing to accept the privacy implications.",
+          "createdAt": "2024-02-29T14:52:49Z",
+          "updatedAt": "2024-02-29T14:52:49Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Usage of counters/sequence numbers are allowed now for CAPABLE devices.",
+          "createdAt": "2024-03-01T16:50:30Z",
+          "updatedAt": "2024-03-01T16:50:44Z"
         }
       ]
     },
@@ -1618,12 +1630,11 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "Processing",
-        "NextStep"
+        "Processing"
       ],
       "body": "How should an endpoint supporting KUDOS, but which can only act as CoAP server (meaning it cannot send requests), act in the case it receives an OSCORE protected message but its 'v' limit has been reached? (Thus it cannot safely decrypt the incoming request).",
       "createdAt": "2022-11-15T12:09:37Z",
-      "updatedAt": "2023-07-08T13:51:14Z",
+      "updatedAt": "2024-02-29T14:51:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -1956,7 +1967,7 @@
       "id": "I_kwDOGfmof85gkIyU",
       "title": "Split section about Update of OSCORE Sender/Recipient IDs to new document",
       "url": "https://github.com/core-wg/oscore-key-update/issues/80",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1965,8 +1976,8 @@
       ],
       "body": "See also discussion in issue #51\r\n",
       "createdAt": "2023-03-11T17:33:08Z",
-      "updatedAt": "2024-02-22T10:38:28Z",
-      "closedAt": null,
+      "updatedAt": "2024-02-29T13:24:10Z",
+      "closedAt": "2024-02-29T13:24:09Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -1988,6 +1999,13 @@
           "body": "The material in the current draft about the OSCORE ID update procedure has now been removed in commit f93abc2a0c36dd59318a9a424feb64ff9bc37ae0",
           "createdAt": "2024-02-22T10:38:27Z",
           "updatedAt": "2024-02-22T10:38:27Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The extracted material has now been added in the new draft _oscore-id-update_ at https://github.com/core-wg/oscore-id-update",
+          "createdAt": "2024-02-29T13:24:09Z",
+          "updatedAt": "2024-02-29T13:24:09Z"
         }
       ]
     },
@@ -2000,10 +2018,12 @@
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "NextStep"
+      ],
       "body": "Similarly to what was done in Group OSCORE.",
       "createdAt": "2023-06-27T15:27:39Z",
-      "updatedAt": "2023-10-12T09:04:28Z",
+      "updatedAt": "2024-02-29T14:52:00Z",
       "closedAt": null,
       "comments": [
         {
@@ -2041,26 +2061,35 @@
       "labels": [],
       "body": "For instance about N1 and N2 being sent in cleartext",
       "createdAt": "2023-07-07T16:40:03Z",
-      "updatedAt": "2023-07-08T13:55:37Z",
+      "updatedAt": "2024-03-01T16:51:31Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Currently we cover also privacy considerations in the Security considerations section.",
+          "createdAt": "2024-03-01T16:51:30Z",
+          "updatedAt": "2024-03-01T16:51:30Z"
+        }
+      ]
     },
     {
       "number": 83,
       "id": "I_kwDOGfmof85q7A4Z",
       "title": "Does Request #1 need to target a KUDOS resource, or any resource (forward flow)",
       "url": "https://github.com/core-wg/oscore-key-update/issues/83",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "Processing"
+        "Processing",
+        "NextStep"
       ],
       "body": "Meaning can the Request #1 be actionable? (Possibly only if idempotent) ",
       "createdAt": "2023-07-07T16:53:21Z",
-      "updatedAt": "2023-10-12T09:04:18Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-01T15:36:38Z",
+      "closedAt": "2024-03-01T15:36:38Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2082,6 +2111,13 @@
           "body": "[1] mentions this topic and puts it in relation with issue #85 \r\n\r\n[1] https://mailarchive.ietf.org/arch/msg/core/vSF5Mqo9LAioEM0AUEfoxxl7Zv4/",
           "createdAt": "2023-07-26T20:31:51Z",
           "updatedAt": "2023-07-26T20:31:51Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This should now be taken care of with commit ffe05281f3d74fd464643056dd3ad88256db5c73 for closing issue #93 ",
+          "createdAt": "2024-03-01T15:36:38Z",
+          "updatedAt": "2024-03-01T15:36:38Z"
         }
       ]
     },
@@ -2215,7 +2251,7 @@
       "id": "I_kwDOGfmof85srAHz",
       "title": "Check whether non-random nonces are allowed",
       "url": "https://github.com/core-wg/oscore-key-update/issues/89",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chrysn",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -2224,8 +2260,8 @@
       ],
       "body": "Doing some thought experiments I found that there'd be a scenarios in which I'd not use random nonces:\r\n\r\nIf I'm persisting the context anyway, I can also persist a counter. Then, rather than using a random nonce that needs to be large to avoid collisions, I'll just pull a new number from that counter, and it's just as well not reuse.\r\n\r\n(I thought that there'd be two, and a non-CAPABLE host could use a random nonce once and then crank up through numbers, but they can't because once in non-FS mode it's always the boostrap secret, and it has to be that way because otherwise the peer couldn't tell whether we're starting from bootstrap or starting from the last established keys).\r\n\r\nFrom a short grepping I think that there are no normative references to random nonces, but some appear factual rather than informative (eg. \"First, the client generates a random value N1\"), so it's a bit unclear whether it's allowed. (They're discouraged for sure for privacy reasons, but that may not be as relevant to some applications as it is to others).",
       "createdAt": "2023-07-26T21:28:33Z",
-      "updatedAt": "2024-01-16T09:19:44Z",
-      "closedAt": null,
+      "updatedAt": "2024-02-29T14:43:33Z",
+      "closedAt": "2024-02-29T14:43:33Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2333,17 +2369,18 @@
       "id": "I_kwDOGfmof850cq16",
       "title": "Let KUDOS messages be regular application messages",
       "url": "https://github.com/core-wg/oscore-key-update/issues/93",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [
-        "Processing"
+        "Processing",
+        "NextStep"
       ],
       "body": "- KUDOS request messages can target any resource at the server\r\n- In the forward message flow, the client would send the application message that it currently wants to send as a KUDOS message\r\n- The caveat is that the server cannot be sure the request is fresh, thus it may want to respond with 4.01\r\n\r\nEither we state that a 4.01 response means that the client should re-send its latest sent request, or the echo procedure can be utilized.\r\n\r\nSee also:\r\nhttps://mailarchive.ietf.org/arch/msg/core/VRpad8f_cSye84txUnuTxYLDczw/",
       "createdAt": "2023-10-20T07:05:53Z",
-      "updatedAt": "2024-01-16T09:19:02Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-01T15:29:05Z",
+      "closedAt": "2024-03-01T15:28:29Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2351,6 +2388,13 @@
           "body": "This was raised during IETF 118 and was supported. So we can go ahead",
           "createdAt": "2024-01-16T09:18:44Z",
           "updatedAt": "2024-01-16T09:18:44Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done in commit ffe05281f3d74fd464643056dd3ad88256db5c73",
+          "createdAt": "2024-03-01T15:29:03Z",
+          "updatedAt": "2024-03-01T15:29:03Z"
         }
       ]
     },
@@ -2359,7 +2403,7 @@
       "id": "I_kwDOGfmof850csPk",
       "title": "Allow a more flexible message flow",
       "url": "https://github.com/core-wg/oscore-key-update/issues/94",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -2368,8 +2412,8 @@
       ],
       "body": "We can allow KUDOS exchanges to not necessarily be based on request/response pairs, but rather allow for a more flexible message flows.\r\n\r\nFor instance Christian gave the following example where both KUDOS messages can be requests:\r\n1. EP -> RD: POST /.well-known/rd - _KUDOS message 1_\r\n2. RD -> EP: GET /.well-known/core - _KUDOS message 2_\r\n3. EP -> RD: response with payload of .well-known/core\r\n4. RD -> EP: response to the POST\r\n\r\nAnother example is where the second KUDOS message is a response to a different request than the first KUDOS message. This could for instance be the case for notifications, where the client sends a request and the server then sends a notification (which is not a response to the initial client request).\r\n\r\nSee also:\r\nhttps://mailarchive.ietf.org/arch/msg/core/VRpad8f_cSye84txUnuTxYLDczw/",
       "createdAt": "2023-10-20T07:10:18Z",
-      "updatedAt": "2024-01-16T09:18:03Z",
-      "closedAt": null,
+      "updatedAt": "2024-02-29T14:43:34Z",
+      "closedAt": "2024-02-29T14:43:34Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2385,7 +2429,7 @@
       "id": "I_kwDOGfmof853ZdYq",
       "title": "Allow larger nonce lengths",
       "url": "https://github.com/core-wg/oscore-key-update/issues/95",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chrysn",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -2394,8 +2438,8 @@
       ],
       "body": "KUDOS would be a fine base to do away with a lot of text in deterministic OSCORE (https://gitlab.com/chrysn/core-cachable-oscore/-/issues/38).\r\n\r\nTrouble is, we'd need nonces that can be longer than 16 bytes. (16 bytes may be fine, given that a 128bit birthday starts hitting at 2**64 requests, but full hashes are longer). Would it make sense to use CoAP extension nibble semantics on `m`, where 13 means \"+1 byte\", 14 means \"+2 bytes\" and 15 is reserved? (No, >256 byte nonces are absolutlely weird, but implementations will have some limit on nonce length anyway, and it may be a fine recommendation that anything > 12 will rarely be needed except when another implemented spec demands it).\r\n\r\nIn the interest of outer blockwising, it may be worth considering to send the nonce(s) in the payload (similar to how CoAP-EDHOC does it), but please only consider this if there are better reasons to do it than just this request.\r\n\r\n(Note to self: I haven't fully looked into how this would all work precisely; in particular, gotta check whether we can get away with no nonces in the response).",
       "createdAt": "2023-11-20T23:05:42Z",
-      "updatedAt": "2024-01-16T09:20:48Z",
-      "closedAt": null,
+      "updatedAt": "2024-02-29T14:50:31Z",
+      "closedAt": "2024-02-29T14:50:30Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2403,8 +2447,31 @@
           "body": "This issue, and related considerations will be raised during the CoRE interim on January 17",
           "createdAt": "2024-01-16T09:20:43Z",
           "updatedAt": "2024-01-16T09:20:43Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was raised and discussed during the CoRE interim on Jan. 17 with conclusion that for KUDOS we do not need longer nonce sizes.\r\n\r\nThe proposal from Christian to take advantage of KUDOS functionality for cacheable OSCORE do not rely on longer nonces in KUDOS, as a separate option can still be used for relaying the longer hash values.",
+          "createdAt": "2024-02-29T14:50:30Z",
+          "updatedAt": "2024-02-29T14:50:30Z"
         }
       ]
+    },
+    {
+      "number": 96,
+      "id": "I_kwDOGfmof86A9lwK",
+      "title": "Add considerations on usage of no-response option",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/96",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "If the forward message flow is used, and the client knows that the response is coming in a different unrelated response then using no response is fine.",
+      "createdAt": "2024-03-01T15:21:31Z",
+      "updatedAt": "2024-03-01T15:21:32Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": []
