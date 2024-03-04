@@ -1265,7 +1265,7 @@ Protect with CTX_OLD    |--------------------->| /obs
                         |  ...                 |
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_OLD
-                        |  Observe: 0          |
+                        |  Observe: -          |
                         |  ...                 |
                         | }                    |
                         |                      |
@@ -1312,7 +1312,7 @@ CTX_NEW = updateCtx(    |  Partial IV: 0       |
 Verify with CTX_NEW     |  ...                 |
                         | }                    |
 Discard CTX_OLD         | Encrypted Payload {  |
-                        | Observe: 1           |
+                        | Observe: -           |
                         |  ...                 |
                         | }                    |
                         |                      |
@@ -1365,6 +1365,7 @@ Protect with CTX_1      |--------------------->| /temp
                         |  ...                 |         CTX_OLD)
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_1
+                        |  0.03 (PUT)          |
                         |  ...                 |
                         |  Application Payload |
                         | }                    | Generate N2
@@ -1402,6 +1403,7 @@ Protect with CTX_NEW    |--------------------->| /temp
                         |  ...                 |
                         | }                    | Verify with CTX_NEW
                         | Encrypted Payload {  |
+                        |  0.03 (PUT)          |
                         |  ...                 | Discard CTX_OLD
                         |  Application Payload |
                         | }                    |
@@ -1412,6 +1414,7 @@ Protect with CTX_NEW    |--------------------->| /temp
                         |  ...                 |
 Verify with CTX_NEW     | }                    |
                         | Encrypted Payload {  |
+                        |  2.04 (Changed)      |
                         |  ...                 |
                         |  Application Payload |
                         | }                    |
