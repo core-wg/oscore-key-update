@@ -62,7 +62,6 @@ informative:
   RFC8615:
   RFC8724:
   RFC8824:
-  RFC9175:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
   I-D.ietf-ace-edhoc-oscore-profile:
@@ -345,7 +344,7 @@ Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Opt
 
 After a peer has generated or received the value N1, and after a peer has calculated or received the value X1, it shall retain these in memory until it has received and processed the second KUDOS message.
 
-Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages. Once CTX\_NEW has been derived, a peer deletes any OSCORE Security Context older than CTX\_OLD with the same ID Context. This can for instance occur in the forward message flow when the initiator has just received KUDOS Response #1 and immediately starts KUDOS again as initiator, before sending any non KUDOS messages which would give the responder key confirmation and allow it to safely discard CTX_OLD.
+Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages. Once CTX\_NEW has been derived, a peer deletes any OSCORE Security Context CTX\_DEL older than CTX\_OLD, such that both CTX\_DEL and CTX\_OLD have the same ID\_CONTEXT or no ID Context. This can for instance occur in the forward message flow when the initiator has just received KUDOS Response #1 and immediately starts KUDOS again as initiator, before sending any non KUDOS messages which would give the responder key confirmation and allow it to safely discard CTX_OLD.
 
 Also, that peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}. More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
 
@@ -361,16 +360,19 @@ KUDOS may run with the initiator acting either as CoAP client or CoAP server. Th
 * The responder always offers the fresh value N2
 * The responder is always the first one deriving CTX\_NEW.
 * The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX\_OLD.
-* Both the initiator and the responder use the same respective OSCORE Sender ID and Recipient ID. Also, they both preserve and use the same OSCORE ID Context from CTX\_OLD.
+* Both the initiator and the responder use and preserve the same respective OSCORE Sender ID and Recipient ID. Also, if CTX_OLD specifies an OSCORE ID Context, both peers use and preserve the same OSCORE ID Context.
 
-This situation, however, should not pose significant problems even for a constrained server operating at a capacity of one request per second, thus ensuring the reliability and robustness of the system even under such circumstances.
+If a KUDOS message is a CoAP request, then it can target two different types of resources at the recipient CoAP server:
 
-A KUDOS message that is a CoAP request can target 2 different types of resources: i) A well-known KUDOS resource (see Section {{well-known-kudos-desc}}) or an analogous one using resource type "core.kudos" (see Section {{well-known-kudos-desc}}). In such case no application processing is expected and no payload should be included in the request (before OSCORE protection). ii) A real application resource, meaning any resource the server makes available which is not a well-known KUDOS resource or analogous. In such case the request can include payload (before OSCORE protection) and normal application processing should occur.
-Following the same logic, any CoAP response can be a KUDOS message. If the response is produced by a resource well-known KUDOS resource (or analogous) then no plain payload is expected, while in any other case a payload may be present.
+* The well-known KUDOS resource at /.well-known/kudos, or an alternative KUDOS resource with resource type "core.kudos" (see Sections {{well-known-kudos-desc}} and {{rt-kudos}}). In such a case, no application processing is expected at the CoAP server, and the plain CoAP request composed before OSCORE protection should not include an application payload.
+
+* A non-KUDOS resource, i.e., an actual application resource that a CoAP request can target in order to trigger application processing at the CoAP server. In such a case, the plain CoAP request composed before OSCORE protection may include an application payload, if admitted by the request method.
+
+Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE encryption should not include an application payload. Otherwise, an application payload may be included.
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX\_NEW.
 
-In particular, CTX\_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context, before initiating KUDOS, or upon having received and successfully verified the first KUDOS message. In turn, CTX\_NEW is the most recent OSCORE Security Context that a peer has, with a given ID Context, before sending the second KUDOS message, or upon having received and successfully verified the second KUDOS message.
+In particular, CTX\_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the first KUDOS message. In turn, CTX_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending the second KUDOS message or upon having received and successfully verified the second KUDOS message.
 
 In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
@@ -525,7 +527,12 @@ Note that the server achieves key confirmation only when receiving a message fro
 
 Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
 
-When KUDOS Request #1 targets a normal resource (that is not a well-known KUDOS or analogous resource), then if the server requires freshness it can respond with a 4.01 (Unauthorized) error response protected with CTX\_NEW as KUDOS Response #1. This signals to the client that the server is continuing the KUDOS procedure but wishes to verify the freshness of the application-level operations the client requested in KUDOS Request #1. In such case the client can resend its original request but now protected with CTX\_NEW wishes as Request #2. This procedure is neccessary as the server cannot be sure that KUDOS Request #1 is fresh. An alternative is to use the CoAP Echo option as defined in {{RFC9175}} which the procedure defined in this paragraph is analogous in functionality to. An example of a KUDOS execution where KUDOS Request #1 targets a normal resource is shown in {{ssec-derive-ctx-client-init-normal-resource}}.
+In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been succesfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) MUST be a 4.01 (Unauthorized) error response.
+
+Upon receiving the 4.01 (Unauthorized) error response as the second KUDOS message Response #1, the client processes it like described above. After successfully completing the KUDOS execution, the client can send to the server a non-KUDOS request protected with CTX_NEW (i.e., Request #2 in Figure 3). Presumably, this request targets the same resource targeted by the previous Request #1, as the same application request or a different one, if the application permits it.
+Upon receiving, decrypting, and successfully verifying this request protected with CTX_NEW, the server asserts the request as fresh, leveraging the recent establishment of CTX_NEW.
+
+An example of a KUDOS execution where Request #1 targets a non-KUDOS resource is shown in Appendix C.
 
 #### Avoiding In-Transit Requests During a Key Update
 
@@ -642,7 +649,7 @@ If there are any, the client MUST NOT initiate the KUDOS execution, before eithe
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW from cryptographically matching with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
 
-During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see Section 4.7 of [RFC7252]).
+During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see {{Section 4.7 of RFC7252}}).
 
 ## Avoiding Deadlocks
 
@@ -742,7 +749,7 @@ Note that:
 
 * A peer that is a CAPABLE device MUST support the FS mode and the no-FS mode.
 
-* As an exception to the nonces being generated as random values (see Section {{ssec-derive-ctx}}), a peer that is a CAPABLE device MAY use a value obtained from a monotonically incremented counter as nonce N1 or N2. In such a case the peer must enforce measures to ensure freshness of the values, for example the peers can use the same procedure described in {{Section B.1.1 of RFC8613}} for Sender Sequence Numbers. The use of counters as nonces has privacy implications, which are described in Section {{sec-cons}}. The latest used counter value needs to be stored in persistant memory, and since non-CAPABLE devices are unable to store to persistant memory they are unable to safely use a counter value as nonce.
+* As an exception to the nonces being generated as random values (see Section {{ssec-derive-ctx}}), a peer that is a CAPABLE device MAY use a value obtained from a monotonically incremented counter as nonce N1 or N2. This has privacy implications, which are described in Section {{sec-cons}}. In such a case, the peer MUST enforce measures to ensure freshness of the nonce values. For example, the peer can use the same procedure described in {{Section B.1.1 of RFC8613}} for handling the OSCORE Sender Sequence Number values. These measures require to regularly store the used counter values in non-volatile memory, which makes non-CAPABLE devices unable to safely use counter values as nonce values.
 
 As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{I-D.ietf-lake-edhoc}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
@@ -931,9 +938,7 @@ Assuming nonces of the same size in both messages of the same KUDOS execution, t
 
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
-According to this specification, KUDOS is transferred in POST requests to the Uri-Path: "/.well-known/kudos" (see {{well-known-kudos}}), and 2.04 (Changed) responses. An application may define its own path that can be discovered, e.g., using a resource directory {{RFC9176}}. Client applications can use the resource type "core.kudos" to discover a server's KUDOS resource, i.e., where to send KUDOS requests, see {{rt-kudos}}.
-
-If a client wishes to execute the KUDOS procedure as initiator, without actually triggering any application processing on the server, the first KUDOS message must target the resource located at "/.well-known/kudos" or an analogous resource using resource type "core.kudos".
+According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message must target a KUDOS resource, e.g., at the Uri-Path "/.well-known/kudos" (see Section 6.3), or at an alternative Uri-Path that can be discovered, e.g., by using a resource directory {{RFC9176}}. In order to discover a server's KUDOS resource, client applications can use the resource type "core.kudos" (see {{rt-kudos}}).
 
 ### Rekeying when Using SCHC with OSCORE
 
@@ -1043,7 +1048,9 @@ This document mainly covers security considerations about using AEAD keys in OSC
 
 Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
 
-As mentioned in {{ssec-derive-ctx}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages. Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. These smaller values can be permitted, provided that their safety within the system can be assured.
+As mentioned in {{ssec-derive-ctx}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages.
+
+Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. This is acceptable, provided that safety, reliability, and robustness within the system can still be assured. Although using nonces that are smaller in size means that there will be a collision on average after fewer KUDOS messages have been sent, this should not pose significant problems even for a constrained server operating at a capacity of one request per second.
 
 The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy. If instead a counter value is used, this can leak some information about the peers. Specifically, using counters will reveal the frequency of rekeying procedures performed.
 
@@ -1174,6 +1181,7 @@ CTX_1 = updateCtx(      |                      |
                         |                      |
                         |      Request #1      |
 Protect with CTX_1      |--------------------->| /.well-known/kudos
+                        | Token: 0x4a          |
                         | OSCORE {             |
                         |  ...                 |
                         |  Partial IV: 0       |
@@ -1194,6 +1202,7 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |                      |
                         |      Request #2      |
      /.well-known/kudos |<---------------------| Protect with CTX_NEW
+                        | Token: 0x4a          |
                         | OSCORE {             |
                         |  ...                 |
 CTX_NEW = updateCtx(    |  Partial IV: 0       |
@@ -1214,6 +1223,7 @@ Discard CTX_OLD         | Encrypted Payload {  |
                         |                      |
                         |      Response #1     |
 Protect with CTX_NEW    |--------------------->|
+                        | Token: 0x7c          |
                         | OSCORE {             |
                         |  ...                 |
                         | }                    | Verify with CTX_NEW
@@ -1224,6 +1234,7 @@ Protect with CTX_NEW    |--------------------->|
                         |                      |
                         |      Response #2     |
                         |<---------------------| Protect with CTX_NEW
+                        | Token: 0x7c          |
                         | OSCORE {             |
                         |  ...                 |
 Verify with CTX_NEW     | }                    |
@@ -1235,15 +1246,15 @@ Verify with CTX_NEW     | }                    |
 ~~~~~~~~~~~
 {: #fig-message-exchange-client-init-requests-only title="Example of the KUDOS forward message flow where both KUDOS messages are requests." artwork-align="center"}
 
-# Forward Message Flow with Response 1 unrelated to Request 1 {#ssec-derive-ctx-client-init-unrelated}
+# Forward Message Flow with Response #1 unrelated to Request #1 {#ssec-derive-ctx-client-init-unrelated}
 
-This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, where KUDOS Response #2 is not a response to KUDOS Request #1 but rather an unrelated Observer notification.
+This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and where the second KUDOS message Response #1 is not a response to the first KUDOS message Request #2, but rather an unrelated Observe notification as a response to the non-KUDOS message Request #1
 
 ~~~~~~~~~~~
                      Client                  Server
                    (initiator)            (responder)
                         |                      |
-                        |       Request        |
+                        |      Request #1      |
                         |   (Registration)     |
 Protect with CTX_OLD    |--------------------->| /obs
                         | Token: 0x4a          |
@@ -1265,7 +1276,7 @@ CTX_1 = updateCtx(      |                      |
         N1,             |                      |
         CTX_OLD)        |                      |
                         |                      |
-                        |      Request #1      |
+                        |      Request #2      |
 Protect with CTX_1      |--------------------->| /.well-known/kudos
                         | Token: 0x7c          |
                         | OSCORE {             |
@@ -1321,11 +1332,15 @@ Verify with CTX_NEW     | }                    |
                         | }                    |
                         |                      |
 ~~~~~~~~~~~
-{: #fig-message-exchange-client-init-unrelated-response title="Example of the KUDOS forward message flow where KUDOS Response #2 is not a response to KUDOS Request #1." artwork-align="center"}
+{: #fig-message-exchange-client-init-unrelated-response title="Example of the KUDOS forward message flow where the second KUDOS message Response #1 is not a response to Request #1." artwork-align="center"}
 
-# Forward Message Flow Targeting Arbitrary Resource at Server {#ssec-derive-ctx-client-init-normal-resource}
+# Forward Message Flow Targeting a non-KUDOS Resource at Server {#ssec-derive-ctx-client-init-normal-resource}
 
-This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and targeting a normal resource with KUDOS Request #1. Note the presence of an application payload in KUDOS Request #1 and the fact that KUDOS Response #1 is a 4.01 (Unauthorized) message (inside the encrypted payload as the response code is protected by OSCORE).
+This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and with the KUDOS message Request #1 targeting a non-KUDOS resource at the Uri-Path "/temp". The server application has freshness requirements on the requests targeting the resource at "/temp".
+
+Note the presence of an application payload in the KUDOS message Request #1 and in the non-KUDOS message Request #2, both of which are composed as PUT requests. That request method is part of the encrypted payload, since it is protected by OSCORE.
+
+Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Unauthorized) response, while the non-KUDOS message Response #2 is composed as a 2.04 (Changed) repsonse. Those response codes are part of the encrypted payload, since they are protected by OSCORE.
 
 ~~~~~~~~~~~
                      Client                  Server
@@ -1402,7 +1417,7 @@ Verify with CTX_NEW     | }                    |
                         | }                    |
                         |                      |
 ~~~~~~~~~~~
-{: #fig-message-exchange-client-init-normal-resource title="Example of the KUDOS forward message flow where KUDOS Request #1 targets a normal resource." artwork-align="center"}
+{: #fig-message-exchange-client-init-normal-resource title="Example of the KUDOS forward message flow where the KUDOS message Request #1 targets a non-KUDOS resource." artwork-align="center"}
 
 # Document Updates # {#sec-document-updates}
 
