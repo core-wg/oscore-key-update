@@ -2378,7 +2378,7 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
                          |  ...                 |
                          | }                    |
                          | Encrypted Payload {  | Verify with CTX_OLD
-                         |  Observe: 0          |
+                         |  Observe: -          |
                          |  ...                 |
                          | }                    |
                          |                      |
@@ -2425,7 +2425,7 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
  Verify with CTX_NEW     |  ...                 |
                          | }                    |
  Discard CTX_OLD         | Encrypted Payload {  |
-                         | Observe: 1           |
+                         | Observe: -           |
                          |  ...                 |
                          | }                    |
                          |                      |
@@ -2490,6 +2490,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
                          |  ...                 |         CTX_OLD)
                          | }                    |
                          | Encrypted Payload {  | Verify with CTX_1
+                         |  0.03 (PUT)          |
                          |  ...                 |
                          |  Application Payload |
                          | }                    | Generate N2
@@ -2527,6 +2528,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
                          |  ...                 |
                          | }                    | Verify with CTX_NEW
                          | Encrypted Payload {  |
+                         |  0.03 (PUT)          |
                          |  ...                 | Discard CTX_OLD
                          |  Application Payload |
                          | }                    |
@@ -2537,6 +2539,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
                          |  ...                 |
  Verify with CTX_NEW     | }                    |
                          | Encrypted Payload {  |
+                         |  2.04 (Changed)      |
                          |  ...                 |
                          |  Application Payload |
                          | }                    |
