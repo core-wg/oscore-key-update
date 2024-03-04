@@ -1202,7 +1202,7 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |                      |
                         |      Request #2      |
      /.well-known/kudos |<---------------------| Protect with CTX_NEW
-                        | Token: 0x4a          |
+                        | Token: 0x7c          |
                         | OSCORE {             |
                         |  ...                 |
 CTX_NEW = updateCtx(    |  Partial IV: 0       |
@@ -1234,7 +1234,7 @@ Protect with CTX_NEW    |--------------------->|
                         |                      |
                         |      Response #2     |
                         |<---------------------| Protect with CTX_NEW
-                        | Token: 0x7c          |
+                        | Token: 0x4a          |
                         | OSCORE {             |
                         |  ...                 |
 Verify with CTX_NEW     | }                    |
