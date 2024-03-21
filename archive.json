@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-19T00:37:13.961916+00:00",
+  "timestamp": "2024-03-21T00:38:45.224089+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2470,6 +2470,22 @@
       "body": "If the forward message flow is used, and the client knows that the response is coming in a different unrelated response then using no response is fine.",
       "createdAt": "2024-03-01T15:21:31Z",
       "updatedAt": "2024-03-01T15:21:32Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 97,
+      "id": "I_kwDOGfmof86Cwu3p",
+      "title": "Handle situation with two simultaneously started key updates",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/97",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "It might happen that both peers start KUDOS with one another, without knowing that the other peer has also simultaneously started KUDOS.\r\n\r\nThe scenario is that each peer:\r\n\r\n- First acts as initiator in a KUDOS execution, sending the first KUDOS message for that execution; and then\r\n- Acts as responder in the other KUDOS execution, upon receiving the first KUDOS message sent by the other peer.\r\n\r\n**Proposed solution**\r\nIf a peer P1 is acting as initiator in an ongoing KUDOS execution E1 with another peer P2, and P1 receives a first KUDOS message from P2 aimed to start a second KUDOS execution E2, then P1 MUST abort the execution E2 and MUST reply to P2 with a CoAP RST message. It might happen that both executions get cancelled, but at most one survives.",
+      "createdAt": "2024-03-19T01:27:00Z",
+      "updatedAt": "2024-03-19T01:28:25Z",
       "closedAt": null,
       "comments": []
     }
