@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-26T00:37:31.403617+00:00",
+  "timestamp": "2024-03-28T00:37:46.933728+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2486,6 +2486,22 @@
       "body": "It might happen that both peers start KUDOS with one another, without knowing that the other peer has also simultaneously started KUDOS.\r\n\r\nThe scenario is that each peer:\r\n\r\n- First acts as initiator in a KUDOS execution, sending the first KUDOS message for that execution; and then\r\n- Acts as responder in the other KUDOS execution, upon receiving the first KUDOS message sent by the other peer.\r\n\r\n**Proposed solution**\r\nIf a peer P1 is acting as initiator in an ongoing KUDOS execution E1 with another peer P2, and P1 receives a first KUDOS message from P2 aimed to start a second KUDOS execution E2, then P1 MUST abort the execution E2 and MUST reply to P2 with a CoAP RST message. It might happen that both executions get cancelled, but at most one survives.",
       "createdAt": "2024-03-19T01:27:00Z",
       "updatedAt": "2024-03-19T01:28:25Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 98,
+      "id": "I_kwDOGfmof86DyN4D",
+      "title": "Consider 2 papers relevant for KUDOS",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/98",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We should consider these 2 papers, and refer to them related to things relevant for KUDOS:\r\nhttps://eprint.iacr.org/2023/913\r\nhttps://eprint.iacr.org/2024/220",
+      "createdAt": "2024-03-27T14:36:14Z",
+      "updatedAt": "2024-03-27T14:36:14Z",
       "closedAt": null,
       "comments": []
     }
