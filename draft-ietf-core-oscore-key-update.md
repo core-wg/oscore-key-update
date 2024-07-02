@@ -62,6 +62,7 @@ informative:
   RFC8615:
   RFC8724:
   RFC8824:
+  RFC7967:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
   I-D.ietf-ace-edhoc-oscore-profile:
@@ -378,7 +379,7 @@ In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBO
 
 ### Forward Message Flow {#ssec-derive-ctx-client-init}
 
-{{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator. Even though in this example the first KUDOS message is a request and the second is a response, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. {{ssec-derive-ctx-client-init-requests-only}} shows an example where both KUDOS messages are CoAP requests. Furthermore, {{ssec-derive-ctx-client-init-unrelated}} presents an example where KUDOS Response #2 is a response to a different request than KUDOS Request #1.
+{{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator. Even though in this example the first KUDOS message is a request and the second is a response, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. {{ssec-derive-ctx-client-init-requests-only}} shows an example where both KUDOS messages are CoAP requests. Furthermore, {{ssec-derive-ctx-client-init-unrelated}} presents an example where KUDOS Response #1 is a response to a different request than KUDOS Request #1. Note that in such a case where the forward message flow is used and the client knows that KUDOS Response #2 is coming as a different unrelated response than the response to KUDOS Request #1, then usage of the No-Response CoAP Option {{RFC7967}} in KUDOS Request #1 is possible.
 
 ~~~~~~~~~~~
                      Client                  Server
@@ -1425,6 +1426,10 @@ Verify with CTX_NEW     | }                    |
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -07 to -08 ## {#sec-07-08}
+
+* Add note about usage of the CoAP No-Response Option
 
 ## Version -06 to -07 ## {#sec-06-07}
 
