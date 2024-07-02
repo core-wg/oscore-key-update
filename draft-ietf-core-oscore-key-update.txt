@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            4 March 2024
-Expires: 5 September 2024
+Intended status: Standards Track                             2 July 2024
+Expires: 3 January 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 September 2024.
+   This Internet-Draft will expire on 3 January 2025.
 
 Copyright Notice
 
@@ -109,13 +109,14 @@ Table of Contents
    Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
            Server
    Appendix D.  Document Updates
-     D.1.  Version -06 to -07
-     D.2.  Version -05 to -06
-     D.3.  Version -04 to -05
-     D.4.  Version -03 to -04
-     D.5.  Version -02 to -03
-     D.6.  Version -01 to -02
-     D.7.  Version -00 to -01
+     D.1.  Version -07 to -08
+     D.2.  Version -06 to -07
+     D.3.  Version -05 to -06
+     D.4.  Version -04 to -05
+     D.5.  Version -03 to -04
+     D.6.  Version -02 to -03
+     D.7.  Version -01 to -02
+     D.8.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -748,8 +749,12 @@ Table of Contents
    a KUDOS execution can be performed with any combination of CoAP
    requests and responses.  Appendix A shows an example where both KUDOS
    messages are CoAP requests.  Furthermore, Appendix B presents an
-   example where KUDOS Response #2 is a response to a different request
-   than KUDOS Request #1.
+   example where KUDOS Response #1 is a response to a different request
+   than KUDOS Request #1.  Note that in such a case where the forward
+   message flow is used and the client knows that KUDOS Response #2 is
+   coming as a different unrelated response than the response to KUDOS
+   Request #1, then usage of the No-Response CoAP Option [RFC7967] in
+   KUDOS Request #1 is possible.
 
                       Client                  Server
                     (initiator)            (responder)
@@ -2183,9 +2188,9 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-03, 23 October 2023,
+              draft-ietf-ace-edhoc-oscore-profile-04, 4 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-03>.
+              edhoc-oscore-profile-04>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
@@ -2197,9 +2202,9 @@ Table of Contents
    [I-D.irtf-cfrg-aead-limits]
               Günther, F., Thomson, M., and C. A. Wood, "Usage Limits on
               AEAD Algorithms", Work in Progress, Internet-Draft, draft-
-              irtf-cfrg-aead-limits-07, 31 May 2023,
+              irtf-cfrg-aead-limits-08, 1 April 2024,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              aead-limits-07>.
+              aead-limits-08>.
 
    [LwM2M]    Open Mobile Alliance, "Lightweight Machine to Machine
               Technical Specification - Core, Approved Version 1.2, OMA-
@@ -2222,6 +2227,11 @@ Table of Contents
               Internet of Things (IoT): Problem Statement", RFC 7554,
               DOI 10.17487/RFC7554, May 2015,
               <https://www.rfc-editor.org/rfc/rfc7554>.
+
+   [RFC7967]  Bhattacharyya, A., Bandyopadhyay, S., Pal, A., and T.
+              Bose, "Constrained Application Protocol (CoAP) Option for
+              No Server Response", RFC 7967, DOI 10.17487/RFC7967,
+              August 2016, <https://www.rfc-editor.org/rfc/rfc7967>.
 
    [RFC8180]  Vilajosana, X., Ed., Pister, K., and T. Watteyne, "Minimal
               IPv6 over the TSCH Mode of IEEE 802.15.4e (6TiSCH)
@@ -2552,7 +2562,11 @@ Appendix D.  Document Updates
 
    RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
-D.1.  Version -06 to -07
+D.1.  Version -07 to -08
+
+   *  Add note about usage of the CoAP No-Response Option
+
+D.2.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -2566,7 +2580,7 @@ D.1.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-D.2.  Version -05 to -06
+D.3.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -2586,7 +2600,7 @@ D.2.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.3.  Version -04 to -05
+D.4.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -2609,7 +2623,7 @@ D.3.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-D.4.  Version -03 to -04
+D.5.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -2635,7 +2649,7 @@ D.4.  Version -03 to -04
 
    *  Editorial improvements.
 
-D.5.  Version -02 to -03
+D.6.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -2654,7 +2668,7 @@ D.5.  Version -02 to -03
 
    *  Editorial improvements.
 
-D.6.  Version -01 to -02
+D.7.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -2678,7 +2692,7 @@ D.6.  Version -01 to -02
 
    *  Editorial improvements.
 
-D.7.  Version -00 to -01
+D.8.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
