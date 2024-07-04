@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-02T00:42:22.878603+00:00",
+  "timestamp": "2024-07-04T00:42:33.237667+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2462,15 +2462,15 @@
       "id": "I_kwDOGfmof86A9lwK",
       "title": "Add considerations on usage of no-response option",
       "url": "https://github.com/core-wg/oscore-key-update/issues/96",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "If the forward message flow is used, and the client knows that the response is coming in a different unrelated response then using no response is fine.",
       "createdAt": "2024-03-01T15:21:31Z",
-      "updatedAt": "2024-03-01T15:21:32Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-02T07:17:34Z",
+      "closedAt": "2024-07-02T07:17:34Z",
       "comments": []
     },
     {
@@ -2502,6 +2502,22 @@
       "body": "We should consider these 2 papers, and refer to them related to things relevant for KUDOS:\r\nhttps://eprint.iacr.org/2023/913\r\nhttps://eprint.iacr.org/2024/220",
       "createdAt": "2024-03-27T14:36:14Z",
       "updatedAt": "2024-03-27T14:36:14Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 99,
+      "id": "I_kwDOGfmof86ORXeh",
+      "title": "Editorial: Split main section describing KUDOS into subsections",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/99",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Splitting the main section that describes KUDOS into subsections can make things more readable",
+      "createdAt": "2024-07-02T18:45:46Z",
+      "updatedAt": "2024-07-02T18:45:46Z",
       "closedAt": null,
       "comments": []
     }
