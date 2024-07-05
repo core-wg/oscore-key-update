@@ -383,7 +383,7 @@ In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBO
 
 ### Forward Message Flow {#ssec-derive-ctx-client-init}
 
-{{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator. Even though in this example the first KUDOS message is a request and the second is a response, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. {{ssec-derive-ctx-client-init-requests-only}} shows an example where both KUDOS messages are CoAP requests. Furthermore, {{ssec-derive-ctx-client-init-unrelated}} presents an example where KUDOS Response #1 is a response to a different request than KUDOS Request #1. Note that in such a case where the forward message flow is used and the client knows that KUDOS Response #2 is coming as a different unrelated response than the response to KUDOS Request #1, then usage of the No-Response CoAP Option {{RFC7967}} in KUDOS Request #1 is possible.
+{{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, i.e., with the client acting as KUDOS initiator.
 
 ~~~~~~~~~~~
                      Client                  Server
@@ -539,7 +539,15 @@ In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource an
 Upon receiving the 4.01 (Unauthorized) error response as the second KUDOS message Response #1, the client processes it like described above. After successfully completing the KUDOS execution, the client can send to the server a non-KUDOS request protected with CTX_NEW (i.e., Request #2 in Figure 3). Presumably, this request targets the same resource targeted by the previous Request #1, as the same application request or a different one, if the application permits it.
 Upon receiving, decrypting, and successfully verifying this request protected with CTX_NEW, the server asserts the request as fresh, leveraging the recent establishment of CTX_NEW.
 
-An example of a KUDOS execution where Request #1 targets a non-KUDOS resource is shown in Appendix C.
+In the example shown in {{fig-message-exchange-client-init}} and discussed in this section, the first KUDOS message is a request and the second one is a response, like typically expected when using the forward message flow. However, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. Related examples using the forward message flow are provided later:
+
+* {{ssec-derive-ctx-client-init-requests-only}} presents an example where both KUDOS messages are CoAP requests.
+
+* {{ssec-derive-ctx-client-init-unrelated}} presents an example where KUDOS Response #1 is a response to a different request from KUDOS Request #1.
+
+  In such a case, if the client knows that KUDOS Response #2 is going to be sent as a response to a different request from KUDOS Request #1, then the client can use the No-Response CoAP Option {{RFC7967}} in KUDOS Request #1 without impairing the successful completion of KUDOS.
+
+* {{ssec-derive-ctx-client-init-normal-resource}} presents an example where KUDOS Request #1 is sent to a non-KUDOS resource.
 
 #### Avoiding In-Transit Requests During a Key Update
 
@@ -553,7 +561,7 @@ During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS request
 
 ### Reverse Message Flow {#ssec-derive-ctx-server-init}
 
-{{fig-message-exchange-server-init}} shows an example of KUDOS run in the reverse message flow, with the server acting as initiator.
+{{fig-message-exchange-server-init}} shows an example of KUDOS run in the reverse message flow, i.e., with the server acting as initiator.
 
 ~~~~~~~~~~~
                       Client                 Server
