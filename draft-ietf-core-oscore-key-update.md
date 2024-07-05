@@ -343,7 +343,7 @@ This section defines the actual KUDOS procedure performed by two peers to update
 
 A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.
 
-The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication. Note that, in order to prevent deadlock situations, it is permitted for the responder to use old keying material exlusively limited to the derivation of new keying material during the execution of a KUDOS procedure.
+The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication.
 
 Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
 
@@ -686,6 +686,8 @@ In case the client does not successfully verify the response, the same error han
 More generally, as soon as the client successfully verifies an incoming message protected with CTX\_NEW, the client deletes CTX\_OLD.
 
 Note that the client achieves key confirmation only when receiving a message from the server as protected with CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete CTX\_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see {{ssec-derive-ctx-client-init}}).
+
+It might be the case that the server is only a CoAP server (i.e., it does not implement a CoAP client) and, at the same time, it becomes unable to safely decrypt further incoming messages from the client. For example, this occurs when the server reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see {{I-D.ietf-core-oscore-key-limits}}). When this happens, the server cannot decrypt Request #1. Consequently, the server replies to the client with an unprotected 4.01 (Unauthorized) response, and is therefore practically unable to execute KUDOS with the client in the reverse message flow. In such a case, the only chance for the server to perform a key update with the client by means of KUDOS relies on the client starting a KUDOS execution using the forward message flow (see {{ssec-derive-ctx-client-init}}).
 
 #### Avoiding In-Transit Requests During a Key Update
 
