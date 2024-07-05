@@ -1876,19 +1876,29 @@ Table of Contents
    8, and 16 bytes, respectively.  All the indicated values are in
    bytes.
 
-     +-------+---------------------------+---------------------------+
-     |       | Forward message flow      | Reverse message flow      |
-     +-------+---------+---------+-------+---------------------------+
-     | Nonce | First   | Second  | Total | First   | Second  | Total |
-     | size  | KUDOS   | KUDOS   |       | KUDOS   | KUDOS   |       |
-     |       | message | message |       | message | message |       |
-     +-------+---------+---------+-------+---------+---------+-------+
-     | 1     | 3       | 3       | 6     | 3       | 4       | 7     |
-     +-------+-------------------+-------+---------+---------+-------+
-     | 8     | 10      | 10      | 20    | 10      | 11      | 21    |
-     +-------+---------+-----------------+---------+---------+-------+
-     | 16    | 18      | 18      | 36    | 18      | 19      | 37    |
-     +-------+---------+-----------------+---------+---------+-------+
+    +============+=====================+======================+=======+
+    | Nonce size | First KUDOS message | Second KUDOS message | Total |
+    +============+=====================+======================+=======+
+    | 1          | 3                   | 3                    | 6     |
+    +------------+---------------------+----------------------+-------+
+    | 8          | 10                  | 10                   | 20    |
+    +------------+---------------------+----------------------+-------+
+    | 16         | 18                  | 18                   | 36    |
+    +------------+---------------------+----------------------+-------+
+
+           Table 1: Communication overhead (forward message flow)
+
+    +============+=====================+======================+=======+
+    | Nonce size | First KUDOS message | Second KUDOS message | Total |
+    +============+=====================+======================+=======+
+    | 1          | 3                   | 4                    | 7     |
+    +------------+---------------------+----------------------+-------+
+    | 8          | 10                  | 11                   | 21    |
+    +------------+---------------------+----------------------+-------+
+    | 16         | 18                  | 19                   | 37    |
+    +------------+---------------------+----------------------+-------+
+
+           Table 2: Communication overhead (reverse message flow)
 
 4.8.3.  Well-Known KUDOS Resource
 
@@ -1964,7 +1974,7 @@ Table of Contents
      |      |          | KUDOS in no-FS mode only.                   |
      +------+----------+---------------------------------------------+
 
-              Table 1: Values for the EDHOC EAD item KUDOS_EAD
+              Table 3: Values for the EDHOC EAD item KUDOS_EAD
 
    When the KUDOS_EAD item is included in EDHOC message_1 with
    'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item
@@ -2155,7 +2165,7 @@ Table of Contents
    |          |             | OSCORE flag bits 56-63     |            |
    +----------+-------------+----------------------------+------------+
 
-         Table 2: Registrations in the OSCORE Flag Bits Registry
+         Table 4: Registrations in the OSCORE Flag Bits Registry
 
    In the same registry, IANA is asked to mark as 'Unassigned' the entry
    with Bit Position of 1, i.e., to update the entry as follows.
@@ -2166,7 +2176,7 @@ Table of Contents
           | 1            | Unassigned |             |           |
           +--------------+------------+-------------+-----------+
 
-              Table 3: Update in the OSCORE Flag Bits Registry
+              Table 5: Update in the OSCORE Flag Bits Registry
 
 6.2.  EDHOC External Authorization Data Registry
 
@@ -2182,7 +2192,7 @@ Table of Contents
        |       | supports KUDOS and in which mode(s) |            |
        +-------+-------------------------------------+------------+
 
-               Table 4: Registrations in the EDHOC External
+               Table 6: Registrations in the EDHOC External
                        Authorization Data Registry
 
 6.3.  The Well-Known URI Registry
