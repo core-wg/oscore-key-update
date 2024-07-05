@@ -268,7 +268,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
 ## Function for Security Context Update # {#ssec-update-function}
 
-The updateCtx() function shown in {{function-update}} takes as input the three parameters X, N, and CTX\_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-oscore-option-extensions}}), while CTX\_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX\_OUT.
+The updateCtx() function shown in {{function-update}} takes as input the three parameters X, N, and CTX\_IN. In particular, X and N are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-oscore-option-extensions}}), while CTX\_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX\_OUT. Note that new OSCORE Security Context has a Sender Sequence Number that is initialized to 0 as per {{Section 3.2.2 of RFC8613}}, and furthermore its Notification Number, used for replay protection for CoAP notifications, shall be uninitialized (have no value assigned). It will be initialized upon reception of a notification, and no notifications without Partial IV shall be accepted.
 
 As a first step, the updateCtx() function builds the two CBOR byte strings X\_cbor and N\_cbor, with value the input parameter X and N, respectively. Then, it builds X\_N, as the byte concatenation of X\_cbor and N\_cbor.
 
@@ -1436,6 +1436,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Editorial improvements.
 
 * Avoid problems for two simultaneously started key updates.
+
+* Set Notification Number to be uninitialized for new OSCORE Security Contexts.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
