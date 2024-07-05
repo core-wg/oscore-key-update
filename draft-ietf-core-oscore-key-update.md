@@ -15,11 +15,6 @@ submissiontype: IETF
 updates: 8613
 
 coding: utf-8
-pi:    # can use array (if all yes) or hash here
-
-  toc: yes
-  sortrefs:   # defaults to yes
-  symrefs: yes
 
 author:
       -
@@ -42,11 +37,9 @@ author:
         email: marco.tiloca@ri.se
 
 normative:
-  RFC2119:
   RFC5869:
   RFC7252:
   RFC7641:
-  RFC8174:
   RFC8613:
   RFC8949:
   I-D.ietf-lake-edhoc:
@@ -106,7 +99,7 @@ Furthermore, this document specifies a method that two peers can use to update t
 
 ## Terminology ## {#terminology}
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
 
 Readers are expected to be familiar with the terms and concepts related to CoAP {{RFC7252}}, Observe {{RFC7641}}, CBOR {{RFC8949}}, OSCORE {{RFC8613}}, and EDHOC {{I-D.ietf-lake-edhoc}}.
 
@@ -1487,8 +1480,7 @@ Verify with CTX_NEW     | }                    |
 {: #fig-message-exchange-client-init-normal-resource title="Example of the KUDOS forward message flow where the KUDOS message Request #1 targets a non-KUDOS resource." artwork-align="center"}
 
 # Document Updates # {#sec-document-updates}
-
-RFC EDITOR: PLEASE REMOVE THIS SECTION.
+{:removeinrfc}
 
 ## Version -07 to -08 ## {#sec-07-08}
 
@@ -1637,7 +1629,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Added key update without forward secrecy.
 
 # Acknowledgments # {#acknowledgments}
-{: numbered="no"}
+{:numbered="false"}
 
 The authors sincerely thank {{{Christian Amsüss}}}, {{{Carsten Bormann}}}, {{{Rafa Marin-Lopez}}}, {{{John Preuß Mattsson}}}, and {{{Göran Selander}}} for their feedback and comments.
 
