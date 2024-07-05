@@ -1169,6 +1169,19 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 -  Reference: {{&SELF}}
 
+## CoAP Option Numbers Registry
+
+The OSCORE entry in the "CoAP Option Numbers" registry has been updated with a reference to this document as it specifies and extended format of it.
+
+~~~~~~~~~~~
++--------+-----------------+---------------------------------+
+| Number | Name            |            Reference            |
++--------+-----------------+---------------------------------+
+|   9    | OSCORE          | [RFC7252] [RFC8613]  [RFC-XXXX] |
++--------+-----------------+---------------------------------+
+~~~~~~~~~~~
+
+
 --- back
 
 # Forward Message Flow using two CoAP Requests {#ssec-derive-ctx-client-init-requests-only}
@@ -1446,6 +1459,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Handle corner case for responder that reached its key usage limits.
 
 * Re-organizing main section about Forward Secrecy mode into subsections.
+
+* IANA considerations for CoAP Option Numbers Registry to refer to this draft for the OSCORE option.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
