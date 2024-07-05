@@ -2107,8 +2107,6 @@ Table of Contents
    the peers.  Specifically, using counters will reveal the frequency of
    rekeying procedures performed.
 
-   [TODO: Add more considerations.]
-
 6.  IANA Considerations
 
    This document has the following actions for IANA.
