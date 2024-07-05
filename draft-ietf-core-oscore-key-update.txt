@@ -102,6 +102,7 @@ Table of Contents
      6.2.  EDHOC External Authorization Data Registry
      6.3.  The Well-Known URI Registry
      6.4.  Resource Type (rt=) Link Target Attribute Values Registry
+     6.5.  CoAP Option Numbers Registry
    7.  References
      7.1.  Normative References
      7.2.  Informative References
@@ -2164,6 +2165,18 @@ Table of Contents
 
    *  Reference: [RFC-XXXX]
 
+6.5.  CoAP Option Numbers Registry
+
+   The OSCORE entry in the "CoAP Option Numbers" registry has been
+   updated with a reference to this document as it specifies and
+   extended format of it.
+
+   +--------+-----------------+---------------------------------+
+   | Number | Name            |            Reference            |
+   +--------+-----------------+---------------------------------+
+   |   9    | OSCORE          | [RFC7252] [RFC8613]  [RFC-XXXX] |
+   +--------+-----------------+---------------------------------+
+
 7.  References
 
 7.1.  Normative References
@@ -2607,6 +2620,9 @@ D.1.  Version -07 to -08
 
    *  Re-organizing main section about Forward Secrecy mode into
       subsections.
+
+   *  IANA considerations for CoAP Option Numbers Registry to refer to
+      this draft for the OSCORE option.
 
 D.2.  Version -06 to -07
 
