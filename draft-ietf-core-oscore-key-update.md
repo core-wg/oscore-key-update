@@ -353,7 +353,7 @@ The following specifically defines how KUDOS is run in its stateful FS mode achi
 
 In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX\_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in {{Section 3.1 of RFC8613}}, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in {{Section 3.2.1 of RFC8613}}. If the peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
 
-### Nonces and X bytes {#ssec-nonces-x-bytes}
+### Nonces and X Bytes {#ssec-nonces-x-bytes}
 
 When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 SHOULD be random values. An exception is described later in Section {{key-material-handling}}.
 
@@ -361,13 +361,15 @@ Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Opt
 
 After a peer has generated or received the value N1, and after a peer has calculated or received the value X1, it shall retain these in memory until it has received and processed the second KUDOS message.
 
-### OSCORE Security Context Handling and Message Processing {#ssec-contexts-and-messaging}
+### Handling of OSCORE Security Contexts
 
 The peer starting a KUDOS execution is denoted as initiator, while the other peer in the same session is denoted as responder.
 
 The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX\_NEW.
 
-KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}). The following properties hold for both the forward and reverse message flow.
+KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}).
+
+The following properties hold for both the forward and reverse message flow.
 
 * The initiator always offers the fresh value N1.
 * The responder always offers the fresh value N2
@@ -392,6 +394,8 @@ Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, t
 
 Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
+### Handling of Messages
+
 If a KUDOS message is a CoAP request, then it can target two different types of resources at the recipient CoAP server:
 
 * The well-known KUDOS resource at /.well-known/kudos, or an alternative KUDOS resource with resource type "core.kudos" (see Sections {{well-known-kudos-desc}} and {{rt-kudos}}). In such a case, no application processing is expected at the CoAP server, and the plain CoAP request composed before OSCORE protection should not include an application payload.
@@ -412,11 +416,11 @@ In order to prevent two peers from unwittingly running two simultaneous executio
 
   Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 where it acts as initiator.
 
-In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
-
 ### Forward Message Flow {#ssec-derive-ctx-client-init}
 
 {{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, i.e., with the client acting as KUDOS initiator.
+
+In the example, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
 ~~~~~~~~~~~
                      Client                  Server
@@ -593,6 +597,8 @@ During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS request
 ### Reverse Message Flow {#ssec-derive-ctx-server-init}
 
 {{fig-message-exchange-server-init}} shows an example of KUDOS run in the reverse message flow, i.e., with the server acting as initiator.
+
+The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
 ~~~~~~~~~~~
                       Client                 Server
@@ -1229,6 +1235,8 @@ The OSCORE entry in the "CoAP Option Numbers" registry has been updated with a r
 
 This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and both KUDOS messages being CoAP requests.
 
+The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
+
 ~~~~~~~~~~~
                   Client/Server          Client/Server
                    (initiator)            (responder)
@@ -1310,6 +1318,8 @@ Verify with CTX_NEW     | }                    |
 # Forward Message Flow with Response #1 unrelated to Request #1 {#ssec-derive-ctx-client-init-unrelated}
 
 This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and where the second KUDOS message Response #1 is not a response to the first KUDOS message Request #2, but rather an unrelated Observe notification as a response to the non-KUDOS message Request #1
+
+The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
 ~~~~~~~~~~~
                      Client                  Server
@@ -1402,6 +1412,8 @@ This section presents an example of KUDOS run in the forward message flow, with 
 Note the presence of an application payload in the KUDOS message Request #1 and in the non-KUDOS message Request #2, both of which are composed as PUT requests. That request method is part of the encrypted payload, since it is protected by OSCORE.
 
 Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Unauthorized) response, while the non-KUDOS message Response #2 is composed as a 2.04 (Changed) repsonse. Those response codes are part of the encrypted payload, since they are protected by OSCORE.
+
+The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
 ~~~~~~~~~~~
                      Client                  Server
