@@ -1085,8 +1085,6 @@ Overall, the size of the nonces N1 and N2 should be set such that the security l
 
 The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy. If instead a counter value is used, this can leak some information about the peers. Specifically, using counters will reveal the frequency of rekeying procedures performed.
 
-\[TODO: Add more considerations.\]
-
 # IANA Considerations # {#sec-iana}
 
 This document has the following actions for IANA.
