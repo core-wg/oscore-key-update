@@ -1218,16 +1218,7 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 ## CoAP Option Numbers Registry
 
-The OSCORE entry in the "CoAP Option Numbers" registry has been updated with a reference to this document as it specifies and extended format of it.
-
-~~~~~~~~~~~
-+--------+-----------------+--------------------------------+
-| Number | Name            |           Reference            |
-+--------+-----------------+--------------------------------+
-|   9    | OSCORE          | [RFC7252] [RFC8613] [RFC-XXXX] |
-+--------+-----------------+--------------------------------+
-~~~~~~~~~~~
-
+IANA is asked to add this document as an additional reference for the OSCORE Option in the "CoAP Option Numbers" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 --- back
 
