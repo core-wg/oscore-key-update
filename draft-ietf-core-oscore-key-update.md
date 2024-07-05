@@ -415,7 +415,7 @@ In order to prevent two peers from unwittingly running two simultaneous executio
 
 In the example, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
                      Client                  Server
                    (initiator)            (responder)
                         |                      |
@@ -424,10 +424,10 @@ Generate N1             |                      |
 CTX_1 = updateCtx(      |                      |
         X1,             |                      |
         N1,             |                      |
-        CTX_OLD)        |                      |
+        CTX_OLD )       |                      |
                         |                      |
                         |      Request #1      |
-Protect with CTX_1      |--------------------->| /.well-known/kudos
+Protect with CTX_1      +--------------------->| /.well-known/kudos
                         | OSCORE {             |
                         |  ...                 |
                         |  Partial IV: 0       |
@@ -435,7 +435,7 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |  d flag: 1           | CTX_1 = updateCtx(
                         |  x: X1               |         X1,
                         |  nonce: N1           |         N1,
-                        |  ...                 |         CTX_OLD)
+                        |  ...                 |         CTX_OLD )
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_1
                         |  ...                 |
@@ -444,16 +444,16 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |                      | CTX_NEW = updateCtx(
                         |                      |           Comb(X1,X2),
                         |                      |           Comb(N1,N2),
-                        |                      |           CTX_OLD)
+                        |                      |           CTX_OLD )
                         |                      |
                         |      Response #1     |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
 CTX_NEW = updateCtx(    |  Partial IV: 0       |
           Comb(X1,X2),  |  ...                 |
           Comb(N1,N2),  |  d flag: 1           |
-          CTX_OLD)      |  x: X2               |
+          CTX_OLD )     |  x: X2               |
                         |  nonce: N2           |
 Verify with CTX_NEW     |  ...                 |
                         | }                    |
@@ -462,12 +462,12 @@ Discard CTX_OLD         | Encrypted Payload {  |
                         | }                    |
                         |                      |
 
-// The actual key update process ends here.
-// The two peers can use the new Security Context CTX_NEW.
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
 
                         |                      |
                         |      Request #2      |
-Protect with CTX_NEW    |--------------------->| /temp
+Protect with CTX_NEW    +--------------------->| /temp
                         | OSCORE {             |
                         |  ...                 |
                         | }                    | Verify with CTX_NEW
@@ -477,7 +477,7 @@ Protect with CTX_NEW    |--------------------->| /temp
                         | }                    |
                         |                      |
                         |      Response #2     |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
 Verify with CTX_NEW     | }                    |
@@ -593,12 +593,12 @@ During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS request
 
 The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
                       Client                 Server
                    (responder)            (initiator)
                         |                      |
                         |      Request #1      |
-Protect with CTX_OLD    |--------------------->| /temp
+Protect with CTX_OLD    +--------------------->| /temp
                         | OSCORE {             |
                         |  ...                 |
                         | }                    | Verify with CTX_OLD
@@ -608,16 +608,16 @@ Protect with CTX_OLD    |--------------------->| /temp
                         | }                    | CTX_1 = updateCtx(
                         |                      |         X1,
                         |                      |         N1,
-                        |                      |         CTX_OLD)
+                        |                      |         CTX_OLD )
                         |                      |
                         |      Response #1     |
-                        |<---------------------| Protect with CTX_1
+                        |<---------------------+ Protect with CTX_1
                         | OSCORE {             |
                         |  ...                 |
 CTX_1 = updateCtx(      |  Partial IV: 0       |
         X1,             |  ...                 |
         N1,             |  d flag: 1           |
-        CTX_OLD)        |  x: X1               |
+        CTX_OLD )       |  x: X1               |
                         |  nonce: N1           |
 Verify with CTX_1       |  ...                 |
                         | }                    |
@@ -626,16 +626,16 @@ Generate N2             | Encrypted Payload {  |
 CTX_NEW = updateCtx(    | }                    |
           Comb(X1,X2),  |                      |
           Comb(N1,N2),  |                      |
-          CTX_OLD)      |                      |
+          CTX_OLD )     |                      |
                         |                      |
                         |      Request #2      |
-Protect with CTX_NEW    |--------------------->| /.well-known/kudos
+Protect with CTX_NEW    +--------------------->| /.well-known/kudos
                         | OSCORE {             |
                         |  ...                 |
                         |  d flag: 1           | CTX_NEW = updateCtx(
                         |  x: X2               |           Comb(X1,X2),
                         |  nonce: N2           |           Comb(N1,N2),
-                        |  y: w                |           CTX_OLD)
+                        |  y: w                |           CTX_OLD )
                         |  old_nonce: N1       |
                         |  ...                 |
                         | }                    |
@@ -645,12 +645,12 @@ Protect with CTX_NEW    |--------------------->| /.well-known/kudos
                         | }                    | Discard CTX_OLD
                         |                      |
 
-// The actual key update process ends here.
-// The two peers can use the new Security Context CTX_NEW.
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
 
                         |                      |
                         |      Response #2     |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
 Verify with CTX_NEW     | }                    |
@@ -1048,7 +1048,7 @@ That is, by specifying 'ead_value' ASK in EDHOC message_1, a peer A can indicate
 
 To further illustrate the functionality, two examples are presented below as EDHOC executions where only the new KUDOS\_EAD item is shown when present, and assuming that no other EAD items are used by the two peers.
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
 EDHOC                                                 EDHOC
 Initiator                                         Responder
 |                                                         |
@@ -1069,7 +1069,7 @@ Initiator                                         Responder
 
 In the example above, the Initiator asks the EDHOC Responder about its support for KUDOS ('ead_value' = ASK). In EDHOC message_2, the Responder indicates that it supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). Finally, in EDHOC message_3, the Initiator indicates that it also supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). After the EDHOC execution has successfully finished, both peers are aware that they both support KUDOS, in the FS and no-FS modes.
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
 EDHOC                                                 EDHOC
 Initiator                                         Responder
 |                                                         |
@@ -1221,7 +1221,7 @@ This section presents an example of KUDOS run in the forward message flow, with 
 
 The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
                   Client/Server          Client/Server
                    (initiator)            (responder)
                         |                      |
@@ -1230,10 +1230,10 @@ Generate N1             |                      |
 CTX_1 = updateCtx(      |                      |
         X1,             |                      |
         N1,             |                      |
-        CTX_OLD)        |                      |
+        CTX_OLD )       |                      |
                         |                      |
                         |      Request #1      |
-Protect with CTX_1      |--------------------->| /.well-known/kudos
+Protect with CTX_1      +--------------------->| /.well-known/kudos
                         | Token: 0x4a          |
                         | OSCORE {             |
                         |  ...                 |
@@ -1242,7 +1242,7 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |  d flag: 1           | CTX_1 = updateCtx(
                         |  x: X1               |         X1,
                         |  nonce: N1           |         N1,
-                        |  ...                 |         CTX_OLD)
+                        |  ...                 |         CTX_OLD )
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_1
                         |  ...                 |
@@ -1251,17 +1251,17 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |                      | CTX_NEW = updateCtx(
                         |                      |           Comb(X1,X2),
                         |                      |           Comb(N1,N2),
-                        |                      |           CTX_OLD)
+                        |                      |           CTX_OLD )
                         |                      |
                         |      Request #2      |
-     /.well-known/kudos |<---------------------| Protect with CTX_NEW
+     /.well-known/kudos |<---------------------+ Protect with CTX_NEW
                         | Token: 0x7c          |
                         | OSCORE {             |
                         |  ...                 |
 CTX_NEW = updateCtx(    |  Partial IV: 0       |
           Comb(X1,X2),  |  ...                 |
           Comb(N1,N2),  |  d flag: 1           |
-          CTX_OLD)      |  x: X2               |
+          CTX_OLD )     |  x: X2               |
                         |  nonce: N2           |
 Verify with CTX_NEW     |  ...                 |
                         | }                    |
@@ -1270,12 +1270,12 @@ Discard CTX_OLD         | Encrypted Payload {  |
                         | }                    |
                         |                      |
 
-// The actual key update process ends here.
-// The two peers can use the new Security Context CTX_NEW.
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
 
                         |                      |
                         |      Response #1     |
-Protect with CTX_NEW    |--------------------->|
+Protect with CTX_NEW    +--------------------->|
                         | Token: 0x7c          |
                         | OSCORE {             |
                         |  ...                 |
@@ -1286,7 +1286,7 @@ Protect with CTX_NEW    |--------------------->|
                         | }                    |
                         |                      |
                         |      Response #2     |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | Token: 0x4a          |
                         | OSCORE {             |
                         |  ...                 |
@@ -1305,13 +1305,13 @@ This section presents an example of KUDOS run in the forward message flow, with 
 
 The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
                      Client                  Server
                    (initiator)            (responder)
                         |                      |
                         |      Request #1      |
-                        |   (Registration)     |
-Protect with CTX_OLD    |--------------------->| /obs
+                        |    (Registration)    |
+Protect with CTX_OLD    +--------------------->| /obs
                         | Token: 0x4a          |
                         | Observe: 0           |
                         | OSCORE {             |
@@ -1329,10 +1329,10 @@ Generate N1             |                      |
 CTX_1 = updateCtx(      |                      |
         X1,             |                      |
         N1,             |                      |
-        CTX_OLD)        |                      |
+        CTX_OLD )       |                      |
                         |                      |
                         |      Request #2      |
-Protect with CTX_1      |--------------------->| /.well-known/kudos
+Protect with CTX_1      +--------------------->| /.well-known/kudos
                         | Token: 0x7c          |
                         | OSCORE {             |
                         |  ...                 |
@@ -1341,7 +1341,7 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |  d flag: 1           | CTX_1 = updateCtx(
                         |  x: X1               |         X1,
                         |  nonce: N1           |         N1,
-                        |  ...                 |         CTX_OLD)
+                        |  ...                 |         CTX_OLD )
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_1
                         |  ...                 |
@@ -1350,11 +1350,11 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
                         |                      | CTX_NEW = updateCtx(
                         |                      |           Comb(X1,X2),
                         |                      |           Comb(N1,N2),
-                        |                      |           CTX_OLD)
+                        |                      |           CTX_OLD )
                         |                      |
                         |      Response #1     |
                         |    (Notification)    |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | Token: 0x4a          |
                         | Observe: 1           |
                         | OSCORE {             |
@@ -1362,7 +1362,7 @@ Protect with CTX_1      |--------------------->| /.well-known/kudos
 CTX_NEW = updateCtx(    |  Partial IV: 0       |
           Comb(X1,X2),  |  ...                 |
           Comb(N1,N2),  |  d flag: 1           |
-          CTX_OLD)      |  x: X2               |
+          CTX_OLD )     |  x: X2               |
                         |  nonce: N2           |
 Verify with CTX_NEW     |  ...                 |
                         | }                    |
@@ -1372,11 +1372,11 @@ Discard CTX_OLD         | Encrypted Payload {  |
                         | }                    |
                         |                      |
 
-// The actual key update process ends here.
-// The two peers can use the new Security Context CTX_NEW.
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
 
                         |      Response #2     |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | Token: 0x7c          |
                         | OSCORE {             |
                         |  ...                 |
@@ -1399,7 +1399,7 @@ Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Una
 
 The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
-~~~~~~~~~~~
+~~~~~~~~~~~ aasvg
                      Client                  Server
                    (initiator)            (responder)
                         |                      |
@@ -1408,10 +1408,10 @@ Generate N1             |                      |
 CTX_1 = updateCtx(      |                      |
         X1,             |                      |
         N1,             |                      |
-        CTX_OLD)        |                      |
+        CTX_OLD )       |                      |
                         |                      |
                         |      Request #1      |
-Protect with CTX_1      |--------------------->| /temp
+Protect with CTX_1      +--------------------->| /temp
                         | OSCORE {             |
                         |  ...                 |
                         |  Partial IV: 0       |
@@ -1419,7 +1419,7 @@ Protect with CTX_1      |--------------------->| /temp
                         |  d flag: 1           | CTX_1 = updateCtx(
                         |  x: X1               |         X1,
                         |  nonce: N1           |         N1,
-                        |  ...                 |         CTX_OLD)
+                        |  ...                 |         CTX_OLD )
                         | }                    |
                         | Encrypted Payload {  | Verify with CTX_1
                         |  0.03 (PUT)          |
@@ -1430,16 +1430,16 @@ Protect with CTX_1      |--------------------->| /temp
                         |                      | CTX_NEW = updateCtx(
                         |                      |           Comb(X1,X2),
                         |                      |           Comb(N1,N2),
-                        |                      |           CTX_OLD)
+                        |                      |           CTX_OLD )
                         |                      |
                         |      Response #1     |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
 CTX_NEW = updateCtx(    |  Partial IV: 0       |
           Comb(X1,X2),  |  ...                 |
           Comb(N1,N2),  |  d flag: 1           |
-          CTX_OLD)      |  x: X2               |
+          CTX_OLD )     |  x: X2               |
                         |  nonce: N2           |
 Verify with CTX_NEW     |  ...                 |
                         | }                    |
@@ -1450,12 +1450,12 @@ Discard CTX_OLD         | Encrypted Payload {  |
                         | }                    |
                         |                      |
 
-// The actual key update process ends here.
-// The two peers can use the new Security Context CTX_NEW.
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
 
                         |                      |
                         |      Request #2      |
-Protect with CTX_NEW    |--------------------->| /temp
+Protect with CTX_NEW    +--------------------->| /temp
                         | OSCORE {             |
                         |  ...                 |
                         | }                    | Verify with CTX_NEW
@@ -1466,7 +1466,7 @@ Protect with CTX_NEW    |--------------------->| /temp
                         | }                    |
                         |                      |
                         |      Response #2     |
-                        |<---------------------| Protect with CTX_NEW
+                        |<---------------------+ Protect with CTX_NEW
                         | OSCORE {             |
                         |  ...                 |
 Verify with CTX_NEW     | }                    |
