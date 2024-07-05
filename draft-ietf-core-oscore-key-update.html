@@ -1620,10 +1620,13 @@ struct {
         <h3 id="name-key-update-with-forward-sec">
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-key-update-with-forward-sec" class="section-name selfRef">Key Update with Forward Secrecy</a>
         </h3>
-<p id="section-4.3-1">This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. A peer may want to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, approaching limits for key usage <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. The expiration time of an OSCORE Security Context and the key usage limits are hard limits, at which point a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication. Note that in order to prevent deadlock situations it is permitted for the responder to use old keying material exlusively limited to derivation of new keying material during the execution of a KUDOS procedure. KUDOS can be used for active rekeying, and a peer may run the KUDOS procedure at any point in time and for any reason.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">Before starting KUDOS, the two peers share the OSCORE Security Context CTX_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX_NEW.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<p id="section-4.3-3">The following specifically defines how KUDOS is run in its stateful FS mode achieving forward secrecy. That is, in the OSCORE Option value of all the exchanged KUDOS messages, the "No Forward Secrecy" bit is set to 0.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
-<p id="section-4.3-4">In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.1" class="relref">Section 3.2.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. If the peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+<p id="section-4.3-1">This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication. Note that, in order to prevent deadlock situations, it is permitted for the responder to use old keying material exlusively limited to the derivation of new keying material during the execution of a KUDOS procedure.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">Before starting KUDOS, the two peers share the OSCORE Security Context CTX_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX_NEW.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+<p id="section-4.3-5">In particular, CTX_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the first KUDOS message. In turn, CTX_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending the second KUDOS message or upon having received and successfully verified the second KUDOS message.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+<p id="section-4.3-6">The following specifically defines how KUDOS is run in its stateful FS mode achieving forward secrecy. That is, in the OSCORE Option value of all the exchanged KUDOS messages, the "No Forward Secrecy" bit is set to 0.<a href="#section-4.3-6" class="pilcrow">¶</a></p>
+<p id="section-4.3-7">In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.1" class="relref">Section 3.2.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. If the peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-4.3-7" class="pilcrow">¶</a></p>
 <div id="ssec-nonces-x-bytes">
 <section id="section-4.3.1">
           <h4 id="name-nonces-and-x-bytes">
@@ -1639,29 +1642,48 @@ struct {
           <h4 id="name-oscore-security-context-han">
 <a href="#section-4.3.2" class="section-number selfRef">4.3.2. </a><a href="#name-oscore-security-context-han" class="section-name selfRef">OSCORE Security Context Handling and Message Processing</a>
           </h4>
-<p id="section-4.3.2-1">Once a peer has successfully derived the new OSCORE Security Context CTX_NEW, that peer MUST use CTX_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX_OLD for protecting outgoing messages. Once CTX_NEW has been derived, a peer deletes any OSCORE Security Context CTX_DEL older than CTX_OLD, such that both CTX_DEL and CTX_OLD have the same ID_CONTEXT or no ID Context. This can for instance occur in the forward message flow when the initiator has just received KUDOS Response #1 and immediately starts KUDOS again as initiator, before sending any non KUDOS messages which would give the responder key confirmation and allow it to safely discard CTX_OLD.<a href="#section-4.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-2">Also, that peer MUST terminate all the ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> that it has with the other peer as protected with the old Security Context CTX_OLD, unless the two peers have explicitly agreed otherwise as defined in <a href="#preserving-observe" class="auto internal xref">Section 4.6</a>. More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-3">Note that, even though that peer had no real reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see <span><a href="https://rfc-editor.org/rfc/rfc7641#section-3.6" class="relref">Section 3.6</a> of [<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>).<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-4">Once a peer has successfully decrypted and verified an incoming message protected with CTX_NEW, that peer MUST discard the old Security Context CTX_OLD.<a href="#section-4.3.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-5">The peer starting the KUDOS execution is denoted as initiator, while the other peer is denoted as responder.<a href="#section-4.3.2-5" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-6">KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.3</a>) and the latter as the "reverse message flow" (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.4</a>). The following properties hold for both the forward and reverse message flow.<a href="#section-4.3.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-1">The peer starting a KUDOS execution is denoted as initiator, while the other peer in the same session is denoted as responder.<a href="#section-4.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-2">The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX_NEW.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-3">KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.3</a>) and the latter as the "reverse message flow" (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.4</a>). The following properties hold for both the forward and reverse message flow.<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.2-7.1">
-              <p id="section-4.3.2-7.1.1">The initiator always offers the fresh value N1.<a href="#section-4.3.2-7.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.2-4.1">
+              <p id="section-4.3.2-4.1.1">The initiator always offers the fresh value N1.<a href="#section-4.3.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.2-7.2">
-              <p id="section-4.3.2-7.2.1">The responder always offers the fresh value N2<a href="#section-4.3.2-7.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.2-4.2">
+              <p id="section-4.3.2-4.2.1">The responder always offers the fresh value N2<a href="#section-4.3.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.2-7.3">
-              <p id="section-4.3.2-7.3.1">The responder is always the first one deriving CTX_NEW.<a href="#section-4.3.2-7.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.2-4.3">
+              <p id="section-4.3.2-4.3.1">The responder is always the first one deriving CTX_NEW.<a href="#section-4.3.2-4.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.2-7.4">
-              <p id="section-4.3.2-7.4.1">The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX_OLD.<a href="#section-4.3.2-7.4.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.2-4.4">
+              <p id="section-4.3.2-4.4.1">The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX_OLD.<a href="#section-4.3.2-4.4.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.2-7.5">
-              <p id="section-4.3.2-7.5.1">Both the initiator and the responder use and preserve the same respective OSCORE Sender ID and Recipient ID. Also, if CTX_OLD specifies an OSCORE ID Context, both peers use and preserve the same OSCORE ID Context.<a href="#section-4.3.2-7.5.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.2-4.5">
+              <p id="section-4.3.2-4.5.1">Both the initiator and the responder use and preserve the same respective OSCORE Sender ID and Recipient ID.<a href="#section-4.3.2-4.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4.3.2-4.6">
+              <p id="section-4.3.2-4.6.1">If CTX_OLD specifies an OSCORE ID Context, both peers use and preserve the same OSCORE ID Context.<a href="#section-4.3.2-4.6.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-4.3.2-5">Once a peer has successfully derived the new OSCORE Security Context CTX_NEW, the following applies.<a href="#section-4.3.2-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.3.2-6.1">
+              <p id="section-4.3.2-6.1.1">The peer MUST use CTX_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX_OLD for protecting outgoing messages.<a href="#section-4.3.2-6.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4.3.2-6.2">
+              <p id="section-4.3.2-6.2.1">The peer MUST delete any OSCORE Security Context CTX_DEL older than CTX_OLD, such that both CTX_DEL and CTX_OLD have the same ID_CONTEXT or no ID Context.<a href="#section-4.3.2-6.2.1" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-6.2.2">
+For instance, this can occur while using the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.3</a>}), when the initiator has just received the second KUDOS message, and immediately starts KUDOS again as initiator before sending a non KUDOS message, thereby not providing the responder with key confirmation and not allowing it to safely discard CTX_OLD.<a href="#section-4.3.2-6.2.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4.3.2-6.3">
+              <p id="section-4.3.2-6.3.1">The peer MUST terminate all the ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> that it has with the other peer as protected with the old Security Context CTX_OLD, unless the two peers have explicitly agreed otherwise as defined in <a href="#preserving-observe" class="auto internal xref">Section 4.6</a>.<a href="#section-4.3.2-6.3.1" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-6.3.2">
+More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.<a href="#section-4.3.2-6.3.2" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-6.3.3">
+Note that, even though a peer had no real reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see <span><a href="https://rfc-editor.org/rfc/rfc7641#section-3.6" class="relref">Section 3.6</a> of [<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>).<a href="#section-4.3.2-6.3.3" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-4.3.2-7">Once a peer has successfully decrypted and verified an incoming message protected with CTX_NEW, that peer MUST discard the old Security Context CTX_OLD.<a href="#section-4.3.2-7" class="pilcrow">¶</a></p>
 <p id="section-4.3.2-8">If a KUDOS message is a CoAP request, then it can target two different types of resources at the recipient CoAP server:<a href="#section-4.3.2-8" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.2-9.1">
@@ -1672,9 +1694,8 @@ struct {
 </li>
           </ul>
 <p id="section-4.3.2-10">Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE encryption should not include an application payload. Otherwise, an application payload may be included.<a href="#section-4.3.2-10" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-11">Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX_NEW.<a href="#section-4.3.2-11" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-12">In particular, CTX_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the first KUDOS message. In turn, CTX_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending the second KUDOS message or upon having received and successfully verified the second KUDOS message.<a href="#section-4.3.2-12" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-13">In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a | bstr .cbor b, where | denotes byte concatenation.<a href="#section-4.3.2-13" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-11">Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side.<a href="#section-4.3.2-11" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-12">In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a | bstr .cbor b, where | denotes byte concatenation.<a href="#section-4.3.2-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-derive-ctx-client-init">
