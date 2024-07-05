@@ -331,9 +331,15 @@ struct {
 
 ## Key Update with Forward Secrecy # {#ssec-derive-ctx}
 
-This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. A peer may want to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, approaching limits for key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. The expiration time of an OSCORE Security Context and the key usage limits are hard limits, at which point a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication. Note that in order to prevent deadlock situations it is permitted for the responder to use old keying material exlusively limited to derivation of new keying material during the execution of a KUDOS procedure. KUDOS can be used for active rekeying, and a peer may run the KUDOS procedure at any point in time and for any reason.
+This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material.
+
+A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.
+
+The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication. Note that, in order to prevent deadlock situations, it is permitted for the responder to use old keying material exlusively limited to the derivation of new keying material during the execution of a KUDOS procedure.
 
 Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
+
+In particular, CTX\_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the first KUDOS message. In turn, CTX_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending the second KUDOS message or upon having received and successfully verified the second KUDOS message.
 
 The following specifically defines how KUDOS is run in its stateful FS mode achieving forward secrecy. That is, in the OSCORE Option value of all the exchanged KUDOS messages, the "No Forward Secrecy" bit is set to 0.
 
@@ -349,15 +355,9 @@ After a peer has generated or received the value N1, and after a peer has calcul
 
 ### OSCORE Security Context Handling and Message Processing {#ssec-contexts-and-messaging}
 
-Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, that peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages. Once CTX\_NEW has been derived, a peer deletes any OSCORE Security Context CTX\_DEL older than CTX\_OLD, such that both CTX\_DEL and CTX\_OLD have the same ID\_CONTEXT or no ID Context. This can for instance occur in the forward message flow when the initiator has just received KUDOS Response #1 and immediately starts KUDOS again as initiator, before sending any non KUDOS messages which would give the responder key confirmation and allow it to safely discard CTX_OLD.
+The peer starting a KUDOS execution is denoted as initiator, while the other peer in the same session is denoted as responder.
 
-Also, that peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}. More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
-
-Note that, even though that peer had no real reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see {{Section 3.6 of RFC7641}}).
-
-Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
-
-The peer starting the KUDOS execution is denoted as initiator, while the other peer is denoted as responder.
+The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX\_NEW.
 
 KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see {{ssec-derive-ctx-client-init}}) and the latter as the "reverse message flow" (see {{ssec-derive-ctx-server-init}}). The following properties hold for both the forward and reverse message flow.
 
@@ -365,7 +365,24 @@ KUDOS may run with the initiator acting either as CoAP client or CoAP server. Th
 * The responder always offers the fresh value N2
 * The responder is always the first one deriving CTX\_NEW.
 * The initiator is always the first one achieving key confirmation, hence the first one able to safely discard CTX\_OLD.
-* Both the initiator and the responder use and preserve the same respective OSCORE Sender ID and Recipient ID. Also, if CTX_OLD specifies an OSCORE ID Context, both peers use and preserve the same OSCORE ID Context.
+* Both the initiator and the responder use and preserve the same respective OSCORE Sender ID and Recipient ID.
+* If CTX_OLD specifies an OSCORE ID Context, both peers use and preserve the same OSCORE ID Context.
+
+Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, the following applies.
+
+* The peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages.
+
+* The peer MUST delete any OSCORE Security Context CTX\_DEL older than CTX\_OLD, such that both CTX\_DEL and CTX\_OLD have the same ID\_CONTEXT or no ID Context.
+
+  For instance, this can occur while using the forward message flow (see {{ssec-derive-ctx-client-init}}}), when the initiator has just received the second KUDOS message, and immediately starts KUDOS again as initiator before sending a non KUDOS message, thereby not providing the responder with key confirmation and not allowing it to safely discard CTX_OLD.
+
+* The peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}.
+
+  More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
+
+  Note that, even though a peer had no real reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see {{Section 3.6 of RFC7641}}).
+
+Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
 If a KUDOS message is a CoAP request, then it can target two different types of resources at the recipient CoAP server:
 
@@ -375,9 +392,7 @@ If a KUDOS message is a CoAP request, then it can target two different types of 
 
 Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE encryption should not include an application payload. Otherwise, an application payload may be included.
 
-Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side. The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX\_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX\_NEW.
-
-In particular, CTX\_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the first KUDOS message. In turn, CTX_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending the second KUDOS message or upon having received and successfully verified the second KUDOS message.
+Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side.
 
 In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
