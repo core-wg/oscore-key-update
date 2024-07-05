@@ -960,22 +960,17 @@ Each of the two KUDOS messages displays a small communication overhead. This is 
 
 Assuming nonces of the same size in both messages of the same KUDOS execution, this results in the following minimum, typical, and maximum communication overhead, when considering a nonce with size 1, 8, and 16 bytes, respectively. All the indicated values are in bytes.
 
-~~~~~~~~~~~
-+-------+---------------------------+---------------------------+
-|       | Forward message flow      | Reverse message flow      |
-+-------+---------+---------+-------+---------------------------+
-| Nonce | First   | Second  | Total | First   | Second  | Total |
-| size  | KUDOS   | KUDOS   |       | KUDOS   | KUDOS   |       |
-|       | message | message |       | message | message |       |
-+-------+---------+---------+-------+---------+---------+-------+
-| 1     | 3       | 3       | 6     | 3       | 4       | 7     |
-+-------+-------------------+-------+---------+---------+-------+
-| 8     | 10      | 10      | 20    | 10      | 11      | 21    |
-+-------+---------+-----------------+---------+---------+-------+
-| 16    | 18      | 18      | 36    | 18      | 19      | 37    |
-+-------+---------+-----------------+---------+---------+-------+
-~~~~~~~~~~~
-{: artwork-align="center"}
+| Nonce size | First KUDOS message | Second KUDOS message | Total |
+| 1          | 3                   | 3                    | 6     |
+| 8          | 10                  | 10                   | 20    |
+| 16         | 18                  | 18                   | 36    |
+{: #table-overhead-forward title="Communication overhead (forward message flow)" align="center"}
+
+| Nonce size | First KUDOS message | Second KUDOS message | Total |
+| 1          | 3                   | 4                    | 7     |
+| 8          | 10                  | 11                   | 21    |
+| 16         | 18                  | 19                   | 37    |
+{: #table-overhead-reverse title="Communication overhead (reverse message flow)" align="center"}
 
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
