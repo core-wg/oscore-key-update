@@ -394,6 +394,16 @@ Similarly, any CoAP response can also be a KUDOS message. If the corresponding C
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side.
 
+In order to prevent two peers from unwittingly running two simultaneous executions of KUDOS, the following applies.
+
+* When a peer P1 receives the first KUDOS message from a peer P2 in a KUDOS execution E1, the peer P1 MUST check whether it has a non completed KUDOS session E2 where P1 acts as initiator with P2.
+
+  To this end, P1 may check whether it is currently acting as initiator in a KUDOS execution E2 different from E1, such that both sessions aim at updating the OSCORE Security Context CTX_OLD shared with P2. The particular way to achieve this is implementation specific.
+
+* If P1 finds such a session E2, then P1 MUST terminate the KUDOS execution E1, and MUST reply to the first KUDOS message received from P2 with a CoAP Reset message.
+
+  Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 where it acts as initiator.
+
 In the following sections, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a \| bstr .cbor b, where \| denotes byte concatenation.
 
 ### Forward Message Flow {#ssec-derive-ctx-client-init}
@@ -546,8 +556,6 @@ In case the server does not successfully verify the request, the same error hand
 Note that the server achieves key confirmation only when receiving a message from the client as protected with CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete CTX\_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow.
 
 Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
-
-It may happen that two peers initiate KUDOS simultaneously, that is, both peers first act as initiator in a KUDOS execution, sending the first KUDOS message for that execution; and both peers act as responder in the other KUDOS execution, upon receiving the first KUDOS message sent by the other peer. To avoid problems caused by such a situation two simultaneous executions of KUDOS must not both finish. Speifically, if a peer P1 is acting as initiator in an ongoing KUDOS execution E1 with another peer P2, and P1 receives a first KUDOS message from P2 aimed to start a second KUDOS execution E2, then P1 MUST abort the execution E2 and MUST reply to P2 with a CoAP reset message. Both executions may get cancelled, but no more than one remains.
 
 In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been succesfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) MUST be a 4.01 (Unauthorized) error response.
 
