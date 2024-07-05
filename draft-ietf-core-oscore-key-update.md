@@ -42,7 +42,7 @@ normative:
   RFC7641:
   RFC8613:
   RFC8949:
-  I-D.ietf-lake-edhoc:
+  RFC9528:
 
 informative:
   RFC8446:
@@ -101,7 +101,7 @@ Furthermore, this document specifies a method that two peers can use to update t
 
 {::boilerplate bcp14-tagged}
 
-Readers are expected to be familiar with the terms and concepts related to CoAP {{RFC7252}}, Observe {{RFC7641}}, CBOR {{RFC8949}}, OSCORE {{RFC8613}}, and EDHOC {{I-D.ietf-lake-edhoc}}.
+Readers are expected to be familiar with the terms and concepts related to CoAP {{RFC7252}}, Observe {{RFC7641}}, CBOR {{RFC8949}}, OSCORE {{RFC8613}}, and EDHOC {{RFC9528}}.
 
 This document additionally defines the following terminology.
 
@@ -141,7 +141,7 @@ Other specifications define a number of ways for rekeying OSCORE, as summarized 
 
   This procedure does not provide forward secrecy.
 
-* The two peers can run the EDHOC key exchange protocol based on Diffie-Hellman and defined in {{I-D.ietf-lake-edhoc}}, in order to establish a pseudo-random key in a mutually authenticated way.
+* The two peers can run the EDHOC key exchange protocol based on Diffie-Hellman and defined in {{RFC9528}}, in order to establish a pseudo-random key in a mutually authenticated way.
 
    Then, the two peers can use the established pseudo-random key to derive external application keys. This allows the two peers to securely derive an OSCORE Master Secret and an OSCORE Master Salt, from which an OSCORE Security Context can be established.
 
@@ -798,7 +798,7 @@ Note that:
 
 * As an exception to the nonces being generated as random values (see Section {{ssec-derive-ctx}}), a peer that is a CAPABLE device MAY use a value obtained from a monotonically incremented counter as nonce N1 or N2. This has privacy implications, which are described in Section {{sec-cons}}. In such a case, the peer MUST enforce measures to ensure freshness of the nonce values. For example, the peer can use the same procedure described in {{Section B.1.1 of RFC8613}} for handling the OSCORE Sender Sequence Number values. These measures require to regularly store the used counter values in non-volatile memory, which makes non-CAPABLE devices unable to safely use counter values as nonce values.
 
-As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{I-D.ietf-lake-edhoc}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
+As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{RFC9528}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
 * If the peer is a CAPABLE device, it SHOULD store Latest Master Secret and Latest Master Salt on disk.
 
@@ -999,7 +999,7 @@ That is, the use of SCHC plays a role in triggering KUDOS executions and in affe
 
 ## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
-The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see {{Section 3.8 of I-D.ietf-lake-edhoc}}). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an optional 'ead_value' encoded as a CBOR bstr.
+The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see {{Section 3.8 of RFC9528}}). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an optional 'ead_value' encoded as a CBOR bstr.
 
 This document defines a new EDHOC EAD item KUDOS\_EAD and registers its 'ead_label' in {{iana-edhoc-aad}}. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, irrespective of the modes they support. The possible values of the 'ead_value' are as follows:
 
@@ -1176,7 +1176,7 @@ In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit P
 
 ## EDHOC External Authorization Data Registry {#iana-edhoc-aad}
 
-IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in {{Section 10.5 of I-D.ietf-lake-edhoc}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
+IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in {{Section 10.5 of RFC9528}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
 
 ~~~~~~~~~~~
 +---------+--------------------------------------+--------------------+
