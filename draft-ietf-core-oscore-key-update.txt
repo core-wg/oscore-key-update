@@ -811,10 +811,10 @@ Table of Contents
  CTX_1 = updateCtx(      |                      |
          X1,             |                      |
          N1,             |                      |
-         CTX_OLD)        |                      |
+         CTX_OLD )       |                      |
                          |                      |
                          |      Request #1      |
- Protect with CTX_1      |--------------------->| /.well-known/kudos
+ Protect with CTX_1      +--------------------->| /.well-known/kudos
                          | OSCORE {             |
                          |  ...                 |
                          |  Partial IV: 0       |
@@ -822,7 +822,7 @@ Table of Contents
                          |  d flag: 1           | CTX_1 = updateCtx(
                          |  x: X1               |         X1,
                          |  nonce: N1           |         N1,
-                         |  ...                 |         CTX_OLD)
+                         |  ...                 |         CTX_OLD )
                          | }                    |
                          | Encrypted Payload {  | Verify with CTX_1
                          |  ...                 |
@@ -831,16 +831,16 @@ Table of Contents
                          |                      | CTX_NEW = updateCtx(
                          |                      |           Comb(X1,X2),
                          |                      |           Comb(N1,N2),
-                         |                      |           CTX_OLD)
+                         |                      |           CTX_OLD )
                          |                      |
                          |      Response #1     |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | OSCORE {             |
                          |  ...                 |
  CTX_NEW = updateCtx(    |  Partial IV: 0       |
            Comb(X1,X2),  |  ...                 |
            Comb(N1,N2),  |  d flag: 1           |
-           CTX_OLD)      |  x: X2               |
+           CTX_OLD )     |  x: X2               |
                          |  nonce: N2           |
  Verify with CTX_NEW     |  ...                 |
                          | }                    |
@@ -849,12 +849,12 @@ Table of Contents
                          | }                    |
                          |                      |
 
- // The actual key update process ends here.
- // The two peers can use the new Security Context CTX_NEW.
+ The actual key update process ends here.
+ The two peers can use the new Security Context CTX_NEW.
 
                          |                      |
                          |      Request #2      |
- Protect with CTX_NEW    |--------------------->| /temp
+ Protect with CTX_NEW    +--------------------->| /temp
                          | OSCORE {             |
                          |  ...                 |
                          | }                    | Verify with CTX_NEW
@@ -864,7 +864,7 @@ Table of Contents
                          | }                    |
                          |                      |
                          |      Response #2     |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | OSCORE {             |
                          |  ...                 |
  Verify with CTX_NEW     | }                    |
@@ -1070,7 +1070,7 @@ Table of Contents
                     (responder)            (initiator)
                          |                      |
                          |      Request #1      |
- Protect with CTX_OLD    |--------------------->| /temp
+ Protect with CTX_OLD    +--------------------->| /temp
                          | OSCORE {             |
                          |  ...                 |
                          | }                    | Verify with CTX_OLD
@@ -1080,16 +1080,16 @@ Table of Contents
                          | }                    | CTX_1 = updateCtx(
                          |                      |         X1,
                          |                      |         N1,
-                         |                      |         CTX_OLD)
+                         |                      |         CTX_OLD )
                          |                      |
                          |      Response #1     |
-                         |<---------------------| Protect with CTX_1
+                         |<---------------------+ Protect with CTX_1
                          | OSCORE {             |
                          |  ...                 |
  CTX_1 = updateCtx(      |  Partial IV: 0       |
          X1,             |  ...                 |
          N1,             |  d flag: 1           |
-         CTX_OLD)        |  x: X1               |
+         CTX_OLD )       |  x: X1               |
                          |  nonce: N1           |
  Verify with CTX_1       |  ...                 |
                          | }                    |
@@ -1098,16 +1098,16 @@ Table of Contents
  CTX_NEW = updateCtx(    | }                    |
            Comb(X1,X2),  |                      |
            Comb(N1,N2),  |                      |
-           CTX_OLD)      |                      |
+           CTX_OLD )     |                      |
                          |                      |
                          |      Request #2      |
- Protect with CTX_NEW    |--------------------->| /.well-known/kudos
+ Protect with CTX_NEW    +--------------------->| /.well-known/kudos
                          | OSCORE {             |
                          |  ...                 |
                          |  d flag: 1           | CTX_NEW = updateCtx(
                          |  x: X2               |           Comb(X1,X2),
                          |  nonce: N2           |           Comb(N1,N2),
-                         |  y: w                |           CTX_OLD)
+                         |  y: w                |           CTX_OLD )
                          |  old_nonce: N1       |
                          |  ...                 |
                          | }                    |
@@ -1117,12 +1117,12 @@ Table of Contents
                          | }                    | Discard CTX_OLD
                          |                      |
 
- // The actual key update process ends here.
- // The two peers can use the new Security Context CTX_NEW.
+ The actual key update process ends here.
+ The two peers can use the new Security Context CTX_NEW.
 
                          |                      |
                          |      Response #2     |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | OSCORE {             |
                          |  ...                 |
  Verify with CTX_NEW     | }                    |
@@ -2383,10 +2383,10 @@ Appendix A.  Forward Message Flow using two CoAP Requests
  CTX_1 = updateCtx(      |                      |
          X1,             |                      |
          N1,             |                      |
-         CTX_OLD)        |                      |
+         CTX_OLD )       |                      |
                          |                      |
                          |      Request #1      |
- Protect with CTX_1      |--------------------->| /.well-known/kudos
+ Protect with CTX_1      +--------------------->| /.well-known/kudos
                          | Token: 0x4a          |
                          | OSCORE {             |
                          |  ...                 |
@@ -2395,7 +2395,7 @@ Appendix A.  Forward Message Flow using two CoAP Requests
                          |  d flag: 1           | CTX_1 = updateCtx(
                          |  x: X1               |         X1,
                          |  nonce: N1           |         N1,
-                         |  ...                 |         CTX_OLD)
+                         |  ...                 |         CTX_OLD )
                          | }                    |
                          | Encrypted Payload {  | Verify with CTX_1
                          |  ...                 |
@@ -2404,17 +2404,17 @@ Appendix A.  Forward Message Flow using two CoAP Requests
                          |                      | CTX_NEW = updateCtx(
                          |                      |           Comb(X1,X2),
                          |                      |           Comb(N1,N2),
-                         |                      |           CTX_OLD)
+                         |                      |           CTX_OLD )
                          |                      |
                          |      Request #2      |
-      /.well-known/kudos |<---------------------| Protect with CTX_NEW
+      /.well-known/kudos |<---------------------+ Protect with CTX_NEW
                          | Token: 0x7c          |
                          | OSCORE {             |
                          |  ...                 |
  CTX_NEW = updateCtx(    |  Partial IV: 0       |
            Comb(X1,X2),  |  ...                 |
            Comb(N1,N2),  |  d flag: 1           |
-           CTX_OLD)      |  x: X2               |
+           CTX_OLD )     |  x: X2               |
                          |  nonce: N2           |
  Verify with CTX_NEW     |  ...                 |
                          | }                    |
@@ -2423,12 +2423,12 @@ Appendix A.  Forward Message Flow using two CoAP Requests
                          | }                    |
                          |                      |
 
- // The actual key update process ends here.
- // The two peers can use the new Security Context CTX_NEW.
+ The actual key update process ends here.
+ The two peers can use the new Security Context CTX_NEW.
 
                          |                      |
                          |      Response #1     |
- Protect with CTX_NEW    |--------------------->|
+ Protect with CTX_NEW    +--------------------->|
                          | Token: 0x7c          |
                          | OSCORE {             |
                          |  ...                 |
@@ -2439,7 +2439,7 @@ Appendix A.  Forward Message Flow using two CoAP Requests
                          | }                    |
                          |                      |
                          |      Response #2     |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | Token: 0x4a          |
                          | OSCORE {             |
                          |  ...                 |
@@ -2468,8 +2468,8 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
                     (initiator)            (responder)
                          |                      |
                          |      Request #1      |
-                         |   (Registration)     |
- Protect with CTX_OLD    |--------------------->| /obs
+                         |    (Registration)    |
+ Protect with CTX_OLD    +--------------------->| /obs
                          | Token: 0x4a          |
                          | Observe: 0           |
                          | OSCORE {             |
@@ -2487,10 +2487,10 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
  CTX_1 = updateCtx(      |                      |
          X1,             |                      |
          N1,             |                      |
-         CTX_OLD)        |                      |
+         CTX_OLD )       |                      |
                          |                      |
                          |      Request #2      |
- Protect with CTX_1      |--------------------->| /.well-known/kudos
+ Protect with CTX_1      +--------------------->| /.well-known/kudos
                          | Token: 0x7c          |
                          | OSCORE {             |
                          |  ...                 |
@@ -2499,7 +2499,7 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
                          |  d flag: 1           | CTX_1 = updateCtx(
                          |  x: X1               |         X1,
                          |  nonce: N1           |         N1,
-                         |  ...                 |         CTX_OLD)
+                         |  ...                 |         CTX_OLD )
                          | }                    |
                          | Encrypted Payload {  | Verify with CTX_1
                          |  ...                 |
@@ -2508,11 +2508,11 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
                          |                      | CTX_NEW = updateCtx(
                          |                      |           Comb(X1,X2),
                          |                      |           Comb(N1,N2),
-                         |                      |           CTX_OLD)
+                         |                      |           CTX_OLD )
                          |                      |
                          |      Response #1     |
                          |    (Notification)    |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | Token: 0x4a          |
                          | Observe: 1           |
                          | OSCORE {             |
@@ -2520,7 +2520,7 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
  CTX_NEW = updateCtx(    |  Partial IV: 0       |
            Comb(X1,X2),  |  ...                 |
            Comb(N1,N2),  |  d flag: 1           |
-           CTX_OLD)      |  x: X2               |
+           CTX_OLD )     |  x: X2               |
                          |  nonce: N2           |
  Verify with CTX_NEW     |  ...                 |
                          | }                    |
@@ -2530,11 +2530,11 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
                          | }                    |
                          |                      |
 
- // The actual key update process ends here.
- // The two peers can use the new Security Context CTX_NEW.
+ The actual key update process ends here.
+ The two peers can use the new Security Context CTX_NEW.
 
                          |      Response #2     |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | Token: 0x7c          |
                          | OSCORE {             |
                          |  ...                 |
@@ -2578,10 +2578,10 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
  CTX_1 = updateCtx(      |                      |
          X1,             |                      |
          N1,             |                      |
-         CTX_OLD)        |                      |
+         CTX_OLD )       |                      |
                          |                      |
                          |      Request #1      |
- Protect with CTX_1      |--------------------->| /temp
+ Protect with CTX_1      +--------------------->| /temp
                          | OSCORE {             |
                          |  ...                 |
                          |  Partial IV: 0       |
@@ -2589,7 +2589,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
                          |  d flag: 1           | CTX_1 = updateCtx(
                          |  x: X1               |         X1,
                          |  nonce: N1           |         N1,
-                         |  ...                 |         CTX_OLD)
+                         |  ...                 |         CTX_OLD )
                          | }                    |
                          | Encrypted Payload {  | Verify with CTX_1
                          |  0.03 (PUT)          |
@@ -2600,16 +2600,16 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
                          |                      | CTX_NEW = updateCtx(
                          |                      |           Comb(X1,X2),
                          |                      |           Comb(N1,N2),
-                         |                      |           CTX_OLD)
+                         |                      |           CTX_OLD )
                          |                      |
                          |      Response #1     |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | OSCORE {             |
                          |  ...                 |
  CTX_NEW = updateCtx(    |  Partial IV: 0       |
            Comb(X1,X2),  |  ...                 |
            Comb(N1,N2),  |  d flag: 1           |
-           CTX_OLD)      |  x: X2               |
+           CTX_OLD )     |  x: X2               |
                          |  nonce: N2           |
  Verify with CTX_NEW     |  ...                 |
                          | }                    |
@@ -2620,12 +2620,12 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
                          | }                    |
                          |                      |
 
- // The actual key update process ends here.
- // The two peers can use the new Security Context CTX_NEW.
+ The actual key update process ends here.
+ The two peers can use the new Security Context CTX_NEW.
 
                          |                      |
                          |      Request #2      |
- Protect with CTX_NEW    |--------------------->| /temp
+ Protect with CTX_NEW    +--------------------->| /temp
                          | OSCORE {             |
                          |  ...                 |
                          | }                    | Verify with CTX_NEW
@@ -2636,7 +2636,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
                          | }                    |
                          |                      |
                          |      Response #2     |
-                         |<---------------------| Protect with CTX_NEW
+                         |<---------------------+ Protect with CTX_NEW
                          | OSCORE {             |
                          |  ...                 |
  Verify with CTX_NEW     | }                    |
