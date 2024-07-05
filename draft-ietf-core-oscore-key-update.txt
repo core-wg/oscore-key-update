@@ -1953,25 +1953,27 @@ Table of Contents
    modes they support.  The possible values of the 'ead_value' are as
    follows:
 
-    +------+----------+----------------------------------------------+
-    | Name | Value    | Description                                  |
-    +======+==========+==============================================+
-    | ASK  | h''      | Used only in EDHOC message_1. It asks the    |
-    |      | (0x40)   | recipient peer to specify in EDHOC message_2 |
-    |      |          | whether it supports KUDOS.                   |
-    +------+----------+----------------------------------------------+
-    | NONE | h'00'    | Used only in EDHOC message_2 and message_3.  |
-    |      | (0x4100) | It specifies that the sender peer does not   |
-    |      |          | support KUDOS.                               |
-    +------+----------+----------------------------------------------+
-    | FULL | h'01'    | Used only in EDHOC message_2 and message_3.  |
-    |      | (0x4101) | It specifies that the sender peer supports   |
-    |      |          | KUDOS in FS mode and no-FS mode.             |
-    +------+----------+----------------------------------------------+
-    | PART | h'02'    | Used only in EDHOC message_2 and message_3.  |
-    |      | (0x4102) | It specifies that the sender peer supports   |
-    |      |          | KUDOS in no-FS mode only.                    |
-    +------+----------+----------------------------------------------+
+     +======+==========+=============================================+
+     | Name | Value    | Description                                 |
+     +======+==========+=============================================+
+     | ASK  | h''      | Used only in EDHOC message_1.  It asks the  |
+     |      | (0x40)   | recipient peer to specify in EDHOC          |
+     |      |          | message_2 whether it supports KUDOS.        |
+     +------+----------+---------------------------------------------+
+     | NONE | h'00'    | Used only in EDHOC message_2 and message_3. |
+     |      | (0x4100) | It specifies that the sender peer does not  |
+     |      |          | support KUDOS.                              |
+     +------+----------+---------------------------------------------+
+     | FULL | h'01'    | Used only in EDHOC message_2 and message_3. |
+     |      | (0x4101) | It specifies that the sender peer supports  |
+     |      |          | KUDOS in FS mode and no-FS mode.            |
+     +------+----------+---------------------------------------------+
+     | PART | h'02'    | Used only in EDHOC message_2 and message_3. |
+     |      | (0x4102) | It specifies that the sender peer supports  |
+     |      |          | KUDOS in no-FS mode only.                   |
+     +------+----------+---------------------------------------------+
+
+              Table 1: Values for the EDHOC EAD item KUDOS_EAD
 
    When the KUDOS_EAD item is included in EDHOC message_1 with
    'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item
@@ -2120,63 +2122,62 @@ Table of Contents
    registry within the "Constrained RESTful Environments (CoRE)
    Parameters" registry group.
 
- +----------+-------------+-------------------------------+------------+
- | Bit      | Name        | Description                   | Reference  |
- | Position |             |                               |            |
- +----------+-------------+-------------------------------+------------+
- |     0    | Extension-1 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
- |          | Flag        | specifies a second byte,      |            |
- |          |             | which includes the OSCORE     |            |
- |          |             | flag bits 8-15                |            |
- +----------+-------------+-------------------------------+------------+
- |     8    | Extension-2 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
- |          | Flag        | specifies a third byte,       |            |
- |          |             | which includes the OSCORE     |            |
- |          |             | flag bits 16-23               |            |
- +----------+-------------+-------------------------------+------------+
- |    15    | Nonce Flag  | Set to 1 if nonce is present  | [RFC-XXXX] |
- |          |             | in the compressed COSE object |            |
- +----------+-------------+-------------------------------+------------+
- |    16    | Extension-3 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
- |          | Flag        | specifies a fourth byte,      |            |
- |          |             | which includes the OSCORE     |            |
- |          |             | flag bits 24-31               |            |
- |          |             |                               |            |
- +----------+-------------+-------------------------------+------------+
- |    24    | Extension-4 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
- |          | Flag        | specifies a fifth byte,       |            |
- |          |             | which includes the OSCORE     |            |
- |          |             | flag bits 32-39               |            |
- |          |             |                               |            |
- +----------+-------------+-------------------------------+------------+
- |    32    | Extension-5 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
- |          | Flag        | specifies a sixth byte,       |            |
- |          |             | which includes the OSCORE     |            |
- |          |             | flag bits 40-47               |            |
- |          |             |                               |            |
- +----------+-------------+-------------------------------+------------+
- |    40    | Extension-6 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
- |          | Flag        | specifies a seventh byte,     |            |
- |          |             | which includes the OSCORE     |            |
- |          |             | flag bits 48-55               |            |
- |          |             |                               |            |
- +----------+-------------+-------------------------------+------------+
- |    48    | Extension-7 | Set to 1 if the OSCORE Option | [RFC-XXXX] |
- |          | Flag        | specifies an eigth byte,      |            |
- |          |             | which includes the OSCORE     |            |
- |          |             | flag bits 56-63               |            |
- |          |             |                               |            |
- +----------+-------------+-------------------------------+------------+
+   +==========+=============+============================+============+
+   | Bit      | Name        | Description                | Reference  |
+   | Position |             |                            |            |
+   +==========+=============+============================+============+
+   | 0        | Extension-1 | Set to 1 if the OSCORE     | [RFC-XXXX] |
+   |          | Flag        | Option specifies a second  |            |
+   |          |             | byte, which includes the   |            |
+   |          |             | OSCORE flag bits 8-15      |            |
+   +----------+-------------+----------------------------+------------+
+   | 8        | Extension-2 | Set to 1 if the OSCORE     | [RFC-XXXX] |
+   |          | Flag        | Option specifies a third   |            |
+   |          |             | byte, which includes the   |            |
+   |          |             | OSCORE flag bits 16-23     |            |
+   +----------+-------------+----------------------------+------------+
+   | 15       | Nonce Flag  | Set to 1 if nonce is       | [RFC-XXXX] |
+   |          |             | present in the compressed  |            |
+   |          |             | COSE object                |            |
+   +----------+-------------+----------------------------+------------+
+   | 16       | Extension-3 | Set to 1 if the OSCORE     | [RFC-XXXX] |
+   |          | Flag        | Option specifies a fourth  |            |
+   |          |             | byte, which includes the   |            |
+   |          |             | OSCORE flag bits 24-31     |            |
+   +----------+-------------+----------------------------+------------+
+   | 24       | Extension-4 | Set to 1 if the OSCORE     | [RFC-XXXX] |
+   |          | Flag        | Option specifies a fifth   |            |
+   |          |             | byte, which includes the   |            |
+   |          |             | OSCORE flag bits 32-39     |            |
+   +----------+-------------+----------------------------+------------+
+   | 32       | Extension-5 | Set to 1 if the OSCORE     | [RFC-XXXX] |
+   |          | Flag        | Option specifies a sixth   |            |
+   |          |             | byte, which includes the   |            |
+   |          |             | OSCORE flag bits 40-47     |            |
+   +----------+-------------+----------------------------+------------+
+   | 40       | Extension-6 | Set to 1 if the OSCORE     | [RFC-XXXX] |
+   |          | Flag        | Option specifies a seventh |            |
+   |          |             | byte, which includes the   |            |
+   |          |             | OSCORE flag bits 48-55     |            |
+   +----------+-------------+----------------------------+------------+
+   | 48       | Extension-7 | Set to 1 if the OSCORE     | [RFC-XXXX] |
+   |          | Flag        | Option specifies an eigth  |            |
+   |          |             | byte, which includes the   |            |
+   |          |             | OSCORE flag bits 56-63     |            |
+   +----------+-------------+----------------------------+------------+
+
+         Table 2: Registrations in the OSCORE Flag Bits Registry
 
    In the same registry, IANA is asked to mark as 'Unassigned' the entry
    with Bit Position of 1, i.e., to update the entry as follows.
 
- +----------+------------------+--------------------------+------------+
- | Bit      | Name             | Description              | Reference  |
- | Position |                  |                          |            |
- +----------+------------------+--------------------------+------------+
- |     1    | Unassigned       |                          |            |
- +----------+------------------+--------------------------+------------+
+          +==============+============+=============+===========+
+          | Bit Position | Name       | Description | Reference |
+          +==============+============+=============+===========+
+          | 1            | Unassigned |             |           |
+          +--------------+------------+-------------+-----------+
+
+              Table 3: Update in the OSCORE Flag Bits Registry
 
 6.2.  EDHOC External Authorization Data Registry
 
@@ -2185,12 +2186,15 @@ Table of Contents
    within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry
    group.
 
- +---------+--------------------------------------+--------------------+
- | Label   | Description                          | Reference          |
- +---------+--------------------------------------+--------------------+
- | TBD1    | Indicates whether this peer supports | [RFC-XXXX]         |
- |         | KUDOS and in which mode(s)           |                    |
- +---------+--------------------------------------+--------------------+
+       +=======+=====================================+============+
+       | Label | Description                         | Reference  |
+       +=======+=====================================+============+
+       | TBD1  | Indicates whether this peer         | [RFC-XXXX] |
+       |       | supports KUDOS and in which mode(s) |            |
+       +-------+-------------------------------------+------------+
+
+               Table 4: Registrations in the EDHOC External
+                       Authorization Data Registry
 
 6.3.  The Well-Known URI Registry
 
@@ -2673,6 +2677,12 @@ D.1.  Version -07 to -08
 
    *  IANA considerations for CoAP Option Numbers Registry to refer to
       this draft for the OSCORE option.
+
+   *  Use AASVG in diagrams.
+
+   *  Use actual tables instead of figures.
+
+   *  Clarifications and editorial improvements.
 
 D.2.  Version -06 to -07
 
