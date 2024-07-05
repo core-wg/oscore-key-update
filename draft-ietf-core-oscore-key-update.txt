@@ -174,7 +174,7 @@ Table of Contents
 
    Readers are expected to be familiar with the terms and concepts
    related to CoAP [RFC7252], Observe [RFC7641], CBOR [RFC8949], OSCORE
-   [RFC8613], and EDHOC [I-D.ietf-lake-edhoc].
+   [RFC8613], and EDHOC [RFC9528].
 
    This document additionally defines the following terminology.
 
@@ -266,8 +266,8 @@ Table of Contents
       This procedure does not provide forward secrecy.
 
    *  The two peers can run the EDHOC key exchange protocol based on
-      Diffie-Hellman and defined in [I-D.ietf-lake-edhoc], in order to
-      establish a pseudo-random key in a mutually authenticated way.
+      Diffie-Hellman and defined in [RFC9528], in order to establish a
+      pseudo-random key in a mutually authenticated way.
 
       Then, the two peers can use the established pseudo-random key to
       derive external application keys.  This allows the two peers to
@@ -1472,9 +1472,8 @@ Table of Contents
    As a general rule, once successfully generated a new OSCORE Security
    Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS
    execution, or it has been established through the EDHOC protocol
-   [I-D.ietf-lake-edhoc]), a peer considers the Master Secret and Master
-   Salt of CTX as Latest Master Secret and Latest Master Salt.  After
-   that:
+   [RFC9528]), a peer considers the Master Secret and Master Salt of CTX
+   as Latest Master Secret and Latest Master Salt.  After that:
 
    *  If the peer is a CAPABLE device, it SHOULD store Latest Master
       Secret and Latest Master Salt on disk.
@@ -1940,10 +1939,10 @@ Table of Contents
 
    The EDHOC protocol defines the transport of additional External
    Authorization Data (EAD) within an optional EAD field of the EDHOC
-   messages (see Section 3.8 of [I-D.ietf-lake-edhoc]).  An EAD field is
-   composed of one or multiple EAD items, each of which specifies an
-   identifying 'ead_label' encoded as a CBOR integer, and an optional
-   'ead_value' encoded as a CBOR bstr.
+   messages (see Section 3.8 of [RFC9528]).  An EAD field is composed of
+   one or multiple EAD items, each of which specifies an identifying
+   'ead_label' encoded as a CBOR integer, and an optional 'ead_value'
+   encoded as a CBOR bstr.
 
    This document defines a new EDHOC EAD item KUDOS_EAD and registers
    its 'ead_label' in Section 6.2.  By including this EAD item in an
@@ -2182,9 +2181,9 @@ Table of Contents
 6.2.  EDHOC External Authorization Data Registry
 
    IANA is asked to add the following entries to the "EDHOC External
-   Authorization Data" registry defined in Section 10.5 of
-   [I-D.ietf-lake-edhoc] within the "Ephemeral Diffie-Hellman Over COSE
-   (EDHOC)" registry group.
+   Authorization Data" registry defined in Section 10.5 of [RFC9528]
+   within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry
+   group.
 
  +---------+--------------------------------------+--------------------+
  | Label   | Description                          | Reference          |
@@ -2228,13 +2227,6 @@ Table of Contents
 
 7.1.  Normative References
 
-   [I-D.ietf-lake-edhoc]
-              Selander, G., Mattsson, J. P., and F. Palombini,
-              "Ephemeral Diffie-Hellman Over COSE (EDHOC)", Work in
-              Progress, Internet-Draft, draft-ietf-lake-edhoc-23, 22
-              January 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-lake-edhoc-23>.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -2268,6 +2260,11 @@ Table of Contents
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
+
+   [RFC9528]  Selander, G., Preuß Mattsson, J., and F. Palombini,
+              "Ephemeral Diffie-Hellman Over COSE (EDHOC)", RFC 9528,
+              DOI 10.17487/RFC9528, March 2024,
+              <https://www.rfc-editor.org/rfc/rfc9528>.
 
 7.2.  Informative References
 
