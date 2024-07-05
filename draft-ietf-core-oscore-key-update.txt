@@ -2655,7 +2655,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
 
 Appendix D.  Document Updates
 
-   RFC EDITOR: PLEASE REMOVE THIS SECTION.
+   This section is to be removed before publishing as an RFC.
 
 D.1.  Version -07 to -08
 
