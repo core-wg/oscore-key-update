@@ -603,10 +603,14 @@ Table of Contents
    exhaustion of the OSCORE Sender Sequence Number space.  The
    expiration time of an OSCORE Security Context and the key usage
    limits are hard limits, at which point a peer MUST stop using the
-   keying material in the OSCORE Security Context and has to perform a
-   rekeying before resuming secure communication with the other peer.
-   However, KUDOS can also be used for active rekeying, and a peer may
-   run the KUDOS procedure at any point in time and for any reason.
+   keying material in the OSCORE Security Context for conventional
+   communication with the other peer, and has to perform a rekeying
+   before resuming secure communication.  Note that in order to prevent
+   deadlock situations it is permitted for the responder to use old
+   keying material exlusively limited to derivation of new keying
+   material during the execution of a KUDOS procedure.  KUDOS can be
+   used for active rekeying, and a peer may run the KUDOS procedure at
+   any point in time and for any reason.
 
    Before starting KUDOS, the two peers share the OSCORE Security
    Context CTX_OLD.  Once successfully completed the KUDOS execution,
@@ -2591,6 +2595,9 @@ D.1.  Version -07 to -08
 
    *  Set Notification Number to be uninitialized for new OSCORE
       Security Contexts.
+
+   *  Handle corner case for responder that reached its key usage
+      limits.
 
 D.2.  Version -06 to -07
 
