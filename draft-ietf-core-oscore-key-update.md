@@ -331,7 +331,7 @@ struct {
 
 ## Key Update with Forward Secrecy # {#ssec-derive-ctx}
 
-This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. A peer may want to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, approaching limits for key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. The expiration time of an OSCORE Security Context and the key usage limits are hard limits, at which point a peer MUST stop using the keying material in the OSCORE Security Context and has to perform a rekeying before resuming secure communication with the other peer. However, KUDOS can also be used for active rekeying, and a peer may run the KUDOS procedure at any point in time and for any reason.
+This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material. A peer may want to run KUDOS for a variety of reasons, including expiration of the OSCORE Security Context, approaching limits for key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space. The expiration time of an OSCORE Security Context and the key usage limits are hard limits, at which point a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication. Note that in order to prevent deadlock situations it is permitted for the responder to use old keying material exlusively limited to derivation of new keying material during the execution of a KUDOS procedure. KUDOS can be used for active rekeying, and a peer may run the KUDOS procedure at any point in time and for any reason.
 
 Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW.
 
@@ -1438,6 +1438,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Avoid problems for two simultaneously started key updates.
 
 * Set Notification Number to be uninitialized for new OSCORE Security Contexts.
+
+* Handle corner case for responder that reached its key usage limits.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
