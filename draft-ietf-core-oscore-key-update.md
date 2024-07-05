@@ -528,6 +528,8 @@ Note that the server achieves key confirmation only when receiving a message fro
 
 Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
 
+It may happen that two peers initiate KUDOS simultaneously, that is, both peers first act as initiator in a KUDOS execution, sending the first KUDOS message for that execution; and both peers act as responder in the other KUDOS execution, upon receiving the first KUDOS message sent by the other peer. To avoid problems caused by such a situation two simultaneous executions of KUDOS must not both finish. Speifically, if a peer P1 is acting as initiator in an ongoing KUDOS execution E1 with another peer P2, and P1 receives a first KUDOS message from P2 aimed to start a second KUDOS execution E2, then P1 MUST abort the execution E2 and MUST reply to P2 with a CoAP reset message. Both executions may get cancelled, but no more than one remains.
+
 In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been succesfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) MUST be a 4.01 (Unauthorized) error response.
 
 Upon receiving the 4.01 (Unauthorized) error response as the second KUDOS message Response #1, the client processes it like described above. After successfully completing the KUDOS execution, the client can send to the server a non-KUDOS request protected with CTX_NEW (i.e., Request #2 in Figure 3). Presumably, this request targets the same resource targeted by the previous Request #1, as the same application request or a different one, if the application permits it.
@@ -1429,7 +1431,11 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -07 to -08 ## {#sec-07-08}
 
-* Add note about usage of the CoAP No-Response Option
+* Add note about usage of the CoAP No-Response Option.
+
+* Editorial improvements.
+
+* Avoid problems for two simultaneously started key updates.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
