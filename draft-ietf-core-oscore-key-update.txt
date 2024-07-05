@@ -504,13 +504,7 @@ Table of Contents
    the 'x' and 'nonce' fields transported in the OSCORE Option value of
    the exchanged KUDOS messages (see Section 4.1), while CTX_IN is the
    OSCORE Security Context to update.  The function returns a new OSCORE
-   Security Context CTX_OUT.  Note that new OSCORE Security Context has
-   a Sender Sequence Number that is initialized to 0 as per
-   Section 3.2.2 of [RFC8613], and furthermore its Notification Number,
-   used for replay protection for CoAP notifications, shall be
-   uninitialized (have no value assigned).  It will be initialized upon
-   reception of a notification, and no notifications without Partial IV
-   shall be accepted.
+   Security Context CTX_OUT.
 
    As a first step, the updateCtx() function builds the two CBOR byte
    strings X_cbor and N_cbor, with value the input parameter X and N,
@@ -548,8 +542,20 @@ Table of Contents
    After that, the new Master Secret and Master Salt parameters are used
    to derive a new Security Context CTX_OUT as per Section 3.2 of
    [RFC8613].  Any other parameter required for the derivation takes the
-   same value as in the Security Context CTX_IN.  Finally, the function
-   returns the newly derived Security Context CTX_OUT.
+   same value as in the Security Context CTX_IN.
+
+   Note that the following holds for the newly derived CTX_OUT:
+
+   *  In its Sender Context, the Sender Sequence Number is initialized
+      to 0 as per Section 3.2.2 of [RFC8613].
+
+   *  If the peer that has derived CTX_OUT supports CoAP Observe
+      [RFC7641], the Notification Number used for the replay protection
+      of Observe notifications (see Section 7.4.1 of [RFC8613]) is left
+      as not initialized.
+
+   Finally, the updateCtx() function returns the newly derived Security
+   Context CTX_OUT.
 
    Since the updateCtx() function also takes X as input, the derivation
    of CTX_OUT also considers as input the information from the 'x' field
