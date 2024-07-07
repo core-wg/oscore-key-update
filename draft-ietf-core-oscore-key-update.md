@@ -65,6 +65,12 @@ informative:
     title: Lightweight Machine to Machine Technical Specification - Core, Approved Version 1.2, OMA-TS-LightweightM2M_Core-V1_2-20201110-A
     date: 2020-11
     target: http://www.openmobilealliance.org/release/LightweightM2M/V1_2-20201110-A/OMA-TS-LightweightM2M_Core-V1_2-20201110-A.pdf
+  Symmetric-Security:
+    author: John Preuß Mattsson
+      org: Ericsson Research
+    title: Security of Symmetric Ratchets and Key Chains - Implications for Protocols like TLS 1.3, Signal, and PQ3
+    date: 2024-02
+    target: https://eprint.iacr.org/2024/220
   LwM2M-Transport:
     author:
       org: Open Mobile Alliance
@@ -1073,6 +1079,8 @@ As mentioned in {{ssec-derive-ctx}}, it is RECOMMENDED that the size for nonces 
 Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. This is acceptable, provided that safety, reliability, and robustness within the system can still be assured. Although using nonces that are smaller in size means that there will be a collision on average after fewer KUDOS messages have been sent, this should not pose significant problems even for a constrained server operating at a capacity of one request per second.
 
 The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy. If instead a counter value is used, this can leak some information about the peers. Specifically, using counters will reveal the frequency of rekeying procedures performed.
+
+The paper {{Symmetric-Security}} ...
 
 # IANA Considerations # {#sec-iana}
 
