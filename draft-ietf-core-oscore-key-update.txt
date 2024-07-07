@@ -2108,13 +2108,18 @@ Table of Contents
    the peers.  Specifically, using counters will reveal the frequency of
    rekeying procedures performed.
 
-   Key update solutions built on symmetric cryptography has weaker
-   security properties compared to those built on ephemeral Diffie-
-   Hellman [Symmetric-Security].  Thus, performing periodic key updates
-   with a protocol based on ephemeral Diffie-Hellman such as EDHOC
-   [RFC9528] is beneficial for devices.  For instance, a device may
-   rekey regularly with KUDOS ever week, and use the EDHOC protocol to
-   perform a key update with a lower frequency, such as every month.
+   As discussed in [Symmetric-Security], key update methods built on
+   symmetric key exchange have weaker security properties compared to
+   methods built on ephemeral Diffie-Hellman key exchange.  In fact,
+   while the two approaches can co-exist, rekeying with symmetric key
+   exchange is not intended as a substitute for ephemeral Diffie-Hellman
+   key exchange.  Peers should periodically perform a key update based
+   on ephemeral Diffie-Hellman key exchange (e.g., by running the EDHOC
+   protocol [RFC9528]).  The cadence of such periodic key updates should
+   be determined based on how much the two peers and their network
+   environment are constrained, as well as on the maximum amount of time
+   and of exchanged data that are acceptable between two consecutive key
+   updates.
 
 6.  IANA Considerations
 
