@@ -66,7 +66,8 @@ informative:
     date: 2020-11
     target: http://www.openmobilealliance.org/release/LightweightM2M/V1_2-20201110-A/OMA-TS-LightweightM2M_Core-V1_2-20201110-A.pdf
   Symmetric-Security:
-    author: John Preuß Mattsson
+    author:
+      fullname: John Preuß Mattsson
       org: Ericsson Research
     title: Security of Symmetric Ratchets and Key Chains - Implications for Protocols like TLS 1.3, Signal, and PQ3
     date: 2024-02
@@ -1416,8 +1417,6 @@ Verify with CTX_NEW     | }                    |
 
 * Add note about usage of the CoAP No-Response Option.
 
-* Editorial improvements.
-
 * Avoid problems for two simultaneously started key updates.
 
 * Set Notification Number to be uninitialized for new OSCORE Security Contexts.
@@ -1433,6 +1432,8 @@ Verify with CTX_NEW     | }                    |
 * Use actual tables instead of figures.
 
 * Clarifications and editorial improvements.
+
+* Extended security considerations with reference to relevant paper.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
