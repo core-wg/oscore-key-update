@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                             5 July 2024
-Expires: 6 January 2025
+Intended status: Standards Track                             7 July 2024
+Expires: 8 January 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 January 2025.
+   This Internet-Draft will expire on 8 January 2025.
 
 Copyright Notice
 
@@ -2108,6 +2108,8 @@ Table of Contents
    the peers.  Specifically, using counters will reveal the frequency of
    rekeying procedures performed.
 
+   The paper [Symmetric-Security] ...
+
 6.  IANA Considerations
 
    This document has the following actions for IANA.
@@ -2369,6 +2371,12 @@ Table of Contents
               for Constrained Environments (ACE) Framework", RFC 9203,
               DOI 10.17487/RFC9203, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9203>.
+
+   [Symmetric-Security]
+              Mattsson, J. P., "Security of Symmetric Ratchets and Key
+              Chains - Implications for Protocols like TLS 1.3, Signal,
+              and PQ3", February 2024,
+              <https://eprint.iacr.org/2024/220>.
 
 Appendix A.  Forward Message Flow using two CoAP Requests
 
@@ -2661,8 +2669,6 @@ D.1.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
-   *  Editorial improvements.
-
    *  Avoid problems for two simultaneously started key updates.
 
    *  Set Notification Number to be uninitialized for new OSCORE
@@ -2682,6 +2688,8 @@ D.1.  Version -07 to -08
    *  Use actual tables instead of figures.
 
    *  Clarifications and editorial improvements.
+
+   *  Extended security considerations with reference to relevant paper.
 
 D.2.  Version -06 to -07
 
