@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-04T00:42:33.237667+00:00",
+  "timestamp": "2024-07-07T00:47:09.741943+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -37,6 +37,11 @@
       "name": "NextStep",
       "description": "",
       "color": "0815F3"
+    },
+    {
+      "name": "Close?",
+      "description": "",
+      "color": "8414BB"
     }
   ],
   "issues": [
@@ -92,15 +97,17 @@
       "id": "I_kwDOGfmof85E14iV",
       "title": "Update Security Considerations",
       "url": "https://github.com/core-wg/oscore-key-update/issues/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Close?"
+      ],
       "body": "Add further Security Considerations if necessary.",
       "createdAt": "2022-03-01T07:32:02Z",
-      "updatedAt": "2024-02-29T14:51:31Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T19:10:25Z",
+      "closedAt": "2024-07-05T19:10:25Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -108,6 +115,13 @@
           "body": "For instance with the logic for our chosen l, q and v values and why they are safe.",
           "createdAt": "2022-03-01T07:32:07Z",
           "updatedAt": "2022-03-01T07:32:07Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As we have continued working on the document we have been updating it.",
+          "createdAt": "2024-07-05T13:17:04Z",
+          "updatedAt": "2024-07-05T13:17:04Z"
         }
       ]
     },
@@ -194,15 +208,15 @@
       "id": "I_kwDOGfmof85E16iG",
       "title": "Add terminology explanations",
       "url": "https://github.com/core-wg/oscore-key-update/issues/17",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Like for \"original context\".",
       "createdAt": "2022-03-01T07:43:53Z",
-      "updatedAt": "2023-07-08T13:51:16Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T08:47:09Z",
+      "closedAt": "2024-07-05T08:47:09Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -210,6 +224,13 @@
           "body": "Now we no longer use the \"original context\" term. Let's double check but the terminology can be fine as is.",
           "createdAt": "2023-07-07T14:00:44Z",
           "updatedAt": "2023-07-07T14:00:44Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Currently we have the following in the terminology:\r\n* Initiator: the peer starting the KUDOS execution, by sending the first KUDOS message.\r\n\r\n* Responder: the peer that receives the first KUDOS message in a KUDOS execution.\r\n\r\n* Forward message flow: the KUDOS execution workflow where the initiator acts as CoAP client (see {{ssec-derive-ctx-client-init}}).\r\n\r\n* Reverse message flow: the KUDOS execution workflow where the initiator acts as CoAP server (see {{ssec-derive-ctx-server-init}}).\r\n\r\n* FS mode: the KUDOS execution mode that achieves forward secrecy (see {{ssec-derive-ctx}}).\r\n\r\n* No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see {{no-fs-mode}}).\r\n\r\nI think that is a good selection, and other things such as CTX_NEW etc. we describe in their relevant section of the text.",
+          "createdAt": "2024-07-05T08:47:09Z",
+          "updatedAt": "2024-07-05T08:47:09Z"
         }
       ]
     },
@@ -728,16 +749,26 @@
       "id": "I_kwDOGfmof85NW9Q1",
       "title": "Add registry for 'x' byte",
       "url": "https://github.com/core-wg/oscore-key-update/issues/38",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Close?"
+      ],
       "body": "May be good for future extensibility\r\n\r\nOne bit in the 'x' byte could be for extending it",
       "createdAt": "2022-07-07T18:03:14Z",
-      "updatedAt": "2023-10-12T09:04:39Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-05T19:10:07Z",
+      "closedAt": "2024-07-05T19:10:07Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We raised this during IETF 117. Christian commented saying that he felt there was not much point.\r\nhttps://datatracker.ietf.org/meeting/117/materials/minutes-117-core-00",
+          "createdAt": "2024-07-05T13:16:39Z",
+          "updatedAt": "2024-07-05T13:16:39Z"
+        }
+      ]
     },
     {
       "number": 39,
@@ -760,15 +791,17 @@
       "id": "I_kwDOGfmof85NW9mS",
       "title": "Does this document update the Observe RFC?",
       "url": "https://github.com/core-wg/oscore-key-update/issues/40",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Close?"
+      ],
       "body": "Since we introduce a new way to cancel observations",
       "createdAt": "2022-07-07T18:04:15Z",
-      "updatedAt": "2023-07-08T13:54:42Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T19:09:40Z",
+      "closedAt": "2024-07-05T19:09:40Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -776,6 +809,13 @@
           "body": "This new way is cancelling observations through a KUDOS execution where the Preserve Observations bit is not set by one peer.",
           "createdAt": "2023-07-08T13:54:42Z",
           "updatedAt": "2023-07-08T13:54:42Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Still perhaps it is a stretch to say it updates the Observer RFC. I propose to close this as is",
+          "createdAt": "2024-07-05T12:53:23Z",
+          "updatedAt": "2024-07-05T12:53:23Z"
         }
       ]
     },
@@ -784,16 +824,26 @@
       "id": "I_kwDOGfmof85NW97F",
       "title": "Change name of 'p' and 'b' bits in 'x' byte",
       "url": "https://github.com/core-wg/oscore-key-update/issues/41",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Close?"
+      ],
       "body": "The old characters are based on older names for the bits.\r\n\r\nNew names could be something like 'f' (FS/no-FS) and 'p' (preserve observations)",
       "createdAt": "2022-07-07T18:05:17Z",
-      "updatedAt": "2023-07-08T13:51:15Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-05T19:09:19Z",
+      "closedAt": "2024-07-05T19:09:19Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Not sure it adds much to change now if everyone got used to the old names",
+          "createdAt": "2024-07-05T12:52:30Z",
+          "updatedAt": "2024-07-05T12:52:30Z"
+        }
+      ]
     },
     {
       "number": 42,
@@ -1625,7 +1675,7 @@
       "id": "I_kwDOGfmof85WaGHH",
       "title": "Corner case with server-only endpoint which reached its 'v' limit",
       "url": "https://github.com/core-wg/oscore-key-update/issues/68",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -1634,8 +1684,8 @@
       ],
       "body": "How should an endpoint supporting KUDOS, but which can only act as CoAP server (meaning it cannot send requests), act in the case it receives an OSCORE protected message but its 'v' limit has been reached? (Thus it cannot safely decrypt the incoming request).",
       "createdAt": "2022-11-15T12:09:37Z",
-      "updatedAt": "2024-02-29T14:51:23Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T12:51:41Z",
+      "closedAt": "2024-07-05T12:51:08Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -1657,6 +1707,13 @@
           "body": "This could be raised during a future meeting",
           "createdAt": "2023-07-06T11:30:27Z",
           "updatedAt": "2023-07-06T11:30:27Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Added tentative text to be discussed early in section \"Key Update with Forward Secrecy\".",
+          "createdAt": "2024-07-05T12:51:40Z",
+          "updatedAt": "2024-07-05T12:51:40Z"
         }
       ]
     },
@@ -2014,7 +2071,7 @@
       "id": "I_kwDOGfmof85p7nwY",
       "title": "Add note to set Notification Number to be uninitialized when creating new Security Contexts",
       "url": "https://github.com/core-wg/oscore-key-update/issues/81",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -2023,8 +2080,8 @@
       ],
       "body": "Similarly to what was done in Group OSCORE.",
       "createdAt": "2023-06-27T15:27:39Z",
-      "updatedAt": "2024-02-29T14:52:00Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T08:50:39Z",
+      "closedAt": "2024-07-05T08:50:39Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2054,15 +2111,17 @@
       "id": "I_kwDOGfmof85q69Tu",
       "title": "Add privacy considerations section",
       "url": "https://github.com/core-wg/oscore-key-update/issues/82",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Close?"
+      ],
       "body": "For instance about N1 and N2 being sent in cleartext",
       "createdAt": "2023-07-07T16:40:03Z",
-      "updatedAt": "2024-03-01T16:51:31Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T19:08:46Z",
+      "closedAt": "2024-07-05T19:08:46Z",
       "comments": [
         {
           "author": "rikard-sics",
@@ -2070,6 +2129,13 @@
           "body": "Currently we cover also privacy considerations in the Security considerations section.",
           "createdAt": "2024-03-01T16:51:30Z",
           "updatedAt": "2024-03-01T16:51:30Z"
+        },
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We already have privacy considerations as part of the security considerations. If that is fine we can close this issue.",
+          "createdAt": "2024-07-05T12:38:28Z",
+          "updatedAt": "2024-07-05T12:38:28Z"
         }
       ]
     },
@@ -2126,16 +2192,26 @@
       "id": "I_kwDOGfmof85sIEwt",
       "title": "Change name of 'x' byte?",
       "url": "https://github.com/core-wg/oscore-key-update/issues/84",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "Close?"
+      ],
       "body": "To something more descriptive?",
       "createdAt": "2023-07-20T13:54:09Z",
-      "updatedAt": "2023-07-20T13:54:09Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-05T19:08:36Z",
+      "closedAt": "2024-07-05T19:08:36Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Not sure it adds much to change now if everyone got used to the old name",
+          "createdAt": "2024-07-05T12:52:48Z",
+          "updatedAt": "2024-07-05T12:52:48Z"
+        }
+      ]
     },
     {
       "number": 85,
@@ -2478,15 +2554,15 @@
       "id": "I_kwDOGfmof86Cwu3p",
       "title": "Handle situation with two simultaneously started key updates",
       "url": "https://github.com/core-wg/oscore-key-update/issues/97",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "It might happen that both peers start KUDOS with one another, without knowing that the other peer has also simultaneously started KUDOS.\r\n\r\nThe scenario is that each peer:\r\n\r\n- First acts as initiator in a KUDOS execution, sending the first KUDOS message for that execution; and then\r\n- Acts as responder in the other KUDOS execution, upon receiving the first KUDOS message sent by the other peer.\r\n\r\n**Proposed solution**\r\nIf a peer P1 is acting as initiator in an ongoing KUDOS execution E1 with another peer P2, and P1 receives a first KUDOS message from P2 aimed to start a second KUDOS execution E2, then P1 MUST abort the execution E2 and MUST reply to P2 with a CoAP RST message. It might happen that both executions get cancelled, but at most one survives.",
       "createdAt": "2024-03-19T01:27:00Z",
-      "updatedAt": "2024-03-19T01:28:25Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T08:50:39Z",
+      "closedAt": "2024-07-05T08:50:39Z",
       "comments": []
     },
     {
@@ -2501,25 +2577,57 @@
       "labels": [],
       "body": "We should consider these 2 papers, and refer to them related to things relevant for KUDOS:\r\nhttps://eprint.iacr.org/2023/913\r\nhttps://eprint.iacr.org/2024/220",
       "createdAt": "2024-03-27T14:36:14Z",
-      "updatedAt": "2024-03-27T14:36:14Z",
+      "updatedAt": "2024-07-05T19:21:41Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Summarize section 4.5 from the second paper in the security considerations",
+          "createdAt": "2024-07-05T19:21:40Z",
+          "updatedAt": "2024-07-05T19:21:40Z"
+        }
+      ]
     },
     {
       "number": 99,
       "id": "I_kwDOGfmof86ORXeh",
       "title": "Editorial: Split main section describing KUDOS into subsections",
       "url": "https://github.com/core-wg/oscore-key-update/issues/99",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Splitting the main section that describes KUDOS into subsections can make things more readable",
       "createdAt": "2024-07-02T18:45:46Z",
-      "updatedAt": "2024-07-02T18:45:46Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-05T13:09:19Z",
+      "closedAt": "2024-07-05T13:09:19Z",
       "comments": []
+    },
+    {
+      "number": 100,
+      "id": "I_kwDOGfmof86OoO2c",
+      "title": "Officially update OSCORE wrt. uninitialization of Notification Numbers for new OSCORE Security Contexts",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/100",
+      "state": "CLOSED",
+      "author": "rikard-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "To raise in IETF Vancouver",
+      "createdAt": "2024-07-05T16:58:35Z",
+      "updatedAt": "2024-07-05T19:07:17Z",
+      "closedAt": "2024-07-05T19:07:14Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Seems not needed",
+          "createdAt": "2024-07-05T19:07:14Z",
+          "updatedAt": "2024-07-05T19:07:14Z"
+        }
+      ]
     }
   ],
   "pulls": []
