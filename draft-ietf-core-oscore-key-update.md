@@ -1081,7 +1081,7 @@ Overall, the size of the nonces N1 and N2 should be set such that the security l
 
 The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy. If instead a counter value is used, this can leak some information about the peers. Specifically, using counters will reveal the frequency of rekeying procedures performed.
 
-The paper {{Symmetric-Security}} ...
+Key update solutions built on symmetric cryptography has weaker security properties compared to those built on ephemeral Diffie-Hellman {{Symmetric-Security}}. Thus, performing periodic key updates with a protocol based on ephemeral Diffie-Hellman such as EDHOC {{RFC9528}} is beneficial for devices. For instance, a device may rekey regularly with KUDOS ever week, and use the EDHOC protocol to perform a key update with a lower frequency, such as every month.
 
 # IANA Considerations # {#sec-iana}
 
