@@ -361,7 +361,7 @@ Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Opt
 
 After a peer has generated or received the value N1, and after a peer has calculated or received the value X1, it shall retain these in memory until it has received and processed the second KUDOS message.
 
-### Handling of OSCORE Security Contexts
+### Handling of OSCORE Security Contexts {#ssec-context-handling}
 
 The peer starting a KUDOS execution is denoted as initiator, while the other peer in the same session is denoted as responder.
 
@@ -803,7 +803,7 @@ Note that:
 
 * A peer that is a CAPABLE device MUST support the FS mode and the no-FS mode.
 
-* As an exception to the nonces being generated as random values (see Section {{ssec-derive-ctx}}), a peer that is a CAPABLE device MAY use a value obtained from a monotonically incremented counter as nonce N1 or N2. This has privacy implications, which are described in Section {{sec-cons}}. In such a case, the peer MUST enforce measures to ensure freshness of the nonce values. For example, the peer can use the same procedure described in {{Section B.1.1 of RFC8613}} for handling the OSCORE Sender Sequence Number values. These measures require to regularly store the used counter values in non-volatile memory, which makes non-CAPABLE devices unable to safely use counter values as nonce values.
+* As an exception to the nonces being generated as random values (see Section {{ssec-nonces-x-bytes}}), a peer that is a CAPABLE device MAY use a value obtained from a monotonically incremented counter as nonce N1 or N2. This has privacy implications, which are described in Section {{sec-cons}}. In such a case, the peer MUST enforce measures to ensure freshness of the nonce values. For example, the peer can use the same procedure described in {{Section B.1.1 of RFC8613}} for handling the OSCORE Sender Sequence Number values. These measures require to regularly store the used counter values in non-volatile memory, which makes non-CAPABLE devices unable to safely use counter values as nonce values.
 
 As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{RFC9528}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
@@ -889,7 +889,7 @@ As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution
 
 This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, beyond the completion of a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, e.g., against an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
 
-The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-management}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, just as defined in {{ssec-derive-ctx}}.
+The actual preservation of ongoing observations has to be agreed by the two peers at each execution of KUDOS that they run with one another, as defined in {{preserving-observe-management}}. If, at the end of a KUDOS execution, the two peers have not agreed on that, they MUST terminate the ongoing observations that they have with one another, just as defined in {{ssec-context-handling}}.
 
 ### Management of Observations {#preserving-observe-management}
 
@@ -1075,7 +1075,7 @@ This document mainly covers security considerations about using AEAD keys in OSC
 
 Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
 
-As mentioned in {{ssec-derive-ctx}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages.
+As mentioned in {{ssec-nonces-x-bytes}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages.
 
 Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that are smaller in size. This is acceptable, provided that safety, reliability, and robustness within the system can still be assured. Although using nonces that are smaller in size means that there will be a collision on average after fewer KUDOS messages have been sent, this should not pose significant problems even for a constrained server operating at a capacity of one request per second.
 
