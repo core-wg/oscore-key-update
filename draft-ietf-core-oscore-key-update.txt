@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                             7 July 2024
-Expires: 8 January 2025
+Intended status: Standards Track                             8 July 2024
+Expires: 9 January 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2025.
+   This Internet-Draft will expire on 9 January 2025.
 
 Copyright Notice
 
@@ -1458,16 +1458,17 @@ Table of Contents
       no-FS mode.
 
    *  As an exception to the nonces being generated as random values
-      (see Section Section 4.3), a peer that is a CAPABLE device MAY use
-      a value obtained from a monotonically incremented counter as nonce
-      N1 or N2.  This has privacy implications, which are described in
-      Section Section 5.  In such a case, the peer MUST enforce measures
-      to ensure freshness of the nonce values.  For example, the peer
-      can use the same procedure described in Appendix B.1.1 of
-      [RFC8613] for handling the OSCORE Sender Sequence Number values.
-      These measures require to regularly store the used counter values
-      in non-volatile memory, which makes non-CAPABLE devices unable to
-      safely use counter values as nonce values.
+      (see Section Section 4.3.1), a peer that is a CAPABLE device MAY
+      use a value obtained from a monotonically incremented counter as
+      nonce N1 or N2.  This has privacy implications, which are
+      described in Section Section 5.  In such a case, the peer MUST
+      enforce measures to ensure freshness of the nonce values.  For
+      example, the peer can use the same procedure described in
+      Appendix B.1.1 of [RFC8613] for handling the OSCORE Sender
+      Sequence Number values.  These measures require to regularly store
+      the used counter values in non-volatile memory, which makes non-
+      CAPABLE devices unable to safely use counter values as nonce
+      values.
 
    As a general rule, once successfully generated a new OSCORE Security
    Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS
@@ -1702,7 +1703,7 @@ Table of Contents
    another, as defined in Section 4.6.1.  If, at the end of a KUDOS
    execution, the two peers have not agreed on that, they MUST terminate
    the ongoing observations that they have with one another, just as
-   defined in Section 4.3.
+   defined in Section 4.3.2.
 
 4.6.1.  Management of Observations
 
@@ -2083,7 +2084,7 @@ Table of Contents
    new OSCORE Security Context, the related security considerations also
    apply.
 
-   As mentioned in Section 4.3, it is RECOMMENDED that the size for
+   As mentioned in Section 4.3.1, it is RECOMMENDED that the size for
    nonces N1 and N2 is 8 bytes.  The application needs to set the size
    of each nonce such that the probability of its value being repeated
    is negligible.  Note that the probability of collision of nonce
