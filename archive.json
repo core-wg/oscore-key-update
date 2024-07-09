@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-07T00:47:09.741943+00:00",
+  "timestamp": "2024-07-09T00:42:47.986902+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -52,7 +52,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/1",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Limits"
@@ -64,28 +64,28 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Consider waiting for resolution of issue \"Each client can count q up to half(?) the q limit as an optimization\"",
           "createdAt": "2022-03-01T07:31:29Z",
           "updatedAt": "2022-03-01T07:31:43Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "* Original issues\r\n    - https://gitlab.com/rikard-sics/draft-hoeglund-oscore-rekeying-limits/-/issues/1\r\n    - https://gitlab.com/rikard-sics/draft-hoeglund-oscore-rekeying-limits/-/issues/13\r\n\r\n\r\nGoal: avoid keeping an explicit count_q, while still ensuring by construction to not exceed count_q encryptions.\r\n\r\nBoth client and server\r\n- no explicit count_q to store and maintain, just rely on the Sender Sequence Number (SSN); still count_q represents the amount of performed encryptions\r\n- check if the SSN exceeds q_limit; if yes, stop and rekey\r\n\r\nIt works on the client\r\n- because every request has PIV, hence SSN coincides with the theoretical count_q\r\n\r\nIt works on the server\r\n- because every notification and other responses with PIV make SSN count such responses. That is, the server knows it has performed at least SSN encryptions.\r\n- in addition the server trusts the client to stop transmitting and start a rekeying, and especially to never send a request that would make the server perform more than q_limit encryptions",
           "createdAt": "2022-03-01T16:37:50Z",
           "updatedAt": "2022-03-01T16:37:50Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Example\r\n\r\nc->s PIV: 0, Observe (1 encryption C)\r\ns->c PIV: Notification (1 encryption S)\r\ns->c PIV: Notification (1 encryption S)\r\ns->c PIV: Notification (1 encryption S)\r\n\r\nc: 1 encryption / SSN = 1\r\ns: 3 encryption / SSN = 3\r\n\r\nq_limit = 4\r\n\r\nc->s PIV: 1 - (1 encryption C)\r\ns->c PIV: - (1 encryption S)\r\n\r\nc: 2 encryption / SSN = 2\r\ns: 4 encryption / SSN = 3\r\n\r\n\r\nc->s PIV: 2 - (1 encryption C)\r\ns->c PIV: - (1 encryption S) // The server is already acting wrong here\r\n\r\nc: 3 encryption / SSN = 3\r\ns: 5 encryption / SSN = 3\r\n\r\n\r\nc->s PIV: 3 - (1 encryption C) // The client would stop after this\r\ns->c PIV: - (1 encryption S)\r\n\r\nc: 4 encryption / SSN = 4\r\ns: 6 encryption / SSN = 3\r\n\r\n---\r\n\r\nA possible optimization can work as follows.\r\n\r\nPro: no need to keep an explicit count_q.\r\nCon: pessimistic overestimation, staling the keys earlier than needed\r\n\r\nAt any point in time, an endpoint has made *at most* ENC = (SSN + SSN*) encryptions, where:\r\n* SSN is its own Sender Sequence Number.\r\n* SSN* is the other endpoint's Sender Sequence Number. That is, SSN* is an overestimation of the responses without Partial IV that this endpoint has sent.\r\n-\r\nBefore performing an encryption, an endpoint stops and invalidates the Security Context if (SSN + X) > limit_q , where SSN is the Sender Sequence Number of this endpoint, and X is determined as follows:\r\n\r\n* if this endpoint is producing an outgoing response, X is the Partial IV in the request it is responding to.\r\n    * Note that X < SSN* always holds.\r\n* if this endpoint is producing an outgoing request, X is the highest Partial IV value marked as received in its Replay Window, or (REPLAY_WINDOW_SIZE - 1) if it has received no messages yet from the other endpoint.\r\n    * That is, X is the highest Partial IV seen from the other point, i.e. its highest seen Sender Sequence Number, and again X < SSN* always holds.",
           "createdAt": "2022-03-01T16:37:58Z",
           "updatedAt": "2022-03-01T16:37:58Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This should be what is covered in _Appendix B. Estimation of 'count_q'_",
           "createdAt": "2022-07-08T15:56:46Z",
           "updatedAt": "2022-07-08T15:56:46Z"
@@ -99,7 +99,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/2",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Close?"
@@ -111,14 +111,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "For instance with the logic for our chosen l, q and v values and why they are safe.",
           "createdAt": "2022-03-01T07:32:07Z",
           "updatedAt": "2022-03-01T07:32:07Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "As we have continued working on the document we have been updating it.",
           "createdAt": "2024-07-05T13:17:04Z",
           "updatedAt": "2024-07-05T13:17:04Z"
@@ -132,7 +132,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/11",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -144,28 +144,28 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Marco Tiloca commented:\r\n\r\nI can't find a comment from John in the meeting minutes \\[1\\].\r\n\r\nIt's strange though. OSCORE Appendix B.2 clearly generates R2 as a random value, either directly or through key derivation to trade storage and communication overhead. How would it be different here, especially since we want to keep covering also a rekeying following a reboot?\r\n\r\n\\[1\\] https://datatracker.ietf.org/meeting/interim-2021-core-04/materials/minutes-interim-2021-core-04-202104281600-00.txt",
           "createdAt": "2022-03-01T07:39:44Z",
           "updatedAt": "2022-03-01T07:39:44Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We could possibly check the recording",
           "createdAt": "2022-03-01T07:39:49Z",
           "updatedAt": "2022-03-01T07:39:49Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We now allow using counters as nonce values for CAPABLE devices that are willing to accept the privacy implications.",
           "createdAt": "2024-02-29T14:52:49Z",
           "updatedAt": "2024-02-29T14:52:49Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Usage of counters/sequence numbers are allowed now for CAPABLE devices.",
           "createdAt": "2024-03-01T16:50:30Z",
           "updatedAt": "2024-03-01T16:50:44Z"
@@ -179,7 +179,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/14",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "It would be good to specify recommendations for the minimum length of R1 and R2. Similarly to how OSCORE does it in:\r\nhttps://datatracker.ietf.org/doc/html/rfc8613#page-72",
@@ -189,14 +189,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Comment by Christian during CoRE interim on October 13:\r\n\r\n> Might be good, but some devices may keep it shorter if sure of no reuse. Similar to what raised in the Echo-Request-Tag document.\r\n\r\nSo we can allow smaller values (if they can make sure it's safe) to not lock out embedded implementations.",
           "createdAt": "2022-03-01T07:42:27Z",
           "updatedAt": "2022-03-01T07:42:27Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We have a brief mention of minimum lenghts:\r\n_The length of the nonces N1 and N2 is application specific. The application needs to set the length of each nonce such that the probability of its value being repeated is negligible. To this end, each nonce is typically at least 8 bytes long._",
           "createdAt": "2022-07-08T16:02:18Z",
           "updatedAt": "2022-07-08T16:02:18Z"
@@ -210,7 +210,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/17",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Like for \"original context\".",
@@ -220,14 +220,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Now we no longer use the \"original context\" term. Let's double check but the terminology can be fine as is.",
           "createdAt": "2023-07-07T14:00:44Z",
           "updatedAt": "2023-07-07T14:00:44Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Currently we have the following in the terminology:\r\n* Initiator: the peer starting the KUDOS execution, by sending the first KUDOS message.\r\n\r\n* Responder: the peer that receives the first KUDOS message in a KUDOS execution.\r\n\r\n* Forward message flow: the KUDOS execution workflow where the initiator acts as CoAP client (see {{ssec-derive-ctx-client-init}}).\r\n\r\n* Reverse message flow: the KUDOS execution workflow where the initiator acts as CoAP server (see {{ssec-derive-ctx-server-init}}).\r\n\r\n* FS mode: the KUDOS execution mode that achieves forward secrecy (see {{ssec-derive-ctx}}).\r\n\r\n* No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see {{no-fs-mode}}).\r\n\r\nI think that is a good selection, and other things such as CTX_NEW etc. we describe in their relevant section of the text.",
           "createdAt": "2024-07-05T08:47:09Z",
           "updatedAt": "2024-07-05T08:47:09Z"
@@ -241,7 +241,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/18",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Note on things to save to disk: Master Secret/Salt + ID Context (to support rebooting)\r\n\r\nAlso save RID and SID.\r\n\r\nNo need to save Master Secret/Salt if the original context was set up with EDHOC. But then you need to save the PRK_4x3m.",
@@ -251,7 +251,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "I will add some text at the end of 4.3.0",
           "createdAt": "2022-03-01T07:44:15Z",
           "updatedAt": "2022-03-01T07:44:15Z"
@@ -265,7 +265,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/21",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "See\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/core/EL0yHxQrP2DQwHxo6ojnQedvFbY/",
@@ -275,14 +275,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "The original version of KUDOS ensures PFS. This requires that:\r\n- The Master Secret and Master Salt are updated, and keys derived from the \"original\" ones are not used anymore;\r\n- The new Master Secret and Master Salt are stored on disk (non-volatile) memory, for possible retrieval after rebooting;\r\n- The two KUDOS peers are able to perform a stateful procedure.\r\n\r\nNew concepts:\r\n- Bootstrap Master Secret and Bootstrap Master Salt\r\n    - If provisioned they are stored on disk, and they are never changed by the device.\r\n\r\n- Latest Master Secret and Latest Master Salt\r\n    - It can be dynamically updated by the device; it's lost upon reboot unless stored on disk (which is recommended if possible to do).\r\n\r\nNote that:\r\n- A device can have none of the pairs above, only one or both.\r\n- A device that has neither of the above pairs, cannot run KUDOS.\r\n- A device that has only one of the above pairs can try to run KUDOS, but that can fail due to the other peer (see below).\r\n\r\nThe original version of KUDOS is problematic for some devices that can afford only a single writing in persistent memory when a Bootstrap Master Secret and a Bootstrap Master Salt are provided (e.g., at manufacturing), but no more after that. These devices cannot perform a stateful key update procedure which practically prevents ensuring PFS.\r\n\r\nWhat follows enables an alternative execution of KUDOS, which sacrifices PFS but allows devices to perform a stateless key update, i.e., without writing on disk (like possible in OSCORE Appendix B.2).\r\n\r\nCAPABLE = A device capable of writing to disk (non-volatile memory).\r\n\r\nAs a general rule, when generating a new Security Context, the corresponding Latest Master Secret and Latest Master Salt:\r\n- should be stored on disk if the device is CAPABLE;\r\n- must always be stored in volatile memory for practical use with OSCORE\r\n\r\nThis is independent of how exactly such Master Secret and Master Salt have been obtained. An exception to the above is the temporary KUDOS context CTX_1 which must not be stored on disk.\r\n\r\nThis enables the following sequence of event in case of rebooting:\r\n\r\n- Check if you have a (Latest Master Secret, and Latest Master Salt) on disk\r\n\r\n- If yes:\r\n    - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD\r\n    - Note: no need to restore this pair on disk in this case!\r\n    - Run KUDOS as initiator\r\n\r\n- If no, check if you have a (Bootstrap Master Secret, and Bootstrap Master Salt) on disk\r\n\r\n    - If yes:\r\n        - Load it to volatile memory, and use its content to derive an OSCORE context CTX_OLD\r\n        - If CAPABLE, (Bootstrap Master Secret, and Bootstrap Master Salt) is stored on disk as (Latest Master Secret, and Latest Master Salt)\r\n        - Run KUDOS as initiator\r\n\r\n    - If no, use other ways to establish a first OSCORE context CTX_OLD\r\n\r\n\r\nProposed extensions:\r\n- In the OSCORE option of a KUDOS message, in the second byte of flag bits, one more bit 'p' is used. The bit must be set to 0 when using the original version of KUDOS. The bit must be set to 0 if the second byte of flag bits is present but the 'd' flag is set to 0 (the message is not a KUDOS message).\r\n- In a KUDOS message (i.e., the 'd' bit is set to 1), the 'p' bit indicates what material to use for CTX_OLD as the second argument of updateCtx():\r\n    - If the 'p' bit is set to 0, KUDOS is run in PFS mode. That is, the current Security Context CTX_OLD is used and the goal is to preserve PFS. In order to use this mode of KUDOS, a device must be CAPABLE.\r\n    - If the 'p' bit is set to 1, KUDOS is run in no-PFS mode, meaning that PFS is sacrificed because a stateful execution is not possible. That is, the Security Context CTX_OLD to use is the current one where the following changes apply: Master Secret = Bootstrap Master Secret, and Master Salt = Bootstrap Master Salt. This means that every execution of KUDOS between these peers will always consider this same Secret/Salt pair.\r\n        - In order to use this mode of KUDOS a peer must have Bootstrap Master Secret and Bootstrap Master Salt.\r\n\r\nIf a device is non CAPABLE, it MUST NOT run KUDOS in PFS mode and MUST run KUDOS in non-PFS mode.\r\n\r\nIf a device is CAPABLE, it SHOULD run KUDOS in this PFS mode as initiator and SHOULD NOT run KUDOS in no-PFS mode as initiator. An exception to this is a follow-up with a responder peer that has made evident to not support this mode. Note that such a CAPABLE device is able to store also this piece of information, so that it can take following executions of KUDOS with this peer with the 'p' bit set to 1, including after a possible reboot.\r\n\r\nNote: If a peer A has learned that the other peer B in fact does support running KUDOS in PFS-mode it should never run KUDOS with that peer B in non-PFS mode (meaning if the other peer B initiates KUDOS with p = 1 it should be rejected). If A is a capable device, it MUST store this information on disk, hence preventing malevolent downgrading to no-PFS mode is case of simultaneous rebooting where B is non capable.\r\n\r\nNote: If both peers reboot simultanously, the client initated variant of KUDOS would end up being run.\r\n\r\nIf able to run KUDOS as specified in the 'p' flag by the initiator, the responder MUST comply and do so. Otherwise:\r\n\r\n* If the responder is the server,\r\n \r\n    * It MUST return a protected 5.03 error response to Request nr.  (protected with CTX_NEW as usual), where the diagnostic payload should explain what has happened. The 'p' bit in the OSCORE option of this response MUST be set to 1. When receiving this, if 'p' was 0 in the first Request nr. , the client learns that the server can run only the no-PFS mode and MAY try again, setting the 'p' bit to 1 in the new Request nr. .\r\n\r\n* If the responder is the client,\r\n\r\n   * After receiving Response nr. , the client sends a Request nr. 2 protected with CTX_NEW as usual. The 'p' bit in the OSCORE option of this response MUST be set to 1. Then, the client can abort the current KUDOS execution, and deletes both CTX_1 and CTX_NEW.\r\n\r\n   * After receiving the Request nr. 2 above (i.e, having the 'p' bit set to 1 as a follow-up to Response nr.  having the 'p' bit set to 0), the server aborts the KUDOS execution, deletes both CTX_1 and CTX_NEW, and learns that the client can run only the no-PFS mode.",
           "createdAt": "2022-03-01T16:29:05Z",
           "updatedAt": "2022-03-01T16:30:47Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This has now been added in the latest version.",
           "createdAt": "2022-07-08T15:55:00Z",
           "updatedAt": "2022-07-08T15:55:00Z"
@@ -296,7 +296,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/22",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Possible extension",
@@ -306,28 +306,28 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "RH (p12): procedure to update OSCORE Sender/Recipient ID. It can be used stand-alone or embedded in a KUDOS execution. Not to use right after a reboot to avoid reuse of AEAD nonce. An exception is when OSCORE Appendix B.1 is used, and the node can restart from a safe SSN.\r\nCA: Might be easier to phrase in terms of \"when having lost state\", and being explicit about which state is lost (here it's probably the set of sender IDs ever used on this master secret)\r\n\r\nRight ..., so, regardless a rebooting happened or not, it is really about having lost state. This procedure must not be used if the device does not remember to whole set of Sender/Recipient IDs used with the Master Secret of CTX_OLD. In such a case, the device has to first run KUDOS to update the Master Secret.\r\n\r\nThis opens for yet another consistency check to do when running this procedure as stand alone, regardless a rebooting happened or not. That is, a peer receiving an ID to use as its own Sender ID must abort the procedure if it has already used that ID as its own Sender ID under that Master Secret. Also it must offer its own Recipient ID only if this is not only available at the moment but also never used before under the current Master Secret. Practically, between two consecutive updates of Master Secret (e.g., through KUDOS), a device must keep track of the Sender/Recipient IDs used under that Master Secret.",
           "createdAt": "2022-03-01T16:23:44Z",
           "updatedAt": "2022-03-01T16:23:44Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "- From John, about possibly establishing also new Sender/Recipient IDs. Something to at least discuss.\r\n--- https://mailarchive.ietf.org/arch/msg/core/GXsKO4wKdt3RTZnQZxOzRdIG9QI/\r\n\r\nAnd Christian suggests to actually use an inner option for that, adding more considerations on selecting new identifiers among the ones not used yet (hence it's easier to just do it in KUDOS)\r\n--- https://mailarchive.ietf.org/arch/msg/core/ClwcSF0BUVxDas8BpgT0WY1yQrY/\r\nIt's also even better if we want to admit this as happening not necessarily as part of a KUDOS execution.\r\n\r\n\r\nGeneral points:\r\n* Like in EDHOC, each endpoint can specify its own new Recipient ID, i.e., the new Sender ID of the other peer.\r\n* This update of Sender/Recipient IDs has to be optional to do.\r\n* This can be embedded in a KUDOS execution or not (i.e., stand-alone).\r\n* Both when embedded in KUDOS and when stand-alone, it has to be possible to be client- or server-initiated. When embedded in KUDOS, the initiator (responder) of this procedure is also the initiator (responder) of KUDOS.\r\n* Updating the Sender/Recipient IDs practically triggers the derivation of a new security context, with everything it implies (e.g., on Sender Sequence Number and Replay Window).\r\n* This procedure MUST not be used immediately following a reboot, to avoid reuse of AEAD nonces. Instead, KUDOS has to be used first (or something else, e.g., EDHOC).\r\n\r\nTo define:\r\n* How to transport the new Recipient ID\r\n* Where is it a good time to delete the old Sender/Recipient IDs (e.g., based on key confirmation)\r\n* What about observations? Possible to preserve?\r\n* Downgrading attack by blocking request with p = 0, and injecting fake 5.03 response",
           "createdAt": "2022-03-01T16:31:35Z",
           "updatedAt": "2022-03-01T16:31:35Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "### How to transport the new IDs\r\n\r\nRationale: use a new dedicated CoAP option for both transport and signaling.\r\n\r\n~~~~~~~~~~~\r\n+------+---+---+---+---+-------------+--------+--------+---------+\r\n| No.  | C | U | N | R | Name        | Format | Length | Default |\r\n+------+---+---+---+---+-------------+--------+--------+---------+\r\n|      |   |   |   |   |             |        |        |         |\r\n| TBD1 |   |   |   |   | RecipientID | opaque |  0-7   | (none)  |\r\n|      |   |   |   |   |             |        |        |         |\r\n+------+---+---+---+---+-------------+--------+--------+---------+\r\n           C=Critical, U=Unsafe, N=NoCacheKey, R=Repeatable\r\n~~~~~~~~~~~\r\n\r\nProposed option number: 24 (00011000)\r\n(If we want it to be critical it can be number 13)\r\n\r\nThe content of the option is the offered new Recipient ID of the message sender. The peer offers a Recipient ID value which is, on its side, currently free under the ID Context used for the Security Context in question.\r\n\r\nThe option is of class E for OSCORE.",
           "createdAt": "2022-03-01T16:32:17Z",
           "updatedAt": "2022-03-01T16:32:17Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This idea has now been added to the text of the draft.",
           "createdAt": "2022-07-08T08:21:10Z",
           "updatedAt": "2022-07-08T08:21:10Z"
@@ -341,7 +341,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/23",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Check comments from Christian during IETF 112 CoRE session.",
@@ -351,35 +351,35 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Never silently forgot observations.\r\n\r\nAlways explicitly de-register (cancel) the observations with a CON.\r\n\r\nIf the server still doesn't ack the cancellation...",
           "createdAt": "2022-03-01T07:46:13Z",
           "updatedAt": "2022-03-01T07:46:13Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Problem is that the client may perpetually having some values of SSN in its list of ongoing observations, this means always needing to jump to those values (and losing many SSNs). (As the server may not ACK the cancellation request).\r\n\r\nOne idea is to associate an epoch-age to each value in the list, then after for instance 10 epochs (KUDOS executions), these observations are always terminated from both client and server.",
           "createdAt": "2022-03-01T07:46:17Z",
           "updatedAt": "2022-03-01T07:46:17Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "CA: You need to take into account any observation that the server has not yet acknowledged as terminated, not just the current ones.\r\n\r\nCB: You can have a choice for the device between terminating and long-jumping. Otherwise preference for \"long-jumping\" rather than \"skipping\" (which sounds onerous for each and every request).\r\nCB: Rekeying is disruptive anyway, we need to understand what this means for an application, especially one thinking real-time. Describe how desctructive it is.\r\nRH: And what should not be done while rekeying.\r\nCB: Yes. The above is useulf to reduce disruptiveness, specifically as to observations.\r\nCA (on the disruption not only to observations while this runs): Gotta go over the document again, but I *think* we can make it continuously usable. (So that at every point in time the device can send a message, even if it's using the intermediary context)\r\nRH: Right, most about understanding which OSCORE context to use to protect messages in the meanwhile.\r\n\r\n==> This can practically become:\r\n\r\n- The client never silently forget about observations\r\n- The client that wants to cancel an observations always does that through a CON request with Observe:1\r\n- ...\r\n- But even by doing so, the client may never become secure about the server having actually cancelled an observation. This is the case if cancellation requests are lost, even after the maximum retransmission.\r\n- Then, to be conservative, the client would not free up the corresponding Sender Sequence Number, and will jump forward beyond it, thus shrinking more and more the amound of available Sender Sequence Numbers to use as Partial IV.\r\n\r\nPossible way forward: give a maximum lifetime in epochs to every Sender Sequence Number used in an Observation Request of whatever epoch for which there was no confirmation of cancellation from the server. Then, at the beginning of every epoch before the last permitted one, the client MUST attempt to cancel if observation again. If a new epoch start beyond the lifetime limit, both client and server remove the observation.",
           "createdAt": "2022-03-01T16:22:44Z",
           "updatedAt": "2022-03-01T16:22:44Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "https://mailarchive.ietf.org/arch/msg/core/Bh81qE65N6zn6IefyoS3rOr3U_0/\r\n\r\n* The 'p' to indicate PFS or no-PFS mode may not be beside the 'd' bit, but rather in the 'x' field intended to signal the size of the 'id detail' field (which would still be up to 127 bytes, while 8 bytes is the common recommendation).\r\n\r\n* Using yet another bit 'b' as above, the client may signal the server about its own intention of preserving old observations in a safe way, i.e., by long-jumping (or skipping, though unpreferred) the SSN value.\r\n\r\n* The same bit 'b' would be useful for the server to set in the KUDOS message it sends, to confirm that it is also indeed preserving old observations.\r\n\r\n* The bit 'b' totally needs to be authenticated! One way to do that can be deriving the new Security Context by taking as input not only the concatenation of N1 and N2 transported as 'id detail', but also the value of those bits (or, for simplicity, of the whole 'x' field including those bits).",
           "createdAt": "2022-03-01T16:24:53Z",
           "updatedAt": "2022-03-01T16:24:53Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We now have a section in the draft on how to accomplish preservation of observations, including how to signal it.",
           "createdAt": "2022-07-08T08:20:22Z",
           "updatedAt": "2022-07-08T08:20:22Z"
@@ -393,7 +393,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/24",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Is it fine to have actionable payload/methods from the point of switching to CTX_NEW?",
@@ -409,7 +409,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/25",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "If you get a request, reply afterwards with the new key material (after KUDOS execution). Process request with CTX_OLD, and protect response with CTX_NEW.\r\n\r\nIf you get a response, process it with CTX_OLD.",
@@ -419,21 +419,21 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Similar problems as with the observation scenario above. This could happen if a request was sent and the response is received after rekeying with KUDOS has happened (where the response is using the new key material).\r\n\r\nSequence of events is:\r\n- The client sends Req1, protected with the old key material and Partial IV X.\r\n- The client and server run KUDOS and establish new key material.\r\n- The client sends Req2, protected with the new key material and Partial IV X.\r\n- The server responds to Req1, protecting the response with the new key material.\r\n\r\nThe response from the server would cryptograhically match both Req1 and Req2.\r\n\r\nPossible solution:\r\n- The client determines a time T as follows.\r\n    - In the client-initiated version of KUDOS, T is the time right before sending Request 1.\r\n    - In the server-initiated version of KUDOS, T is the time right before sending Request 2.\r\n- At time T, the client has to ensure that there are no ongoing exchanges (i.e., requests pending the reception of a ACK or response), with the exception of ongoing observations.\r\n- If there are any and running KUDOS is urgent, the client frees up the Token value(s) used for non-responded requests that are not Observation requests.",
           "createdAt": "2022-03-01T16:28:13Z",
           "updatedAt": "2022-07-27T15:18:45Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Bring up during an interim?",
           "createdAt": "2022-07-27T15:23:21Z",
           "updatedAt": "2022-07-27T15:23:21Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This should now be solved in section _4.3.1.1 Avoiding In-Transit Requests During a Key Update_ considering that we are forbidding running KUDOS when requests are in transit (having outstanding interactions).",
           "createdAt": "2023-07-07T13:10:55Z",
           "updatedAt": "2023-07-07T13:10:55Z"
@@ -447,7 +447,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/26",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "The client should resend that request after KUDOS (since it did not get a proper response)",
@@ -463,7 +463,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/27",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -475,21 +475,21 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Point 3 is done in:\r\nhttps://core-wg.github.io/oscore-key-update/draft-ietf-core-oscore-key-update.html#name-preventing-deadlock-situati",
           "createdAt": "2022-07-27T15:26:39Z",
           "updatedAt": "2022-07-27T15:26:39Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Point 1 is done in this commit, and the already existing text in that paragraph:\r\ne255aa129aedeaa66473b0b40a8b913888b4bd1a",
           "createdAt": "2023-03-10T12:45:39Z",
           "updatedAt": "2023-03-10T12:46:41Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Point 0 already done in existing text:\r\nhttps://core-wg.github.io/oscore-key-update/draft-ietf-core-oscore-key-update.html#section-3.3\r\n\r\n> Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having completed the key update process on its side.",
           "createdAt": "2023-03-10T12:48:59Z",
           "updatedAt": "2023-03-10T12:48:59Z"
@@ -503,7 +503,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/28",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "rikard-sics"
       ],
@@ -515,21 +515,21 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Assumes NSTART > 1",
           "createdAt": "2022-07-27T14:59:21Z",
           "updatedAt": "2022-07-27T14:59:21Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "See also #25 ",
           "createdAt": "2022-07-27T15:17:22Z",
           "updatedAt": "2022-07-27T15:17:22Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "4.3.2.1 and 4.3.1.1: Extend these sections to say to NOT send any non-KUDOS message while KUDOS is running.",
           "createdAt": "2022-07-27T15:31:24Z",
           "updatedAt": "2022-07-27T15:31:24Z"
@@ -543,7 +543,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/29",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Update of IDs"
@@ -555,7 +555,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Duplicate of issue #80",
           "createdAt": "2023-06-30T14:30:15Z",
           "updatedAt": "2023-06-30T14:30:15Z"
@@ -569,7 +569,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/30",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -579,7 +579,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Done in commit cd092038be6c3d8df293682a388246b6ab1cbe27",
           "createdAt": "2022-06-30T14:31:26Z",
           "updatedAt": "2022-06-30T14:31:26Z"
@@ -593,7 +593,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/31",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "From telco with G\u00f6ran on May 23.",
@@ -609,7 +609,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/32",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -625,7 +625,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/33",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Keep epoch-related things in the Appendix",
@@ -641,7 +641,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/34",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "If EDHOC-Exporter(label, context, length) is executed on the peers with different nonce (for instance due to manipulation), the PRK_out and PRK_exporter can get out of sync. Somehow the old PRK_out needs to be saved, or new ones created in branches.\r\n\r\nNote that this could possibly be solved in EDHOC.",
@@ -651,14 +651,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Wait for updates to EDHOC to allow \"branching\"",
           "createdAt": "2022-07-01T13:39:57Z",
           "updatedAt": "2022-07-01T13:39:57Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "No longer relevant since we removed the EDHOC-KeyUpdate from updateCtx.",
           "createdAt": "2022-11-03T11:48:26Z",
           "updatedAt": "2022-11-03T11:48:26Z"
@@ -672,7 +672,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/35",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "To choose from the two modes in the updateCtx(N, CTX_IN) function.",
@@ -682,7 +682,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "No longer relevant since we removed the EDHOC-KeyUpdate from updateCtx.",
           "createdAt": "2022-11-03T11:50:46Z",
           "updatedAt": "2022-11-03T11:50:46Z"
@@ -696,7 +696,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/36",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -706,7 +706,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Actually need nonce for multiple PRK_out from a single input PRK_out",
           "createdAt": "2022-06-17T12:37:02Z",
           "updatedAt": "2022-06-17T12:37:02Z"
@@ -720,7 +720,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/37",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -730,14 +730,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Mentioned splitting into 2 in 76a3faaad5d1814c31c129d2ef8758788440e721",
           "createdAt": "2022-07-07T18:02:31Z",
           "updatedAt": "2022-07-07T18:02:31Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Done in commits 76a3faaad5d1814c31c129d2ef8758788440e721 & 17184574e8340bcaee9a1455fa9f4f1dd244e42f",
           "createdAt": "2022-07-08T08:19:14Z",
           "updatedAt": "2022-07-08T08:19:14Z"
@@ -751,7 +751,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/38",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Close?"
@@ -763,7 +763,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We raised this during IETF 117. Christian commented saying that he felt there was not much point.\r\nhttps://datatracker.ietf.org/meeting/117/materials/minutes-117-core-00",
           "createdAt": "2024-07-05T13:16:39Z",
           "updatedAt": "2024-07-05T13:16:39Z"
@@ -777,7 +777,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/39",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Makes sense to make the name more specific as use of 'id detail' is KUDOS specific currently\r\n\r\nName can be changed to 'nonce'",
@@ -793,7 +793,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/40",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Close?"
@@ -805,14 +805,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This new way is cancelling observations through a KUDOS execution where the Preserve Observations bit is not set by one peer.",
           "createdAt": "2023-07-08T13:54:42Z",
           "updatedAt": "2023-07-08T13:54:42Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Still perhaps it is a stretch to say it updates the Observer RFC. I propose to close this as is",
           "createdAt": "2024-07-05T12:53:23Z",
           "updatedAt": "2024-07-05T12:53:23Z"
@@ -826,7 +826,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/41",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Close?"
@@ -838,7 +838,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Not sure it adds much to change now if everyone got used to the old names",
           "createdAt": "2024-07-05T12:52:30Z",
           "updatedAt": "2024-07-05T12:52:30Z"
@@ -852,7 +852,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/42",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Add also the term \"KUDOS mode\" meaning FS or no-FS mode",
@@ -868,7 +868,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/43",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "In section ssec-derive-ctx-client-init",
@@ -878,7 +878,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Initial draft of example added in commit 19259eed0b85e5fcbf798a87659f2751e4c48e50",
           "createdAt": "2022-07-08T12:52:43Z",
           "updatedAt": "2022-07-08T12:52:43Z"
@@ -892,7 +892,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/44",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Mention both KUDOS and limits in the title",
@@ -902,7 +902,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "No need since we are moving out the limits part",
           "createdAt": "2022-12-21T16:09:33Z",
           "updatedAt": "2022-12-21T16:09:33Z"
@@ -916,7 +916,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/45",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "See comment:\r\nhttps://github.com/core-wg/oscore-key-update/commit/19259eed0b85e5fcbf798a87659f2751e4c48e50#r78095037",
@@ -926,7 +926,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Recent changes in the key derivation mean we could remove one wrapping step",
           "createdAt": "2022-12-21T16:10:23Z",
           "updatedAt": "2022-12-21T16:10:23Z"
@@ -940,7 +940,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/46",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Update of IDs"
@@ -952,14 +952,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "May want to do this for privacy reasons right after having run EDHOC. Prevent correlating IDs between networks. Issue in the OSCORE repo from John.",
           "createdAt": "2022-07-27T14:48:05Z",
           "updatedAt": "2022-07-27T14:48:05Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "What about keeping observations after ID update?",
           "createdAt": "2022-07-27T15:51:51Z",
           "updatedAt": "2022-07-27T15:51:51Z"
@@ -973,7 +973,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/47",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Update of IDs"
@@ -985,35 +985,35 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "For how long / to which event do you need to remember the IDs?\r\n\r\nFor standalone ID update: Abort an ID update happening if you or the other peer are going to get the same ID used before by you or the other peer.\r\n\r\nBefore running KUDOS check the size of the list of saved IDs, if it is longer than your own and the other peers (meaning 2), do not preserver the observations. If you run KUDOS you can clean up the list of IDs (regardless of updating IDs or not at the same time), install the current IDs (your and the other peer's). \r\n\r\nThe idea is to prioritize being able to perform ID update over preservation of observations.",
           "createdAt": "2022-10-07T17:39:52Z",
           "updatedAt": "2022-10-07T17:48:41Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "The list of IDs can never be cleared unless the context is destroyed, or e.g. KUDOS or EDHOC is ran.",
           "createdAt": "2022-10-07T18:03:28Z",
           "updatedAt": "2022-10-07T18:03:28Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "If the list of IDs is full, the peer needs to update ID, and KUDOS is not supported: Destroy the context.\r\n\r\nAny other case, don't update your ID and reject if the other party wants to update ID.",
           "createdAt": "2022-10-07T18:05:22Z",
           "updatedAt": "2022-10-07T18:05:22Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Never reuse ID for same Master Secret/Master Salt/ID Context.",
           "createdAt": "2022-10-07T18:07:10Z",
           "updatedAt": "2022-10-07T18:07:10Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We discussed further and can close this issue.\r\n\r\nText about keeping old ideas was already added in the draft. The other points in this issue seem fine after discussion.",
           "createdAt": "2023-03-09T15:49:56Z",
           "updatedAt": "2023-03-10T06:53:15Z"
@@ -1027,7 +1027,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/48",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Common beginning, then EDHOC and HKDF-case.",
@@ -1037,14 +1037,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Probably not needed due to #50 ",
           "createdAt": "2022-07-27T14:47:33Z",
           "updatedAt": "2022-07-27T14:47:33Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Closed as not relevant due to #50 ",
           "createdAt": "2022-10-07T18:20:12Z",
           "updatedAt": "2022-10-07T18:20:12Z"
@@ -1058,7 +1058,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/49",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Limits"
@@ -1070,7 +1070,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Closed as duplicate of core-wg/oscore-key-limits#5\r\n",
           "createdAt": "2022-12-27T14:32:29Z",
           "updatedAt": "2023-04-07T09:26:44Z"
@@ -1084,7 +1084,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/50",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "marco-tiloca-sics"
       ],
@@ -1096,35 +1096,35 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Benefit without the fallback is that only method 1 or method 2 need to be implemented.\r\nWith the fallback both methods need to be implemented.",
           "createdAt": "2022-07-27T14:26:24Z",
           "updatedAt": "2022-07-27T14:26:24Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Security-wise method 1 and 2 should be the same. Both give forward secrecy",
           "createdAt": "2022-07-27T14:27:46Z",
           "updatedAt": "2022-07-27T14:27:46Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We can change updateCtx to only rely on Method 2. Check during interim.",
           "createdAt": "2022-07-27T14:29:40Z",
           "updatedAt": "2022-07-27T14:45:04Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Also means we can simplify computation of X_N, to be X | N instead",
           "createdAt": "2022-07-27T14:33:24Z",
           "updatedAt": "2022-07-27T14:33:24Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Consensus from the interim on September 28 is that this seems fine to do.",
           "createdAt": "2022-10-07T14:12:54Z",
           "updatedAt": "2022-10-07T14:12:54Z"
@@ -1138,7 +1138,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/51",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Limits",
@@ -1152,70 +1152,70 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Let us check what the feeling is about splitting out section 5 \"Update of OSCORE Sender/Recipient IDs\", if people are positive we move it.",
           "createdAt": "2022-07-27T14:37:03Z",
           "updatedAt": "2022-07-27T14:37:03Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "For the KUDOS/Limits splitting it's probably better to wait and see. Also considering core-wg/oscore-key-limits#1 ",
           "createdAt": "2022-07-27T19:15:32Z",
           "updatedAt": "2023-04-07T09:25:33Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "- Keep things as is\r\n- Split message processing part into appendix\r\n- Split all limit related things + message processing part into new draft",
           "createdAt": "2022-09-26T17:26:48Z",
           "updatedAt": "2022-09-26T17:26:48Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "From interim September 28:\r\nPreference seemed to be to split out the limits related sections\r\nAs for splitting out the ID update G\u00f6ran supported it, but others were neutral.",
           "createdAt": "2022-09-28T14:46:44Z",
           "updatedAt": "2023-04-07T09:25:34Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Was discussed during the CoRE interim on September 28:\r\nhttps://datatracker.ietf.org/doc/minutes-interim-2022-core-13-202209281600/#kudos\r\n\r\nThis may be good to raise in London again, we should also decide how to deal with the new drafts. Should they be automatically adopted since they came from an adopted draft?\r\n\r\nOpinions from the interim seem to be that splitting out the limits part is good, splitting out the ID update parts also had support but less.",
           "createdAt": "2022-10-07T14:17:20Z",
           "updatedAt": "2022-10-07T14:17:20Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Also beneficial to split the limits out to simplify potential future updates, like due to addition of new algorithms.",
           "createdAt": "2022-10-07T15:18:32Z",
           "updatedAt": "2022-10-07T15:18:32Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "If we do the split it may also make sense to move \"[Current methods for Rekeying OSCORE](https://core-wg.github.io/oscore-key-update/draft-ietf-core-oscore-key-update.html#name-current-methods-for-rekeyin)\" to after \"[Key Update for OSCORE (KUDOS)](https://core-wg.github.io/oscore-key-update/draft-ietf-core-oscore-key-update.html#name-key-update-for-oscore-kudos)\".",
           "createdAt": "2022-10-07T15:27:09Z",
           "updatedAt": "2022-10-07T15:27:09Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Feedback from IETF 115 London CoRE session on Monday November 7:\r\nConsensus to split out the limits part. We will go ahead and do this.\r\n\r\nThen consider a possible split of the part on OSCORE IDs update later on.",
           "createdAt": "2022-11-11T14:49:25Z",
           "updatedAt": "2022-11-11T14:58:22Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Make new issue about splitting the ID update content.",
           "createdAt": "2023-03-09T15:51:47Z",
           "updatedAt": "2023-03-10T06:52:38Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Splitting out the limits part was done in commit:\r\nb26abc1c4ad943408fe36d2a7d83877de7a08294",
           "createdAt": "2023-03-10T06:52:43Z",
           "updatedAt": "2023-03-10T06:52:43Z"
@@ -1229,7 +1229,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/52",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1257,7 +1257,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "From discussions during the CoRE interim on September 28 it seems good to keep the \"negotiation\". This is because we then do not assume any pre-knowledge. The peers can find out if each other supports KUDOS, and also in what mode. (Of course any pre-knowledge available can be taken advantage of, but it is a strong assumption and restriction to force them to have this pre-knowledge).",
           "createdAt": "2022-10-07T14:14:37Z",
           "updatedAt": "2022-10-07T14:14:37Z"
@@ -1271,7 +1271,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/55",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "rikard-sics"
       ],
@@ -1283,35 +1283,35 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "True/False value in EAD 2 and 3. And a Null in EAD 1 for signaling to the responder whether to include info in EAD 2 or not. And possibly a Null in EAD 2 to say if the initiator should include info in EAD 3.\r\n\r\nThe Null means the other party must include information in the next EAD. True also means the other party must include information. For False the other party does not have to include information.",
           "createdAt": "2022-09-09T08:21:02Z",
           "updatedAt": "2022-09-09T08:48:57Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "For the actual values, instead of null, true, false we can use byte strings '', '00' and '01.",
           "createdAt": "2022-09-09T08:48:12Z",
           "updatedAt": "2022-09-09T08:48:12Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "'01' can be for supporting FS mode, and '02' for supporting no-FS mode.",
           "createdAt": "2022-09-09T13:17:13Z",
           "updatedAt": "2022-09-09T13:17:13Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Not strong feedback during interim, we can come back with a more explicit and detailed proposal.",
           "createdAt": "2022-10-07T17:01:05Z",
           "updatedAt": "2022-10-07T17:01:05Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "See EDHOC draft.\r\nSee also https://datatracker.ietf.org/doc/draft-selander-ace-ake-authz/",
           "createdAt": "2022-10-07T18:28:01Z",
           "updatedAt": "2022-10-07T18:28:01Z"
@@ -1325,7 +1325,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/56",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "marco-tiloca-sics"
       ],
@@ -1337,14 +1337,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Comments from CoRE interim September 28:\r\nhttps://datatracker.ietf.org/doc/minutes-interim-2022-core-13-202209281600/#kudos\r\n_CB (on chat): +1. Like SDNV coding (except that we don't compute a\r\nnumber from the 7-bit segments).\r\nGS: Good proposal, no need to allocate in advance bits 8/16/24/...\r\nCB (on chat): I'd prefer to earmark n*8.\r\nGS: Also fine, no strong view.\r\nCA (on chat): On registrations for 16, 24, 32 etc: Please do them now.\r\nThe mandate for the document first needing a bit >= 8 was to define how\r\nthis would be extended; let's not do this piecewise._",
           "createdAt": "2022-10-07T14:11:20Z",
           "updatedAt": "2022-10-07T14:11:20Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Consensus was to do this. So change bit 1 to unassigned, and make bit 0 the extension bit. Also register every 8 bits for extension (until bit 48).",
           "createdAt": "2022-10-07T15:13:49Z",
           "updatedAt": "2022-10-07T15:14:36Z"
@@ -1358,7 +1358,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/57",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "rikard-sics"
       ],
@@ -1376,7 +1376,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/58",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Add text on generic considerations for when changing the security context between request decryption and response encryption (in section 2.3.1).\r\n\r\nCan take inspiration from Group OSCORE draft:\r\n_In step 3, if the server is using a different Security Context for the response compared to what was used to verify the request (see [Section 3.2](https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-15#section-3.2)), then the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the AEAD nonce from the request from being reused._\r\nhttps://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-15#section-8.3\r\n\r\nAlso add a specific note that server should include PIV in Response 2 for KUDOS.\r\n\r\n",
@@ -1386,7 +1386,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This is something to mention in the KUDOS draft, another point that updates OSCORE.",
           "createdAt": "2022-12-21T16:43:44Z",
           "updatedAt": "2022-12-21T16:43:44Z"
@@ -1407,7 +1407,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/59",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "marco-tiloca-sics"
       ],
@@ -1419,14 +1419,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This seems fine in general, OSCORE only uses HKDF, except we should clarify that the same hash function as used for the OSCORE KDF is used here.",
           "createdAt": "2022-10-07T14:12:27Z",
           "updatedAt": "2022-10-07T16:05:17Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We may adapt the text to generalize things into a KUDOS-Expand, which depends on the KDF OSCORE is using (to be future proof).",
           "createdAt": "2022-10-07T16:51:40Z",
           "updatedAt": "2022-10-07T16:51:40Z"
@@ -1440,7 +1440,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/60",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "marco-tiloca-sics"
       ],
@@ -1458,7 +1458,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/61",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "rikard-sics"
       ],
@@ -1476,7 +1476,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/62",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Limits",
@@ -1489,14 +1489,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "E.g.\r\n\r\nMandate expiration tracking: Recommended\r\nMandate exact approach with exp: Recommended\r\n\r\nMandate limit tracking: MUST\r\nMandate exact approach with count* and limit*: Recommended",
           "createdAt": "2022-10-07T15:54:14Z",
           "updatedAt": "2022-10-07T15:59:40Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Based on recent discussions we don't mandate any behavior.",
           "createdAt": "2023-03-09T15:55:31Z",
           "updatedAt": "2023-03-09T15:55:31Z"
@@ -1510,7 +1510,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/63",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "marco-tiloca-sics"
       ],
@@ -1524,21 +1524,21 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We can raise the general problem related to OSCORE during the London meeting.",
           "createdAt": "2022-10-07T17:18:26Z",
           "updatedAt": "2022-10-07T17:18:26Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Feedback from IETF 115 London CoRE session on Monday November 7:\r\nCarsten: _Good thing to do to send Partial IV again._\r\nChristian: _To detail why I don't think that this is just \"an ad-hoc fix\": I keep saying that you MUST ONLY EVER send a response on the piggy-back nonce if you just removed that number from that replay window for the key you're responding with. (Admittedly, that last detail I'm only adding since reading this...)._",
           "createdAt": "2022-11-11T14:57:19Z",
           "updatedAt": "2022-11-11T14:57:19Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "To comply with this in a generic way we can apply the same fix to the server-initiated version\r\n\r\nSee also issue #58",
           "createdAt": "2022-12-21T16:39:12Z",
           "updatedAt": "2022-12-21T16:40:15Z"
@@ -1559,7 +1559,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/64",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Update of IDs"
@@ -1571,7 +1571,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Done in the following commits (among others):\r\n08cf66aa19bdffc62c395b1180aa812086c0b087\r\n38f2f645fda75c5d0a32389a27589cb08139a945\r\na3e3f803a5cbbce25891fb3d69a37739e971fb5e",
           "createdAt": "2023-06-30T14:29:26Z",
           "updatedAt": "2023-06-30T14:29:26Z"
@@ -1585,7 +1585,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/65",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Update of IDs"
@@ -1597,14 +1597,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Is it a problem in the first place? (request_kid is in the external_aad)\r\n\r\nWorth doing it, or refer to use of KUDOS?",
           "createdAt": "2022-10-07T17:31:18Z",
           "updatedAt": "2022-10-07T17:34:07Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Since we never reassign old IDs, observations can continue. (Until KUDOS is executed).",
           "createdAt": "2022-10-07T17:55:23Z",
           "updatedAt": "2022-12-21T16:57:40Z"
@@ -1625,7 +1625,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/66",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Comments"
@@ -1637,7 +1637,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "The hard limit is in meaning of using an OSCORE Context for using a context for message decryption/encryption. Running KUDOS (rekeying) is fine even if the context has reached its limits or expired. So the \"hard limit\" is on the sender/recipient keys.\r\n\r\nThe \"soft limit\" can be about running KUDOS already (well ahead of) a context expiring or reaching limits. At least we can have recommendations to run KUDOS ahead of expiration or reaching the limits.\r\n\r\nWe should define that expiration is about the sender/recipient keys.",
           "createdAt": "2022-12-21T16:23:29Z",
           "updatedAt": "2022-12-21T16:26:13Z"
@@ -1651,7 +1651,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/67",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1663,7 +1663,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "If we decide to keep this, it should be made clear that it is optional. And that implementations that are not aware of this draft will work fine since the EAD item is intended to be used as a non-critical one.",
           "createdAt": "2022-12-15T19:04:09Z",
           "updatedAt": "2022-12-15T19:04:09Z"
@@ -1677,7 +1677,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/68",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1689,28 +1689,28 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We can present the 2 alternatives we came up with during a future CoRE session and see what feedback we get.",
           "createdAt": "2022-11-15T13:36:28Z",
           "updatedAt": "2022-11-15T13:36:28Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Alternative 1: Either don't decrypt the request at all, but respond with encrypted response.\r\nAlternative 2: Do in fact decrypt the request, thus making exception and use the Recipient Key even though the limits are reached.",
           "createdAt": "2022-12-21T16:49:51Z",
           "updatedAt": "2022-12-21T16:49:51Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This could be raised during a future meeting",
           "createdAt": "2023-07-06T11:30:27Z",
           "updatedAt": "2023-07-06T11:30:27Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Added tentative text to be discussed early in section \"Key Update with Forward Secrecy\".",
           "createdAt": "2024-07-05T12:51:40Z",
           "updatedAt": "2024-07-05T12:51:40Z"
@@ -1724,7 +1724,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/69",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1742,7 +1742,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/70",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "As discussed during IETF London.",
@@ -1752,14 +1752,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Meaning from bit 8, and every eighth bit after that",
           "createdAt": "2022-12-21T16:12:03Z",
           "updatedAt": "2022-12-21T16:12:03Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "These bits have now been registered, see:\r\nhttps://www.iana.org/assignments/core-parameters/core-parameters.xhtml#oscore-flag-bits\r\n\r\nRemaining is changing the status of bit 0 (to extension bit) and bit 1 (to unassigned), which we can do at a later stage.",
           "createdAt": "2023-01-06T07:20:14Z",
           "updatedAt": "2023-01-06T07:20:14Z"
@@ -1773,7 +1773,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/71",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Comments"
@@ -1785,7 +1785,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "(Based on feedback from Rafa Marin-Lopez)",
           "createdAt": "2022-12-21T16:17:39Z",
           "updatedAt": "2022-12-21T16:17:39Z"
@@ -1799,7 +1799,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/72",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Comments"
@@ -1811,14 +1811,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Seems cleaner than sending a request to any resource. It a way like the this KUDOS resource corresponds to an \"KUDOS application\" that takes care of the rekeying.\r\n\r\nA normative recommendation can be that a server that supports KUDOS should have this resource available.\r\n\r\nClient sending KUDOS requests should target this new resource. ",
           "createdAt": "2022-12-21T16:15:38Z",
           "updatedAt": "2022-12-21T16:15:38Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "(Based on feedback from Rafa Marin-Lopez)",
           "createdAt": "2022-12-21T16:17:30Z",
           "updatedAt": "2022-12-21T16:17:30Z"
@@ -1832,7 +1832,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/73",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Comments"
@@ -1844,7 +1844,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "(Based on feedback from Rafa Marin-Lopez)",
           "createdAt": "2022-12-21T16:33:35Z",
           "updatedAt": "2022-12-21T16:33:35Z"
@@ -1858,7 +1858,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/74",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Comments"
@@ -1876,7 +1876,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/75",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1902,7 +1902,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/76",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1914,14 +1914,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We have considerations about this now towards the end of section \"Key Update with Forward Secrecy\". Do we also need something in the security considerations?",
           "createdAt": "2023-07-07T13:22:13Z",
           "updatedAt": "2023-07-07T13:22:13Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This has now been done in commit 5d5e32124860ace8e49311adb5d2a48729a314da.",
           "createdAt": "2023-07-07T17:57:27Z",
           "updatedAt": "2023-07-08T13:57:10Z"
@@ -1935,7 +1935,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/77",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1961,7 +1961,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/78",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -1979,7 +1979,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/79",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [
         "rikard-sics"
       ],
@@ -1991,28 +1991,28 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "And also in:\r\n\r\n> In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration time",
           "createdAt": "2023-03-09T09:58:08Z",
           "updatedAt": "2023-03-09T09:58:08Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Also here:\r\n\r\n> A peer MUST NOT retain CTX_OLD beyond the establishment of CTX_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX_OLD is expired (see [Section 2.2.1](https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-update-03#common-context));",
           "createdAt": "2023-03-09T16:01:54Z",
           "updatedAt": "2023-03-09T16:01:54Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This is ready to be done for the next version.",
           "createdAt": "2023-03-13T20:35:51Z",
           "updatedAt": "2023-03-13T20:35:51Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Done in commit f6982e050b6500b9d58edf307fbd9839425c6c58",
           "createdAt": "2023-06-30T14:27:36Z",
           "updatedAt": "2023-06-30T14:27:36Z"
@@ -2026,7 +2026,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/80",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Update of IDs"
@@ -2038,28 +2038,28 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Raise again during next IETF meeting.",
           "createdAt": "2023-10-03T14:16:23Z",
           "updatedAt": "2023-10-03T14:16:23Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This was raised during IETF 118 and agreed on. We should do the splitting into a new document of the ID update content.",
           "createdAt": "2024-01-16T09:20:09Z",
           "updatedAt": "2024-01-16T09:20:09Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "The material in the current draft about the OSCORE ID update procedure has now been removed in commit f93abc2a0c36dd59318a9a424feb64ff9bc37ae0",
           "createdAt": "2024-02-22T10:38:27Z",
           "updatedAt": "2024-02-22T10:38:27Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "The extracted material has now been added in the new draft _oscore-id-update_ at https://github.com/core-wg/oscore-id-update",
           "createdAt": "2024-02-29T13:24:09Z",
           "updatedAt": "2024-02-29T13:24:09Z"
@@ -2073,7 +2073,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/81",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "NextStep"
@@ -2085,21 +2085,21 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Can be added in section: 4.6.1 and section 3",
           "createdAt": "2023-06-27T15:35:30Z",
           "updatedAt": "2023-06-27T15:35:30Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Could be raised during the meeting in San Francisco.",
           "createdAt": "2023-06-27T15:39:18Z",
           "updatedAt": "2023-06-27T15:39:18Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Make sure to still not accept a new notification without Partial IV (during the lifetime of the observation).",
           "createdAt": "2023-07-07T18:04:34Z",
           "updatedAt": "2023-07-07T18:04:34Z"
@@ -2113,7 +2113,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/82",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Close?"
@@ -2125,14 +2125,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Currently we cover also privacy considerations in the Security considerations section.",
           "createdAt": "2024-03-01T16:51:30Z",
           "updatedAt": "2024-03-01T16:51:30Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We already have privacy considerations as part of the security considerations. If that is fine we can close this issue.",
           "createdAt": "2024-07-05T12:38:28Z",
           "updatedAt": "2024-07-05T12:38:28Z"
@@ -2146,7 +2146,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/83",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing",
@@ -2159,14 +2159,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Option 1: Go for Appendix B.2 approach: Meaning the client can target any existing resource. But then the server cannot act on this request, and should respond with a 4.01, with no payload. Client must ignore any payload in response.\r\n\r\nOption 2: Enforce that the client must send the request to a dedicated KUDOS resource, that doesn't produce a payload or act on requests. This may require that the KUDOS resource interacts with methods within the OSCORE-related code. Alternatively the OSCORE-related code can be aware of which resources are \"KUDOS resources\".",
           "createdAt": "2023-07-07T17:12:11Z",
           "updatedAt": "2023-07-07T17:13:20Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We can present what Appendix B.2 does and present Option 2 as the alternative.",
           "createdAt": "2023-07-07T17:23:06Z",
           "updatedAt": "2023-07-07T17:23:06Z"
@@ -2180,7 +2180,7 @@
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This should now be taken care of with commit ffe05281f3d74fd464643056dd3ad88256db5c73 for closing issue #93 ",
           "createdAt": "2024-03-01T15:36:38Z",
           "updatedAt": "2024-03-01T15:36:38Z"
@@ -2194,7 +2194,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/84",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Close?"
@@ -2206,7 +2206,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Not sure it adds much to change now if everyone got used to the old name",
           "createdAt": "2024-07-05T12:52:48Z",
           "updatedAt": "2024-07-05T12:52:48Z"
@@ -2220,7 +2220,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/85",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Shall we do this, or leave it free?",
@@ -2230,14 +2230,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Or say you can implement one or the other, or both?",
           "createdAt": "2023-07-20T14:27:28Z",
           "updatedAt": "2023-07-20T14:27:28Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "The forward flow can mandate usage of well known KUDOS",
           "createdAt": "2023-07-20T14:28:48Z",
           "updatedAt": "2023-07-20T14:28:48Z"
@@ -2258,7 +2258,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/86",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Triggered by a mail from Amanda Baber (IANA) on July 22.\r\n\r\n> Because the EDHOC registry in Section 7.3 hasn't been created yet, it would be useful to cite the document that creates it.",
@@ -2291,7 +2291,7 @@
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "We now have text about when not to delete CTX_OLD in the section \"Selection of KUDOS Mode\". That may be sufficient.",
           "createdAt": "2023-10-12T14:40:18Z",
           "updatedAt": "2023-10-12T14:40:18Z"
@@ -2341,7 +2341,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Thanks for the feedback. This can be something to explore further. It is also connected to another issue we have, based on a past comment from John:\r\nhttps://github.com/core-wg/oscore-key-update/issues/11",
           "createdAt": "2023-07-26T21:34:33Z",
           "updatedAt": "2023-07-26T21:34:33Z"
@@ -2355,21 +2355,21 @@
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This can be raised during the meeting, mentioning the OSCORE profile of ACE that is doing the same thing. However in that draft the security considerations open the door for using counters",
           "createdAt": "2023-10-13T15:26:39Z",
           "updatedAt": "2023-10-13T15:26:39Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Proposal: non-CAPABLE devices MUST use random values, a CAPABLE device SHOULD use random values (but may use counters if it enforces measures to ensure their freshness and accepts the privacy implications).",
           "createdAt": "2023-10-13T15:31:18Z",
           "updatedAt": "2023-10-13T15:31:18Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This was raised during IETF 118. We can go ahead according to the proposal in the previous comment.",
           "createdAt": "2024-01-16T09:19:37Z",
           "updatedAt": "2024-01-16T09:19:37Z"
@@ -2381,16 +2381,24 @@
       "id": "I_kwDOGfmof85srCGr",
       "title": "FS after non-FS",
       "url": "https://github.com/core-wg/oscore-key-update/issues/90",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chrysn",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "It's not fully thought through, but you can probably do that better than I can if it seems worthy to you (and I urge you to consider benefits before sinking much time here):\r\n\r\nWould it be possible to do FS steps after a non-FS?\r\n\r\nWhen things start up, one device forces non-FS on the first KUDOS run (which, as per #88, is the first message exchanged). As per the rules of non-FS, things start from the bootstrap secret. But when then a request to do KUDOS is protected with a secret that is already not the bootstrap secret any more, could that use FS mode, and build on the previously established secret rather than on bootstrap?\r\n\r\nThat combination would not achieve full FS, for a device that is captured can, in combination with the full captured traffic, be used to decrypt all the traffic. But the combined mode would mean that the captured traffic needs to include all the KUDOS runs between the use of the startup secret and the message to be decoded, and not just the last KUDOS run before the message.\r\n\r\nApart from increasing the amount of data needed to decrypt a message, this also has the benefit that all but the first KUDOS runs can use the short counter nonces mentioned in #89. [edit: Note one only gets one of the two benefits -- counting nonces mean that a captured device can again be used to decode traffic even if KUDOS runs were missed in the data log].",
       "createdAt": "2023-07-26T21:34:57Z",
-      "updatedAt": "2023-07-26T21:36:07Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-07-07T18:22:36Z",
+      "closedAt": "2024-07-07T18:22:36Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "body": "Thanks for the feedback!\r\n\r\nOur goal was to always start with the highest security level possible, so typically using FS-mode. Then peers can potentially agree on a downgrade to no-FS mode, only if necessary (one peer is non-CAPABLE). The rationale behind this is to allow devices to learn what the other party supports.\r\n\r\nFor instance, if I know that my fellow peer B supports FS mode I will consistently use that mode with them. So our idea was that the possible transitions between FS and no FS-mode is very limited, that is only in one direction FS->no-FS and that such a transition can only happen once and then be permanent. If we allow also upgrades from no-FS to FS mode, the learning will no longer be possible.\r\n\r\nWith regards to your point about the benefit of using shorter nonces, our intent there is that even in the case that the nonces are counters the recommendation to use 8 byte nonces still holds.\r\n\r\nConsidering these points I close this issue. However we can definitely discuss this further if you wish.",
+          "createdAt": "2024-07-07T18:22:36Z",
+          "updatedAt": "2024-07-07T18:22:36Z"
+        }
+      ]
     },
     {
       "number": 91,
@@ -2399,7 +2407,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/91",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "For instance, make sure to use the Oxford comma.",
@@ -2409,7 +2417,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "I close this as an issue, we can just keep it in mind.",
           "createdAt": "2023-10-12T09:49:06Z",
           "updatedAt": "2023-10-12T09:49:06Z"
@@ -2423,7 +2431,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/92",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "In section 2: Mention that EDHOC can also be run as part of the EDHOC and OSCORE profile of ACE.",
@@ -2433,7 +2441,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Done in commit 3320bcb1d4416a5767c9b67fc903b5c12aff4823",
           "createdAt": "2023-10-12T09:05:18Z",
           "updatedAt": "2023-10-12T09:05:18Z"
@@ -2447,7 +2455,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/93",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing",
@@ -2460,14 +2468,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This was raised during IETF 118 and was supported. So we can go ahead",
           "createdAt": "2024-01-16T09:18:44Z",
           "updatedAt": "2024-01-16T09:18:44Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Done in commit ffe05281f3d74fd464643056dd3ad88256db5c73",
           "createdAt": "2024-03-01T15:29:03Z",
           "updatedAt": "2024-03-01T15:29:03Z"
@@ -2481,7 +2489,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/94",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [
         "Processing"
@@ -2493,7 +2501,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This was raised during IETF 118 and got no objections, so we can go ahead with this",
           "createdAt": "2024-01-16T09:17:50Z",
           "updatedAt": "2024-01-16T09:17:50Z"
@@ -2519,14 +2527,14 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This issue, and related considerations will be raised during the CoRE interim on January 17",
           "createdAt": "2024-01-16T09:20:43Z",
           "updatedAt": "2024-01-16T09:20:43Z"
         },
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "This was raised and discussed during the CoRE interim on Jan. 17 with conclusion that for KUDOS we do not need longer nonce sizes.\r\n\r\nThe proposal from Christian to take advantage of KUDOS functionality for cacheable OSCORE do not rely on longer nonces in KUDOS, as a separate option can still be used for relaying the longer hash values.",
           "createdAt": "2024-02-29T14:50:30Z",
           "updatedAt": "2024-02-29T14:50:30Z"
@@ -2540,7 +2548,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/96",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "If the forward message flow is used, and the client knows that the response is coming in a different unrelated response then using no response is fine.",
@@ -2556,7 +2564,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/97",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "It might happen that both peers start KUDOS with one another, without knowing that the other peer has also simultaneously started KUDOS.\r\n\r\nThe scenario is that each peer:\r\n\r\n- First acts as initiator in a KUDOS execution, sending the first KUDOS message for that execution; and then\r\n- Acts as responder in the other KUDOS execution, upon receiving the first KUDOS message sent by the other peer.\r\n\r\n**Proposed solution**\r\nIf a peer P1 is acting as initiator in an ongoing KUDOS execution E1 with another peer P2, and P1 receives a first KUDOS message from P2 aimed to start a second KUDOS execution E2, then P1 MUST abort the execution E2 and MUST reply to P2 with a CoAP RST message. It might happen that both executions get cancelled, but at most one survives.",
@@ -2570,19 +2578,19 @@
       "id": "I_kwDOGfmof86DyN4D",
       "title": "Consider 2 papers relevant for KUDOS",
       "url": "https://github.com/core-wg/oscore-key-update/issues/98",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "We should consider these 2 papers, and refer to them related to things relevant for KUDOS:\r\nhttps://eprint.iacr.org/2023/913\r\nhttps://eprint.iacr.org/2024/220",
       "createdAt": "2024-03-27T14:36:14Z",
-      "updatedAt": "2024-07-05T19:21:41Z",
-      "closedAt": null,
+      "updatedAt": "2024-07-07T18:57:45Z",
+      "closedAt": "2024-07-07T18:57:45Z",
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Summarize section 4.5 from the second paper in the security considerations",
           "createdAt": "2024-07-05T19:21:40Z",
           "updatedAt": "2024-07-05T19:21:40Z"
@@ -2596,7 +2604,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/99",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Splitting the main section that describes KUDOS into subsections can make things more readable",
@@ -2612,7 +2620,7 @@
       "url": "https://github.com/core-wg/oscore-key-update/issues/100",
       "state": "CLOSED",
       "author": "rikard-sics",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "To raise in IETF Vancouver",
@@ -2622,7 +2630,7 @@
       "comments": [
         {
           "author": "rikard-sics",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "MEMBER",
           "body": "Seems not needed",
           "createdAt": "2024-07-05T19:07:14Z",
           "updatedAt": "2024-07-05T19:07:14Z"
