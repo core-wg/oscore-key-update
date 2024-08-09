@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                             8 July 2024
-Expires: 9 January 2025
+Intended status: Standards Track                           9 August 2024
+Expires: 10 February 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2025.
+   This Internet-Draft will expire on 10 February 2025.
 
 Copyright Notice
 
@@ -113,14 +113,15 @@ Table of Contents
    Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
            Server
    Appendix D.  Document Updates
-     D.1.  Version -07 to -08
-     D.2.  Version -06 to -07
-     D.3.  Version -05 to -06
-     D.4.  Version -04 to -05
-     D.5.  Version -03 to -04
-     D.6.  Version -02 to -03
-     D.7.  Version -01 to -02
-     D.8.  Version -00 to -01
+     D.1.  Version -08 to -09
+     D.2.  Version -07 to -08
+     D.3.  Version -06 to -07
+     D.4.  Version -05 to -06
+     D.5.  Version -04 to -05
+     D.6.  Version -03 to -04
+     D.7.  Version -02 to -03
+     D.8.  Version -01 to -02
+     D.9.  Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -770,8 +771,8 @@ Table of Contents
 
    Once a peer acting as initiator (responder) has sent (received) the
    first KUDOS message, that peer MUST NOT send a non KUDOS message to
-   the other peer, until having completed the key update process on its
-   side.
+   the other peer, until having aborted or successfully completed the
+   key update process on its side.
 
    In order to prevent two peers from unwittingly running two
    simultaneous executions of KUDOS, the following applies.
@@ -982,13 +983,13 @@ Table of Contents
    verifies the request using CTX_NEW, the server deletes CTX_OLD and
    can reply with an OSCORE response protected with CTX_NEW.
 
-   Note that the server achieves key confirmation only when receiving a
-   message from the client as protected with CTX_NEW.  If the server
-   sends a non KUDOS request to the client protected with CTX_NEW before
-   then, and the server receives a 4.01 (Unauthorized) error response as
-   reply, the server SHOULD delete CTX_NEW and start a new KUDOS
-   execution acting as CoAP client, i.e., as initiator in the forward
-   message flow.
+   Note that the server achieves key confirmation only when receiving
+   and successfully verifying a message from the client as protected
+   with CTX_NEW.  If the server sends a non KUDOS request to the client
+   protected with CTX_NEW before then, and the server receives a 4.01
+   (Unauthorized) error response as reply, the server SHOULD delete
+   CTX_NEW and start a new KUDOS execution acting as CoAP client, i.e.,
+   as initiator in the forward message flow.
 
    Also note that, if both peers reboot simultaneously, they will run
    the KUDOS forward message flow as defined in this section.  That is,
@@ -1151,10 +1152,10 @@ Table of Contents
    After that, the server deletes CTX_1.
 
    Upon receiving the OSCORE response, the client retrieves the value N1
-   from the 'nonce' field of the OSCORE Option, the value X1 from the
-   'x' byte of the OSCORE Option, and provides the updateCtx() function
-   with the input N = N1, X = X1, and CTX_OLD, in order to derive the
-   temporary Security Context CTX_1.
+   from the 'nonce' field of the OSCORE Option and the value X1 from the
+   'x' byte of the OSCORE Option.  Then, the client provides the
+   updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in
+   order to derive the temporary Security Context CTX_1.
 
    Then, the client verifies the response by using the Security Context
    CTX_1.
@@ -1198,13 +1199,13 @@ Table of Contents
    More generally, as soon as the client successfully verifies an
    incoming message protected with CTX_NEW, the client deletes CTX_OLD.
 
-   Note that the client achieves key confirmation only when receiving a
-   message from the server as protected with CTX_NEW.  If the client
-   sends a non KUDOS request to the server protected with CTX_NEW before
-   then, and the client receives a 4.01 (Unauthorized) error response as
-   reply, the client SHOULD delete CTX_NEW and start a new KUDOS
-   execution acting again as CoAP client, i.e., as initiator in the
-   forward message flow (see Section 4.3.4).
+   Note that the client achieves key confirmation only when receiving
+   and successfully verifying a message from the server as protected
+   with CTX_NEW.  If the client sends a non KUDOS request to the server
+   protected with CTX_NEW before then, and the client receives a 4.01
+   (Unauthorized) error response as reply, the client SHOULD delete
+   CTX_NEW and start a new KUDOS execution acting again as CoAP client,
+   i.e., as initiator in the forward message flow (see Section 4.3.4).
 
    It might be the case that the server is only a CoAP server (i.e., it
    does not implement a CoAP client) and, at the same time, it becomes
@@ -1476,14 +1477,12 @@ Table of Contents
    [RFC9528]), a peer considers the Master Secret and Master Salt of CTX
    as Latest Master Secret and Latest Master Salt.  After that:
 
-   *  If the peer is a CAPABLE device, it SHOULD store Latest Master
-      Secret and Latest Master Salt on disk.
-
-      As an exception, this does not apply to possible temporary OSCORE
-      Security Contexts used during a key update procedure, such as
-      CTX_1 used during the KUDOS execution.  That is, the OSCORE Master
-      Secret and Master Salt from such temporary Security Contexts are
-      not stored on disk.
+   *  If the peer is a CAPABLE device, it MUST store Latest Master
+      Secret and Latest Master Salt on disk, with the exception of
+      possible temporary OSCORE Security Contexts used during a key
+      update procedure, such as CTX_1 used during the KUDOS execution.
+      That is, the OSCORE Master Secret and Master Salt from such
+      temporary Security Contexts are not stored on disk.
 
    *  The peer MUST store Latest Master Secret and Latest Master Salt in
       volatile memory, thus making them available to OSCORE message
@@ -2291,16 +2290,16 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-04, 4 March 2024,
+              draft-ietf-ace-edhoc-oscore-profile-05, 8 July 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-04>.
+              edhoc-oscore-profile-05>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
               Work in Progress, Internet-Draft, draft-ietf-core-oscore-
-              key-limits-02, 10 January 2024,
+              key-limits-03, 8 July 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              oscore-key-limits-02>.
+              oscore-key-limits-03>.
 
    [I-D.irtf-cfrg-aead-limits]
               Günther, F., Thomson, M., and C. A. Wood, "Usage Limits on
@@ -2677,7 +2676,11 @@ Appendix D.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-D.1.  Version -07 to -08
+D.1.  Version -08 to -09
+
+   *  Editorial improvements.
+
+D.2.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -2703,7 +2706,7 @@ D.1.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-D.2.  Version -06 to -07
+D.3.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -2717,7 +2720,7 @@ D.2.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-D.3.  Version -05 to -06
+D.4.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -2737,7 +2740,7 @@ D.3.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.4.  Version -04 to -05
+D.5.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -2760,7 +2763,7 @@ D.4.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-D.5.  Version -03 to -04
+D.6.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -2786,7 +2789,7 @@ D.5.  Version -03 to -04
 
    *  Editorial improvements.
 
-D.6.  Version -02 to -03
+D.7.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -2805,7 +2808,7 @@ D.6.  Version -02 to -03
 
    *  Editorial improvements.
 
-D.7.  Version -01 to -02
+D.8.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -2829,7 +2832,7 @@ D.7.  Version -01 to -02
 
    *  Editorial improvements.
 
-D.8.  Version -00 to -01
+D.9.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
