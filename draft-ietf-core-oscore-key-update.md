@@ -675,7 +675,7 @@ Upon receiving the OSCORE request and after having verified it with CTX\_OLD as 
 
 Then, the server sends an OSCORE response to the client, protected with CTX\_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see {{ssec-oscore-option-extensions}}). After that, the server deletes CTX\_1. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
-Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the OSCORE Option, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
+Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the OSCORE Option and the value X1 from the 'x' byte of the OSCORE Option. Then, the client provides the updateCtx() function with the input N = N1, X = X1, and CTX\_OLD, in order to derive the temporary Security Context CTX\_1.
 
 Then, the client verifies the response by using the Security Context CTX\_1.
 
