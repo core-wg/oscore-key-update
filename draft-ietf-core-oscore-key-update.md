@@ -565,7 +565,7 @@ In the example in {{fig-message-exchange-client-init}}, the client takes the ini
 
 In case the server does not successfully verify the request, the same error handling specified in {{Section 8.2 of RFC8613}} applies. This does not result in deleting CTX\_NEW. If the server successfully verifies the request using CTX\_NEW, the server deletes CTX\_OLD and can reply with an OSCORE response protected with CTX\_NEW.
 
-Note that the server achieves key confirmation only when receiving a message from the client as protected with CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete CTX\_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow.
+Note that the server achieves key confirmation only when receiving and successfully verifying a message from the client as protected with CTX_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete CTX\_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow.
 
 Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
 
