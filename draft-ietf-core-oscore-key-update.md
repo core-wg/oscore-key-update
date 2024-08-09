@@ -1413,6 +1413,10 @@ Verify with CTX_NEW     | }                    |
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
+## Version -08 to -09 ## {#sec-08-09}
+
+* Editorial improvements.
+
 ## Version -07 to -08 ## {#sec-07-08}
 
 * Add note about usage of the CoAP No-Response Option.
