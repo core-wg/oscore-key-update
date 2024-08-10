@@ -1071,8 +1071,6 @@ In this second example, the Initiator asks the EDHOC Responder about its support
 
 # Security Considerations {#sec-cons}
 
-This document mainly covers security considerations about using AEAD keys in OSCORE and their usage limits, in addition to the security considerations of {{RFC8613}}.
-
 Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
 
 As mentioned in {{ssec-nonces-x-bytes}}, it is RECOMMENDED that the size for nonces N1 and N2 is 8 bytes. The application needs to set the size of each nonce such that the probability of its value being repeated is negligible. Note that the probability of collision of nonce values is heightened by the birthday paradox. However, considering a nonce size of 8 bytes there will be a collision on average after approximately 2^32 instances of Response #1 messages.
