@@ -264,7 +264,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 |  |0|0|0|0|   w   |  |
 |  +-+-+-+-+-+-+-+-+  |
 ~~~~~~~~~~~
-{: #fig-oscore-option title="The extended OSCORE Option value, with the possible presence of 'nonce' and 'old\_nonce'" artwork-align="center"}
+{: #fig-oscore-option title="The extended OSCORE Option value, with the possible presence of 'nonce' and 'old_nonce'" artwork-align="center"}
 
 ## Function for Security Context Update # {#ssec-update-function}
 
@@ -520,7 +520,7 @@ Upon receiving the OSCORE request, the server retrieves the value N1 from the 'n
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
    X_N = 0x410748018a278f7faab55a
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-one title="Example of X, N, and X\_N when processing the first KUDOS message"}
+{: #fig-kudos-x-n-example-mess-one title="Example of X, N, and X_N when processing the first KUDOS message"}
 
 Then, the server verifies the request by using the Security Context CTX\_1.
 
@@ -553,7 +553,7 @@ An example of this nonce processing on the server with values for N1, X1, N2, an
    In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
    X_N = 0x44410741075248018a278f7faab55a4825a8991cd700ac01
 ~~~~~~~~~~~~~~~~~~~~~~~
-{: #fig-kudos-x-n-example-mess-two title="Example of X, N, and X\_N when processing the second KUDOS message"}
+{: #fig-kudos-x-n-example-mess-two title="Example of X, N, and X_N when processing the second KUDOS message"}
 
 Then, the server sends an OSCORE response to the client, protected with CTX\_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with {{sec-updated-response-protection}}, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX\_1.
 
