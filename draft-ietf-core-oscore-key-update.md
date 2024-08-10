@@ -1108,6 +1108,10 @@ In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit P
 | 1            | Unassigned |             |           |
 {: #table-iana-oscore-flag-bits-2 title="Update in the OSCORE Flag Bits Registry" align="center"}
 
+## CoAP Option Numbers Registry
+
+IANA is asked to add this document as a reference for the OSCORE Option in the "CoAP Option Numbers" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
+
 ## EDHOC External Authorization Data Registry {#iana-edhoc-aad}
 
 IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in {{Section 10.5 of RFC9528}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
@@ -1137,10 +1141,6 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 -  Description: KUDOS resource.
 
 -  Reference: {{&SELF}}
-
-## CoAP Option Numbers Registry
-
-IANA is asked to add this document as a reference for the OSCORE Option in the "CoAP Option Numbers" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 --- back
 
