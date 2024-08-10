@@ -497,7 +497,7 @@ Table of Contents
  |  +-+-+-+-+-+-+-+-+  |
 
      Figure 1: The extended OSCORE Option value, with the possible
-                  presence of 'nonce' and 'old\_nonce'
+                  presence of 'nonce' and 'old_nonce'
 
 4.2.  Function for Security Context Update
 
@@ -915,7 +915,7 @@ Table of Contents
       In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
       X_N = 0x410748018a278f7faab55a
 
-       Figure 4: Example of X, N, and X\_N when processing the first
+        Figure 4: Example of X, N, and X_N when processing the first
                                KUDOS message
 
    Then, the server verifies the request by using the Security Context
@@ -952,7 +952,7 @@ Table of Contents
       In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
       X_N = 0x44410741075248018a278f7faab55a4825a8991cd700ac01
 
-       Figure 5: Example of X, N, and X\_N when processing the second
+       Figure 5: Example of X, N, and X_N when processing the second
                                KUDOS message
 
    Then, the server sends an OSCORE response to the client, protected
