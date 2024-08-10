@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                           9 August 2024
-Expires: 10 February 2025
+Intended status: Standards Track                          10 August 2024
+Expires: 11 February 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 February 2025.
+   This Internet-Draft will expire on 11 February 2025.
 
 Copyright Notice
 
@@ -100,10 +100,10 @@ Table of Contents
    5.  Security Considerations
    6.  IANA Considerations
      6.1.  OSCORE Flag Bits Registry
-     6.2.  EDHOC External Authorization Data Registry
-     6.3.  The Well-Known URI Registry
-     6.4.  Resource Type (rt=) Link Target Attribute Values Registry
-     6.5.  CoAP Option Numbers Registry
+     6.2.  CoAP Option Numbers Registry
+     6.3.  EDHOC External Authorization Data Registry
+     6.4.  The Well-Known URI Registry
+     6.5.  Resource Type (rt=) Link Target Attribute Values Registry
    7.  References
      7.1.  Normative References
      7.2.  Informative References
@@ -497,7 +497,7 @@ Table of Contents
  |  +-+-+-+-+-+-+-+-+  |
 
      Figure 1: The extended OSCORE Option value, with the possible
-                  presence of 'nonce' and 'old_nonce'
+                  presence of 'nonce' and 'old\_nonce'
 
 4.2.  Function for Security Context Update
 
@@ -656,7 +656,7 @@ Table of Contents
    N1 or N2, and providing it to the other peer.  The size of the nonces
    N1 and N2 is application specific, and the use of 8 byte nonce values
    is RECOMMENDED.  The nonces N1 and N2 SHOULD be random values.  An
-   exception is described later in Section Section 4.5.1.
+   exception is described later in Section 4.5.1.
 
    Furthermore, X1 and X2 are the value of the 'x' byte specified in the
    OSCORE Option of the first and second KUDOS message, respectively.
@@ -752,10 +752,10 @@ Table of Contents
 
    *  The well-known KUDOS resource at /.well-known/kudos, or an
       alternative KUDOS resource with resource type "core.kudos" (see
-      Sections Section 4.8.3 and Section 6.4).  In such a case, no
-      application processing is expected at the CoAP server, and the
-      plain CoAP request composed before OSCORE protection should not
-      include an application payload.
+      Section 4.8.3 and Section 6.5).  In such a case, no application
+      processing is expected at the CoAP server, and the plain CoAP
+      request composed before OSCORE protection should not include an
+      application payload.
 
    *  A non-KUDOS resource, i.e., an actual application resource that a
       CoAP request can target in order to trigger application processing
@@ -915,7 +915,7 @@ Table of Contents
       In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
       X_N = 0x410748018a278f7faab55a
 
-        Figure 4: Example of X, N, and X_N when processing the first
+       Figure 4: Example of X, N, and X\_N when processing the first
                                KUDOS message
 
    Then, the server verifies the request by using the Security Context
@@ -952,7 +952,7 @@ Table of Contents
       In updateCtx(), X_N is the byte concatenation of X_cbor and N_cbor
       X_N = 0x44410741075248018a278f7faab55a4825a8991cd700ac01
 
-       Figure 5: Example of X, N, and X_N when processing the second
+       Figure 5: Example of X, N, and X\_N when processing the second
                                KUDOS message
 
    Then, the server sends an OSCORE response to the client, protected
@@ -1459,17 +1459,16 @@ Table of Contents
       no-FS mode.
 
    *  As an exception to the nonces being generated as random values
-      (see Section Section 4.3.1), a peer that is a CAPABLE device MAY
-      use a value obtained from a monotonically incremented counter as
-      nonce N1 or N2.  This has privacy implications, which are
-      described in Section Section 5.  In such a case, the peer MUST
-      enforce measures to ensure freshness of the nonce values.  For
-      example, the peer can use the same procedure described in
-      Appendix B.1.1 of [RFC8613] for handling the OSCORE Sender
-      Sequence Number values.  These measures require to regularly store
-      the used counter values in non-volatile memory, which makes non-
-      CAPABLE devices unable to safely use counter values as nonce
-      values.
+      (see Section 4.3.1), a peer that is a CAPABLE device MAY use a
+      value obtained from a monotonically incremented counter as nonce
+      N1 or N2.  This has privacy implications, which are described in
+      Section 5.  In such a case, the peer MUST enforce measures to
+      ensure freshness of the nonce values.  For example, the peer can
+      use the same procedure described in Appendix B.1.1 of [RFC8613]
+      for handling the OSCORE Sender Sequence Number values.  These
+      measures require to regularly store the used counter values in
+      non-volatile memory, which makes non-CAPABLE devices unable to
+      safely use counter values as nonce values.
 
    As a general rule, once successfully generated a new OSCORE Security
    Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS
@@ -1907,10 +1906,12 @@ Table of Contents
    the KUDOS procedure as initiator without triggering any application
    processing on the server, then the request sent as first KUDOS
    message must target a KUDOS resource, e.g., at the Uri-Path "/.well-
-   known/kudos" (see Section 6.3), or at an alternative Uri-Path that
-   can be discovered, e.g., by using a resource directory [RFC9176].  In
-   order to discover a server's KUDOS resource, client applications can
-   use the resource type "core.kudos" (see Section 6.4).
+   known/kudos" (see Section 6.4), or at an alternative Uri-Path that
+   can be discovered, e.g., by using a resource directory [RFC9176].
+
+   In order to discover a server's well-known KUDOS resource and
+   possible other KUDOS resources, client applications can use the
+   resource type "core.kudos" (see Section 6.5).
 
 4.8.4.  Rekeying when Using SCHC with OSCORE
 
@@ -1946,13 +1947,15 @@ Table of Contents
    encoded as a CBOR bstr.
 
    This document defines a new EDHOC EAD item KUDOS_EAD and registers
-   its 'ead_label' in Section 6.2.  By including this EAD item in an
+   its 'ead_label' in Section 6.3.  By including this EAD item in an
    outgoing EDHOC message, a sender peer can indicate whether it
    supports KUDOS and in which modes, as well as query the other peer
    about its support.  Note that peers do not have to use this EDHOC EAD
    item to be able to run KUDOS with each other, irrespective of the
-   modes they support.  The possible values of the 'ead_value' are as
-   follows:
+   modes they support.  A KUDOS peer MUST only use the EDHOC EAD item
+   KUDOS_EAD as non-critical.  That is, when included in an EDHOC
+   message, its 'ead_label' MUST be used with positive sign.  The
+   possible values of the 'ead_value' are as follows:
 
      +======+==========+=============================================+
      | Name | Value    | Description                                 |
@@ -2075,10 +2078,6 @@ Table of Contents
 
 5.  Security Considerations
 
-   This document mainly covers security considerations about using AEAD
-   keys in OSCORE and their usage limits, in addition to the security
-   considerations of [RFC8613].
-
    Depending on the specific key update procedure used to establish a
    new OSCORE Security Context, the related security considerations also
    apply.
@@ -2191,7 +2190,13 @@ Table of Contents
 
               Table 5: Update in the OSCORE Flag Bits Registry
 
-6.2.  EDHOC External Authorization Data Registry
+6.2.  CoAP Option Numbers Registry
+
+   IANA is asked to add this document as a reference for the OSCORE
+   Option in the "CoAP Option Numbers" registry within the "Constrained
+   RESTful Environments (CoRE) Parameters" registry group.
+
+6.3.  EDHOC External Authorization Data Registry
 
    IANA is asked to add the following entries to the "EDHOC External
    Authorization Data" registry defined in Section 10.5 of [RFC9528]
@@ -2208,7 +2213,7 @@ Table of Contents
                Table 6: Registrations in the EDHOC External
                        Authorization Data Registry
 
-6.3.  The Well-Known URI Registry
+6.4.  The Well-Known URI Registry
 
    IANA is asked to add the 'kudos' well-known URI to the Well-Known
    URIs registry as defined by [RFC8615].
@@ -2221,7 +2226,7 @@ Table of Contents
 
    *  Related information: None
 
-6.4.  Resource Type (rt=) Link Target Attribute Values Registry
+6.5.  Resource Type (rt=) Link Target Attribute Values Registry
 
    IANA is requested to add the resource type "core.kudos" to the
    "Resource Type (rt=) Link Target Attribute Values" registry under the
@@ -2232,12 +2237,6 @@ Table of Contents
    *  Description: KUDOS resource.
 
    *  Reference: [RFC-XXXX]
-
-6.5.  CoAP Option Numbers Registry
-
-   IANA is asked to add this document as an additional reference for the
-   OSCORE Option in the "CoAP Option Numbers" registry within the
-   "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 7.  References
 
@@ -2678,7 +2677,7 @@ Appendix D.  Document Updates
 
 D.1.  Version -08 to -09
 
-   *  Editorial improvements.
+   *  Editorial improvements and clarifications.
 
 D.2.  Version -07 to -08
 
