@@ -979,7 +979,9 @@ Assuming nonces of the same size in both messages of the same KUDOS execution, t
 
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
-According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message must target a KUDOS resource, e.g., at the Uri-Path "/.well-known/kudos" (see Section 6.3), or at an alternative Uri-Path that can be discovered, e.g., by using a resource directory {{RFC9176}}. In order to discover a server's KUDOS resource, client applications can use the resource type "core.kudos" (see {{rt-kudos}}).
+According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message must target a KUDOS resource, e.g., at the Uri-Path "/.well-known/kudos" (see Section 6.3), or at an alternative Uri-Path that can be discovered, e.g., by using a resource directory {{RFC9176}}.
+
+In order to discover a server's well-known KUDOS resource and possible other KUDOS resources, client applications can use the resource type "core.kudos" (see {{rt-kudos}}).
 
 ### Rekeying when Using SCHC with OSCORE
 
