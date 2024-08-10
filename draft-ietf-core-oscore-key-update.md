@@ -1140,7 +1140,7 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 ## CoAP Option Numbers Registry
 
-IANA is asked to add this document as an additional reference for the OSCORE Option in the "CoAP Option Numbers" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
+IANA is asked to add this document as a reference for the OSCORE Option in the "CoAP Option Numbers" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 --- back
 
