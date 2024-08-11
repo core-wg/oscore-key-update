@@ -416,6 +416,18 @@ In order to prevent two peers from unwittingly running two simultaneous executio
 
   Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 where it acts as initiator.
 
+### Avoiding In-Transit Requests During a Key Update
+
+Before sending the first KUDOS message, the initiator MUST ensure that it has no outstanding interactions with the responder (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with the responder.
+
+Before sending the second KUDOS message, the responder MUST ensure that it has no outstanding interactions with the initiator (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with the initiator.
+
+If any such outstanding interactions are found, the initiator (responder) MUST NOT initiate (follow up with) the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the other peer.
+
+Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW from cryptographically matching with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
+
+During an ongoing KUDOS execution, the peer acting as client MUST NOT send any non-KUDOS requests to the other peer. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see {{Section 4.7 of RFC7252}}).
+
 ### Forward Message Flow {#ssec-derive-ctx-client-init}
 
 {{fig-message-exchange-client-init}} shows an example of KUDOS run in the forward message flow, i.e., with the client acting as KUDOS initiator.
@@ -584,16 +596,6 @@ In the example shown in {{fig-message-exchange-client-init}} and discussed in th
 
 * {{ssec-derive-ctx-client-init-normal-resource}} presents an example where KUDOS Request #1 is sent to a non-KUDOS resource.
 
-#### Avoiding In-Transit Requests During a Key Update
-
-Before sending the KUDOS message Request #1 in {{fig-message-exchange-client-init}}, the client MUST ensure that it has no outstanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
-
-If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
-
-Later on, this prevents a non KUDOS response protected with CTX\_NEW from cryptographically matching with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
-
-During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see {{Section 4.7 of RFC7252}}).
-
 ### Reverse Message Flow {#ssec-derive-ctx-server-init}
 
 {{fig-message-exchange-server-init}} shows an example of KUDOS run in the reverse message flow, i.e., with the server acting as initiator.
@@ -694,16 +696,6 @@ More generally, as soon as the client successfully verifies an incoming message 
 Note that the client achieves key confirmation only when receiving and successfully verifying a message from the server as protected with CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete CTX\_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see {{ssec-derive-ctx-client-init}}).
 
 It might be the case that the server is only a CoAP server (i.e., it does not implement a CoAP client) and, at the same time, it becomes unable to safely decrypt further incoming messages from the client. For example, this occurs when the server reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see {{I-D.ietf-core-oscore-key-limits}}). When this happens, the server cannot decrypt Request #1. Consequently, the server replies to the client with an unprotected 4.01 (Unauthorized) response, and is therefore practically unable to execute KUDOS with the client in the reverse message flow. In such a case, the only chance for the server to perform a key update with the client by means of KUDOS relies on the client starting a KUDOS execution using the forward message flow (see {{ssec-derive-ctx-client-init}}).
-
-#### Avoiding In-Transit Requests During a Key Update
-
-Before sending the KUDOS message Request #2 in {{fig-message-exchange-server-init}}, the client MUST ensure that it has no outstanding interactions with the server (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}} with that server.
-
-If there are any, the client MUST NOT initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.
-
-Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW from cryptographically matching with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
-
-During an ongoing KUDOS execution the client MUST NOT send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see {{Section 4.7 of RFC7252}}).
 
 ## Avoiding Deadlocks
 
