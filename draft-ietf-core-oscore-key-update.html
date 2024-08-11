@@ -1029,7 +1029,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 11 February 2025</td>
+<td class="center">Expires 12 February 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1045,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-08-10" class="published">10 August 2024</time>
+<time datetime="2024-08-11" class="published">11 August 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-02-11">11 February 2025</time></dd>
+<dd class="expires"><time datetime="2025-02-12">12 February 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1099,7 +1099,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 February 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 February 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1164,10 +1164,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
                     <p id="section-toc.1-1.4.2.3.2.3.1"><a href="#section-4.3.3" class="auto internal xref">4.3.3</a>.  <a href="#name-handling-of-messages" class="internal xref">Handling of Messages</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.4">
-                    <p id="section-toc.1-1.4.2.3.2.4.1"><a href="#section-4.3.4" class="auto internal xref">4.3.4</a>.  <a href="#name-forward-message-flow" class="internal xref">Forward Message Flow</a></p>
+                    <p id="section-toc.1-1.4.2.3.2.4.1"><a href="#section-4.3.4" class="auto internal xref">4.3.4</a>.  <a href="#name-avoiding-in-transit-request" class="internal xref">Avoiding In-Transit Requests During a Key Update</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.5">
-                    <p id="section-toc.1-1.4.2.3.2.5.1"><a href="#section-4.3.5" class="auto internal xref">4.3.5</a>.  <a href="#name-reverse-message-flow" class="internal xref">Reverse Message Flow</a></p>
+                    <p id="section-toc.1-1.4.2.3.2.5.1"><a href="#section-4.3.5" class="auto internal xref">4.3.5</a>.  <a href="#name-forward-message-flow" class="internal xref">Forward Message Flow</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.6">
+                    <p id="section-toc.1-1.4.2.3.2.6.1"><a href="#section-4.3.6" class="auto internal xref">4.3.6</a>.  <a href="#name-reverse-message-flow" class="internal xref">Reverse Message Flow</a></p>
 </li>
                 </ul>
 </li>
@@ -1353,10 +1356,10 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
             <p id="section-1.1-4.2.1">Responder: the peer that receives the first KUDOS message in a KUDOS execution.<a href="#section-1.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-4.3">
-            <p id="section-1.1-4.3.1">Forward message flow: the KUDOS execution workflow where the initiator acts as CoAP client (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>).<a href="#section-1.1-4.3.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-4.3.1">Forward message flow: the KUDOS execution workflow where the initiator acts as CoAP client (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>).<a href="#section-1.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-4.4">
-            <p id="section-1.1-4.4.1">Reverse message flow: the KUDOS execution workflow where the initiator acts as CoAP server (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.5</a>).<a href="#section-1.1-4.4.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-4.4.1">Reverse message flow: the KUDOS execution workflow where the initiator acts as CoAP server (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.6</a>).<a href="#section-1.1-4.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-4.5">
             <p id="section-1.1-4.5.1">FS mode: the KUDOS execution mode that achieves forward secrecy (see <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>).<a href="#section-1.1-4.5.1" class="pilcrow">¶</a></p>
@@ -1441,7 +1444,7 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
 <p id="section-4-4">The key update procedure has the following properties.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-5.1">
-          <p id="section-4-5.1.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a> or reverse message flow <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.5</a>, respectively. A peer that supports KUDOS <span class="bcp14">MUST</span> support both the forward message flow and the reverse message flow.<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
+          <p id="section-4-5.1.1">KUDOS can be initiated by either peer. In particular, the CoAP client or the CoAP server may start KUDOS by sending the first rekeying message, by running KUDOS in the forward message flow <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a> or reverse message flow <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.6</a>, respectively. A peer that supports KUDOS <span class="bcp14">MUST</span> support both the forward message flow and the reverse message flow.<a href="#section-4-5.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-5.2">
           <p id="section-4-5.2.1">The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a>).<a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
@@ -1648,7 +1651,7 @@ struct {
 <a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-nonces-and-x-bytes" class="section-name selfRef">Nonces and X Bytes</a>
           </h4>
 <p id="section-4.3.1-1">When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is <span class="bcp14">RECOMMENDED</span>. The nonces N1 and N2 <span class="bcp14">SHOULD</span> be random values. An exception is described later in <a href="#key-material-handling" class="auto internal xref">Section 4.5.1</a>.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.1-2">Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. The X1 and X2 values are calculated by the sender peer based on: the length of nonce N1 and N2, specified in the 'nonce' field of the OSCORE Option of the first and second KUDOS message, respectively; as well as on the specific settings the peer wishes to run KUDOS with. As defined in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>).<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-2">Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. The X1 and X2 values are calculated by the sender peer based on: the length of nonce N1 and N2, specified in the 'nonce' field of the OSCORE Option of the first and second KUDOS message, respectively; as well as on the specific settings the peer wishes to run KUDOS with. As defined in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>).<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-3">After a peer has generated or received the value N1, and after a peer has calculated or received the value X1, it shall retain these in memory until it has received and processed the second KUDOS message.<a href="#section-4.3.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1659,7 +1662,7 @@ struct {
           </h4>
 <p id="section-4.3.2-1">The peer starting a KUDOS execution is denoted as initiator, while the other peer in the same session is denoted as responder.<a href="#section-4.3.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.3.2-2">The initiator completes the key update process when receiving the second KUDOS message and successfully verifying it with CTX_NEW. The responder completes the key update process when sending the second KUDOS message, as protected with CTX_NEW.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-3">KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>) and the latter as the "reverse message flow" (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.5</a>).<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-3">KUDOS may run with the initiator acting either as CoAP client or CoAP server. The former case is denoted as the "forward message flow" (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>) and the latter as the "reverse message flow" (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.6</a>).<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.3.2-4">The following properties hold for both the forward and reverse message flow.<a href="#section-4.3.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.2-5.1">
@@ -1689,7 +1692,7 @@ struct {
             <li class="normal" id="section-4.3.2-7.2">
               <p id="section-4.3.2-7.2.1">The peer <span class="bcp14">MUST</span> delete any OSCORE Security Context CTX_DEL older than CTX_OLD, such that both CTX_DEL and CTX_OLD have the same ID_CONTEXT or no ID Context.<a href="#section-4.3.2-7.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.3.2-7.2.2">
-For instance, this can occur while using the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>}), when the initiator has just received the second KUDOS message, and immediately starts KUDOS again as initiator before sending a non KUDOS message, thereby not providing the responder with key confirmation and not allowing it to safely discard CTX_OLD.<a href="#section-4.3.2-7.2.2" class="pilcrow">¶</a></p>
+For instance, this can occur while using the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>}), when the initiator has just received the second KUDOS message, and immediately starts KUDOS again as initiator before sending a non KUDOS message, thereby not providing the responder with key confirmation and not allowing it to safely discard CTX_OLD.<a href="#section-4.3.2-7.2.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.3.2-7.3">
               <p id="section-4.3.2-7.3.1">The peer <span class="bcp14">MUST</span> terminate all the ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> that it has with the other peer as protected with the old Security Context CTX_OLD, unless the two peers have explicitly agreed otherwise as defined in <a href="#preserving-observe" class="auto internal xref">Section 4.6</a>.<a href="#section-4.3.2-7.3.1" class="pilcrow">¶</a></p>
@@ -1716,34 +1719,47 @@ Note that, even though a peer had no real reason to update its OSCORE keying mat
               <p id="section-4.3.3-2.2.1">A non-KUDOS resource, i.e., an actual application resource that a CoAP request can target in order to trigger application processing at the CoAP server. In such a case, the plain CoAP request composed before OSCORE protection may include an application payload, if admitted by the request method.<a href="#section-4.3.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-4.3.3-3">Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE encryption should not include an application payload. Otherwise, an application payload may be included.<a href="#section-4.3.3-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.3-4">Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer <span class="bcp14">MUST NOT</span> send a non KUDOS message to the other peer, until having aborted or successfully completed the key update process on its side.<a href="#section-4.3.3-4" class="pilcrow">¶</a></p>
-<p id="section-4.3.3-5">In order to prevent two peers from unwittingly running two simultaneous executions of KUDOS, the following applies.<a href="#section-4.3.3-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-3">In either case, the link to the target resource can have the "osc" target attribute to indicate that the resource is only accessible using OSCORE (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-9" class="relref">Section 9</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>).<a href="#section-4.3.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-4">Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE encryption should not include an application payload. Otherwise, an application payload may be included.<a href="#section-4.3.3-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-5">Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer <span class="bcp14">MUST NOT</span> send a non KUDOS message to the other peer, until having aborted or successfully completed the key update process on its side.<a href="#section-4.3.3-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-6">In order to prevent two peers from unwittingly running two simultaneous executions of KUDOS, the following applies.<a href="#section-4.3.3-6" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.3-6.1">
-              <p id="section-4.3.3-6.1.1">When a peer P1 receives the first KUDOS message from a peer P2 in a KUDOS execution E1, the peer P1 <span class="bcp14">MUST</span> check whether it has a non completed KUDOS session E2 where P1 acts as initiator with P2.<a href="#section-4.3.3-6.1.1" class="pilcrow">¶</a></p>
-<p id="section-4.3.3-6.1.2">
-To this end, P1 may check whether it is currently acting as initiator in a KUDOS execution E2 different from E1, such that both sessions aim at updating the OSCORE Security Context CTX_OLD shared with P2. The particular way to achieve this is implementation specific.<a href="#section-4.3.3-6.1.2" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.3-7.1">
+              <p id="section-4.3.3-7.1.1">When a peer P1 receives the first KUDOS message from a peer P2 in a KUDOS execution E1, the peer P1 <span class="bcp14">MUST</span> check whether it has a non completed KUDOS session E2 where P1 acts as initiator with P2.<a href="#section-4.3.3-7.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-7.1.2">
+To this end, P1 may check whether it is currently acting as initiator in a KUDOS execution E2 different from E1, such that both sessions aim at updating the OSCORE Security Context CTX_OLD shared with P2. The particular way to achieve this is implementation specific.<a href="#section-4.3.3-7.1.2" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.3-6.2">
-              <p id="section-4.3.3-6.2.1">If P1 finds such a session E2, then P1 <span class="bcp14">MUST</span> terminate the KUDOS execution E1, and <span class="bcp14">MUST</span> reply to the first KUDOS message received from P2 with a CoAP Reset message.<a href="#section-4.3.3-6.2.1" class="pilcrow">¶</a></p>
-<p id="section-4.3.3-6.2.2">
-Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 where it acts as initiator.<a href="#section-4.3.3-6.2.2" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.3-7.2">
+              <p id="section-4.3.3-7.2.1">If P1 finds such a session E2, then P1 <span class="bcp14">MUST</span> terminate the KUDOS execution E1, and <span class="bcp14">MUST</span> reply to the first KUDOS message received from P2 with a CoAP Reset message.<a href="#section-4.3.3-7.2.1" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-7.2.2">
+Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 where it acts as initiator.<a href="#section-4.3.3-7.2.2" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
 </div>
-<div id="ssec-derive-ctx-client-init">
+<div id="avoiding-in-transit-requests-during-a-key-update">
 <section id="section-4.3.4">
-          <h4 id="name-forward-message-flow">
-<a href="#section-4.3.4" class="section-number selfRef">4.3.4. </a><a href="#name-forward-message-flow" class="section-name selfRef">Forward Message Flow</a>
+          <h4 id="name-avoiding-in-transit-request">
+<a href="#section-4.3.4" class="section-number selfRef">4.3.4. </a><a href="#name-avoiding-in-transit-request" class="section-name selfRef">Avoiding In-Transit Requests During a Key Update</a>
           </h4>
-<p id="section-4.3.4-1"><a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a> shows an example of KUDOS run in the forward message flow, i.e., with the client acting as KUDOS initiator.<a href="#section-4.3.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-2">In the example, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a | bstr .cbor b, where | denotes byte concatenation.<a href="#section-4.3.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-1">Before sending the first KUDOS message, the initiator <span class="bcp14">MUST</span> ensure that it has no outstanding interactions with the responder (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>), with the exception of ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> with the responder.<a href="#section-4.3.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-2">Before sending the second KUDOS message, the responder <span class="bcp14">MUST</span> ensure that it has no outstanding interactions with the initiator (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>), with the exception of ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> with the initiator.<a href="#section-4.3.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-3">If any such outstanding interactions are found, the initiator (responder) <span class="bcp14">MUST NOT</span> initiate (follow up with) the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the other peer.<a href="#section-4.3.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-4">Later on, this prevents a non KUDOS response protected with the new Security Context CTX_NEW from cryptographically matching with both the corresponding request also protected with CTX_NEW and with an older request protected with CTX_OLD, in case the two requests were protected using the same OSCORE Partial IV.<a href="#section-4.3.4-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-5">During an ongoing KUDOS execution, the peer acting as client <span class="bcp14">MUST NOT</span> send any non-KUDOS requests to the other peer. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>).<a href="#section-4.3.4-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ssec-derive-ctx-client-init">
+<section id="section-4.3.5">
+          <h4 id="name-forward-message-flow">
+<a href="#section-4.3.5" class="section-number selfRef">4.3.5. </a><a href="#name-forward-message-flow" class="section-name selfRef">Forward Message Flow</a>
+          </h4>
+<p id="section-4.3.5-1"><a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a> shows an example of KUDOS run in the forward message flow, i.e., with the client acting as KUDOS initiator.<a href="#section-4.3.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-2">In the example, 'Comb(a,b)' denotes the byte concatenation of two CBOR byte strings, where the first one has value 'a' and the second one has value 'b'. That is, Comb(a,b) = bstr .cbor a | bstr .cbor b, where | denotes byte concatenation.<a href="#section-4.3.5-2" class="pilcrow">¶</a></p>
 <span id="name-example-of-the-kudos-forwar"></span><div id="fig-message-exchange-client-init">
 <figure id="figure-3">
-            <div id="section-4.3.4-3.1">
-              <div class="alignCenter art-svg artwork" id="section-4.3.4-3.1.1">
+            <div id="section-4.3.5-3.1">
+              <div class="alignCenter art-svg artwork" id="section-4.3.5-3.1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="1152" width="576" viewBox="0 0 576 1152" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                   <path d="M 200,64 L 200,736" fill="none" stroke="black"></path>
                   <path d="M 200,816 L 200,1136" fill="none" stroke="black"></path>
@@ -1914,20 +1930,20 @@ Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 whe
                     <text x="344" y="1108">Payload</text>
                     <text x="216" y="1124">}</text>
                   </g>
-                </svg><a href="#section-4.3.4-3.1.1" class="pilcrow">¶</a>
+                </svg><a href="#section-4.3.5-3.1.1" class="pilcrow">¶</a>
 </div>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-example-of-the-kudos-forwar" class="selfRef">Example of the KUDOS forward message flow.</a>
             </figcaption></figure>
 </div>
-<p id="section-4.3.4-4">First, the client generates a value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive a temporary Security Context CTX_1.<a href="#section-4.3.4-4" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-5">Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see <a href="#well-known-kudos-desc" class="auto internal xref">Section 4.8.3</a>) at "/.well-known/kudos". The client protects this CoAP request using CTX_1 and sends it to the server. When the client protects this request using OSCORE, it <span class="bcp14">MUST</span> use 0 as the value of Partial IV. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). After that, the client deletes CTX_1.<a href="#section-4.3.4-5" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-6">Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the OSCORE Option, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in order to derive the temporary Security Context CTX_1.<a href="#section-4.3.4-6" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-7"><a href="#fig-kudos-x-n-example-mess-one" class="auto internal xref">Figure 4</a> shows an example of how the two peers compute X and N provided as input to the updateCtx() function, and how they compute X_N within the updateCtx() function, when deriving CTX_1 (see <a href="#ssec-update-function" class="auto internal xref">Section 4.2</a>).<a href="#section-4.3.4-7" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-4">First, the client generates a value N1, and uses the nonce N = N1 and X = X1 together with the old Security Context CTX_OLD, in order to derive a temporary Security Context CTX_1.<a href="#section-4.3.5-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-5">Then, the client prepares a CoAP request targeting the well-known KUDOS resource (see <a href="#well-known-kudos-desc" class="auto internal xref">Section 4.8.3</a>) at "/.well-known/kudos". The client protects this CoAP request using CTX_1 and sends it to the server. When the client protects this request using OSCORE, it <span class="bcp14">MUST</span> use 0 as the value of Partial IV. In particular, the request has the 'd' flag bit set to 1, and specifies X1 as 'x' and N1 as 'nonce' (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). After that, the client deletes CTX_1.<a href="#section-4.3.5-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-6">Upon receiving the OSCORE request, the server retrieves the value N1 from the 'nonce' field of the OSCORE Option, the value X1 from the 'x' byte of the OSCORE Option, and provides the updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in order to derive the temporary Security Context CTX_1.<a href="#section-4.3.5-6" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-7"><a href="#fig-kudos-x-n-example-mess-one" class="auto internal xref">Figure 4</a> shows an example of how the two peers compute X and N provided as input to the updateCtx() function, and how they compute X_N within the updateCtx() function, when deriving CTX_1 (see <a href="#ssec-update-function" class="auto internal xref">Section 4.2</a>).<a href="#section-4.3.5-7" class="pilcrow">¶</a></p>
 <span id="name-example-of-x-n-and-x_n-when"></span><div id="fig-kudos-x-n-example-mess-one">
 <figure id="figure-4">
-            <div class="alignLeft art-text artwork" id="section-4.3.4-8.1">
+            <div class="alignLeft art-text artwork" id="section-4.3.5-8.1">
 <pre>
    X1 and N1 expressed as raw values
    X1 = 0x07
@@ -1949,12 +1965,12 @@ Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 whe
 <a href="#name-example-of-x-n-and-x_n-when" class="selfRef">Example of X, N, and X_N when processing the first KUDOS message</a>
             </figcaption></figure>
 </div>
-<p id="section-4.3.4-9">Then, the server verifies the request by using the Security Context CTX_1.<a href="#section-4.3.4-9" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-10">After that, the server generates a value N2, and uses N = Comb(N1, N2) and X = Comb(X1, X2) together with CTX_OLD, in order to derive the new Security Context CTX_NEW.<a href="#section-4.3.4-10" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-11">An example of this nonce processing on the server with values for N1, X1, N2, and X2 is presented in <a href="#fig-kudos-x-n-example-mess-two" class="auto internal xref">Figure 5</a>.<a href="#section-4.3.4-11" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-9">Then, the server verifies the request by using the Security Context CTX_1.<a href="#section-4.3.5-9" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-10">After that, the server generates a value N2, and uses N = Comb(N1, N2) and X = Comb(X1, X2) together with CTX_OLD, in order to derive the new Security Context CTX_NEW.<a href="#section-4.3.5-10" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-11">An example of this nonce processing on the server with values for N1, X1, N2, and X2 is presented in <a href="#fig-kudos-x-n-example-mess-two" class="auto internal xref">Figure 5</a>.<a href="#section-4.3.5-11" class="pilcrow">¶</a></p>
 <span id="name-example-of-x-n-and-x_n-when-"></span><div id="fig-kudos-x-n-example-mess-two">
 <figure id="figure-5">
-            <div class="alignLeft art-text artwork" id="section-4.3.4-12.1">
+            <div class="alignLeft art-text artwork" id="section-4.3.5-12.1">
 <pre>
    X1, X2, N1, and N2 expressed as raw values
    X1 = 0x07
@@ -1985,54 +2001,43 @@ Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 whe
 <a href="#name-example-of-x-n-and-x_n-when-" class="selfRef">Example of X, N, and X_N when processing the second KUDOS message</a>
             </figcaption></figure>
 </div>
-<p id="section-4.3.4-13">Then, the server sends an OSCORE response to the client, protected with CTX_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a>, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX_1.<a href="#section-4.3.4-13" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-14">Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the OSCORE Option, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request that it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX_OLD, in order to derive CTX_NEW. Finally, the client verifies the response by using CTX_NEW and deletes CTX_OLD.<a href="#section-4.3.4-14" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-15">From then on, the two peers can protect their message exchanges by using CTX_NEW. As soon as the server successfully verifies an incoming message protected with CTX_NEW, the server deletes CTX_OLD.<a href="#section-4.3.4-15" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-16">In the example in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a>, the client takes the initiative and sends a new OSCORE request protected with CTX_NEW.<a href="#section-4.3.4-16" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-17">In case the server does not successfully verify the request, the same error handling specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> applies. This does not result in deleting CTX_NEW. If the server successfully verifies the request using CTX_NEW, the server deletes CTX_OLD and can reply with an OSCORE response protected with CTX_NEW.<a href="#section-4.3.4-17" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-18">Note that the server achieves key confirmation only when receiving and successfully verifying a message from the client as protected with CTX_NEW. If the server sends a non KUDOS request to the client protected with CTX_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server <span class="bcp14">SHOULD</span> delete CTX_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow.<a href="#section-4.3.4-18" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-19">Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a>.<a href="#section-4.3.4-19" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-20">In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been succesfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) <span class="bcp14">MUST</span> be a 4.01 (Unauthorized) error response.<a href="#section-4.3.4-20" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-21">Upon receiving the 4.01 (Unauthorized) error response as the second KUDOS message Response #1, the client processes it like described above. After successfully completing the KUDOS execution, the client can send to the server a non-KUDOS request protected with CTX_NEW (i.e., Request #2 in Figure 3). Presumably, this request targets the same resource targeted by the previous Request #1, as the same application request or a different one, if the application permits it.
-Upon receiving, decrypting, and successfully verifying this request protected with CTX_NEW, the server asserts the request as fresh, leveraging the recent establishment of CTX_NEW.<a href="#section-4.3.4-21" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-22">In the example shown in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a> and discussed in this section, the first KUDOS message is a request and the second one is a response, like typically expected when using the forward message flow. However, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. Related examples using the forward message flow are provided later:<a href="#section-4.3.4-22" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-13">Then, the server sends an OSCORE response to the client, protected with CTX_NEW. In particular, the response has the 'd' flag bit set to 1 and specifies N2 as 'nonce'. Consistently with <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a>, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX_1.<a href="#section-4.3.5-13" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-14">Upon receiving the OSCORE response, the client retrieves the value N2 from the 'nonce' field of the OSCORE Option, and the value X2 from the 'x' byte of the OSCORE Option. Since the client has received a response to an OSCORE request that it made with the 'd' flag bit set to 1, the client provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX_OLD, in order to derive CTX_NEW. Finally, the client verifies the response by using CTX_NEW and deletes CTX_OLD.<a href="#section-4.3.5-14" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-15">From then on, the two peers can protect their message exchanges by using CTX_NEW. As soon as the server successfully verifies an incoming message protected with CTX_NEW, the server deletes CTX_OLD.<a href="#section-4.3.5-15" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-16">In the example in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a>, the client takes the initiative and sends a new OSCORE request protected with CTX_NEW.<a href="#section-4.3.5-16" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-17">In case the server does not successfully verify the request, the same error handling specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> applies. This does not result in deleting CTX_NEW. If the server successfully verifies the request using CTX_NEW, the server deletes CTX_OLD and can reply with an OSCORE response protected with CTX_NEW.<a href="#section-4.3.5-17" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-18">Note that the server achieves key confirmation only when receiving and successfully verifying a message from the client as protected with CTX_NEW. If the server sends a non KUDOS request to the client protected with CTX_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server <span class="bcp14">SHOULD</span> delete CTX_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow.<a href="#section-4.3.5-18" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-19">Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a>.<a href="#section-4.3.5-19" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-20">In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been succesfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) <span class="bcp14">MUST</span> be a 4.01 (Unauthorized) error response.<a href="#section-4.3.5-20" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-21">Upon receiving the 4.01 (Unauthorized) error response as the second KUDOS message Response #1, the client processes it like described above. After successfully completing the KUDOS execution, the client can send to the server a non-KUDOS request protected with CTX_NEW (i.e., Request #2 in Figure 3). Presumably, this request targets the same resource targeted by the previous Request #1, as the same application request or a different one, if the application permits it.
+Upon receiving, decrypting, and successfully verifying this request protected with CTX_NEW, the server asserts the request as fresh, leveraging the recent establishment of CTX_NEW.<a href="#section-4.3.5-21" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-22">In the example shown in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a> and discussed in this section, the first KUDOS message is a request and the second one is a response, like typically expected when using the forward message flow. However, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. Related examples using the forward message flow are provided later:<a href="#section-4.3.5-22" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.4-23.1">
-              <p id="section-4.3.4-23.1.1"><a href="#ssec-derive-ctx-client-init-requests-only" class="auto internal xref">Appendix A</a> presents an example where both KUDOS messages are CoAP requests.<a href="#section-4.3.4-23.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.5-23.1">
+              <p id="section-4.3.5-23.1.1"><a href="#ssec-derive-ctx-client-init-requests-only" class="auto internal xref">Appendix A</a> presents an example where both KUDOS messages are CoAP requests.<a href="#section-4.3.5-23.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.4-23.2">
-              <p id="section-4.3.4-23.2.1"><a href="#ssec-derive-ctx-client-init-unrelated" class="auto internal xref">Appendix B</a> presents an example where KUDOS Response #1 is a response to a different request from KUDOS Request #1.<a href="#section-4.3.4-23.2.1" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-23.2.2">
-In such a case, if the client knows that KUDOS Response #2 is going to be sent as a response to a different request from KUDOS Request #1, then the client can use the No-Response CoAP Option <span>[<a href="#RFC7967" class="cite xref">RFC7967</a>]</span> in KUDOS Request #1 without impairing the successful completion of KUDOS.<a href="#section-4.3.4-23.2.2" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.5-23.2">
+              <p id="section-4.3.5-23.2.1"><a href="#ssec-derive-ctx-client-init-unrelated" class="auto internal xref">Appendix B</a> presents an example where KUDOS Response #1 is a response to a different request from KUDOS Request #1.<a href="#section-4.3.5-23.2.1" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-23.2.2">
+In such a case, if the client knows that KUDOS Response #2 is going to be sent as a response to a different request from KUDOS Request #1, then the client can use the No-Response CoAP Option <span>[<a href="#RFC7967" class="cite xref">RFC7967</a>]</span> in KUDOS Request #1 without impairing the successful completion of KUDOS.<a href="#section-4.3.5-23.2.2" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.4-23.3">
-              <p id="section-4.3.4-23.3.1"><a href="#ssec-derive-ctx-client-init-normal-resource" class="auto internal xref">Appendix C</a> presents an example where KUDOS Request #1 is sent to a non-KUDOS resource.<a href="#section-4.3.4-23.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.5-23.3">
+              <p id="section-4.3.5-23.3.1"><a href="#ssec-derive-ctx-client-init-normal-resource" class="auto internal xref">Appendix C</a> presents an example where KUDOS Request #1 is sent to a non-KUDOS resource.<a href="#section-4.3.5-23.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<div id="avoiding-in-transit-requests-during-a-key-update">
-<section id="section-4.3.4.1">
-            <h5 id="name-avoiding-in-transit-request">
-<a href="#section-4.3.4.1" class="section-number selfRef">4.3.4.1. </a><a href="#name-avoiding-in-transit-request" class="section-name selfRef">Avoiding In-Transit Requests During a Key Update</a>
-            </h5>
-<p id="section-4.3.4.1-1">Before sending the KUDOS message Request #1 in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a>, the client <span class="bcp14">MUST</span> ensure that it has no outstanding interactions with the server (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>), with the exception of ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> with that server.<a href="#section-4.3.4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.4.1-2">If there are any, the client <span class="bcp14">MUST NOT</span> initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.<a href="#section-4.3.4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.3.4.1-3">Later on, this prevents a non KUDOS response protected with CTX_NEW from cryptographically matching with both the corresponding request also protected with CTX_NEW and with an older request protected with CTX_OLD, in case the two requests were protected using the same OSCORE Partial IV.<a href="#section-4.3.4.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.4.1-4">During an ongoing KUDOS execution the client <span class="bcp14">MUST NOT</span> send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>).<a href="#section-4.3.4.1-4" class="pilcrow">¶</a></p>
-</section>
-</div>
 </section>
 </div>
 <div id="ssec-derive-ctx-server-init">
-<section id="section-4.3.5">
+<section id="section-4.3.6">
           <h4 id="name-reverse-message-flow">
-<a href="#section-4.3.5" class="section-number selfRef">4.3.5. </a><a href="#name-reverse-message-flow" class="section-name selfRef">Reverse Message Flow</a>
+<a href="#section-4.3.6" class="section-number selfRef">4.3.6. </a><a href="#name-reverse-message-flow" class="section-name selfRef">Reverse Message Flow</a>
           </h4>
-<p id="section-4.3.5-1"><a href="#fig-message-exchange-server-init" class="auto internal xref">Figure 6</a> shows an example of KUDOS run in the reverse message flow, i.e., with the server acting as initiator.<a href="#section-4.3.5-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-2">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>.<a href="#section-4.3.5-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-1"><a href="#fig-message-exchange-server-init" class="auto internal xref">Figure 6</a> shows an example of KUDOS run in the reverse message flow, i.e., with the server acting as initiator.<a href="#section-4.3.6-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-2">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>.<a href="#section-4.3.6-2" class="pilcrow">¶</a></p>
 <span id="name-example-of-the-kudos-revers"></span><div id="fig-message-exchange-server-init">
 <figure id="figure-6">
-            <div id="section-4.3.5-3.1">
-              <div class="alignCenter art-svg artwork" id="section-4.3.5-3.1.1">
+            <div id="section-4.3.6-3.1">
+              <div class="alignCenter art-svg artwork" id="section-4.3.6-3.1.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="1072" width="576" viewBox="0 0 576 1072" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
                   <path d="M 200,64 L 200,816" fill="none" stroke="black"></path>
                   <path d="M 200,896 L 200,1056" fill="none" stroke="black"></path>
@@ -2205,37 +2210,26 @@ In such a case, if the client knows that KUDOS Response #2 is going to be sent a
                     <text x="344" y="1028">Payload</text>
                     <text x="216" y="1044">}</text>
                   </g>
-                </svg><a href="#section-4.3.5-3.1.1" class="pilcrow">¶</a>
+                </svg><a href="#section-4.3.6-3.1.1" class="pilcrow">¶</a>
 </div>
 </div>
 <figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-example-of-the-kudos-revers" class="selfRef">Example of the KUDOS reverse message flow</a>
             </figcaption></figure>
 </div>
-<p id="section-4.3.5-4">First, the client sends a normal OSCORE request to the server, protected with the old Security Context CTX_OLD and with the 'd' flag bit set to 0.<a href="#section-4.3.5-4" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-5">Upon receiving the OSCORE request and after having verified it with CTX_OLD as usual, the server generates a value N1 and provides the updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in order to derive the temporary Security Context CTX_1.<a href="#section-4.3.5-5" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-6">Then, the server sends an OSCORE response to the client, protected with CTX_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). After that, the server deletes CTX_1. Consistently with <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a>, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX_1.<a href="#section-4.3.5-6" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-7">Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the OSCORE Option and the value X1 from the 'x' byte of the OSCORE Option. Then, the client provides the updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in order to derive the temporary Security Context CTX_1.<a href="#section-4.3.5-7" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-8">Then, the client verifies the response by using the Security Context CTX_1.<a href="#section-4.3.5-8" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-9">After that, the client generates a value N2, and provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX_OLD, in order to derive the new Security Context CTX_NEW. Then, the client sends an OSCORE request to the server, protected with CTX_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N2 as 'nonce' and N1 as 'old_nonce'. After that, the client deletes CTX_1.<a href="#section-4.3.5-9" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-10">Upon receiving the OSCORE request, the server retrieves the values N1 from the 'old_nonce' field of the OSCORE Option, the value N2 from the 'nonce' field of the OSCORE Option, and the value X2 from the 'x' byte of the OSCORE Option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 | N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1.<a href="#section-4.3.5-10" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-11">If the verification succeeds, the server provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX_OLD, in order to derive the new Security Context CTX_NEW. Finally, the server verifies the request by using CTX_NEW and deletes CTX_OLD.<a href="#section-4.3.5-11" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-12">From then on, the two peers can protect their message exchanges by using CTX_NEW. In particular, as shown in the example in <a href="#fig-message-exchange-server-init" class="auto internal xref">Figure 6</a>, the server can send an OSCORE response protected with CTX_NEW.<a href="#section-4.3.5-12" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-13">In case the client does not successfully verify the response, the same error handling specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.4" class="relref">Section 8.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> applies. This does not result in deleting CTX_NEW. If the client successfully verifies the response using CTX_NEW, the client deletes CTX_OLD. Note that, if the verification of the response fails, the client may want to send again the normal OSCORE request to the server it initially sent (to /temp in the example above), in order to ensure the retrieval of the resource representation.<a href="#section-4.3.5-13" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-14">More generally, as soon as the client successfully verifies an incoming message protected with CTX_NEW, the client deletes CTX_OLD.<a href="#section-4.3.5-14" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-15">Note that the client achieves key confirmation only when receiving and successfully verifying a message from the server as protected with CTX_NEW. If the client sends a non KUDOS request to the server protected with CTX_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client <span class="bcp14">SHOULD</span> delete CTX_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>).<a href="#section-4.3.5-15" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-16">It might be the case that the server is only a CoAP server (i.e., it does not implement a CoAP client) and, at the same time, it becomes unable to safely decrypt further incoming messages from the client. For example, this occurs when the server reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>). When this happens, the server cannot decrypt Request #1. Consequently, the server replies to the client with an unprotected 4.01 (Unauthorized) response, and is therefore practically unable to execute KUDOS with the client in the reverse message flow. In such a case, the only chance for the server to perform a key update with the client by means of KUDOS relies on the client starting a KUDOS execution using the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>).<a href="#section-4.3.5-16" class="pilcrow">¶</a></p>
-<div id="avoiding-in-transit-requests-during-a-key-update-1">
-<section id="section-4.3.5.1">
-            <h5 id="name-avoiding-in-transit-requests">
-<a href="#section-4.3.5.1" class="section-number selfRef">4.3.5.1. </a><a href="#name-avoiding-in-transit-requests" class="section-name selfRef">Avoiding In-Transit Requests During a Key Update</a>
-            </h5>
-<p id="section-4.3.5.1-1">Before sending the KUDOS message Request #2 in <a href="#fig-message-exchange-server-init" class="auto internal xref">Figure 6</a>, the client <span class="bcp14">MUST</span> ensure that it has no outstanding interactions with the server (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>), with the exception of ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span> with that server.<a href="#section-4.3.5.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.5.1-2">If there are any, the client <span class="bcp14">MUST NOT</span> initiate the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the server.<a href="#section-4.3.5.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.3.5.1-3">Later on, this prevents a non KUDOS response protected with the new Security Context CTX_NEW from cryptographically matching with both the corresponding request also protected with CTX_NEW and with an older request protected with CTX_OLD, in case the two requests were protected using the same OSCORE Partial IV.<a href="#section-4.3.5.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.5.1-4">During an ongoing KUDOS execution the client <span class="bcp14">MUST NOT</span> send any non-KUDOS requests to the server, even when NSTART is greater than 1 (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>).<a href="#section-4.3.5.1-4" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="section-4.3.6-4">First, the client sends a normal OSCORE request to the server, protected with the old Security Context CTX_OLD and with the 'd' flag bit set to 0.<a href="#section-4.3.6-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-5">Upon receiving the OSCORE request and after having verified it with CTX_OLD as usual, the server generates a value N1 and provides the updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in order to derive the temporary Security Context CTX_1.<a href="#section-4.3.6-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-6">Then, the server sends an OSCORE response to the client, protected with CTX_1. In particular, the response has the 'd' flag bit set to 1 and specifies N1 as 'nonce' (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>). After that, the server deletes CTX_1. Consistently with <a href="#sec-updated-response-protection" class="auto internal xref">Section 3</a>, the server includes its Sender Sequence Number as Partial IV in the response. After that, the server deletes CTX_1.<a href="#section-4.3.6-6" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-7">Upon receiving the OSCORE response, the client retrieves the value N1 from the 'nonce' field of the OSCORE Option and the value X1 from the 'x' byte of the OSCORE Option. Then, the client provides the updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in order to derive the temporary Security Context CTX_1.<a href="#section-4.3.6-7" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-8">Then, the client verifies the response by using the Security Context CTX_1.<a href="#section-4.3.6-8" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-9">After that, the client generates a value N2, and provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX_OLD, in order to derive the new Security Context CTX_NEW. Then, the client sends an OSCORE request to the server, protected with CTX_NEW. In particular, the request has the 'd' flag bit set to 1 and specifies N2 as 'nonce' and N1 as 'old_nonce'. After that, the client deletes CTX_1.<a href="#section-4.3.6-9" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-10">Upon receiving the OSCORE request, the server retrieves the values N1 from the 'old_nonce' field of the OSCORE Option, the value N2 from the 'nonce' field of the OSCORE Option, and the value X2 from the 'x' byte of the OSCORE Option. Then, the server verifies that: i) the value N1 is identical to the value N1 specified in a previous OSCORE response with the 'd' flag bit set to 1; and ii) the value N1 | N2 has not been received before in an OSCORE request with the 'd' flag bit set to 1.<a href="#section-4.3.6-10" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-11">If the verification succeeds, the server provides the updateCtx() function with the input N = Comb(N1, N2), X = Comb(X1, X2), and CTX_OLD, in order to derive the new Security Context CTX_NEW. Finally, the server verifies the request by using CTX_NEW and deletes CTX_OLD.<a href="#section-4.3.6-11" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-12">From then on, the two peers can protect their message exchanges by using CTX_NEW. In particular, as shown in the example in <a href="#fig-message-exchange-server-init" class="auto internal xref">Figure 6</a>, the server can send an OSCORE response protected with CTX_NEW.<a href="#section-4.3.6-12" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-13">In case the client does not successfully verify the response, the same error handling specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.4" class="relref">Section 8.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> applies. This does not result in deleting CTX_NEW. If the client successfully verifies the response using CTX_NEW, the client deletes CTX_OLD. Note that, if the verification of the response fails, the client may want to send again the normal OSCORE request to the server it initially sent (to /temp in the example above), in order to ensure the retrieval of the resource representation.<a href="#section-4.3.6-13" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-14">More generally, as soon as the client successfully verifies an incoming message protected with CTX_NEW, the client deletes CTX_OLD.<a href="#section-4.3.6-14" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-15">Note that the client achieves key confirmation only when receiving and successfully verifying a message from the server as protected with CTX_NEW. If the client sends a non KUDOS request to the server protected with CTX_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client <span class="bcp14">SHOULD</span> delete CTX_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>).<a href="#section-4.3.6-15" class="pilcrow">¶</a></p>
+<p id="section-4.3.6-16">It might be the case that the server is only a CoAP server (i.e., it does not implement a CoAP client) and, at the same time, it becomes unable to safely decrypt further incoming messages from the client. For example, this occurs when the server reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>). When this happens, the server cannot decrypt Request #1. Consequently, the server replies to the client with an unprotected 4.01 (Unauthorized) response, and is therefore practically unable to execute KUDOS with the client in the reverse message flow. In such a case, the only chance for the server to perform a key update with the client by means of KUDOS relies on the client starting a KUDOS execution using the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>).<a href="#section-4.3.6-16" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2311,7 +2305,7 @@ If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as wel
           <h4 id="name-scenario-3">
 <a href="#section-4.4.3" class="section-number selfRef">4.4.3. </a><a href="#name-scenario-3" class="section-name selfRef">Scenario 3</a>
           </h4>
-<p id="section-4.4.3-1">When KUDOS is run in the reverse message flow (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.5</a>), the two peers risk to run into a deadlock, if all the following conditions hold.<a href="#section-4.4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.4.3-1">When KUDOS is run in the reverse message flow (see <a href="#ssec-derive-ctx-server-init" class="auto internal xref">Section 4.3.6</a>), the two peers risk to run into a deadlock, if all the following conditions hold.<a href="#section-4.4.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.4.3-2.1">
               <p id="section-4.4.3-2.1.1">The client is a client-only device, i.e., it does not act as CoAP server and thus does not listen for incoming requests.<a href="#section-4.4.3-2.1.1" class="pilcrow">¶</a></p>
@@ -3167,7 +3161,7 @@ In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and C
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-forward-message-flow-using-" class="section-name selfRef">Forward Message Flow using two CoAP Requests</a>
       </h2>
 <p id="appendix-A-1">This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and both KUDOS messages being CoAP requests.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-<p id="appendix-A-2">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 <span id="name-example-of-the-kudos-forward"></span><div id="fig-message-exchange-client-init-requests-only">
 <figure id="figure-7">
         <div id="appendix-A-3.1">
@@ -3365,7 +3359,7 @@ In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and C
 <a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-forward-message-flow-with-r" class="section-name selfRef">Forward Message Flow with Response #1 unrelated to Request #1</a>
       </h2>
 <p id="appendix-B-1">This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and where the second KUDOS message Response #1 is not a response to the first KUDOS message Request #2, but rather an unrelated Observe notification as a response to the non-KUDOS message Request #1<a href="#appendix-B-1" class="pilcrow">¶</a></p>
-<p id="appendix-B-2">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>.<a href="#appendix-B-2" class="pilcrow">¶</a></p>
+<p id="appendix-B-2">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>.<a href="#appendix-B-2" class="pilcrow">¶</a></p>
 <span id="name-example-of-the-kudos-forward-"></span><div id="fig-message-exchange-client-init-unrelated-response">
 <figure id="figure-8">
         <div id="appendix-B-3.1">
@@ -3575,7 +3569,7 @@ In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and C
 <p id="appendix-C-1">This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and with the KUDOS message Request #1 targeting a non-KUDOS resource at the Uri-Path "/temp". The server application has freshness requirements on the requests targeting the resource at "/temp".<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 <p id="appendix-C-2">Note the presence of an application payload in the KUDOS message Request #1 and in the non-KUDOS message Request #2, both of which are composed as PUT requests. That request method is part of the encrypted payload, since it is protected by OSCORE.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
 <p id="appendix-C-3">Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Unauthorized) response, while the non-KUDOS message Response #2 is composed as a 2.04 (Changed) repsonse. Those response codes are part of the encrypted payload, since they are protected by OSCORE.<a href="#appendix-C-3" class="pilcrow">¶</a></p>
-<p id="appendix-C-4">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.4</a>.<a href="#appendix-C-4" class="pilcrow">¶</a></p>
+<p id="appendix-C-4">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>.<a href="#appendix-C-4" class="pilcrow">¶</a></p>
 <span id="name-example-of-the-kudos-forward-m"></span><div id="fig-message-exchange-client-init-normal-resource">
 <figure id="figure-9">
         <div id="appendix-C-5.1">

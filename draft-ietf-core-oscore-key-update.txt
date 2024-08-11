@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                          10 August 2024
-Expires: 11 February 2025
+Intended status: Standards Track                          11 August 2024
+Expires: 12 February 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 February 2025.
+   This Internet-Draft will expire on 12 February 2025.
 
 Copyright Notice
 
@@ -79,8 +79,9 @@ Table of Contents
        4.3.1.  Nonces and X Bytes
        4.3.2.  Handling of OSCORE Security Contexts
        4.3.3.  Handling of Messages
-       4.3.4.  Forward Message Flow
-       4.3.5.  Reverse Message Flow
+       4.3.4.  Avoiding In-Transit Requests During a Key Update
+       4.3.5.  Forward Message Flow
+       4.3.6.  Reverse Message Flow
      4.4.  Avoiding Deadlocks
        4.4.1.  Scenario 1
        4.4.2.  Scenario 2
@@ -186,10 +187,10 @@ Table of Contents
       KUDOS execution.
 
    *  Forward message flow: the KUDOS execution workflow where the
-      initiator acts as CoAP client (see Section 4.3.4).
+      initiator acts as CoAP client (see Section 4.3.5).
 
    *  Reverse message flow: the KUDOS execution workflow where the
-      initiator acts as CoAP server (see Section 4.3.5).
+      initiator acts as CoAP server (see Section 4.3.6).
 
    *  FS mode: the KUDOS execution mode that achieves forward secrecy
       (see Section 4.3).
@@ -355,7 +356,7 @@ Table of Contents
    *  KUDOS can be initiated by either peer.  In particular, the CoAP
       client or the CoAP server may start KUDOS by sending the first
       rekeying message, by running KUDOS in the forward message flow
-      Section 4.3 or reverse message flow Section 4.3.5, respectively.
+      Section 4.3 or reverse message flow Section 4.3.6, respectively.
       A peer that supports KUDOS MUST support both the forward message
       flow and the reverse message flow.
 
@@ -664,7 +665,7 @@ Table of Contents
    length of nonce N1 and N2, specified in the 'nonce' field of the
    OSCORE Option of the first and second KUDOS message, respectively; as
    well as on the specific settings the peer wishes to run KUDOS with.
-   As defined in Section 4.3.4, these values are used by the peers to
+   As defined in Section 4.3.5, these values are used by the peers to
    build the input N and X to the updateCtx() function, in order to
    derive a new OSCORE Security Context.  As for any new OSCORE Security
    Context, the Sender Sequence Number and the Replay Window are re-
@@ -686,8 +687,8 @@ Table of Contents
 
    KUDOS may run with the initiator acting either as CoAP client or CoAP
    server.  The former case is denoted as the "forward message flow"
-   (see Section 4.3.4) and the latter as the "reverse message flow" (see
-   Section 4.3.5).
+   (see Section 4.3.5) and the latter as the "reverse message flow" (see
+   Section 4.3.6).
 
    The following properties hold for both the forward and reverse
    message flow.
@@ -719,7 +720,7 @@ Table of Contents
       ID_CONTEXT or no ID Context.
 
       For instance, this can occur while using the forward message flow
-      (see Section 4.3.4}), when the initiator has just received the
+      (see Section 4.3.5}), when the initiator has just received the
       second KUDOS message, and immediately starts KUDOS again as
       initiator before sending a non KUDOS message, thereby not
       providing the responder with key confirmation and not allowing it
@@ -763,6 +764,10 @@ Table of Contents
       composed before OSCORE protection may include an application
       payload, if admitted by the request method.
 
+   In either case, the link to the target resource can have the "osc"
+   target attribute to indicate that the resource is only accessible
+   using OSCORE (see Section 9 of [RFC8613]).
+
    Similarly, any CoAP response can also be a KUDOS message.  If the
    corresponding CoAP request has targeted a KUDOS resource, then the
    plain CoAP response composed before OSCORE encryption should not
@@ -794,7 +799,37 @@ Table of Contents
       Upon receiving the Reset message above, P2 terminates the KUDOS
       execution E2 where it acts as initiator.
 
-4.3.4.  Forward Message Flow
+4.3.4.  Avoiding In-Transit Requests During a Key Update
+
+   Before sending the first KUDOS message, the initiator MUST ensure
+   that it has no outstanding interactions with the responder (see
+   Section 4.7 of [RFC7252]), with the exception of ongoing observations
+   [RFC7641] with the responder.
+
+   Before sending the second KUDOS message, the responder MUST ensure
+   that it has no outstanding interactions with the initiator (see
+   Section 4.7 of [RFC7252]), with the exception of ongoing observations
+   [RFC7641] with the initiator.
+
+   If any such outstanding interactions are found, the initiator
+   (responder) MUST NOT initiate (follow up with) the KUDOS execution,
+   before either: i) having all those outstanding interactions cleared;
+   or ii) freeing up the Token values used with those outstanding
+   interactions, with the exception of ongoing observations with the
+   other peer.
+
+   Later on, this prevents a non KUDOS response protected with the new
+   Security Context CTX_NEW from cryptographically matching with both
+   the corresponding request also protected with CTX_NEW and with an
+   older request protected with CTX_OLD, in case the two requests were
+   protected using the same OSCORE Partial IV.
+
+   During an ongoing KUDOS execution, the peer acting as client MUST NOT
+   send any non-KUDOS requests to the other peer.  This could otherwise
+   be possible, if the client is using a value of NSTART greater than 1
+   (see Section 4.7 of [RFC7252]).
+
+4.3.5.  Forward Message Flow
 
    Figure 3 shows an example of KUDOS run in the forward message flow,
    i.e., with the client acting as KUDOS initiator.
@@ -1037,35 +1072,12 @@ Table of Contents
    *  Appendix C presents an example where KUDOS Request #1 is sent to a
       non-KUDOS resource.
 
-4.3.4.1.  Avoiding In-Transit Requests During a Key Update
-
-   Before sending the KUDOS message Request #1 in Figure 3, the client
-   MUST ensure that it has no outstanding interactions with the server
-   (see Section 4.7 of [RFC7252]), with the exception of ongoing
-   observations [RFC7641] with that server.
-
-   If there are any, the client MUST NOT initiate the KUDOS execution,
-   before either: i) having all those outstanding interactions cleared;
-   or ii) freeing up the Token values used with those outstanding
-   interactions, with the exception of ongoing observations with the
-   server.
-
-   Later on, this prevents a non KUDOS response protected with CTX_NEW
-   from cryptographically matching with both the corresponding request
-   also protected with CTX_NEW and with an older request protected with
-   CTX_OLD, in case the two requests were protected using the same
-   OSCORE Partial IV.
-
-   During an ongoing KUDOS execution the client MUST NOT send any non-
-   KUDOS requests to the server, even when NSTART is greater than 1 (see
-   Section 4.7 of [RFC7252]).
-
-4.3.5.  Reverse Message Flow
+4.3.6.  Reverse Message Flow
 
    Figure 6 shows an example of KUDOS run in the reverse message flow,
    i.e., with the server acting as initiator.
 
-   The example uses the same notation 'Comb(a,b)' used in Section 4.3.4.
+   The example uses the same notation 'Comb(a,b)' used in Section 4.3.5.
 
                        Client                 Server
                     (responder)            (initiator)
@@ -1205,7 +1217,7 @@ Table of Contents
    protected with CTX_NEW before then, and the client receives a 4.01
    (Unauthorized) error response as reply, the client SHOULD delete
    CTX_NEW and start a new KUDOS execution acting again as CoAP client,
-   i.e., as initiator in the forward message flow (see Section 4.3.4).
+   i.e., as initiator in the forward message flow (see Section 4.3.5).
 
    It might be the case that the server is only a CoAP server (i.e., it
    does not implement a CoAP client) and, at the same time, it becomes
@@ -1219,30 +1231,7 @@ Table of Contents
    the client in the reverse message flow.  In such a case, the only
    chance for the server to perform a key update with the client by
    means of KUDOS relies on the client starting a KUDOS execution using
-   the forward message flow (see Section 4.3.4).
-
-4.3.5.1.  Avoiding In-Transit Requests During a Key Update
-
-   Before sending the KUDOS message Request #2 in Figure 6, the client
-   MUST ensure that it has no outstanding interactions with the server
-   (see Section 4.7 of [RFC7252]), with the exception of ongoing
-   observations [RFC7641] with that server.
-
-   If there are any, the client MUST NOT initiate the KUDOS execution,
-   before either: i) having all those outstanding interactions cleared;
-   or ii) freeing up the Token values used with those outstanding
-   interactions, with the exception of ongoing observations with the
-   server.
-
-   Later on, this prevents a non KUDOS response protected with the new
-   Security Context CTX_NEW from cryptographically matching with both
-   the corresponding request also protected with CTX_NEW and with an
-   older request protected with CTX_OLD, in case the two requests were
-   protected using the same OSCORE Partial IV.
-
-   During an ongoing KUDOS execution the client MUST NOT send any non-
-   KUDOS requests to the server, even when NSTART is greater than 1 (see
-   Section 4.7 of [RFC7252]).
+   the forward message flow (see Section 4.3.5).
 
 4.4.  Avoiding Deadlocks
 
@@ -1355,7 +1344,7 @@ Table of Contents
 
 4.4.3.  Scenario 3
 
-   When KUDOS is run in the reverse message flow (see Section 4.3.5),
+   When KUDOS is run in the reverse message flow (see Section 4.3.6),
    the two peers risk to run into a deadlock, if all the following
    conditions hold.
 
@@ -2394,7 +2383,7 @@ Appendix A.  Forward Message Flow using two CoAP Requests
    flow, with the client acting as KUDOS initiator, and both KUDOS
    messages being CoAP requests.
 
-   The example uses the same notation 'Comb(a,b)' used in Section 4.3.4.
+   The example uses the same notation 'Comb(a,b)' used in Section 4.3.5.
 
                    Client/Server          Client/Server
                     (initiator)            (responder)
@@ -2483,7 +2472,7 @@ Appendix B.  Forward Message Flow with Response #1 unrelated to Request
    message Request #2, but rather an unrelated Observe notification as a
    response to the non-KUDOS message Request #1
 
-   The example uses the same notation 'Comb(a,b)' used in Section 4.3.4.
+   The example uses the same notation 'Comb(a,b)' used in Section 4.3.5.
 
                       Client                  Server
                     (initiator)            (responder)
@@ -2589,7 +2578,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
    are part of the encrypted payload, since they are protected by
    OSCORE.
 
-   The example uses the same notation 'Comb(a,b)' used in Section 4.3.4.
+   The example uses the same notation 'Comb(a,b)' used in Section 4.3.5.
 
                       Client                  Server
                     (initiator)            (responder)
