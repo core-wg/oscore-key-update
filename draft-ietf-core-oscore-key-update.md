@@ -402,6 +402,8 @@ If a KUDOS message is a CoAP request, then it can target two different types of 
 
 * A non-KUDOS resource, i.e., an actual application resource that a CoAP request can target in order to trigger application processing at the CoAP server. In such a case, the plain CoAP request composed before OSCORE protection may include an application payload, if admitted by the request method.
 
+In either case, the link to the target resource can have the "osc" target attribute to indicate that the resource is only accessible using OSCORE (see {{Section 9 of RFC8613}}).
+
 Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE encryption should not include an application payload. Otherwise, an application payload may be included.
 
 Once a peer acting as initiator (responder) has sent (received) the first KUDOS message, that peer MUST NOT send a non KUDOS message to the other peer, until having aborted or successfully completed the key update process on its side.
