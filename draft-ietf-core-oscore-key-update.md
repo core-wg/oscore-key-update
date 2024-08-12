@@ -221,7 +221,7 @@ In order to support the message exchange for establishing a new OSCORE Security 
 
    * The seventh least significant bit is the 'z' bit. When it is set to 1, the compressed COSE object contains a field 'y' and a field 'old\_nonce', to be used for the steps defined in {{ssec-derive-ctx}}. In particular, the 1 byte 'y' following 'nonce' encodes the size of the following field 'old\_nonce'. This bit SHALL only be set in the second KUDOS message and only if it is a CoAP request. For an example see the execution of KUDOS in the reverse message flow shown in {{fig-message-exchange-server-init}}.
 
-   * The eight least significant bit is reserved for future use. This bit SHALL be set to zero when not in use. According to this specification, if this bit is set to 1, the message is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
+   * The eight least significant bit is reserved for future use. This bit SHALL be set to zero when not in use. According to this specification, if this bit is set to 1: i) if the message is a request, it is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}; ii) if the message is a response, it is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.4 of RFC8613}} and the client SHALL discard the response as specified in item 8 of {{Section 8.4 of RFC8613}}.
 
    The encoding of 'y' is as follows:
 
