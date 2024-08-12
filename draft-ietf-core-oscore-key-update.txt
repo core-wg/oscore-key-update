@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                          11 August 2024
-Expires: 12 February 2025
+Intended status: Standards Track                          12 August 2024
+Expires: 13 February 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 February 2025.
+   This Internet-Draft will expire on 13 February 2025.
 
 Copyright Notice
 
@@ -438,9 +438,13 @@ Table of Contents
 
       -  The eight least significant bit is reserved for future use.
          This bit SHALL be set to zero when not in use.  According to
-         this specification, if this bit is set to 1, the message is
-         considered to be malformed and decompression fails as specified
-         in item 2 of Section 8.2 of [RFC8613].
+         this specification, if this bit is set to 1: i) if the message
+         is a request, it is considered to be malformed and
+         decompression fails as specified in item 2 of Section 8.2 of
+         [RFC8613]; ii) if the message is a response, it is considered
+         to be malformed and decompression fails as specified in item 2
+         of Section 8.4 of [RFC8613] and the client SHALL discard the
+         response as specified in item 8 of Section 8.4 of [RFC8613].
 
       The encoding of 'y' is as follows:
 
