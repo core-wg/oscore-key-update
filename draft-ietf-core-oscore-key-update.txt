@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                          12 August 2024
-Expires: 13 February 2025
+Intended status: Standards Track                          13 August 2024
+Expires: 14 February 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 February 2025.
+   This Internet-Draft will expire on 14 February 2025.
 
 Copyright Notice
 
@@ -929,10 +929,10 @@ Table of Contents
    Section 4.1).  After that, the client deletes CTX_1.
 
    Upon receiving the OSCORE request, the server retrieves the value N1
-   from the 'nonce' field of the OSCORE Option, the value X1 from the
-   'x' byte of the OSCORE Option, and provides the updateCtx() function
-   with the input N = N1, X = X1, and CTX_OLD, in order to derive the
-   temporary Security Context CTX_1.
+   from the 'nonce' field of the OSCORE Option and the value X1 from the
+   'x' byte of the OSCORE Option.  Then, the server provides the
+   updateCtx() function with the input N = N1, X = X1, and CTX_OLD, in
+   order to derive the temporary Security Context CTX_1.
 
    Figure 4 shows an example of how the two peers compute X and N
    provided as input to the updateCtx() function, and how they compute
