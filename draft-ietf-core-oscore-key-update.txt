@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                          13 August 2024
-Expires: 14 February 2025
+Intended status: Standards Track                        5 September 2024
+Expires: 9 March 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 February 2025.
+   This Internet-Draft will expire on 9 March 2025.
 
 Copyright Notice
 
@@ -532,8 +532,8 @@ Table of Contents
    as shown below.  Also, the hash algorithm is the same one used by the
    HKDF Algorithm specified in CTX_IN.
 
-     KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length) =
-        HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, oscore_key_length)
+   KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
+      HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length)
 
    If a future specification updates [RFC8613] by admitting different
    key derivation functions than HKDF Algorithms (e.g., KMAC as based on
@@ -570,42 +570,42 @@ Table of Contents
    messages.  In turn, this ensures that, if successfully completed, a
    KUDOS execution occurs as intended by the two peers.
 
-      updateCtx(X, N, CTX_IN) {
+   updateCtx(X, N, CTX_IN) {
 
-        CTX_OUT       // The new Security Context
-        MSECRET_NEW   // The new Master Secret
-        MSALT_NEW     // The new Master Salt
+     CTX_OUT       // The new Security Context
+     MSECRET_NEW   // The new Master Secret
+     MSALT_NEW     // The new Master Salt
 
-        X_cbor = bstr .cbor X // CBOR bstr wrapping of X
-        N_cbor = bstr .cbor N // CBOR bstr wrapping of N
+     X_cbor = bstr .cbor X // CBOR bstr wrapping of X
+     N_cbor = bstr .cbor N // CBOR bstr wrapping of N
 
-        X_N = X_cbor | N_cbor
+     X_N = X_cbor | N_cbor
 
-        oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
+     oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
 
-        Label = "key update"
+     Label = "key update"
 
-        MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
-                                         X_N, oscore_key_length)
-                     = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
-                                    oscore_key_length)
+     MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
+                                      X_N, oscore_key_length)
+                  = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
+                                 oscore_key_length)
 
-        MSALT_NEW = N;
+     MSALT_NEW = N;
 
-        < Derive CTX_OUT using MSECRET_NEW and MSALT_NEW,
-          together with other parameters from CTX_IN >
+     < Derive CTX_OUT using MSECRET_NEW and MSALT_NEW,
+       together with other parameters from CTX_IN >
 
-        Return CTX_OUT;
+     Return CTX_OUT;
 
-      }
+   }
 
-      Where ExpandLabel is defined as
+   Where ExpandLabel is defined as
 
-      struct {
-          uint16 length = oscore_key_length;
-          opaque label<7..255> = "oscore " + Label;
-          opaque context<0..255> = X_N;
-      } ExpandLabel;
+   struct {
+       uint16 length = oscore_key_length;
+       opaque label<7..255> = "oscore " + Label;
+       opaque context<0..255> = X_N;
+   } ExpandLabel;
 
        Figure 2: Function for deriving a new OSCORE Security Context
 
@@ -2670,7 +2670,14 @@ Appendix D.  Document Updates
 
 D.1.  Version -08 to -09
 
+   *  Merge text about avoiding in-transit requests during a key update
+      into a single subsection.
+
+   *  Improved error handling.
+
    *  Editorial improvements and clarifications.
+
+   *  State that the EDHOC EAD item must be used as non-critical.
 
 D.2.  Version -07 to -08
 
