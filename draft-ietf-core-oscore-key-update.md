@@ -278,8 +278,11 @@ After that, the updateCtx() function derives the new values of the Master Secret
 either peer
    If the key derivation function is an HKDF Algorithm (see {{Section 3.1 of RFC8613}}), then KUDOS-Expand is mapped to HKDF-Expand {{RFC5869}}, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX\_IN.
 
-         KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
-            HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length)
+~~~~~~~~~~~
+KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
+   HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length)
+~~~~~~~~~~~
+{: artwork-align="left"}
 
    If a future specification updates {{RFC8613}} by admitting different key derivation functions than HKDF Algorithms (e.g., KMAC as based on the SHAKE128 or SHAKE256 hash functions), that specification has to update also the present document in order to define the mapping between such key derivation functions and KUDOS-Expand.
 
@@ -335,7 +338,7 @@ struct {
     opaque context<0..255> = X_N;
 } ExpandLabel;
 ~~~~~~~~~~~
-{: #function-update title="Function for deriving a new OSCORE Security Context" artwork-align="center"}
+{: #function-update title="Function for deriving a new OSCORE Security Context" artwork-align="left"}
 
 ## Key Update with Forward Secrecy # {#ssec-derive-ctx}
 
