@@ -1410,7 +1410,13 @@ Verify with CTX_NEW     | }                    |
 
 ## Version -08 to -09 ## {#sec-08-09}
 
+* Merge text about avoiding in-transit requests during a key update into a single subsection.
+
+* Improved error handling.
+
 * Editorial improvements and clarifications.
+
+* State that the EDHOC EAD item must be used as non-critical.
 
 ## Version -07 to -08 ## {#sec-07-08}
 
