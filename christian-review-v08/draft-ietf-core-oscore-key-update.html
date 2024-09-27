@@ -1428,8 +1428,9 @@ In addition to that, the LwM2M Client, the LwM2M Server as well as the LwM2M Boo
       </h2>
 <p id="section-3-1">The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of step 3 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3" class="relref">Section 8.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <blockquote id="section-3-2">
-        <p id="section-3-2.1">This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts.<a href="#section-3-2.1" class="pilcrow">¶</a></p>
-<p id="section-3-2.2">An exception is the procedure in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.2" class="relref">Appendix B.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, which is secure although not complying with the above. The reason is that, in that procedure, the server uses the new OSCORE Security Context only and solely to protect the outgoing response (response #1), and no other message is protected with that OSCORE Security Context. Other procedures where that holds would also remain secure.<a href="#section-3-2.2" class="pilcrow">¶</a></p>
+        <p id="section-3-2.1">If the server is using a different Security Context for the response compared to what was used to verify the request (e.g., due to an occurred key update), then the server <span class="bcp14">MUST</span> take the second alternative. That is, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response.<a href="#section-3-2.1" class="pilcrow">¶</a></p>
+<p id="section-3-2.2">This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts.<a href="#section-3-2.2" class="pilcrow">¶</a></p>
+<p id="section-3-2.3">An exception is the procedure in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.2" class="relref">Appendix B.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, which is secure although not complying with the above. The reason is that, in that procedure, the server uses the new OSCORE Security Context only and solely to protect the outgoing response (response #1), and no other message is protected with that OSCORE Security Context. Other procedures where that holds would also remain secure.<a href="#section-3-2.3" class="pilcrow">¶</a></p>
 </blockquote>
 </section>
 </div>
@@ -1585,50 +1586,59 @@ KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
         </ul>
 <p id="section-4.2-11">Finally, the updateCtx() function returns the newly derived Security Context CTX_OUT.<a href="#section-4.2-11" class="pilcrow">¶</a></p>
 <p id="section-4.2-12">Since the updateCtx() function also takes X as input, the derivation of CTX_OUT also considers as input the information from the 'x' field transported in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that, if successfully completed, a KUDOS execution occurs as intended by the two peers.<a href="#section-4.2-12" class="pilcrow">¶</a></p>
-<span id="name-function-for-deriving-a-new"></span><div id="function-update">
+<span id="name-functions-for-deriving-a-ne"></span><div id="function-update">
 <figure id="figure-2">
           <div class="alignLeft art-text artwork" id="section-4.2-13.1">
 <pre>
-updateCtx(X, N, CTX_IN) {
+function updateCtx(X, N, CTX_IN):
 
+  // Output values
   CTX_OUT       // The new Security Context
   MSECRET_NEW   // The new Master Secret
   MSALT_NEW     // The new Master Salt
 
-  X_cbor = bstr .cbor X // CBOR bstr wrapping of X
-  N_cbor = bstr .cbor N // CBOR bstr wrapping of N
+  // Create CBOR byte strings from X and N
+  X_cbor = create_cbor_bstr(X)
+  N_cbor = create_cbor_bstr(N)
 
+  // Concatenate the CBOR-encoded X and N
   X_N = X_cbor | N_cbor
 
-  oscore_key_length = &lt; Size of CTX_IN.MasterSecret in bytes &gt;
+  // Determine the length in bytes of the current Master Secret
+  oscore_key_length = length(CTX_IN.MasterSecret)
 
+  // Define the label for the key update
   Label = "key update"
 
-  MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
+  // Create the new Master Secret using KUDOS-Expand-Label
+  MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
                                    X_N, oscore_key_length)
-               = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
-                              oscore_key_length)
 
-  MSALT_NEW = N;
+  // Set the new Master Salt to N
+  MSALT_NEW = N
 
-  &lt; Derive CTX_OUT using MSECRET_NEW and MSALT_NEW,
-    together with other parameters from CTX_IN &gt;
+  // Derive the new Security Context CTX_OUT, using
+  // the new Master Secret, the new Master Salt,
+  // and other parameters from CTX_IN
+  CTX_OUT = derive_security_context(MSECRET_NEW, MSALT_NEW, CTX_IN)
 
-  Return CTX_OUT;
+  // Return the new Security Context
+  return CTX_OUT
 
-}
 
-Where ExpandLabel is defined as
+function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
-struct {
-    uint16 length = oscore_key_length;
-    opaque label&lt;7..255&gt; = "oscore " + Label;
-    opaque context&lt;0..255&gt; = X_N;
-} ExpandLabel;
+  struct {
+      uint16 length = key_length;
+      opaque label&lt;7..255&gt; = "oscore " + Label;
+      opaque context&lt;0..255&gt; = X_N;
+  } ExpandLabel;
+
+  return KUDOS_Expand(master_secret, ExpandLabel, key_length)
 </pre>
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
-<a href="#name-function-for-deriving-a-new" class="selfRef">Function for deriving a new OSCORE Security Context</a>
+<a href="#name-functions-for-deriving-a-ne" class="selfRef">Functions for deriving a new OSCORE Security Context</a>
           </figcaption></figure>
 </div>
 </section>

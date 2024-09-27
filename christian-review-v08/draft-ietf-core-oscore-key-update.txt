@@ -320,6 +320,13 @@ Table of Contents
    The protection of CoAP responses with OSCORE is updated, by adding
    the following text at the end of step 3 of Section 8.3 of [RFC8613].
 
+   |  If the server is using a different Security Context for the
+   |  response compared to what was used to verify the request (e.g.,
+   |  due to an occurred key update), then the server MUST take the
+   |  second alternative.  That is, the server MUST include its Sender
+   |  Sequence Number as Partial IV in the response and use it to build
+   |  the AEAD nonce to protect the response.
+   |  
    |  This prevents the server from using the same AEAD (key, nonce)
    |  pair for two responses, protected with different OSCORE Security
    |  Contexts.
@@ -570,44 +577,53 @@ Table of Contents
    messages.  In turn, this ensures that, if successfully completed, a
    KUDOS execution occurs as intended by the two peers.
 
-   updateCtx(X, N, CTX_IN) {
+   function updateCtx(X, N, CTX_IN):
 
+     // Output values
      CTX_OUT       // The new Security Context
      MSECRET_NEW   // The new Master Secret
      MSALT_NEW     // The new Master Salt
 
-     X_cbor = bstr .cbor X // CBOR bstr wrapping of X
-     N_cbor = bstr .cbor N // CBOR bstr wrapping of N
+     // Create CBOR byte strings from X and N
+     X_cbor = create_cbor_bstr(X)
+     N_cbor = create_cbor_bstr(N)
 
+     // Concatenate the CBOR-encoded X and N
      X_N = X_cbor | N_cbor
 
-     oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
+     // Determine the length in bytes of the current Master Secret
+     oscore_key_length = length(CTX_IN.MasterSecret)
 
+     // Define the label for the key update
      Label = "key update"
 
-     MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
+     // Create the new Master Secret using KUDOS-Expand-Label
+     MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
                                       X_N, oscore_key_length)
-                  = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
-                                 oscore_key_length)
 
-     MSALT_NEW = N;
+     // Set the new Master Salt to N
+     MSALT_NEW = N
 
-     < Derive CTX_OUT using MSECRET_NEW and MSALT_NEW,
-       together with other parameters from CTX_IN >
+     // Derive the new Security Context CTX_OUT, using
+     // the new Master Secret, the new Master Salt,
+     // and other parameters from CTX_IN
+     CTX_OUT = derive_security_context(MSECRET_NEW, MSALT_NEW, CTX_IN)
 
-     Return CTX_OUT;
+     // Return the new Security Context
+     return CTX_OUT
 
-   }
 
-   Where ExpandLabel is defined as
+   function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
-   struct {
-       uint16 length = oscore_key_length;
-       opaque label<7..255> = "oscore " + Label;
-       opaque context<0..255> = X_N;
-   } ExpandLabel;
+     struct {
+         uint16 length = key_length;
+         opaque label<7..255> = "oscore " + Label;
+         opaque context<0..255> = X_N;
+     } ExpandLabel;
 
-       Figure 2: Function for deriving a new OSCORE Security Context
+     return KUDOS_Expand(master_secret, ExpandLabel, key_length)
+
+       Figure 2: Functions for deriving a new OSCORE Security Context
 
 4.3.  Key Update with Forward Secrecy
 
