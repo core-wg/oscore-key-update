@@ -56,6 +56,7 @@ informative:
   RFC8724:
   RFC8824:
   RFC7967:
+  RFC4086:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
   I-D.ietf-ace-edhoc-oscore-profile:
@@ -369,7 +370,7 @@ In order to run KUDOS in FS mode, both peers have to be able to write in non-vol
 
 ### Nonces and X Bytes {#ssec-nonces-x-bytes}
 
-When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 SHOULD be random values. An exception is described later in {{key-material-handling}}.
+When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 MUST be random values, with the possible exception described later in {{key-material-handling}}. Note that a good amount of randomness is important for the nonce generation. {{RFC4086}} provides guidance on the generation of random values.
 
 Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. The X1 and X2 values are calculated by the sender peer based on: the length of nonce N1 and N2, specified in the 'nonce' field of the OSCORE Option of the first and second KUDOS message, respectively; as well as on the specific settings the peer wishes to run KUDOS with. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
