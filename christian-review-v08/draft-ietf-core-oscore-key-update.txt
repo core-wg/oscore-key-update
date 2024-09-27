@@ -677,8 +677,10 @@ Table of Contents
    When running KUDOS, each peer contributes by generating a nonce value
    N1 or N2, and providing it to the other peer.  The size of the nonces
    N1 and N2 is application specific, and the use of 8 byte nonce values
-   is RECOMMENDED.  The nonces N1 and N2 SHOULD be random values.  An
-   exception is described later in Section 4.5.1.
+   is RECOMMENDED.  The nonces N1 and N2 MUST be random values, with the
+   possible exception described later in Section 4.5.1.  Note that a
+   good amount of randomness is important for the nonce generation.
+   [RFC4086] provides guidance on the generation of random values.
 
    Furthermore, X1 and X2 are the value of the 'x' byte specified in the
    OSCORE Option of the first and second KUDOS message, respectively.
@@ -2332,6 +2334,11 @@ Table of Contents
               <http://www.openmobilealliance.org/release/LightweightM2M/
               V1_2-20201110-A/OMA-TS-LightweightM2M_Transport-
               V1_2-20201110-A.pdf>.
+
+   [RFC4086]  Eastlake 3rd, D., Schiller, J., and S. Crocker,
+              "Randomness Requirements for Security", BCP 106, RFC 4086,
+              DOI 10.17487/RFC4086, June 2005,
+              <https://www.rfc-editor.org/rfc/rfc4086>.
 
    [RFC7554]  Watteyne, T., Ed., Palattella, M., and L. Grieco, "Using
               IEEE 802.15.4e Time-Slotted Channel Hopping (TSCH) in the
