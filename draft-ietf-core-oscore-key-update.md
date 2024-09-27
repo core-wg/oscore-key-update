@@ -174,8 +174,10 @@ The protection of CoAP responses with OSCORE is updated, by adding the following
 
 {:quote}
 > If the server is using a different Security Context for the response compared to what was used to verify the request (e.g., due to an occurred key update), then the server MUST take the second alternative. That is, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response.
+> 
+> This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts.
 >
-> This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts. An exception is the procedure in {{Section B.2 of RFC8613}}, which is secure although not complying with the above.
+> An exception is the procedure in {{Section B.2 of RFC8613}}, which is secure although not complying with the above. The reason is that, in that procedure, the server uses the new OSCORE Security Context only and solely to protect the outgoing response (response #1), and no other message is protected with that OSCORE Security Context. Other procedures where that holds would also remain secure.
 
 # Key Update for OSCORE (KUDOS) # {#sec-rekeying-method}
 
