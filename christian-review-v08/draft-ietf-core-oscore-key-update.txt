@@ -223,7 +223,8 @@ Table of Contents
    Security Context expiration or the exhaustion of the Sender Sequence
    Number space.  If the rekeying is not initiated ahead of these
    events, it may become practically impossible to perform a key update
-   with certain methods.
+   with certain methods, and/or without aborting ongoing message
+   exchanges.
 
    Other specifications define a number of ways for rekeying OSCORE, as
    summarized below.
