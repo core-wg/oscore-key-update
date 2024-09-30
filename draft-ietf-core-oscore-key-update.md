@@ -964,26 +964,51 @@ Another case is when running KUDOS in the reverse message flow, if the client us
 
 ### Communication Overhead
 
-Each of the two KUDOS messages displays a small communication overhead. This is determined by the following, additional information conveyed in the OSCORE option (see {{ssec-oscore-option-extensions}}).
+Each of the two KUDOS messages results in communication overhead. This is determined by the following, additional information conveyed in the OSCORE Option (see {{ssec-oscore-option-extensions}}).
 
-* The second byte of the OSCORE option.
+* The second byte of the OSCORE Option value.
 
-* The byte 'x' of the OSCORE option.
+* The byte 'x' of the OSCORE Option value.
 
 * The nonce conveyed in the 'nonce' field of the OSCORE option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.
 
-Assuming nonces of the same size in both messages of the same KUDOS execution, this results in the following minimum, typical, and maximum communication overhead, when considering a nonce with size 1, 8, and 16 bytes, respectively. All the indicated values are in bytes.
+* The byte 'y' of the OSCORE Option value, if present.
+
+* The nonce conveyed in the 'old_nonce' field of the OSCORE Option value, if present. When present, its size ranges from 1 to 16 bytes as indicated in the ’y’ byte, and is typically of 8 bytes.
+
+* The 'Partial IV' parameter of the OSCORE Option value, in a CoAP response message that is a KUDOS message.
+
+  This takes into account the fact that OSCORE-protected CoAP response messages normally do not include the 'Partial IV' parameter, but they have to when they are KUDOS messages (see Section 3).
+
+* The first byte of the OSCORE Option value (i.e., the first OSCORE flag byte), in a CoAP response message that is a KUDOS message.
+
+  This takes into account the fact that OSCORE-protected CoAP response messages normally convey an OSCORE Option that only consists of the all zero (0x00) flag byte. In turn, this results in the OSCORE Option being encoded as with empty value (see {{Section 2 of RFC8613}}.
+
+* The possible presence of the 1-byte Option Length (extended) field in the OSCORE Option (see {{Section 3.1 of RFC7252}}). This is the case where the length of the OSCORE Option value is between 13 and 255 bytes (see {{Section 2 of RFC8613}}).
+
+The results shown below are the minimum, typical, and maximum communication overhead introduced by KUDOS, when considering a nonce with size 1, 8, and 16 bytes. {{table-overhead-forward}} and {{table-overhead-reverse}} refer to the KUDOS forward message flow and reverse message flow, respectively. All the indicated values are in bytes.
+
+In particular, the shown results build on the following assumptions.
+
+* Both messages of the same KUDOS execution use nonces of the same size, and do not include the 'kid context' parameter in the OSCORE Option value.
+
+* When included in the OSCORE Option value, the 'Partial IV' parameter has size 1 byte.
+
+* CoAP request messages include the 'kid' parameter with size 1 byte in the OSCORE Option value.
+
+* CoAP response messages do not include the 'kid' parameter in the OSCORE Option value.
 
 | Nonce size | First KUDOS message | Second KUDOS message | Total |
-| 1          | 3                   | 3                    | 6     |
-| 8          | 10                  | 10                   | 20    |
-| 16         | 18                  | 18                   | 36    |
+| 1          | 3                   | 5                    | 8     |
+| 8          | 11                  | 12                   | 23    |
+| 16         | 19                  | 21                   | 40    |
 {: #table-overhead-forward title="Communication overhead (forward message flow)" align="center"}
 
+
 | Nonce size | First KUDOS message | Second KUDOS message | Total |
-| 1          | 3                   | 4                    | 7     |
-| 8          | 10                  | 11                   | 21    |
-| 16         | 18                  | 19                   | 37    |
+| 1          | 5                   | 5                    | 10    |
+| 8          | 12                  | 20                   | 32    |
+| 16         | 21                  | 36                   | 57    |
 {: #table-overhead-reverse title="Communication overhead (reverse message flow)" align="center"}
 
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
@@ -1429,6 +1454,8 @@ Verify with CTX_NEW     | }                    |
 * Editorial improvements and clarifications.
 
 * State that the EDHOC EAD item must be used as non-critical.
+
+* Extended description and updates values for KUDOS communication overhead.
 
 ## Version -07 to -08 ## {#sec-07-08}
 
