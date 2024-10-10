@@ -98,7 +98,10 @@ Table of Contents
        4.8.2.  Communication Overhead
        4.8.3.  Well-Known KUDOS Resource
        4.8.4.  Rekeying when Using SCHC with OSCORE
-     4.9.  Signaling KUDOS support in EDHOC
+     4.9.  Signaling Support for KUDOS in Other Protocols
+       4.9.1.  Signaling KUDOS support in EDHOC
+       4.9.2.  Signaling KUDOS support in the OSCORE Profile of the
+               ACE Framework
    5.  Security Considerations
    6.  IANA Considerations
      6.1.  OSCORE Flag Bits Registry
@@ -106,6 +109,7 @@ Table of Contents
      6.3.  EDHOC External Authorization Data Registry
      6.4.  The Well-Known URI Registry
      6.5.  Resource Type (rt=) Link Target Attribute Values Registry
+     6.6.  OSCORE Security Context Parameters Registry
    7.  References
      7.1.  Normative References
      7.2.  Informative References
@@ -2079,7 +2083,13 @@ Table of Contents
    their side effect do not significantly impair the gain from message
    compression.
 
-4.9.  Signaling KUDOS support in EDHOC
+4.9.  Signaling Support for KUDOS in Other Protocols
+
+   The following section describes how support for KUDOS can be
+   signalled when using the EDHOC protocol [RFC9528] and the OSCORE
+   Profile of the ACE Framework [RFC9203].
+
+4.9.1.  Signaling KUDOS support in EDHOC
 
    The EDHOC protocol defines the transport of additional External
    Authorization Data (EAD) within an optional EAD field of the EDHOC
@@ -2217,6 +2227,42 @@ Table of Contents
    EDHOC execution has successfully finished, the Initiator is aware
    that the Responder does not support KUDOS, which the two peers are
    not going to use with each other.
+
+4.9.2.  Signaling KUDOS support in the OSCORE Profile of the ACE
+        Framework
+
+   Support for KUDOS support at the Resource Server (RS) and Client can
+   be signalled in the OSCORE Profile of the ACE framework.  This is
+   done through usage of the parameter "kudos_support" (registered in
+   Section 6.6), which is included as an element of the
+   OSCORE_Input_Material object.  This object is in turn included in
+   both the Access Token (with information for the RS), and in the
+   Access Token Response (with information for the Client).
+
+   Specifically, the parameter "kudos_support" and the
+   OSCORE_Input_Material object is used as follows:
+
+   *  In the Access Token Response to the client, the
+      OSCORE_Input_Material object appears as the value of the “osc”
+      parameter inside the “cnf” parameter.  The "kudos_support"
+      parameter informs the client about the RS’s KUDOS support.
+
+   *  In the Access Token sent to the RS, the OSCORE_Input_Material
+      object appears as the value of the “osc” parameter inside the
+      “cnf” claim.  The "kudos_support" parameter informs the RS about
+      the client's KUDOS support.
+
+   The ACE Authorization Server (AS), which produces the
+   OSCORE_Input_Material objects, provides the information to the client
+   (or RS) based on its knowledge of the RS (or client), potentially
+   obtained during their registration.  If the AS lacks such knowledge,
+   it omits the "kudos_support" parameter.
+
+   For Access Tokens issued to a group of RSs, the "kudos_support"
+   parameter reflects what applies to all RSs in the group.  If the AS
+   cannot represent a consistent state for all RSs (due to incomplete
+   knowledge or variation), it omits the parameter in the Access Token
+   Response.
 
 5.  Security Considerations
 
@@ -2377,6 +2423,25 @@ Table of Contents
    *  Value: "core.kudos"
 
    *  Description: KUDOS resource.
+
+   *  Reference: [RFC-XXXX]
+
+6.6.  OSCORE Security Context Parameters Registry
+
+   IANA is requested to add the parameter "kudos_support" to the "OSCORE
+   Security Context Parameters" registry under the registry group
+   "Authentication and Authorization for Constrained Environments
+   (ACE)".
+
+   *  Name: kudos_support
+
+   *  CBOR Label: TBD
+
+   *  CBOR Type: True or False
+
+   *  Registry:
+
+   *  Description: Support for KUDOS
 
    *  Reference: [RFC-XXXX]
 
@@ -2837,6 +2902,9 @@ D.1.  Version -08 to -09
       overhead.
 
    *  Special case when non-CAPABLE devices may operate in FS Mode.
+
+   *  Parameter for signaling KUDOS support when using the ACE OSCORE
+      profile.
 
 D.2.  Version -07 to -08
 
