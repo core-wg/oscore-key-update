@@ -1197,6 +1197,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.5.2.2">
                     <p id="section-toc.1-1.4.2.5.2.2.1"><a href="#section-4.5.2" class="auto internal xref">4.5.2</a>.  <a href="#name-selection-of-kudos-mode" class="internal xref">Selection of KUDOS Mode</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.5.2.3">
+                    <p id="section-toc.1-1.4.2.5.2.3.1"><a href="#section-4.5.3" class="auto internal xref">4.5.3</a>.  <a href="#name-non-capable-devices-operati" class="internal xref">Non-CAPABLE Devices Operating in FS Mode</a></p>
+</li>
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.6">
@@ -2377,7 +2380,7 @@ If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as wel
               </ul>
 </li>
             <li class="normal" id="section-4.5.1-5.4">
-              <p id="section-4.5.1-5.4.1">A peer that is a non-CAPABLE device <span class="bcp14">MUST</span> support the no-FS mode.<a href="#section-4.5.1-5.4.1" class="pilcrow">¶</a></p>
+              <p id="section-4.5.1-5.4.1">A peer that is a non-CAPABLE device <span class="bcp14">MUST</span> support the no-FS mode. Note that an exception described in <a href="#non-capable-fs-mode" class="auto internal xref">Section 4.5.3</a> exists for non-CAPABLE devices that lack Bootstrap material to use for a KUDOS execution.<a href="#section-4.5.1-5.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.5.1-5.5">
               <p id="section-4.5.1-5.5.1">A peer that is a CAPABLE device <span class="bcp14">MUST</span> support the FS mode and the no-FS mode.<a href="#section-4.5.1-5.5.1" class="pilcrow">¶</a></p>
@@ -2458,7 +2461,7 @@ If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as wel
 <p id="section-4.5.2-3">A peer determines to run KUDOS either in FS or no-FS mode with another peer as follows.<a href="#section-4.5.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.5.2-4.1">
-              <p id="section-4.5.2-4.1.1">If a peer A is a non-CAPABLE device, it <span class="bcp14">MUST</span> run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it <span class="bcp14">MUST</span> set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value.<a href="#section-4.5.2-4.1.1" class="pilcrow">¶</a></p>
+              <p id="section-4.5.2-4.1.1">If a peer A is a non-CAPABLE device, it <span class="bcp14">MUST</span> run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it <span class="bcp14">MUST</span> set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value. Note that if the peer does not have any Bootstrap material stored with the other peers it intends to run KUDOS with, it may take advantage of the exception where non-CAPABLE devices may run KUDOS in FS mode described in <a href="#non-capable-fs-mode" class="auto internal xref">Section 4.5.3</a>.<a href="#section-4.5.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.5.2-4.2">
               <p id="section-4.5.2-4.2.1">If a peer A is a CAPABLE device, it <span class="bcp14">SHOULD</span> run KUDOS only in FS mode. That is, when sending a KUDOS message, it <span class="bcp14">SHOULD</span> set to 0 the 'p' bit of the 'x' byte in the OSCORE Option value. An exception applies in the following cases.<a href="#section-4.5.2-4.2.1" class="pilcrow">¶</a></p>
@@ -2507,6 +2510,43 @@ When receiving the new request above, the initiator learns that the responder is
               </ul>
 <p id="section-4.5.2-7.4.3">
 In either case, both KUDOS peers delete the OSCORE Security Contexts CTX_1 and CTX_NEW. Also, both peers <span class="bcp14">MUST</span> retain CTX_OLD for use during the next KUDOS execution in the no-FS mode. This is in contrast with the typical behavior where CTX_OLD is deleted upon reception of a message protected with CTX_NEW.<a href="#section-4.5.2-7.4.3" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</section>
+</div>
+<div id="non-capable-fs-mode">
+<section id="section-4.5.3">
+          <h4 id="name-non-capable-devices-operati">
+<a href="#section-4.5.3" class="section-number selfRef">4.5.3. </a><a href="#name-non-capable-devices-operati" class="section-name selfRef">Non-CAPABLE Devices Operating in FS Mode</a>
+          </h4>
+<p id="section-4.5.3-1">Devices may not be pre-provisioned with Bootstrap material, for instance due to storage limitations of persistant memory or to fulfil particular use cases. Bootstrap material means specifically the Bootstrap Master Secret and Bootstrap Master Salt, and Latest material means the Latest Master Secret and Latest Master Salt as defined in <a href="#key-material-handling" class="auto internal xref">Section 4.5.1</a>. As an exception to the normal case of a non-CAPABLE devices always using KUDOS in no-FS mode, if the Bootstrap material is dynamically installed through an in-band process with the peer device, it is permissible for this peer to operate KUDOS in FS mode.<a href="#section-4.5.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.5.3-2">Note that under the assumption that peer A does not have any Bootstrap material with another peer B, peer A cannot use the no-FS mode with peer B, even though peer A is a non-CAPABLE device. Thus, allowing it to use KUDOS in FS mode ensures that it can perform a key update using KUDOS at all.<a href="#section-4.5.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.5.3-3">The following describes the usage of FS mode for a non-CAPABLE device:<a href="#section-4.5.3-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.5.3-4.1">
+              <p id="section-4.5.3-4.1.1">The non-CAPABLE device is not provisioned with Bootstrap material associated with another peer at the time of manufacturing or commissioning.<a href="#section-4.5.3-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4.5.3-4.2">
+              <p id="section-4.5.3-4.2.1">The device derives and installs OSCORE keying material associated with another peer only in volatile memory through an in-band procedure with that peer. This keying material is now considered the Latest material.<a href="#section-4.5.3-4.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.5.3-4.2.2.1">
+                  <p id="section-4.5.3-4.2.2.1.1">Examples of such procedures include the ACE OSCORE profile and the EDHOC and ACE OSCORE profile, which rely on the Access Token to provision keying material for OSCORE Security Contexts. This in-band procedure may occur multiple times over the device's lifetime.<a href="#section-4.5.3-4.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+            <li class="normal" id="section-4.5.3-4.3">
+              <p id="section-4.5.3-4.3.1">The device may then operate KUDOS in FS mode, thereby achieving forward secrecy for subsequent key update epochs, as long as the OSCORE keying material was established with forward secrecy (e.g., as in the ACE EDHOC and OSCORE profile).<a href="#section-4.5.3-4.3.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.5.3-4.3.2.1">
+                  <p id="section-4.5.3-4.3.2.1.1">Upon execution of KUDOS, the device stores each newly derived Security Context in volatile memory.<a href="#section-4.5.3-4.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-4.5.3-4.3.2.2">
+                  <p id="section-4.5.3-4.3.2.2.1">As long as the device does not reboot, operation continues normally with the Latest material stored in volatile memory.<a href="#section-4.5.3-4.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-4.5.3-4.3.2.3">
+                  <p id="section-4.5.3-4.3.2.3.1">If the device reboots, no OSCORE keying material associated with the other peer will be retained, as it is stored only in volatile memory, and the device is non-CAPABLE. Consequently, the device must first establish new OSCORE keying material with the peer before it can resume KUDOS operations, using it as the Latest material. This can be accomplished by again running the in-band procedure as explained above.<a href="#section-4.5.3-4.3.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
 </li>
           </ul>
 </section>
@@ -3839,6 +3879,9 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 </li>
           <li class="normal" id="appendix-D.1-1.5">
             <p id="appendix-D.1-1.5.1">Extended description and updates values for KUDOS communication overhead.<a href="#appendix-D.1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-D.1-1.6">
+            <p id="appendix-D.1-1.6.1">Special case when non-CAPABLE devices may operate in FS Mode.<a href="#appendix-D.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
