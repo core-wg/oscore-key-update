@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                       30 September 2024
-Expires: 3 April 2025
+Intended status: Standards Track                         10 October 2024
+Expires: 13 April 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 April 2025.
+   This Internet-Draft will expire on 13 April 2025.
 
 Copyright Notice
 
@@ -75,7 +75,7 @@ Table of Contents
    4.  Key Update for OSCORE (KUDOS)
      4.1.  Extensions to the OSCORE Option
      4.2.  Function for Security Context Update
-     4.3.  Key Update with Forward Secrecy
+     4.3.  Key Update
        4.3.1.  Nonces and X Bytes
        4.3.2.  Handling of OSCORE Security Contexts
        4.3.3.  Handling of Messages
@@ -86,7 +86,7 @@ Table of Contents
        4.4.1.  Scenario 1
        4.4.2.  Scenario 2
        4.4.3.  Scenario 3
-     4.5.  Key Update with or without Forward Secrecy
+     4.5.  Key Update Admitting no Forward Secrecy
        4.5.1.  Handling and Use of Keying Material
        4.5.2.  Selection of KUDOS Mode
      4.6.  Preserving Observations Across Key Updates
@@ -626,10 +626,17 @@ Table of Contents
 
        Figure 2: Functions for deriving a new OSCORE Security Context
 
-4.3.  Key Update with Forward Secrecy
+4.3.  Key Update
 
-   This section defines the actual KUDOS procedure performed by two
-   peers to update their OSCORE keying material.
+   In this section, we define the KUDOS procedure that two peers use to
+   refresh their OSCORE keying material.  Using KUDOS as described in
+   this section will achieve forward secrecy for the new keying material
+   produced by the execution of KUDOS.  For peers unable to support
+   forward secrecy, Section 4.5 provides an alternative approach,
+   allowing key updates without forward secrecy.  This alternative
+   ensures that also very constrained peers, without the ability to
+   store information to persistant memory, are able to use KUDOS,
+   although without achieving forward secrecy.
 
    A peer can run KUDOS for active rekeying at any time, or for a
    variety of more compelling reasons.  These include the (approaching)
@@ -1390,7 +1397,7 @@ Table of Contents
    intersperse Non-confirmable requests it sends to that server with
    confirmable requests.
 
-4.5.  Key Update with or without Forward Secrecy
+4.5.  Key Update Admitting no Forward Secrecy
 
    The FS mode of the KUDOS procedure defined in Section 4.3 ensures
    forward secrecy of the OSCORE keying material.  However, it requires
@@ -2358,9 +2365,9 @@ Table of Contents
    [I-D.irtf-cfrg-aead-limits]
               Günther, F., Thomson, M., and C. A. Wood, "Usage Limits on
               AEAD Algorithms", Work in Progress, Internet-Draft, draft-
-              irtf-cfrg-aead-limits-08, 1 April 2024,
+              irtf-cfrg-aead-limits-09, 9 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              aead-limits-08>.
+              aead-limits-09>.
 
    [LwM2M]    Open Mobile Alliance, "Lightweight Machine to Machine
               Technical Specification - Core, Approved Version 1.2, OMA-
