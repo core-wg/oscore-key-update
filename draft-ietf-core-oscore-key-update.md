@@ -352,9 +352,9 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 ~~~~~~~~~~~
 {: #function-update title="Functions for deriving a new OSCORE Security Context" artwork-align="left"}
 
-## Key Update with Forward Secrecy # {#ssec-derive-ctx}
+## Key Update # {#ssec-derive-ctx}
 
-This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material.
+In this section, we define the KUDOS procedure that two peers use to refresh their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS. For peers unable to support forward secrecy, {{no-fs-mode}} provides an alternative approach, allowing key updates without forward secrecy. This alternative ensures that also very constrained peers, without the ability to store information to persistant memory, are able to use KUDOS, although without achieving forward secrecy.
 
 A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.
 
@@ -774,7 +774,7 @@ When KUDOS is run in the reverse message flow (see {{ssec-derive-ctx-server-init
 
 In such a case, in order to avoid experiencing a deadlock situation where the server needs to execute KUDOS but cannot practically initiate it, a client-only device that supports KUDOS SHOULD intersperse Non-confirmable requests it sends to that server with confirmable requests.
 
-## Key Update with or without Forward Secrecy {#no-fs-mode}
+## Key Update Admitting no Forward Secrecy {#no-fs-mode}
 
 The FS mode of the KUDOS procedure defined in {{ssec-derive-ctx}} ensures forward secrecy of the OSCORE keying material. However, it requires peers executing KUDOS to preserve their state (e.g., across a device reboot), by writing information such as data from the newly derived OSCORE Security Context CTX\_NEW in non-volatile memory.
 
