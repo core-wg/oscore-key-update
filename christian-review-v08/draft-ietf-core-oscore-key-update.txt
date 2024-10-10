@@ -746,16 +746,20 @@ Table of Contents
       and MUST NOT use the originally shared OSCORE Security Context
       CTX_OLD for protecting outgoing messages.
 
-   *  The peer MUST delete any OSCORE Security Context CTX_DEL older
-      than CTX_OLD, such that both CTX_DEL and CTX_OLD have the same
-      ID_CONTEXT or no ID Context.
+   *  The peer MUST delete the OSCORE Security Context CTX_DEL older
+      than CTX_OLD, such that in the immediately previous execution of
+      KUDOS, CTX_DEL was used to derive the OSCORE Security Context
+      CTX_1 used to protect the first KUDOS message and CTX_OLD was used
+      to protect the second KUDOS message.  Note that if the procedure
+      for updating IDs is run (standalone or embedded) there may be a
+      change of Sender/Recipient IDs between CTX_DEL and CTX_OLD, it is
+      implementation specific to correctly keep the relation between the
+      OSCORE Security Contexts.
 
       For instance, this can occur while using the forward message flow
       (see Section 4.3.5}), when the initiator has just received the
       second KUDOS message, and immediately starts KUDOS again as
-      initiator before sending a non KUDOS message, thereby not
-      providing the responder with key confirmation and not allowing it
-      to safely discard CTX_OLD.
+      initiator before sending a non KUDOS message.
 
    *  The peer MUST terminate all the ongoing observations [RFC7641]
       that it has with the other peer as protected with the old Security
@@ -1055,7 +1059,11 @@ Table of Contents
    protected with CTX_NEW before then, and the server receives a 4.01
    (Unauthorized) error response as reply, the server SHOULD delete
    CTX_NEW and start a new KUDOS execution acting as CoAP client, i.e.,
-   as initiator in the forward message flow.
+   as initiator in the forward message flow.  If a client runs KUDOS
+   right after the server has rebooted, the server will achieve key
+   confirmation of CTX_NEW, through the fact that the new CTX_\1 the
+   client is using to protect the first KUDOS message is built from that
+   same CTX_NEW.
 
    Also note that, if both peers reboot simultaneously, they will run
    the KUDOS forward message flow as defined in this section.  That is,
@@ -1559,12 +1567,20 @@ Table of Contents
          Security Context CTX_NEW, as Latest Master Secret and Latest
          Master Salt, respectively.
 
-   Following a state loss (e.g., due to a reboot), a device MUST first
+   Following a state loss (e.g., due to a reboot), a device MUST
    complete a successful KUDOS execution (with either of the workflows)
-   before exchanging OSCORE-protected application data with another
-   peer.  An exception is a CAPABLE device implementing a functionality
-   for safely reusing old keying material, such as the one defined in
-   Appendix B.1 of [RFC8613].
+   before performing an exchange of OSCORE-protected application data
+   with another peer, unless:
+
+   *  The device is CAPABLE and implements functionality for safely
+      reusing old keying material, such as that described in
+      Appendix B.1 of [RFC8613], or
+
+   *  The device is exchanging OSCORE-protected data as part of a KUDOS
+      execution (i.e., in the first or second message), as described in
+      Section 4.3.3.  In such case, the plain CoAP request composed
+      before OSCORE protection of the KUDOS message may include an
+      application payload, if admitted by the request method.
 
 4.5.2.  Selection of KUDOS Mode
 
