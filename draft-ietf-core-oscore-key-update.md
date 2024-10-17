@@ -1014,7 +1014,7 @@ Each of the two KUDOS messages results in communication overhead. This is determ
 
 * The byte 'y' of the OSCORE Option value, if present.
 
-* The nonce conveyed in the 'old_nonce' field of the OSCORE Option value, if present. When present, its size ranges from 1 to 16 bytes as indicated in the ’y’ byte, and is typically of 8 bytes.
+* The nonce conveyed in the 'old_nonce' field of the OSCORE Option value, if present. When present, its size ranges from 1 to 16 bytes as indicated in the 'y' byte, and is typically of 8 bytes.
 
 * The 'Partial IV' parameter of the OSCORE Option value, in a CoAP response message that is a KUDOS message.
 
@@ -1069,9 +1069,9 @@ Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, 
 
 That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the used SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain from message compression.
 
-## Signaling Support for KUDOS in Other Protocols and Profiles ##
+## Signaling Support for KUDOS ##
 
-The following section describes how support for KUDOS can be signalled when using the EDHOC protocol {{RFC9528}} and the OSCORE Profile of the ACE Framework {{RFC9203}}.
+This section describes how support for KUDOS can be signaled when using the EDHOC protocol {{RFC9528}} and the OSCORE Profile of the ACE Framework {{RFC9203}}.
 
 ### Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
@@ -1151,17 +1151,17 @@ In this second example, the Initiator asks the EDHOC Responder about its support
 
 ### Signaling KUDOS support in the OSCORE Profile of the ACE Framework # {#ace-osc-signaling}
 
-Support for KUDOS support at the Resource Server (RS) and Client can be signalled in the OSCORE Profile of the ACE framework. This is done through usage of the parameter "kudos_support" (registered in {{ace-osc-param-kudos}}), which is included as an element of the OSCORE\_Input\_Material object. This object is in turn included in both the Access Token (with information for the RS), and in the Access Token Response (with information for the Client).
+In the OSCORE Profile of the ACE Framework {{RFC9203}} it is possible to signal the support for KUDOS of the Resource Server (RS) and Client. This is done through the "kudos_support" parameter of OSCORE\_Input\_Material object which is registered in {{ace-osc-param-kudos}}. The object is built by the Authorization Server (AS), which includes it in both the Access Token (with information intended for the RS) and in the Access Token Response (with information intended for the Client).
 
-Specifically, the parameter "kudos_support" and the OSCORE\_Input\_Material object is used as follows:
+Specifically, the "kudos_support" parameter and the OSCORE\_Input\_Material object are used as follows:
 
-* In the Access Token Response to the client, the OSCORE\_Input\_Material object appears as the value of the “osc” parameter inside the “cnf” parameter. The "kudos_support" parameter informs the client about the RS’s KUDOS support.
+* In the Access Token Response from the AS to the Client, the OSCORE\_Input\_Material object is specified as the value of the "osc" parameter within the "cnf" parameter. The "kudos_support" parameter informs the client about the KUDOS support at the RS.
 
-* In the Access Token sent to the RS, the OSCORE\_Input\_Material object appears as the value of the “osc” parameter inside the “cnf” claim. The "kudos_support" parameter informs the RS about the client's KUDOS support.
+* In the Access Token issued by the AS and to be consumed by the RS, the OSCORE\_Input\_Material object is specified as the value of the "osc" parameter within the "cnf" claim. The "kudos_support" parameter informs the RS about the KUDOS support at the Client.
 
-The ACE Authorization Server (AS), which produces the OSCORE\_Input\_Material objects, provides the information to the client (or RS) based on its knowledge of the RS (or client), potentially obtained during their registration. If the AS lacks such knowledge, it omits the "kudos_support" parameter.
+By using the "kudos\_support" parameter as above, the AS informs the two peers about each other's support for KUDOS. The AS may have obtained this information during their registration process at the AS. If the AS lacks such information, it omits the "kudos_support" parameter as appropriate.
 
-For Access Tokens issued to a group of RSs, the "kudos_support" parameter reflects what applies to all RSs in the group. If the AS cannot represent a consistent state for all RSs (due to incomplete knowledge or variation), it omits the parameter in the Access Token Response.
+For Access Tokens issued to a group of RSs, the "kudos_support" parameter reflects what applies to all RSs in the group. If the AS cannot provide a single support indication that is applicable to all RSs (due to incomplete knowledge or differences between the RSs), it omits the parameter in the Access Token Response.
 
 # Security Considerations {#sec-cons}
 
