@@ -1527,9 +1527,21 @@ Verify with CTX_NEW     | }                    |
 
 * Extended description and updates values for KUDOS communication overhead.
 
-* Special case when non-CAPABLE devices may operate in FS Mode.
+* Introduce special case when non-CAPABLE devices may operate in FS Mode.
 
-* Parameter for signaling KUDOS support when using the ACE OSCORE profile.
+* Add parameter for signaling KUDOS support when using the ACE OSCORE profile.
+
+* Enable using the reverse message flow for peers that are only CoAP servers.
+
+* Mechanism for signaling KUDOS support in the ACE OSCORE profile.
+
+* Further clarifications about achieving key confirmation and deletion of old contexts.
+
+* Restructure distribution of content about FS and no-FS mode.
+
+* Warn of consequences of running KUDOS with insufficient margin.
+
+* Stressed usefulness of core.kudos for safe KUDOS requests without side effects.
 
 ## Version -07 to -08 ## {#sec-07-08}
 
