@@ -1036,6 +1036,8 @@ According to this specification, KUDOS is transferred in POST requests and 2.04 
 
 In order to discover a server's well-known KUDOS resource and possible other KUDOS resources, client applications can use the resource type "core.kudos" (see {{rt-kudos}}).
 
+The "core.kudos" resource type is designed to ensure a means for clients to send KUDOS requests without incurring any side effects. Specifically, this resource type does not interact with any real application, ensuring that no application-level actions are triggered as a result of the KUDOS request. This allows clients to issue KUDOS requests either when they do not include any actionable application payload in the plain CoAP request composed before OSCORE protection, or when clients wish to send a KUDOS request without risking any application-layer processing occurring on the server.
+
 ### Rekeying when Using SCHC with OSCORE
 
 In the interest of rekeying, the following points must be taken into account when using the Static Context Header Compression and fragmentation (SCHC) framework {{RFC8724}} for compressing CoAP messages protected with OSCORE, as defined in {{RFC8824}}.
