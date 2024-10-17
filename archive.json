@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-15T00:51:42.300407+00:00",
+  "timestamp": "2024-10-17T00:50:59.951129+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2634,6 +2634,30 @@
           "body": "Seems not needed",
           "createdAt": "2024-07-05T19:07:14Z",
           "updatedAt": "2024-07-05T19:07:14Z"
+        }
+      ]
+    },
+    {
+      "number": 101,
+      "id": "I_kwDOGfmof86ac5r7",
+      "title": "Cover usage of KUDOS with servers that use ACE (e.g. OSCORE profile)",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/101",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-10-16T09:34:28Z",
+      "updatedAt": "2024-10-16T09:41:06Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "body": "Targeting a KUDOS request to a non-KUDOS resource should trigger access control. Targeting a KUDOS request to a KUDOS resource should NOT trigger access control.\r\n\r\nThe Path of any KUDOS resource can be added to the ACE \"do not enforce access control\" list.\r\n\r\nIn some situation an Access Token can be bound to both CTX_OLD and CTX_NEW",
+          "createdAt": "2024-10-16T09:38:03Z",
+          "updatedAt": "2024-10-16T09:41:06Z"
         }
       ]
     }
