@@ -822,7 +822,7 @@ Note that:
 
    - In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.
 
-* A peer that is a non-CAPABLE device MUST support the no-FS mode. Note that an exception described in {{non-capable-fs-mode}} exists for non-CAPABLE devices that lack Bootstrap material to use for a KUDOS execution.
+* A peer that is a non-CAPABLE device MUST support the no-FS mode. Note that an exception described in {{non-capable-fs-mode}} exists for non-CAPABLE devices that lack Bootstrap Master Secret and Bootstrap Master Salt.
 
 * A peer that is a CAPABLE device MUST support the FS mode and the no-FS mode.
 
@@ -871,7 +871,7 @@ During a KUDOS execution, the two peers agree on whether to perform the key upda
 
 A peer determines to run KUDOS either in FS or no-FS mode with another peer as follows.
 
-* If a peer A is a non-CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value. Note that if the peer does not have any Bootstrap material stored with the other peers it intends to run KUDOS with, it may take advantage of the exception where non-CAPABLE devices may run KUDOS in FS mode described in {{non-capable-fs-mode}}.
+* If a peer A is a non-CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value. Note that, if peer A lacks a Bootstrap Master Secret and Bootstrap Master Salt to use with the other peer B, it can still run KUDOS in FS mode according to what is defined in {{non-capable-fs-mode}}.
 
 * If a peer A is a CAPABLE device, it SHOULD run KUDOS only in FS mode. That is, when sending a KUDOS message, it SHOULD set to 0 the 'p' bit of the 'x' byte in the OSCORE Option value. An exception applies in the following cases.
 
@@ -909,19 +909,18 @@ If, after having received the first KUDOS message, the responder can continue pe
 
 ### Non-CAPABLE Devices Operating in FS Mode {#non-capable-fs-mode}
 
-Devices may not be pre-provisioned with Bootstrap material, for instance due to storage limitations of persistant memory or to fulfil particular use cases. Bootstrap material means specifically the Bootstrap Master Secret and Bootstrap Master Salt, and Latest material means the Latest Master Secret and Latest Master Salt as defined in {{key-material-handling}}. As an exception to the normal case of a non-CAPABLE devices always using KUDOS in no-FS mode, if the Bootstrap material is dynamically installed through an in-band process with the peer device, it is permissible for this peer to operate KUDOS in FS mode.
+Devices may not be pre-provisioned with Bootstrap material, for instance due to storage limitations of persistent memory or to fulfil particular use cases. Bootstrap material means specifically the Bootstrap Master Secret and Bootstrap Master Salt, and Latest material means the Latest Master Secret and Latest Master Salt as defined in {{key-material-handling}}. Normally, a non-CAPABLE device always uses KUDOS in no-FS mode. An exception is possible, if the Bootstrap material is dynamically installed at that device through an in-band process between that device and the peer device. In such a case, it is possible for this device to run KUDOS in FS mode with the peer device.
 
-Note that under the assumption that peer A does not have any Bootstrap material with another peer B, peer A cannot use the no-FS mode with peer B, even though peer A is a non-CAPABLE device. Thus, allowing it to use KUDOS in FS mode ensures that it can perform a key update using KUDOS at all.
+Note that, under the assumption that peer A does not have any Bootstrap material with another peer B, peer A cannot use the no-FS mode with peer B, even though peer A is a non-CAPABLE device. Thus, allowing peer A to use KUDOS in FS mode ensures that peer A can perform a key update using KUDOS at all.
 
-The following describes the usage of FS mode for a non-CAPABLE device:
+The following describes how a non-CAPABLE device in the situation outlined above, namely peer A, runs KUDOS in FS mode with another peer B:
 
-* The non-CAPABLE device is not provisioned with Bootstrap material associated with another peer at the time of manufacturing or commissioning.
-* The device derives and installs OSCORE keying material associated with another peer only in volatile memory through an in-band procedure with that peer. This keying material is now considered the Latest material.
-   * Examples of such procedures include the ACE OSCORE profile and the EDHOC and ACE OSCORE profile, which rely on the Access Token to provision keying material for OSCORE Security Contexts. This in-band procedure may occur multiple times over the device's lifetime.
-* The device may then operate KUDOS in FS mode, thereby achieving forward secrecy for subsequent key update epochs, as long as the OSCORE keying material was established with forward secrecy (e.g., as in the ACE EDHOC and OSCORE profile).
-   * Upon execution of KUDOS, the device stores each newly derived Security Context in volatile memory.
-   * As long as the device does not reboot, operation continues normally with the Latest material stored in volatile memory.
-   * If the device reboots, no OSCORE keying material associated with the other peer will be retained, as it is stored only in volatile memory, and the device is non-CAPABLE. Consequently, the device must first establish new OSCORE keying material with the peer before it can resume KUDOS operations, using it as the Latest material. This can be accomplished by again running the in-band procedure as explained above.
+* Peer A is not provisioned with Bootstrap material associated with peer B at the time of manufacturing or commissioning.
+* Peer A establishes OSCORE keying material associated with peer B through an in-band procedure run with peer B. Then, peer A considers that keying material as the Latest material with peer B, and stores it only in volatile memory.
+   * An example of such an in-band procedure is the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, according to which the two peers run the EDHOC protocol {{RFC9528}} for establishing an OSCORE Security Context to associate with access rights. This in-band procedure may occur multiple times over the device's lifetime.
+* Peer A runs KUDOS in FS mode with peer B, thereby achieving forward secrecy for subsequent key update epochs, as long as the OSCORE keying material was originally established with forward secrecy. Peer A stores each newly derived Security Context in volatile memory.
+
+As long as peer A does not reboot, executions of KUDOS rely on the Latest material stored in volatile memory. If peer A reboots, no OSCORE keying material associated with the peer B will be retained, as peer A is non-CAPABLE and therefore stores it only in volatile memory. Consequently, peer A must first establish new OSCORE keying material to use as Latest material with peer B, before running KUDOS again with peer B. This can be accomplished by running again the in-band procedure mentioned above.
 
 ## Preserving Observations Across Key Updates # {#preserving-observe}
 
