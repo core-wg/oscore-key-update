@@ -1149,20 +1149,6 @@ Initiator                                         Responder
 
 In this second example, the Initiator asks the EDHOC Responder about its support for KUDOS ('ead\_value' = ASK). In EDHOC message\_2, the Responder indicates that it does not support KUDOS at all ('ead\_value' = NONE). Finally, in EDHOC message\_3, the Initiator does not include the KUDOS\_EAD item, since it already knows that using KUDOS with the other peer will not be possible. After the EDHOC execution has successfully finished, the Initiator is aware that the Responder does not support KUDOS, which the two peers are not going to use with each other.
 
-### Signaling KUDOS support in the OSCORE Profile of the ACE Framework # {#ace-osc-signaling}
-
-In the OSCORE Profile of the ACE Framework {{RFC9203}} it is possible to signal the support for KUDOS of the Resource Server (RS) and Client. This is done through the "kudos_support" parameter of OSCORE\_Input\_Material object which is registered in {{ace-osc-param-kudos}}. The object is built by the Authorization Server (AS), which includes it in both the Access Token (with information intended for the RS) and in the Access Token Response (with information intended for the Client).
-
-Specifically, the "kudos_support" parameter and the OSCORE\_Input\_Material object are used as follows:
-
-* In the Access Token Response from the AS to the Client, the OSCORE\_Input\_Material object is specified as the value of the "osc" parameter within the "cnf" parameter. The "kudos_support" parameter informs the client about the KUDOS support at the RS.
-
-* In the Access Token issued by the AS and to be consumed by the RS, the OSCORE\_Input\_Material object is specified as the value of the "osc" parameter within the "cnf" claim. The "kudos_support" parameter informs the RS about the KUDOS support at the Client.
-
-By using the "kudos\_support" parameter as above, the AS informs the two peers about each other's support for KUDOS. The AS may have obtained this information during their registration process at the AS. If the AS lacks such information, it omits the "kudos_support" parameter as appropriate.
-
-For Access Tokens issued to a group of RSs, the "kudos_support" parameter reflects what applies to all RSs in the group. If the AS cannot provide a single support indication that is applicable to all RSs (due to incomplete knowledge or differences between the RSs), it omits the parameter in the Access Token Response.
-
 # Security Considerations {#sec-cons}
 
 Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
@@ -1235,23 +1221,6 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 -  Description: KUDOS resource.
 
 -  Reference: {{&SELF}}
-
-
-## OSCORE Security Context Parameters Registry {#ace-osc-param-kudos}
-
-IANA is requested to add the parameter "kudos_support" to the "OSCORE Security Context Parameters" registry under the registry group "Authentication and Authorization for Constrained Environments (ACE)".
-
-- Name: kudos_support
-
-- CBOR Label: TBD
-
-- CBOR Type: True or False
-
-- Registry:
-
-- Description: Support for KUDOS
-
-- Reference: [RFC-XXXX]
 
 --- back
 
@@ -1539,8 +1508,6 @@ Verify with CTX_NEW     | }                    |
 * Add parameter for signaling KUDOS support when using the ACE OSCORE profile.
 
 * Enable using the reverse message flow for peers that are only CoAP servers.
-
-* Mechanism for signaling KUDOS support in the ACE OSCORE profile.
 
 * Further clarifications about achieving key confirmation and deletion of old contexts.
 
