@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                         10 October 2024
-Expires: 13 April 2025
+Intended status: Standards Track                         17 October 2024
+Expires: 20 April 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 April 2025.
+   This Internet-Draft will expire on 20 April 2025.
 
 Copyright Notice
 
@@ -2058,6 +2058,16 @@ Table of Contents
    In order to discover a server's well-known KUDOS resource and
    possible other KUDOS resources, client applications can use the
    resource type "core.kudos" (see Section 6.5).
+
+   The "core.kudos" resource type is designed to ensure a means for
+   clients to send KUDOS requests without incurring any side effects.
+   Specifically, this resource type does not interact with any real
+   application, ensuring that no application-level actions are triggered
+   as a result of the KUDOS request.  This allows clients to issue KUDOS
+   requests either when they do not include any actionable application
+   payload in the plain CoAP request composed before OSCORE protection,
+   or when clients wish to send a KUDOS request without risking any
+   application-layer processing occurring on the server.
 
 4.8.4.  Rekeying when Using SCHC with OSCORE
 
