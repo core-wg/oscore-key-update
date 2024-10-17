@@ -409,7 +409,7 @@ Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, t
 
 Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
-### Handling of Messages {#message-handling}
+### Handling of Messages {#ssec-message-handling}
 
 If a KUDOS message is a CoAP request, then it can target two different types of resources at the recipient CoAP server:
 
@@ -712,7 +712,21 @@ More generally, as soon as the client successfully verifies an incoming message 
 
 Note that the client achieves key confirmation only when receiving and successfully verifying a message from the server as protected with CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete CTX\_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see {{ssec-derive-ctx-client-init}}).
 
-It might be the case that the server is only a CoAP server (i.e., it does not implement a CoAP client) and, at the same time, it becomes unable to safely decrypt further incoming messages from the client. For example, this occurs when the server reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see {{I-D.ietf-core-oscore-key-limits}}). When this happens, the server cannot decrypt Request #1. Consequently, the server replies to the client with an unprotected 4.01 (Unauthorized) response, and is therefore practically unable to execute KUDOS with the client in the reverse message flow. In such a case, the only chance for the server to perform a key update with the client by means of KUDOS relies on the client starting a KUDOS execution using the forward message flow (see {{ssec-derive-ctx-client-init}}).
+### Utilization of KUDOS by Pure CoAP Servers # {#ssec-pure-coap-servers}
+
+It might be the case that a server is only a CoAP server (i.e., it does not implement a CoAP client) and it reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see {{I-D.ietf-core-oscore-key-limits}}). If this happens and the client is using the reverse message flow, the server would not be able to decrypt Request #1, thus making it impossibl to use KUDOS in the reverse message flow. In order for KUDOS to be usable in such a scenario, one option is that the client instead starts a KUDOS execution using the forward message flow (see {{sec-rekeying-method}}).
+
+Another option which allows resolving the problem directly on the server is that a server may modify its steps for processing of OSCORE protected requests and responses as detailed below. This will enable it to respond to Request #1 with a KUDOS Response #1 and thus enable it to use KUDOS in the reverse message flow in the described scenario.
+
+The verification of OSCORE requests is updated, by adding the following text as a first sub-step inside step 2 of {{Section 8.2 of RFC8613}}.
+
+{:quote}
+> 2.a.: If the retrieved Recipient Context is invalid, the server MAY respond with a 4.01 (Unauthorized) error message. The diagnostic payload MAY contain the string “Invalid security context”. If KUDOS is used the error message can be a protected error message (protected with CTX_1).
+
+The verification of OSCORE responses is updated, by updating step 2 of {{Section 8.4 of RFC8613}} according to the following text.
+
+{:quote}
+> Retrieve the Recipient Context in the Security Context associated with the Token. Decompress the COSE object (Section 6). If the Recipient Context is invalid, or the decompression fails or the COSE message fails to decode, then go to 8.
 
 ## Avoiding Deadlocks
 
@@ -845,7 +859,7 @@ Building on the above, after having experienced a reboot, a peer A checks whethe
 Following a state loss (e.g., due to a reboot), a device MUST complete a successful KUDOS execution (with either of the workflows) before performing an exchange of OSCORE-protected application data with another peer, unless:
 
 * The device is CAPABLE and implements functionality for safely reusing old keying material, such as that described in {{Section B.1 of RFC8613}}, or
-* The device is exchanging OSCORE-protected data as part of a KUDOS execution (i.e., in the first or second message), as described in {{message-handling}}. In such case, the plain CoAP request composed before OSCORE protection of the KUDOS message may include an application payload, if admitted by the request method.
+* The device is exchanging OSCORE-protected data as part of a KUDOS execution (i.e., in the first or second message), as described in {{ssec-message-handling}}. In such case, the plain CoAP request composed before OSCORE protection of the KUDOS message may include an application payload, if admitted by the request method.
 
 ### Selection of KUDOS Mode {#no-fs-signaling}
 
