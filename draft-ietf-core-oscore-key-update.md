@@ -1010,7 +1010,7 @@ Each of the two KUDOS messages results in communication overhead. This is determ
 
 * The byte 'x' of the OSCORE Option value.
 
-* The nonce conveyed in the 'nonce' field of the OSCORE option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.
+* The nonce conveyed in the 'nonce' field of the OSCORE Option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.
 
 * The byte 'y' of the OSCORE Option value, if present.
 
@@ -1069,7 +1069,7 @@ Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, 
 
 That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the used SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain from message compression.
 
-## Signaling Support for KUDOS in Other Protocols ##
+## Signaling Support for KUDOS in Other Protocols and Profiles ##
 
 The following section describes how support for KUDOS can be signalled when using the EDHOC protocol {{RFC9528}} and the OSCORE Profile of the ACE Framework {{RFC9203}}.
 
