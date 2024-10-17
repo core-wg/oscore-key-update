@@ -1044,13 +1044,13 @@ In particular, the shown results build on the following assumptions.
 | 16         | 21                  | 36                   | 57    |
 {: #table-overhead-reverse title="Communication overhead (reverse message flow)" align="center"}
 
+### Resource Type core.kudos # {#core-kudos-resource-type}
+
+The "core.kudos" resource type registered in {{rt-kudos}} is defined to ensure a means for clients to send KUDOS requests without incurring any side effects. Specifically, a resource of this type does not pertain to any real application, which ensures that no application-level actions are triggered as a result of the KUDOS request. This allows clients to issue KUDOS requests when they do not include any actionable application payload in the plain CoAP request composed before OSCORE protection, or when no application-layer processing is intended to occur on the server.
+
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
-According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message must target a KUDOS resource, e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}), or at an alternative Uri-Path that can be discovered, e.g., by using a resource directory {{RFC9176}}.
-
-In order to discover a server's well-known KUDOS resource and possible other KUDOS resources, client applications can use the resource type "core.kudos" (see {{rt-kudos}}).
-
-The "core.kudos" resource type is designed to ensure a means for clients to send KUDOS requests without incurring any side effects. Specifically, this resource type does not interact with any real application, ensuring that no application-level actions are triggered as a result of the KUDOS request. This allows clients to issue KUDOS requests either when they do not include any actionable application payload in the plain CoAP request composed before OSCORE protection, or when clients wish to send a KUDOS request without risking any application-layer processing occurring on the server.
+According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message can target a KUDOS resource with resource type "core.kudos" (see {{core-kudos-resource-type}}), e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}). An alternative KUDOS resource can be discovered, e.g., by using a resource directory {{RFC9176}}, by using the resource type "core.kudos" as filter criterion.
 
 ### Rekeying when Using SCHC with OSCORE
 
