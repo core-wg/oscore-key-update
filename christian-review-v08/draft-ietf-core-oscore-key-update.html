@@ -1172,6 +1172,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.6">
                     <p id="section-toc.1-1.4.2.3.2.6.1"><a href="#section-4.3.6" class="auto internal xref">4.3.6</a>.  <a href="#name-reverse-message-flow" class="internal xref">Reverse Message Flow</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3.2.7">
+                    <p id="section-toc.1-1.4.2.3.2.7.1"><a href="#section-4.3.7" class="auto internal xref">4.3.7</a>.  <a href="#name-utilization-of-kudos-by-pur" class="internal xref">Utilization of KUDOS by Pure CoAP Servers</a></p>
+</li>
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
@@ -1729,7 +1732,7 @@ Note that, even though a peer had no real reason to update its OSCORE keying mat
 <p id="section-4.3.2-8">Once a peer has successfully decrypted and verified an incoming message protected with CTX_NEW, that peer <span class="bcp14">MUST</span> discard the old Security Context CTX_OLD.<a href="#section-4.3.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="message-handling">
+<div id="ssec-message-handling">
 <section id="section-4.3.3">
           <h4 id="name-handling-of-messages">
 <a href="#section-4.3.3" class="section-number selfRef">4.3.3. </a><a href="#name-handling-of-messages" class="section-name selfRef">Handling of Messages</a>
@@ -2253,7 +2256,23 @@ In such a case, if the client knows that KUDOS Response #2 is going to be sent a
 <p id="section-4.3.6-13">In case the client does not successfully verify the response, the same error handling specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.4" class="relref">Section 8.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> applies. This does not result in deleting CTX_NEW. If the client successfully verifies the response using CTX_NEW, the client deletes CTX_OLD. Note that, if the verification of the response fails, the client may want to send again the normal OSCORE request to the server it initially sent (to /temp in the example above), in order to ensure the retrieval of the resource representation.<a href="#section-4.3.6-13" class="pilcrow">¶</a></p>
 <p id="section-4.3.6-14">More generally, as soon as the client successfully verifies an incoming message protected with CTX_NEW, the client deletes CTX_OLD.<a href="#section-4.3.6-14" class="pilcrow">¶</a></p>
 <p id="section-4.3.6-15">Note that the client achieves key confirmation only when receiving and successfully verifying a message from the server as protected with CTX_NEW. If the client sends a non KUDOS request to the server protected with CTX_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client <span class="bcp14">SHOULD</span> delete CTX_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>).<a href="#section-4.3.6-15" class="pilcrow">¶</a></p>
-<p id="section-4.3.6-16">It might be the case that the server is only a CoAP server (i.e., it does not implement a CoAP client) and, at the same time, it becomes unable to safely decrypt further incoming messages from the client. For example, this occurs when the server reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>). When this happens, the server cannot decrypt Request #1. Consequently, the server replies to the client with an unprotected 4.01 (Unauthorized) response, and is therefore practically unable to execute KUDOS with the client in the reverse message flow. In such a case, the only chance for the server to perform a key update with the client by means of KUDOS relies on the client starting a KUDOS execution using the forward message flow (see <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>).<a href="#section-4.3.6-16" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ssec-pure-coap-servers">
+<section id="section-4.3.7">
+          <h4 id="name-utilization-of-kudos-by-pur">
+<a href="#section-4.3.7" class="section-number selfRef">4.3.7. </a><a href="#name-utilization-of-kudos-by-pur" class="section-name selfRef">Utilization of KUDOS by Pure CoAP Servers</a>
+          </h4>
+<p id="section-4.3.7-1">It might be the case that a server is only a CoAP server (i.e., it does not implement a CoAP client) and it reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>). If this happens and the client is using the reverse message flow, the server would not be able to decrypt Request #1, thus making it impossibl to use KUDOS in the reverse message flow. In order for KUDOS to be usable in such a scenario, one option is that the client instead starts a KUDOS execution using the forward message flow (see <a href="#sec-rekeying-method" class="auto internal xref">Section 4</a>).<a href="#section-4.3.7-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.7-2">Another option which allows resolving the problem directly on the server is that a server may modify its steps for processing of OSCORE protected requests and responses as detailed below. This will enable it to respond to Request #1 with a KUDOS Response #1 and thus enable it to use KUDOS in the reverse message flow in the described scenario.<a href="#section-4.3.7-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.7-3">The verification of OSCORE requests is updated, by adding the following text as a first sub-step inside step 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.3.7-3" class="pilcrow">¶</a></p>
+<blockquote id="section-4.3.7-4">
+            <p id="section-4.3.7-4.1">2.a.: If the retrieved Recipient Context is invalid, the server <span class="bcp14">MAY</span> respond with a 4.01 (Unauthorized) error message. The diagnostic payload <span class="bcp14">MAY</span> contain the string “Invalid security context”. If KUDOS is used the error message can be a protected error message (protected with CTX_1).<a href="#section-4.3.7-4.1" class="pilcrow">¶</a></p>
+</blockquote>
+<p id="section-4.3.7-5">The verification of OSCORE responses is updated, by updating step 2 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.4" class="relref">Section 8.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> according to the following text.<a href="#section-4.3.7-5" class="pilcrow">¶</a></p>
+<blockquote id="section-4.3.7-6">
+            <p id="section-4.3.7-6.1">Retrieve the Recipient Context in the Security Context associated with the Token. Decompress the COSE object (Section 6). If the Recipient Context is invalid, or the decompression fails or the COSE message fails to decode, then go to 8.<a href="#section-4.3.7-6.1" class="pilcrow">¶</a></p>
+</blockquote>
 </section>
 </div>
 </section>
@@ -2456,7 +2475,7 @@ If the message verification succeeds, PEER_2 deletes the retained CTX_OLD as wel
                 <p id="section-4.5.1.1-4.1.1">The device is CAPABLE and implements functionality for safely reusing old keying material, such as that described in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.1" class="relref">Appendix B.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, or<a href="#section-4.5.1.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-4.5.1.1-4.2">
-                <p id="section-4.5.1.1-4.2.1">The device is exchanging OSCORE-protected data as part of a KUDOS execution (i.e., in the first or second message), as described in <a href="#message-handling" class="auto internal xref">Section 4.3.3</a>. In such case, the plain CoAP request composed before OSCORE protection of the KUDOS message may include an application payload, if admitted by the request method.<a href="#section-4.5.1.1-4.2.1" class="pilcrow">¶</a></p>
+                <p id="section-4.5.1.1-4.2.1">The device is exchanging OSCORE-protected data as part of a KUDOS execution (i.e., in the first or second message), as described in <a href="#ssec-message-handling" class="auto internal xref">Section 4.3.3</a>. In such case, the plain CoAP request composed before OSCORE protection of the KUDOS message may include an application payload, if admitted by the request method.<a href="#section-4.5.1.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </section>
