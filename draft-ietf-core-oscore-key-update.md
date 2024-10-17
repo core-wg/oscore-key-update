@@ -718,21 +718,23 @@ More generally, as soon as the client successfully verifies an incoming message 
 
 Note that the client achieves key confirmation only when receiving and successfully verifying a message from the server as protected with CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete CTX\_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see {{ssec-derive-ctx-client-init}}).
 
-### Utilization of KUDOS by Pure CoAP Servers # {#ssec-pure-coap-servers}
+### Usage of KUDOS by Pure CoAP Servers # {#ssec-pure-coap-servers}
 
-It might be the case that a server is only a CoAP server (i.e., it does not implement a CoAP client) and it reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see {{I-D.ietf-core-oscore-key-limits}}). If this happens and the client is using the reverse message flow, the server would not be able to decrypt Request #1, thus making it impossibl to use KUDOS in the reverse message flow. In order for KUDOS to be usable in such a scenario, one option is that the client instead starts a KUDOS execution using the forward message flow (see {{sec-rekeying-method}}).
+It might be the case that a server is only a CoAP server (i.e., it does not implement a CoAP client) and it reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with another peer acting as client (see {{I-D.ietf-core-oscore-key-limits}}). If this happens and the client runs KUDOS using the reverse message flow, the server would not be able to decrypt Request #1, thus making it impossible complete the KUDOS execution. In such a scenario the two peers have two options to run KUDOS.
 
-Another option which allows resolving the problem directly on the server is that a server may modify its steps for processing of OSCORE protected requests and responses as detailed below. This will enable it to respond to Request #1 with a KUDOS Response #1 and thus enable it to use KUDOS in the reverse message flow in the described scenario.
+One option is that the client instead starts a KUDOS execution using the forward message flow (see {{sec-rekeying-method}}).
 
-The verification of OSCORE requests is updated, by adding the following text as a first sub-step inside step 2 of {{Section 8.2 of RFC8613}}.
+An alternative that allows the usage of the reverse message flow consists in the server modifying its steps for processing OSCORE protected requests and responses, as detailed below. Building on that, the server does not verify Request #1, but it still replies with KUDOS Response #1.
 
-{:quote}
-> 2.a.: If the retrieved Recipient Context is invalid, the server MAY respond with a 4.01 (Unauthorized) error message. The diagnostic payload MAY contain the string “Invalid security context”. If KUDOS is used the error message can be a protected error message (protected with CTX_1).
-
-The verification of OSCORE responses is updated, by updating step 2 of {{Section 8.4 of RFC8613}} according to the following text.
+The verification of OSCORE requests is extended by performing the following as first sub-step within step 2 of {{Section 8.2 of RFC8613}}.
 
 {:quote}
-> Retrieve the Recipient Context in the Security Context associated with the Token. Decompress the COSE object (Section 6). If the Recipient Context is invalid, or the decompression fails or the COSE message fails to decode, then go to 8.
+> 2.a.: If the retrieved Recipient Context is invalid, the server MAY respond with a 4.01 (Unauthorized) error message. A Recipient Context is considered invalid if it is part of an expired Security Context or if its key usage limit has been reached (see {{I-D.irtf-cfrg-aead-limits}}). The diagnostic payload of the error message MAY contain the string "Invalid security context". If the error message is a KUDOS Response #1, then it is protected with the OSCORE Security Context CTX\_1 derived from the Security Context CTX\_OLD. Note that sending KUDOS Response #1 requires that CTX\_OLD is not expired.
+
+The verification of OSCORE responses performs the following modified version of step 2 of {{Section 8.4 of RFC8613}}.
+
+{:quote}
+> Retrieve the Recipient Context in the Security Context associated with the Token. Decompress the COSE object (Section 6). If the Recipient Context is invalid, or the decompression fails or the COSE message fails to decode, then go to 8. A Recipient Context is considered invalid if it is part of an expired Security Context or if its key usage limit has been reached (see {{I-D.irtf-cfrg-aead-limits}}).
 
 ## Avoiding Deadlocks
 
