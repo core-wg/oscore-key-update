@@ -354,7 +354,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
 ## Key Update # {#ssec-derive-ctx}
 
-In this section, we define the KUDOS procedure that two peers use to refresh their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS. For peers unable to support forward secrecy, {{no-fs-mode}} provides an alternative approach, allowing key updates without forward secrecy. This alternative ensures that also very constrained peers, without the ability to store information to persistant memory, are able to use KUDOS, although without achieving forward secrecy.
+In this section, we define the KUDOS procedure that two peers use to update their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS, as long as the OSCORE keying material was also established with forward secrecy. For peers unable to store information to persistant memory, {{no-fs-mode}} provides an alternative approach to perform key update without achieving forward secrecy. This alternative ensures that also very constrained peers are able to use KUDOS, although without achieving forward secrecy.
 
 A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.
 
