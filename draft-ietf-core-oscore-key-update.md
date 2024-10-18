@@ -56,6 +56,7 @@ informative:
   RFC8724:
   RFC8824:
   RFC7967:
+  RFC4086:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
   I-D.ietf-ace-edhoc-oscore-profile:
@@ -130,7 +131,7 @@ Two peers communicating using OSCORE may choose to renew their shared keying inf
 
 In addition to approaching the key usage limits, there may be other reasons for a peer to initiate a key update procedure. These include: the OSCORE Security Context approaching its expiration time; application policies prescribing a regular key rollover; approaching the exhaustion of the Sender Sequence Number space in the OSCORE Sender Context.
 
-It is RECOMMENDED that the peer initiating the key update procedure starts it with some margin, i.e., well before actually experiencing the trigger event forcing to perform a key update, e.g., the OSCORE Security Context expiration or the exhaustion of the Sender Sequence Number space. If the rekeying is not initiated ahead of these events, it may become practically impossible to perform a key update with certain methods.
+It is RECOMMENDED that the peer initiating the key update procedure starts it with some margin, i.e., well before actually experiencing the trigger event forcing to perform a key update, e.g., the OSCORE Security Context expiration or the exhaustion of the Sender Sequence Number space. If the rekeying is not initiated ahead of these events, it may become practically impossible to perform a key update with certain methods, and/or without aborting ongoing message exchanges.
 
 Other specifications define a number of ways for rekeying OSCORE, as summarized below.
 
@@ -175,7 +176,9 @@ The protection of CoAP responses with OSCORE is updated, by adding the following
 {:quote}
 > If the server is using a different Security Context for the response compared to what was used to verify the request (e.g., due to an occurred key update), then the server MUST take the second alternative. That is, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response.
 >
-> This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts. An exception is the procedure in {{Section B.2 of RFC8613}}, which is secure although not complying with the above.
+> This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts.
+>
+> An exception is the procedure in {{Section B.2 of RFC8613}}, which is secure although not complying with the above. The reason is that, in that procedure, the server uses the new OSCORE Security Context only and solely to protect the outgoing response (response #1), and no other message is protected with that OSCORE Security Context. Other procedures where that holds would also remain secure.
 
 # Key Update for OSCORE (KUDOS) # {#sec-rekeying-method}
 
@@ -301,48 +304,57 @@ Finally, the updateCtx() function returns the newly derived Security Context CTX
 Since the updateCtx() function also takes X as input, the derivation of CTX\_OUT also considers as input the information from the 'x' field transported in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that, if successfully completed, a KUDOS execution occurs as intended by the two peers.
 
 ~~~~~~~~~~~
-updateCtx(X, N, CTX_IN) {
+function updateCtx(X, N, CTX_IN):
 
+  // Output values
   CTX_OUT       // The new Security Context
   MSECRET_NEW   // The new Master Secret
   MSALT_NEW     // The new Master Salt
 
-  X_cbor = bstr .cbor X // CBOR bstr wrapping of X
-  N_cbor = bstr .cbor N // CBOR bstr wrapping of N
+  // Create CBOR byte strings from X and N
+  X_cbor = create_cbor_bstr(X)
+  N_cbor = create_cbor_bstr(N)
 
+  // Concatenate the CBOR-encoded X and N
   X_N = X_cbor | N_cbor
 
-  oscore_key_length = < Size of CTX_IN.MasterSecret in bytes >
+  // Determine the length in bytes of the current Master Secret
+  oscore_key_length = length(CTX_IN.MasterSecret)
 
+  // Define the label for the key update
   Label = "key update"
 
-  MSECRET_NEW = KUDOS-Expand-Label(CTX_IN.MasterSecret, Label,
+  // Create the new Master Secret using KUDOS-Expand-Label
+  MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
                                    X_N, oscore_key_length)
-               = KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel,
-                              oscore_key_length)
 
-  MSALT_NEW = N;
+  // Set the new Master Salt to N
+  MSALT_NEW = N
 
-  < Derive CTX_OUT using MSECRET_NEW and MSALT_NEW,
-    together with other parameters from CTX_IN >
+  // Derive the new Security Context CTX_OUT, using
+  // the new Master Secret, the new Master Salt,
+  // and other parameters from CTX_IN
+  CTX_OUT = derive_security_context(MSECRET_NEW, MSALT_NEW, CTX_IN)
 
-  Return CTX_OUT;
+  // Return the new Security Context
+  return CTX_OUT
 
-}
 
-Where ExpandLabel is defined as
+function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
-struct {
-    uint16 length = oscore_key_length;
-    opaque label<7..255> = "oscore " + Label;
-    opaque context<0..255> = X_N;
-} ExpandLabel;
+  struct {
+      uint16 length = key_length;
+      opaque label<7..255> = "oscore " + Label;
+      opaque context<0..255> = X_N;
+  } ExpandLabel;
+
+  return KUDOS_Expand(master_secret, ExpandLabel, key_length)
 ~~~~~~~~~~~
-{: #function-update title="Function for deriving a new OSCORE Security Context" artwork-align="left"}
+{: #function-update title="Functions for deriving a new OSCORE Security Context" artwork-align="left"}
 
-## Key Update with Forward Secrecy # {#ssec-derive-ctx}
+## Key Update # {#ssec-derive-ctx}
 
-This section defines the actual KUDOS procedure performed by two peers to update their OSCORE keying material.
+In this section, we define the KUDOS procedure that two peers use to update their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS, as long as the OSCORE keying material was also established with forward secrecy. For peers unable to store information to persistant memory, {{no-fs-mode}} provides an alternative approach to perform key update without achieving forward secrecy. This alternative ensures that also very constrained peers are able to use KUDOS, although without achieving forward secrecy.
 
 A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.
 
@@ -358,7 +370,7 @@ In order to run KUDOS in FS mode, both peers have to be able to write in non-vol
 
 ### Nonces and X Bytes {#ssec-nonces-x-bytes}
 
-When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 SHOULD be random values. An exception is described later in {{key-material-handling}}.
+When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 MUST be random values, with the possible exception described later in {{key-material-handling}}. Note that a good amount of randomness is important for the nonce generation. {{RFC4086}} provides guidance on the generation of random values.
 
 Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. The X1 and X2 values are calculated by the sender peer based on: the length of nonce N1 and N2, specified in the 'nonce' field of the OSCORE Option of the first and second KUDOS message, respectively; as well as on the specific settings the peer wishes to run KUDOS with. As defined in {{ssec-derive-ctx-client-init}}, these values are used by the peers to build the input N and X to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
 
@@ -385,9 +397,15 @@ Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, t
 
 * The peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages.
 
-* The peer MUST delete any OSCORE Security Context CTX\_DEL older than CTX\_OLD, such that both CTX\_DEL and CTX\_OLD have the same ID\_CONTEXT or no ID Context.
+* The peer MUST delete the OSCORE Security Context CTX\_DEL older than CTX\_OLD such that, with reference to the immediately previous execution of KUDOS, both the following conditions hold:
 
-  For instance, this can occur while using the forward message flow (see {{ssec-derive-ctx-client-init}}}), when the initiator has just received the second KUDOS message, and immediately starts KUDOS again as initiator before sending a non KUDOS message, thereby not providing the responder with key confirmation and not allowing it to safely discard CTX\_OLD.
+  * CTX\_DEL was used for deriving the OSCORE Security Context CTX\_1 used to protect the first KUDOS message; and
+
+  * CTX\_OLD was used to protect the second KUDOS message.
+
+Note that if the procedure for updating IDs is run (standalone or embedded) there may be a change of Sender/Recipient IDs between CTX\_DEL and CTX\_OLD. The way to correctly keep the relation between the OSCORE Security Contexts is implementation specific.
+
+  For instance, this can occur while using the forward message flow (see {{ssec-derive-ctx-client-init}}}), when the initiator has just received the second KUDOS message, and immediately starts KUDOS again as initiator before sending a non KUDOS message.
 
 * The peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}.
 
@@ -397,7 +415,7 @@ Once a peer has successfully derived the new OSCORE Security Context CTX\_NEW, t
 
 Once a peer has successfully decrypted and verified an incoming message protected with CTX\_NEW, that peer MUST discard the old Security Context CTX\_OLD.
 
-### Handling of Messages
+### Handling of Messages {#ssec-message-handling}
 
 If a KUDOS message is a CoAP request, then it can target two different types of resources at the recipient CoAP server:
 
@@ -582,7 +600,7 @@ In the example in {{fig-message-exchange-client-init}}, the client takes the ini
 
 In case the server does not successfully verify the request, the same error handling specified in {{Section 8.2 of RFC8613}} applies. This does not result in deleting CTX\_NEW. If the server successfully verifies the request using CTX\_NEW, the server deletes CTX\_OLD and can reply with an OSCORE response protected with CTX\_NEW.
 
-Note that the server achieves key confirmation only when receiving and successfully verifying a message from the client as protected with CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete CTX\_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow.
+Note that the server achieves key confirmation when receiving and successfully verifying a message from the client as protected with CTX\_NEW. If the server sends a non KUDOS request to the client protected with CTX\_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server SHOULD delete CTX\_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow. If the client runs KUDOS again as initiator right after the server has rebooted, the server will achieve key confirmation of CTX\_NEW, upon successfully verifying the first KUDOS message. This is because that same Security Context CTX\_NEW is used for deriving the Security Context CTX\_1 that is used to protect the first KUDOS message in the new KUDOS execution.
 
 Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
 
@@ -700,7 +718,23 @@ More generally, as soon as the client successfully verifies an incoming message 
 
 Note that the client achieves key confirmation only when receiving and successfully verifying a message from the server as protected with CTX\_NEW. If the client sends a non KUDOS request to the server protected with CTX\_NEW before then, and the client receives a 4.01 (Unauthorized) error response as reply, the client SHOULD delete CTX\_NEW and start a new KUDOS execution acting again as CoAP client, i.e., as initiator in the forward message flow (see {{ssec-derive-ctx-client-init}}).
 
-It might be the case that the server is only a CoAP server (i.e., it does not implement a CoAP client) and, at the same time, it becomes unable to safely decrypt further incoming messages from the client. For example, this occurs when the server reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with the client (see {{I-D.ietf-core-oscore-key-limits}}). When this happens, the server cannot decrypt Request #1. Consequently, the server replies to the client with an unprotected 4.01 (Unauthorized) response, and is therefore practically unable to execute KUDOS with the client in the reverse message flow. In such a case, the only chance for the server to perform a key update with the client by means of KUDOS relies on the client starting a KUDOS execution using the forward message flow (see {{ssec-derive-ctx-client-init}}).
+### Usage of KUDOS by Pure CoAP Servers # {#ssec-pure-coap-servers}
+
+It might be the case that a server is only a CoAP server (i.e., it does not implement a CoAP client) and it reaches key usage limits for its Recipient Key in the OSCORE Security Context shared with another peer acting as client (see {{I-D.ietf-core-oscore-key-limits}}). If this happens and the client runs KUDOS using the reverse message flow, the server would not be able to decrypt Request #1, thus making it impossible complete the KUDOS execution. In such a scenario the two peers have two options to run KUDOS.
+
+One option is that the client instead starts a KUDOS execution using the forward message flow (see {{sec-rekeying-method}}).
+
+An alternative that allows the usage of the reverse message flow consists in the server modifying its steps for processing OSCORE protected requests and responses, as detailed below. Building on that, the server does not verify Request #1, but it still replies with KUDOS Response #1.
+
+The verification of OSCORE requests is extended by performing the following as first sub-step within step 2 of {{Section 8.2 of RFC8613}}.
+
+{:quote}
+> 2.a.: If the retrieved Recipient Context is invalid, the server MAY respond with a 4.01 (Unauthorized) error message. A Recipient Context is considered invalid if it is part of an expired Security Context or if its key usage limit has been reached (see {{I-D.irtf-cfrg-aead-limits}}). The diagnostic payload of the error message MAY contain the string "Invalid security context". If the error message is a KUDOS Response #1, then it is protected with the OSCORE Security Context CTX\_1 derived from the Security Context CTX\_OLD. Note that sending KUDOS Response #1 requires that CTX\_OLD is not expired.
+
+The verification of OSCORE responses performs the following modified version of step 2 of {{Section 8.4 of RFC8613}}.
+
+{:quote}
+> Retrieve the Recipient Context in the Security Context associated with the Token. Decompress the COSE object (Section 6). If the Recipient Context is invalid, or the decompression fails or the COSE message fails to decode, then go to 8. A Recipient Context is considered invalid if it is part of an expired Security Context or if its key usage limit has been reached (see {{I-D.irtf-cfrg-aead-limits}}).
 
 ## Avoiding Deadlocks
 
@@ -762,7 +796,7 @@ When KUDOS is run in the reverse message flow (see {{ssec-derive-ctx-server-init
 
 In such a case, in order to avoid experiencing a deadlock situation where the server needs to execute KUDOS but cannot practically initiate it, a client-only device that supports KUDOS SHOULD intersperse Non-confirmable requests it sends to that server with confirmable requests.
 
-## Key Update with or without Forward Secrecy {#no-fs-mode}
+## Key Update Admitting no Forward Secrecy {#no-fs-mode}
 
 The FS mode of the KUDOS procedure defined in {{ssec-derive-ctx}} ensures forward secrecy of the OSCORE keying material. However, it requires peers executing KUDOS to preserve their state (e.g., across a device reboot), by writing information such as data from the newly derived OSCORE Security Context CTX\_NEW in non-volatile memory.
 
@@ -796,7 +830,7 @@ Note that:
 
    - In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.
 
-* A peer that is a non-CAPABLE device MUST support the no-FS mode.
+* A peer that is a non-CAPABLE device MUST support the no-FS mode. Note that an exception described in {{non-capable-fs-mode}} exists for non-CAPABLE devices that lack Bootstrap Master Secret and Bootstrap Master Salt.
 
 * A peer that is a CAPABLE device MUST support the FS mode and the no-FS mode.
 
@@ -830,7 +864,10 @@ Building on the above, after having experienced a reboot, a peer A checks whethe
 
     * If a pair P2 is not found, the peer A has to use alternative ways to establish a first OSCORE Security Context CTX\_NEW with the other peer B, e.g., by running the EDHOC protocol. After that, if A is a CAPABLE device, it stores on disk the OSCORE Master Secret and Master Salt from the newly established OSCORE Security Context CTX\_NEW, as Latest Master Secret and Latest Master Salt, respectively.
 
-Following a state loss (e.g., due to a reboot), a device MUST first complete a successful KUDOS execution (with either of the workflows) before exchanging OSCORE-protected application data with another peer. An exception is a CAPABLE device implementing a functionality for safely reusing old keying material, such as the one defined in {{Section B.1 of RFC8613}}.
+Following a state loss (e.g., due to a reboot), a device MUST complete a successful KUDOS execution (with either of the flows) before performing an exchange of OSCORE-protected application data with another peer, unless:
+
+* The device is CAPABLE and implements a functionality for safely reusing old keying material, such as that described in {{Section B.1 of RFC8613}}; or
+* The device is exchanging OSCORE-protected data as part of a KUDOS execution in either of the KUDOS messages, as described in {{ssec-message-handling}}. In such case, the plain CoAP request composed before OSCORE protection of the KUDOS message may include an application payload, if admitted by the request method.
 
 ### Selection of KUDOS Mode {#no-fs-signaling}
 
@@ -842,7 +879,7 @@ During a KUDOS execution, the two peers agree on whether to perform the key upda
 
 A peer determines to run KUDOS either in FS or no-FS mode with another peer as follows.
 
-* If a peer A is a non-CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value.
+* If a peer A is a non-CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value. Note that, if peer A lacks a Bootstrap Master Secret and Bootstrap Master Salt to use with the other peer B, it can still run KUDOS in FS mode according to what is defined in {{non-capable-fs-mode}}.
 
 * If a peer A is a CAPABLE device, it SHOULD run KUDOS only in FS mode. That is, when sending a KUDOS message, it SHOULD set to 0 the 'p' bit of the 'x' byte in the OSCORE Option value. An exception applies in the following cases.
 
@@ -877,6 +914,21 @@ If, after having received the first KUDOS message, the responder can continue pe
       When receiving the new request above, the initiator learns that the responder is a non-CAPABLE device (and hence not able to run KUDOS in FS mode), since the 'p' bit in the request is set to 1, while the 'p' bit in the response previously sent as first KUDOS message was set to 0. Also, the initiator SHOULD NOT send any response to such a request, and the responder SHOULD NOT expect any such response.
 
    In either case, both KUDOS peers delete the OSCORE Security Contexts CTX\_1 and CTX\_NEW. Also, both peers MUST retain CTX\_OLD for use during the next KUDOS execution in the no-FS mode. This is in contrast with the typical behavior where CTX\_OLD is deleted upon reception of a message protected with CTX\_NEW.
+
+### Non-CAPABLE Devices Operating in FS Mode {#non-capable-fs-mode}
+
+Devices may not be pre-provisioned with Bootstrap material, for instance due to storage limitations of persistent memory or to fulfil particular use cases. Bootstrap material means specifically the Bootstrap Master Secret and Bootstrap Master Salt, and Latest material means the Latest Master Secret and Latest Master Salt as defined in {{key-material-handling}}. Normally, a non-CAPABLE device always uses KUDOS in no-FS mode. An exception is possible, if the Bootstrap material is dynamically installed at that device through an in-band process between that device and the peer device. In such a case, it is possible for this device to run KUDOS in FS mode with the peer device.
+
+Note that, under the assumption that peer A does not have any Bootstrap material with another peer B, peer A cannot use the no-FS mode with peer B, even though peer A is a non-CAPABLE device. Thus, allowing peer A to use KUDOS in FS mode ensures that peer A can perform a key update using KUDOS at all.
+
+The following describes how a non-CAPABLE device in the situation outlined above, namely peer A, runs KUDOS in FS mode with another peer B:
+
+* Peer A is not provisioned with Bootstrap material associated with peer B at the time of manufacturing or commissioning.
+* Peer A establishes OSCORE keying material associated with peer B through an in-band procedure run with peer B. Then, peer A considers that keying material as the Latest material with peer B, and stores it only in volatile memory.
+   * An example of such an in-band procedure is the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, according to which the two peers run the EDHOC protocol {{RFC9528}} for establishing an OSCORE Security Context to associate with access rights. This in-band procedure may occur multiple times over the device's lifetime.
+* Peer A runs KUDOS in FS mode with peer B, thereby achieving forward secrecy for subsequent key update epochs, as long as the OSCORE keying material was originally established with forward secrecy. Peer A stores each newly derived Security Context in volatile memory.
+
+As long as peer A does not reboot, executions of KUDOS rely on the Latest material stored in volatile memory. If peer A reboots, no OSCORE keying material associated with the peer B will be retained, as peer A is non-CAPABLE and therefore stores it only in volatile memory. Consequently, peer A must first establish new OSCORE keying material to use as Latest material with peer B, before running KUDOS again with peer B. This can be accomplished by running again the in-band procedure mentioned above.
 
 ## Preserving Observations Across Key Updates # {#preserving-observe}
 
@@ -952,33 +1004,60 @@ Another case is when running KUDOS in the reverse message flow, if the client us
 
 ### Communication Overhead
 
-Each of the two KUDOS messages displays a small communication overhead. This is determined by the following, additional information conveyed in the OSCORE option (see {{ssec-oscore-option-extensions}}).
+Each of the two KUDOS messages results in communication overhead. This is determined by the following, additional information conveyed in the OSCORE Option (see {{ssec-oscore-option-extensions}}).
 
-* The second byte of the OSCORE option.
+* The second byte of the OSCORE Option value.
 
-* The byte 'x' of the OSCORE option.
+* The byte 'x' of the OSCORE Option value.
 
-* The nonce conveyed in the 'nonce' field of the OSCORE option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.
+* The nonce conveyed in the 'nonce' field of the OSCORE Option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.
 
-Assuming nonces of the same size in both messages of the same KUDOS execution, this results in the following minimum, typical, and maximum communication overhead, when considering a nonce with size 1, 8, and 16 bytes, respectively. All the indicated values are in bytes.
+* The byte 'y' of the OSCORE Option value, if present.
+
+* The nonce conveyed in the 'old_nonce' field of the OSCORE Option value, if present. When present, its size ranges from 1 to 16 bytes as indicated in the 'y' byte, and is typically of 8 bytes.
+
+* The 'Partial IV' parameter of the OSCORE Option value, in a CoAP response message that is a KUDOS message.
+
+  This takes into account the fact that OSCORE-protected CoAP response messages normally do not include the 'Partial IV' parameter, but they have to when they are KUDOS messages (see Section 3).
+
+* The first byte of the OSCORE Option value (i.e., the first OSCORE flag byte), in a CoAP response message that is a KUDOS message.
+
+  This takes into account the fact that OSCORE-protected CoAP response messages normally convey an OSCORE Option that only consists of the all zero (0x00) flag byte. In turn, this results in the OSCORE Option being encoded as with empty value (see {{Section 2 of RFC8613}}.
+
+* The possible presence of the 1-byte Option Length (extended) field in the OSCORE Option (see {{Section 3.1 of RFC7252}}). This is the case where the length of the OSCORE Option value is between 13 and 255 bytes (see {{Section 2 of RFC8613}}).
+
+The results shown below are the minimum, typical, and maximum communication overhead introduced by KUDOS, when considering a nonce with size 1, 8, and 16 bytes. {{table-overhead-forward}} and {{table-overhead-reverse}} refer to the KUDOS forward message flow and reverse message flow, respectively. All the indicated values are in bytes.
+
+In particular, the shown results build on the following assumptions.
+
+* Both messages of the same KUDOS execution use nonces of the same size, and do not include the 'kid context' parameter in the OSCORE Option value.
+
+* When included in the OSCORE Option value, the 'Partial IV' parameter has size 1 byte.
+
+* CoAP request messages include the 'kid' parameter with size 1 byte in the OSCORE Option value.
+
+* CoAP response messages do not include the 'kid' parameter in the OSCORE Option value.
 
 | Nonce size | First KUDOS message | Second KUDOS message | Total |
-| 1          | 3                   | 3                    | 6     |
-| 8          | 10                  | 10                   | 20    |
-| 16         | 18                  | 18                   | 36    |
+| 1          | 3                   | 5                    | 8     |
+| 8          | 11                  | 12                   | 23    |
+| 16         | 19                  | 21                   | 40    |
 {: #table-overhead-forward title="Communication overhead (forward message flow)" align="center"}
 
+
 | Nonce size | First KUDOS message | Second KUDOS message | Total |
-| 1          | 3                   | 4                    | 7     |
-| 8          | 10                  | 11                   | 21    |
-| 16         | 18                  | 19                   | 37    |
+| 1          | 5                   | 5                    | 10    |
+| 8          | 12                  | 20                   | 32    |
+| 16         | 21                  | 36                   | 57    |
 {: #table-overhead-reverse title="Communication overhead (reverse message flow)" align="center"}
+
+### Resource Type core.kudos # {#core-kudos-resource-type}
+
+The "core.kudos" resource type registered in {{rt-kudos}} is defined to ensure a means for clients to send KUDOS requests without incurring any side effects. Specifically, a resource of this type does not pertain to any real application, which ensures that no application-level actions are triggered as a result of the KUDOS request. This allows clients to issue KUDOS requests when they do not include any actionable application payload in the plain CoAP request composed before OSCORE protection, or when no application-layer processing is intended to occur on the server.
 
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
-According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message must target a KUDOS resource, e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}), or at an alternative Uri-Path that can be discovered, e.g., by using a resource directory {{RFC9176}}.
-
-In order to discover a server's well-known KUDOS resource and possible other KUDOS resources, client applications can use the resource type "core.kudos" (see {{rt-kudos}}).
+According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message can target a KUDOS resource with resource type "core.kudos" (see {{core-kudos-resource-type}}), e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}). An alternative KUDOS resource can be discovered, e.g., by using a resource directory {{RFC9176}}, by using the resource type "core.kudos" as filter criterion.
 
 ### Rekeying when Using SCHC with OSCORE
 
@@ -990,7 +1069,11 @@ Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, 
 
 That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the used SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain from message compression.
 
-## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
+## Signaling Support for KUDOS ##
+
+This section describes how support for KUDOS can be signaled when using the EDHOC protocol {{RFC9528}} and the OSCORE Profile of the ACE Framework {{RFC9203}}.
+
+### Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
 The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see {{Section 3.8 of RFC9528}}). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead\_label' encoded as a CBOR integer, and an optional 'ead\_value' encoded as a CBOR bstr.
 
@@ -1417,6 +1500,22 @@ Verify with CTX_NEW     | }                    |
 * Editorial improvements and clarifications.
 
 * State that the EDHOC EAD item must be used as non-critical.
+
+* Extended description and updates values for KUDOS communication overhead.
+
+* Introduce special case when non-CAPABLE devices may operate in FS Mode.
+
+* Add parameter for signaling KUDOS support when using the ACE OSCORE profile.
+
+* Enable using the reverse message flow for peers that are only CoAP servers.
+
+* Further clarifications about achieving key confirmation and deletion of old contexts.
+
+* Restructure distribution of content about FS and no-FS mode.
+
+* Warn of consequences of running KUDOS with insufficient margin.
+
+* Stressed usefulness of core.kudos for safe KUDOS requests without side effects.
 
 ## Version -07 to -08 ## {#sec-07-08}
 
