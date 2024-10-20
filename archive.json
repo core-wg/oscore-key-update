@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-17T00:50:59.951129+00:00",
+  "timestamp": "2024-10-20T00:55:40.604847+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2647,20 +2647,55 @@
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
-      "body": "",
+      "body": "Targeting a KUDOS request to a non-KUDOS resource should trigger access control. Targeting a KUDOS request to a KUDOS resource should NOT trigger access control.\r\n\r\nThe Path of any KUDOS resource can be added to the ACE \"do not enforce access control\" list.\r\n\r\nIn some situation an Access Token can be bound to both CTX_OLD and CTX_NEW\r\n\r\nNote that KUDOS is not compatible with the OSCORE ACE profile, however it is compatible with the EDHOC OSCORE ACE profile.",
       "createdAt": "2024-10-16T09:34:28Z",
-      "updatedAt": "2024-10-16T09:41:06Z",
+      "updatedAt": "2024-10-17T17:36:03Z",
       "closedAt": null,
-      "comments": [
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 102,
+      "id": "PR_kwDOGfmof85-8jd9",
+      "title": "Christian's review of v-08",
+      "url": "https://github.com/core-wg/oscore-key-update/pull/102",
+      "state": "MERGED",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR contains updated text for all the points from Christian's review of v-08 that we processed and came to a conclusion about.\r\nReview archived at: https://mailarchive.ietf.org/arch/msg/core/QGS8QfeySlrTKYRvFnEH7laxBDk/",
+      "createdAt": "2024-10-17T10:13:04Z",
+      "updatedAt": "2024-10-18T12:36:19Z",
+      "baseRepository": "core-wg/oscore-key-update",
+      "baseRefName": "main",
+      "baseRefOid": "a4a3433521494c4abac462e9296fd9ff09486092",
+      "headRepository": "core-wg/oscore-key-update",
+      "headRefName": "christian-review-v08",
+      "headRefOid": "3dedd8a9b795ff0f82871026c1976b531cb7556b",
+      "closedAt": "2024-10-18T12:36:19Z",
+      "mergedAt": "2024-10-18T12:36:19Z",
+      "mergedBy": "rikard-sics",
+      "mergeCommit": {
+        "oid": "5c0dd62022e4568c6c679e57af73ce0e2d49287d"
+      },
+      "comments": [],
+      "reviews": [
         {
-          "author": "rikard-sics",
-          "authorAssociation": "MEMBER",
-          "body": "Targeting a KUDOS request to a non-KUDOS resource should trigger access control. Targeting a KUDOS request to a KUDOS resource should NOT trigger access control.\r\n\r\nThe Path of any KUDOS resource can be added to the ACE \"do not enforce access control\" list.\r\n\r\nIn some situation an Access Token can be bound to both CTX_OLD and CTX_NEW",
-          "createdAt": "2024-10-16T09:38:03Z",
-          "updatedAt": "2024-10-16T09:41:06Z"
+          "id": "PRR_kwDOGfmof86NnOvY",
+          "commit": {
+            "abbreviatedOid": "3dedd8a"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T17:39:40Z",
+          "updatedAt": "2024-10-17T17:39:40Z",
+          "comments": []
         }
       ]
     }
-  ],
-  "pulls": []
+  ]
 }
