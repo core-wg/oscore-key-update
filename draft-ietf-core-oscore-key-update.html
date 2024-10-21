@@ -1029,7 +1029,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 21 April 2025</td>
+<td class="center">Expires 24 April 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1045,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-10-18" class="published">18 October 2024</time>
+<time datetime="2024-10-21" class="published">21 October 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-04-21">21 April 2025</time></dd>
+<dd class="expires"><time datetime="2025-04-24">24 April 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1099,7 +1099,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 April 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1662,7 +1662,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
         <h3 id="name-key-update">
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-key-update" class="section-name selfRef">Key Update</a>
         </h3>
-<p id="section-4.3-1">In this section, we define the KUDOS procedure that two peers use to update their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS, as long as the OSCORE keying material was also established with forward secrecy. For peers unable to store information to persistant memory, <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a> provides an alternative approach to perform key update without achieving forward secrecy. This alternative ensures that also very constrained peers are able to use KUDOS, although without achieving forward secrecy.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-1">In this section, we define the KUDOS procedure that two peers use to update their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS, as long as the OSCORE keying material was also established with forward secrecy. For peers unable to store information to persistent memory, <a href="#no-fs-mode" class="auto internal xref">Section 4.5</a> provides an alternative approach to perform key update without achieving forward secrecy. This alternative ensures that also very constrained peers are able to use KUDOS, although without achieving forward secrecy.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2">A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3-3">The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer <span class="bcp14">MUST</span> stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <p id="section-4.3-4">Before starting KUDOS, the two peers share the OSCORE Security Context CTX_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX_NEW.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
@@ -2042,7 +2042,7 @@ Upon receiving the Reset message above, P2 terminates the KUDOS execution E2 whe
 <p id="section-4.3.5-17">In case the server does not successfully verify the request, the same error handling specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> applies. This does not result in deleting CTX_NEW. If the server successfully verifies the request using CTX_NEW, the server deletes CTX_OLD and can reply with an OSCORE response protected with CTX_NEW.<a href="#section-4.3.5-17" class="pilcrow">¶</a></p>
 <p id="section-4.3.5-18">Note that the server achieves key confirmation when receiving and successfully verifying a message from the client as protected with CTX_NEW. If the server sends a non KUDOS request to the client protected with CTX_NEW before then, and the server receives a 4.01 (Unauthorized) error response as reply, the server <span class="bcp14">SHOULD</span> delete CTX_NEW and start a new KUDOS execution acting as CoAP client, i.e., as initiator in the forward message flow. If the client runs KUDOS again as initiator right after the server has rebooted, the server will achieve key confirmation of CTX_NEW, upon successfully verifying the first KUDOS message. This is because that same Security Context CTX_NEW is used for deriving the Security Context CTX_1 that is used to protect the first KUDOS message in the new KUDOS execution.<a href="#section-4.3.5-18" class="pilcrow">¶</a></p>
 <p id="section-4.3.5-19">Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a>.<a href="#section-4.3.5-19" class="pilcrow">¶</a></p>
-<p id="section-4.3.5-20">In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been succesfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) <span class="bcp14">MUST</span> be a 4.01 (Unauthorized) error response.<a href="#section-4.3.5-20" class="pilcrow">¶</a></p>
+<p id="section-4.3.5-20">In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been successfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) <span class="bcp14">MUST</span> be a 4.01 (Unauthorized) error response.<a href="#section-4.3.5-20" class="pilcrow">¶</a></p>
 <p id="section-4.3.5-21">Upon receiving the 4.01 (Unauthorized) error response as the second KUDOS message Response #1, the client processes it like described above. After successfully completing the KUDOS execution, the client can send to the server a non-KUDOS request protected with CTX_NEW (i.e., Request #2 in Figure 3). Presumably, this request targets the same resource targeted by the previous Request #1, as the same application request or a different one, if the application permits it.
 Upon receiving, decrypting, and successfully verifying this request protected with CTX_NEW, the server asserts the request as fresh, leveraging the recent establishment of CTX_NEW.<a href="#section-4.3.5-21" class="pilcrow">¶</a></p>
 <p id="section-4.3.5-22">In the example shown in <a href="#fig-message-exchange-client-init" class="auto internal xref">Figure 3</a> and discussed in this section, the first KUDOS message is a request and the second one is a response, like typically expected when using the forward message flow. However, KUDOS is not constrained to this request/response model and a KUDOS execution can be performed with any combination of CoAP requests and responses. Related examples using the forward message flow are provided later:<a href="#section-4.3.5-22" class="pilcrow">¶</a></p>
@@ -3051,7 +3051,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
             <tr>
               <td class="text-left" rowspan="1" colspan="1">48</td>
               <td class="text-left" rowspan="1" colspan="1">Extension-7 Flag</td>
-              <td class="text-left" rowspan="1" colspan="1">Set to 1 if the OSCORE Option specifies an eigth byte, which includes the OSCORE flag bits 56-63</td>
+              <td class="text-left" rowspan="1" colspan="1">Set to 1 if the OSCORE Option specifies an eighth byte, which includes the OSCORE flag bits 56-63</td>
               <td class="text-left" rowspan="1" colspan="1">[RFC-XXXX]</td>
             </tr>
           </tbody>
@@ -3219,7 +3219,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 <dl class="references">
 <dt id="I-D.ietf-ace-edhoc-oscore-profile">[I-D.ietf-ace-edhoc-oscore-profile]</dt>
         <dd>
-<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-05</span>, <time datetime="2024-07-08" class="refDate">8 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-05">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-05</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-06</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-06">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-key-limits">[I-D.ietf-core-oscore-key-limits]</dt>
         <dd>
@@ -3707,7 +3707,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
       </h2>
 <p id="appendix-C-1">This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and with the KUDOS message Request #1 targeting a non-KUDOS resource at the Uri-Path "/temp". The server application has freshness requirements on the requests targeting the resource at "/temp".<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 <p id="appendix-C-2">Note the presence of an application payload in the KUDOS message Request #1 and in the non-KUDOS message Request #2, both of which are composed as PUT requests. That request method is part of the encrypted payload, since it is protected by OSCORE.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
-<p id="appendix-C-3">Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Unauthorized) response, while the non-KUDOS message Response #2 is composed as a 2.04 (Changed) repsonse. Those response codes are part of the encrypted payload, since they are protected by OSCORE.<a href="#appendix-C-3" class="pilcrow">¶</a></p>
+<p id="appendix-C-3">Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Unauthorized) response, while the non-KUDOS message Response #2 is composed as a 2.04 (Changed) response. Those response codes are part of the encrypted payload, since they are protected by OSCORE.<a href="#appendix-C-3" class="pilcrow">¶</a></p>
 <p id="appendix-C-4">The example uses the same notation 'Comb(a,b)' used in <a href="#ssec-derive-ctx-client-init" class="auto internal xref">Section 4.3.5</a>.<a href="#appendix-C-4" class="pilcrow">¶</a></p>
 <span id="name-example-of-the-kudos-forward-m"></span><div id="fig-message-exchange-client-init-normal-resource">
 <figure id="figure-9">

@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                         18 October 2024
-Expires: 21 April 2025
+Intended status: Standards Track                         21 October 2024
+Expires: 24 April 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 April 2025.
+   This Internet-Draft will expire on 24 April 2025.
 
 Copyright Notice
 
@@ -637,7 +637,7 @@ Table of Contents
    this section will achieve forward secrecy for the new keying material
    produced by the execution of KUDOS, as long as the OSCORE keying
    material was also established with forward secrecy.  For peers unable
-   to store information to persistant memory, Section 4.5 provides an
+   to store information to persistent memory, Section 4.5 provides an
    alternative approach to perform key update without achieving forward
    secrecy.  This alternative ensures that also very constrained peers
    are able to use KUDOS, although without achieving forward secrecy.
@@ -1081,7 +1081,7 @@ Table of Contents
    In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS
    resource and the application at the server requires freshness for the
    received requests, then the server does not deliver the request to
-   the application even if the request has been succesfully verified,
+   the application even if the request has been successfully verified,
    and the following KUDOS message (i.e., Response #1 in Figure 3) MUST
    be a 4.01 (Unauthorized) error response.
 
@@ -2367,7 +2367,7 @@ Table of Contents
    |          |             | OSCORE flag bits 48-55     |            |
    +----------+-------------+----------------------------+------------+
    | 48       | Extension-7 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies an eigth  |            |
+   |          | Flag        | Option specifies an eighth |            |
    |          |             | byte, which includes the   |            |
    |          |             | OSCORE flag bits 56-63     |            |
    +----------+-------------+----------------------------+------------+
@@ -2484,9 +2484,9 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-05, 8 July 2024,
+              draft-ietf-ace-edhoc-oscore-profile-06, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-05>.
+              edhoc-oscore-profile-06>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
@@ -2785,7 +2785,7 @@ Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
 
    Also note the fact that the KUDOS message Response #1 is composed as
    a 4.01 (Unauthorized) response, while the non-KUDOS message Response
-   #2 is composed as a 2.04 (Changed) repsonse.  Those response codes
+   #2 is composed as a 2.04 (Changed) response.  Those response codes
    are part of the encrypted payload, since they are protected by
    OSCORE.
 
