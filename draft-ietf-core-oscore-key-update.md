@@ -354,7 +354,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
 ## Key Update # {#ssec-derive-ctx}
 
-In this section, we define the KUDOS procedure that two peers use to update their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS, as long as the OSCORE keying material was also established with forward secrecy. For peers unable to store information to persistant memory, {{no-fs-mode}} provides an alternative approach to perform key update without achieving forward secrecy. This alternative ensures that also very constrained peers are able to use KUDOS, although without achieving forward secrecy.
+In this section, we define the KUDOS procedure that two peers use to update their OSCORE keying material. Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS, as long as the OSCORE keying material was also established with forward secrecy. For peers unable to store information to persistent memory, {{no-fs-mode}} provides an alternative approach to perform key update without achieving forward secrecy. This alternative ensures that also very constrained peers are able to use KUDOS, although without achieving forward secrecy.
 
 A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.
 
@@ -604,7 +604,7 @@ Note that the server achieves key confirmation when receiving and successfully v
 
 Also note that, if both peers reboot simultaneously, they will run the KUDOS forward message flow as defined in this section. That is, one of the two peers implementing a CoAP client will send KUDOS Request #1 in {{fig-message-exchange-client-init}}.
 
-In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been succesfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) MUST be a 4.01 (Unauthorized) error response.
+In case the KUDOS message Request #1 in Figure 3 targets a non-KUDOS resource and the application at the server requires freshness for the received requests, then the server does not deliver the request to the application even if the request has been successfully verified, and the following KUDOS message (i.e., Response #1 in Figure 3) MUST be a 4.01 (Unauthorized) error response.
 
 Upon receiving the 4.01 (Unauthorized) error response as the second KUDOS message Response #1, the client processes it like described above. After successfully completing the KUDOS execution, the client can send to the server a non-KUDOS request protected with CTX\_NEW (i.e., Request #2 in Figure 3). Presumably, this request targets the same resource targeted by the previous Request #1, as the same application request or a different one, if the application permits it.
 Upon receiving, decrypting, and successfully verifying this request protected with CTX\_NEW, the server asserts the request as fresh, leveraging the recent establishment of CTX\_NEW.
@@ -1179,7 +1179,7 @@ IANA is asked to add the following entries to the "OSCORE Flag Bits" registry wi
 | 24           | Extension-4 Flag | Set to 1 if the OSCORE Option specifies a fifth byte, which includes the OSCORE flag bits 32-39   | {{&SELF}} |
 | 32           | Extension-5 Flag | Set to 1 if the OSCORE Option specifies a sixth byte, which includes the OSCORE flag bits 40-47   | {{&SELF}} |
 | 40           | Extension-6 Flag | Set to 1 if the OSCORE Option specifies a seventh byte, which includes the OSCORE flag bits 48-55 | {{&SELF}} |
-| 48           | Extension-7 Flag | Set to 1 if the OSCORE Option specifies an eigth byte, which includes the OSCORE flag bits 56-63  | {{&SELF}} |
+| 48           | Extension-7 Flag | Set to 1 if the OSCORE Option specifies an eighth byte, which includes the OSCORE flag bits 56-63  | {{&SELF}} |
 {: #table-iana-oscore-flag-bits title="Registrations in the OSCORE Flag Bits Registry" align="center"}
 
 In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit Position of 1, i.e., to update the entry as follows.
@@ -1404,7 +1404,7 @@ This section presents an example of KUDOS run in the forward message flow, with 
 
 Note the presence of an application payload in the KUDOS message Request #1 and in the non-KUDOS message Request #2, both of which are composed as PUT requests. That request method is part of the encrypted payload, since it is protected by OSCORE.
 
-Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Unauthorized) response, while the non-KUDOS message Response #2 is composed as a 2.04 (Changed) repsonse. Those response codes are part of the encrypted payload, since they are protected by OSCORE.
+Also note the fact that the KUDOS message Response #1 is composed as a 4.01 (Unauthorized) response, while the non-KUDOS message Response #2 is composed as a 2.04 (Changed) response. Those response codes are part of the encrypted payload, since they are protected by OSCORE.
 
 The example uses the same notation 'Comb(a,b)' used in {{ssec-derive-ctx-client-init}}.
 
