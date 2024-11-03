@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-31T00:52:13.216893+00:00",
+  "timestamp": "2024-11-03T00:55:15.959222+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2650,6 +2650,22 @@
       "body": "Targeting a KUDOS request to a non-KUDOS resource should trigger access control. Targeting a KUDOS request to a KUDOS resource should NOT trigger access control.\r\n\r\nThe Path of any KUDOS resource can be added to the ACE \"do not enforce access control\" list.\r\n\r\nIn some situation an Access Token can be bound to both CTX_OLD and CTX_NEW\r\n\r\nNote that KUDOS is not compatible with the OSCORE ACE profile, however it is compatible with the EDHOC OSCORE ACE profile.",
       "createdAt": "2024-10-16T09:34:28Z",
       "updatedAt": "2024-10-17T17:36:03Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 103,
+      "id": "I_kwDOGfmof86crSNS",
+      "title": "Update according to IANA early review",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/103",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "From IANA early review received on November 1st 2024:\r\n\r\n> Section 6.1: In the table, please change \u201c0\u201d to \u201c0 (suggested).\u201d Alternatively, because this is an Expert Review registry, you could submit a registration request to iana@iana.org at any time (although the expert may choose to wait).\r\n\r\n> Section 6.3: The table omits the EDHOC External Authorization Data registry\u2019s \u201cName\u201d field. Please see\r\n> https://www.iana.org/assignments/edhoc/edhoc.xhtml",
+      "createdAt": "2024-11-01T08:27:44Z",
+      "updatedAt": "2024-11-01T08:27:44Z",
       "closedAt": null,
       "comments": []
     }
