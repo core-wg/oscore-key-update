@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-05T00:50:20.564086+00:00",
+  "timestamp": "2024-11-07T00:50:31.884793+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2666,6 +2666,24 @@
       "body": "From IANA early review received on November 1st 2024:\r\n\r\n> Section 6.1: In the table, please change \u201c0\u201d to \u201c0 (suggested).\u201d Alternatively, because this is an Expert Review registry, you could submit a registration request to iana@iana.org at any time (although the expert may choose to wait).\r\n\r\n> Section 6.3: The table omits the EDHOC External Authorization Data registry\u2019s \u201cName\u201d field. Please see\r\n> https://www.iana.org/assignments/edhoc/edhoc.xhtml",
       "createdAt": "2024-11-01T08:27:44Z",
       "updatedAt": "2024-11-01T08:27:44Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 104,
+      "id": "I_kwDOGfmof86dSYof",
+      "title": "Addition to section about updated protection of CoAP responses with OSCORE",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/104",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [
+        "Processing"
+      ],
+      "body": "Amend the section describing the update to protection of CoAP responses with OSCORE, according to text below.\r\n\r\nOLD:\r\n> The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of step 3 of Section 8.3 of [RFC8613].\r\n\r\nNEW:\r\n> The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of step 3 of Section 8.3 of [RFC8613] as well as before the text \"Then, go to 4.\" of Section 8.3.1 of [RFC8613].",
+      "createdAt": "2024-11-06T18:02:13Z",
+      "updatedAt": "2024-11-06T18:02:13Z",
       "closedAt": null,
       "comments": []
     }
