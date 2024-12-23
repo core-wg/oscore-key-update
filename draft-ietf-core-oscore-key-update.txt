@@ -117,15 +117,16 @@ Table of Contents
    Appendix C.  Forward Message Flow Targeting a non-KUDOS Resource at
            Server
    Appendix D.  Document Updates
-     D.1.  Version -08 to -09
-     D.2.  Version -07 to -08
-     D.3.  Version -06 to -07
-     D.4.  Version -05 to -06
-     D.5.  Version -04 to -05
-     D.6.  Version -03 to -04
-     D.7.  Version -02 to -03
-     D.8.  Version -01 to -02
-     D.9.  Version -00 to -01
+     D.1.  Version -09 to -10
+     D.2.  Version -08 to -09
+     D.3.  Version -07 to -08
+     D.4.  Version -06 to -07
+     D.5.  Version -05 to -06
+     D.6.  Version -04 to -05
+     D.7.  Version -03 to -04
+     D.8.  Version -02 to -03
+     D.9.  Version -01 to -02
+     D.10. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2868,7 +2869,11 @@ Appendix D.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-D.1.  Version -08 to -09
+D.1.  Version -09 to -10
+
+   *  Minor restructuring of sections.
+
+D.2.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -2901,7 +2906,7 @@ D.1.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-D.2.  Version -07 to -08
+D.3.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -2927,7 +2932,7 @@ D.2.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-D.3.  Version -06 to -07
+D.4.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -2941,7 +2946,7 @@ D.3.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-D.4.  Version -05 to -06
+D.5.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -2961,7 +2966,7 @@ D.4.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.5.  Version -04 to -05
+D.6.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -2984,7 +2989,7 @@ D.5.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-D.6.  Version -03 to -04
+D.7.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3010,7 +3015,7 @@ D.6.  Version -03 to -04
 
    *  Editorial improvements.
 
-D.7.  Version -02 to -03
+D.8.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3029,7 +3034,7 @@ D.7.  Version -02 to -03
 
    *  Editorial improvements.
 
-D.8.  Version -01 to -02
+D.9.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3053,7 +3058,7 @@ D.8.  Version -01 to -02
 
    *  Editorial improvements.
 
-D.9.  Version -00 to -01
+D.10.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
