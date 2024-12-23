@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                         21 October 2024
-Expires: 24 April 2025
+Intended status: Standards Track                        23 December 2024
+Expires: 26 June 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 April 2025.
+   This Internet-Draft will expire on 26 June 2025.
 
 Copyright Notice
 
@@ -100,8 +100,7 @@ Table of Contents
        4.8.3.  Resource Type core.kudos
        4.8.4.  Well-Known KUDOS Resource
        4.8.5.  Rekeying when Using SCHC with OSCORE
-     4.9.  Signaling Support for KUDOS
-       4.9.1.  Signaling KUDOS support in EDHOC
+     4.9.  Signaling KUDOS support in EDHOC
    5.  Security Considerations
    6.  IANA Considerations
      6.1.  OSCORE Flag Bits Registry
@@ -2126,13 +2125,7 @@ Table of Contents
    their side effect do not significantly impair the gain from message
    compression.
 
-4.9.  Signaling Support for KUDOS
-
-   This section describes how support for KUDOS can be signaled when
-   using the EDHOC protocol [RFC9528] and the OSCORE Profile of the ACE
-   Framework [RFC9203].
-
-4.9.1.  Signaling KUDOS support in EDHOC
+4.9.  Signaling KUDOS support in EDHOC
 
    The EDHOC protocol defines the transport of additional External
    Authorization Data (EAD) within an optional EAD field of the EDHOC
