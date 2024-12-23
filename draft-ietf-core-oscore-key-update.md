@@ -1487,6 +1487,10 @@ Verify with CTX_NEW     | }                    |
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
+## Version -09 to -10 ## {#sec-09-10}
+
+* Minor restructuring of sections.
+
 ## Version -08 to -09 ## {#sec-08-09}
 
 * Merge text about avoiding in-transit requests during a key update into a single subsection.
