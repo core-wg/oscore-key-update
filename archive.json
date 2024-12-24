@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-22T00:56:10.042633+00:00",
+  "timestamp": "2024-12-24T00:51:39.688288+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2692,15 +2692,15 @@
       "id": "I_kwDOGfmof86jPX_j",
       "title": "Remove section \" 4.9.0 Signaling Support for KUDOS\"",
       "url": "https://github.com/core-wg/oscore-key-update/issues/105",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "Instead the current section 4.9.1 can become section 4.9.",
       "createdAt": "2024-12-13T16:04:33Z",
-      "updatedAt": "2024-12-13T16:04:33Z",
-      "closedAt": null,
+      "updatedAt": "2024-12-23T14:14:27Z",
+      "closedAt": "2024-12-23T14:14:27Z",
       "comments": []
     }
   ],
