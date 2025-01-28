@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-26T00:51:57.331838+00:00",
+  "timestamp": "2025-01-28T00:50:41.144850+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -42,6 +42,11 @@
       "name": "Close?",
       "description": "",
       "color": "8414BB"
+    },
+    {
+      "name": "Alternative design",
+      "description": "The new alternative design",
+      "color": "4FDE59"
     }
   ],
   "issues": [
@@ -2701,6 +2706,79 @@
       "createdAt": "2024-12-13T16:04:33Z",
       "updatedAt": "2024-12-23T14:14:27Z",
       "closedAt": "2024-12-23T14:14:27Z",
+      "comments": []
+    },
+    {
+      "number": 106,
+      "id": "I_kwDOGfmof86nk70b",
+      "title": "Clearly forbid multiple ongoing executions of KUDOS",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/106",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [
+        "Processing",
+        "Alternative design"
+      ],
+      "body": "A peer must not actively engage in a KUDOS execution if it's aware of (another) one ongoing.\n\nThis means:\n\n- Not sending KUDOS messages as initiator (KUDOS message 1) \n- Not sending KUDOS messages as responder (KUDOS message 2) (see below about what to send instead)\n\nWhen handling an incoming KUDOS message 1 or 2 (for a different KUDOS execution than the single ongoing):\n\n- Send RST to any incoming KUDOS message 1\n- Decryption of any incoming KUDOS message 2 will fail, thus a CoAP error message will be sent\n- If a trigger request is received the peer will simply reply with a normal OSCORE response",
+      "createdAt": "2025-01-26T11:36:34Z",
+      "updatedAt": "2025-01-26T11:41:51Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 107,
+      "id": "I_kwDOGfmof86nk8P0",
+      "title": "Detailed definition of KUDOS execution success and failure",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/107",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [
+        "Alternative design"
+      ],
+      "body": "Add a detailed definition of KUDOS execution success and failure.\n\nFail, abort and mark execution as finished:\n\n- If receiving a RST, or CoAP error message, or an invalid KUDOS message\n- If exhausting the number of retransmissions for a sent KUDOS message\n- If not receiving KUDOS message 2 after a pre-defined amount of time since the first transmission of KUDOS message 1\n\nSucceed and mark execution as finished:\n\n- If the peer has sent KUDOS message 2\n- If the peer has received KUDOS message 2",
+      "createdAt": "2025-01-26T11:41:06Z",
+      "updatedAt": "2025-01-26T11:41:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 108,
+      "id": "I_kwDOGfmof86nk8ZL",
+      "title": "Terminology: Do not consider the bits based on counters",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/108",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [
+        "Alternative design"
+      ],
+      "body": "Do not refer to the signaling bits as based on counters at all",
+      "createdAt": "2025-01-26T11:42:37Z",
+      "updatedAt": "2025-01-26T11:42:37Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 109,
+      "id": "I_kwDOGfmof86nk8oM",
+      "title": "Analyze current content in light of the alternative design",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/109",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [
+        "Alternative design"
+      ],
+      "body": "What needs to be changed, kept and deleted?",
+      "createdAt": "2025-01-26T11:44:55Z",
+      "updatedAt": "2025-01-26T11:44:55Z",
+      "closedAt": null,
       "comments": []
     }
   ],
