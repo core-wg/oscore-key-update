@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-16T00:56:01.181929+00:00",
+  "timestamp": "2025-02-18T00:51:21.079086+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2824,6 +2824,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 110,
+      "id": "PR_kwDOGfmof86Le4Bs",
+      "title": "Sketch vector update as local state machine",
+      "url": "https://github.com/core-wg/oscore-key-update/pull/110",
+      "state": "OPEN",
+      "author": "chrysn",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "![statemachine](https://github.com/user-attachments/assets/5037afa5-a870-4763-bc07-28275a5c1291)\r\n\r\nInkscape's SVG doesn't render nicely in the browser, couldn't track easily right now, but here's a render, and it's editable in Inkscape.\r\n\r\nCC @rikard-sics and @marco-tiloca-sics; sketch is follow-up to today's meeting.",
+      "createdAt": "2025-02-17T16:11:22Z",
+      "updatedAt": "2025-02-17T16:15:49Z",
+      "baseRepository": "core-wg/oscore-key-update",
+      "baseRefName": "main",
+      "baseRefOid": "f3ac542271980ce29a241e2aea7ce719506afe6c",
+      "headRepository": "chrysn-pull-requests/oscore-key-update",
+      "headRefName": "sketch",
+      "headRefOid": "f537f8942ec6ce1903fddb7123bcadf2231166a9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
