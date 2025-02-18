@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   sodipodi:docname="statemachine.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.0713743"
+     inkscape:cx="373.66496"
+     inkscape:cy="362.80261"
+     inkscape:current-layer="layer1"
+     showguides="false" />
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker7"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Wide arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         sodipodi:nodetypes="ccc"
+         id="path7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker7-0"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Wide arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         sodipodi:nodetypes="ccc"
+         id="path7-2" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g5-7-3-4"
+       transform="translate(124.80646,80.921883)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-0-7-9"
+         width="54.400303"
+         height="19.978437"
+         x="28.968746"
+         y="30.830273"
+         ry="7.0285211" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5-9-4-5"><flowRegion
+           id="flowRegion5-3-5-0"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-0-7-9"
+             id="use5-6-25-4" /></flowRegion><flowPara
+           id="flowPara5-0-4-8">encrypt</flowPara><flowPara
+           id="flowPara20">with CTX_tmp, send nonce and RX=0</flowPara></flowRoot>
+    </g>
+    <g
+       id="g5-7-3-4-8"
+       transform="translate(-12.787083,123.5535)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-0-7-9-9"
+         width="54.400303"
+         height="19.978437"
+         x="28.968746"
+         y="30.830273"
+         ry="7.0285211" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5-9-4-5-6"><flowRegion
+           id="flowRegion5-3-5-0-4"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-0-7-9-9"
+             id="use5-6-25-4-3" /></flowRegion><flowPara
+           id="flowPara5-0-4-8-3">encrypt</flowPara><flowPara
+           id="flowPara20-3">with CTX_NEW, send nonce and RX=1</flowPara></flowRoot>
+    </g>
+    <g
+       id="g5"
+       transform="translate(23.326701,2.3326707)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5"
+         width="27.843758"
+         height="14.057042"
+         x="28.968746"
+         y="30.830273" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5"><flowRegion
+           id="flowRegion5"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5"
+             id="use5" /></flowRegion><flowPara
+           id="flowPara5">idle</flowPara><flowPara
+           id="flowPara10">(0,0)</flowPara></flowRoot>
+    </g>
+    <g
+       id="g5-76"
+       transform="translate(43.966192,193.18175)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-3"
+         width="27.843758"
+         height="14.057042"
+         x="28.968746"
+         y="30.830273" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5-1"><flowRegion
+           id="flowRegion5-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-3"
+             id="use5-5" /></flowRegion><flowPara
+           id="flowPara5-9">idle</flowPara><flowPara
+           id="flowPara10-6">(1,1)</flowPara></flowRoot>
+    </g>
+    <g
+       id="g10-4"
+       transform="translate(86.191236,-34.29401)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-2-9"
+         width="27.843758"
+         height="14.057042"
+         x="33.376705"
+         y="117.58894" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;line-height:0.8;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+         id="flowRoot5-2-2"
+         transform="translate(32.400002,63.611393)"><flowRegion
+           id="flowRegion5-8-0"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.8;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-2-9"
+             id="use5-9-6"
+             transform="translate(-32.400002,-63.611393)" /></flowRegion><flowPara
+           id="flowPara11">ahead <flowSpan
+   style="font-size:2.82222px;line-height:0.8"
+   id="flowSpan24">(want to update, did not see peer's nonce)</flowSpan></flowPara></flowRoot>
+    </g>
+    <g
+       id="g10-4-8"
+       transform="translate(-10.677624,2.7207662)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-2-9-5"
+         width="27.843758"
+         height="14.057042"
+         x="33.376705"
+         y="117.58894" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;line-height:0.8;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+         id="flowRoot5-2-2-9"
+         transform="translate(32.400002,63.611393)"><flowRegion
+           id="flowRegion5-8-0-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;line-height:0.8"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-2-9-5"
+             id="use5-9-6-5"
+             transform="translate(-32.400002,-63.611393)" /></flowRegion><flowPara
+           id="flowPara18">behind <flowSpan
+   style="font-size:2.82222px;line-height:0.8"
+   id="flowSpan25">(peer wants to update, did see peer's nonce)</flowSpan></flowPara></flowRoot>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="114.67025"
+       y="30.15045"
+       id="text9"><tspan
+         sodipodi:role="line"
+         id="tspan9"
+         style="stroke-width:0.264583px"
+         x="114.67025"
+         y="30.15045">send </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="40.520973"
+       y="146.02168"
+       id="text9-05"><tspan
+         sodipodi:role="line"
+         id="tspan9-94"
+         style="stroke-width:0.264583px"
+         x="40.520973"
+         y="146.02168">send </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="155.49954"
+       y="103.95495"
+       id="text9-0"><tspan
+         sodipodi:role="line"
+         id="tspan9-6"
+         style="stroke-width:0.264583px"
+         x="155.49954"
+         y="103.95495">send</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="109.57219"
+       y="60.892715"
+       id="text9-2"><tspan
+         sodipodi:role="line"
+         id="tspan9-9"
+         style="stroke-width:0.264583px"
+         x="109.57219"
+         y="60.892715">receive without KUDOS</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583px"
+         x="109.57219"
+         y="64.861465"
+         id="tspan10">or KUDOS TX=0 RX=0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="163.15556"
+       y="77.128929"
+       id="text9-2-7"><tspan
+         sodipodi:role="line"
+         id="tspan9-9-71"
+         style="stroke-width:0.264583px"
+         x="163.15556"
+         y="77.128929">receive without KUDOS</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583px"
+         x="163.15556"
+         y="81.097679"
+         id="tspan10-1">or KUDOS TX=0 RX=0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="24.742767"
+       y="65.374168"
+       id="text9-2-4"><tspan
+         sodipodi:role="line"
+         id="tspan9-9-7"
+         style="stroke-width:0.264583px"
+         x="24.742767"
+         y="65.374168">receive with TX=1 RX=0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="2.0079429"
+       y="106.51597"
+       id="text9-2-4-6"><tspan
+         sodipodi:role="line"
+         id="tspan9-9-7-2"
+         style="stroke-width:0.264583px"
+         x="2.0079429"
+         y="106.51597">receive with TX=1 RX=0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="75.611679"
+       y="89.905846"
+       id="text9-2-4-89"><tspan
+         sodipodi:role="line"
+         id="tspan9-9-7-3"
+         style="stroke-width:0.264583px"
+         x="75.611679"
+         y="89.905846">receive with TX=1 RX=0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="58.601349"
+       y="129.75359"
+       id="text9-2-4-4"><tspan
+         sodipodi:role="line"
+         id="tspan9-9-7-8"
+         style="stroke-width:0.264583px"
+         x="58.601349"
+         y="129.75359">receive with TX=1 RX=1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="88.28904"
+       y="74.167755"
+       id="text9-2-4-8"><tspan
+         sodipodi:role="line"
+         id="tspan9-9-7-5"
+         style="stroke-width:0.264583px"
+         x="88.28904"
+         y="74.167755">spontaneous</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="86.019829"
+       y="114.67182"
+       id="text9-2-4-7"><tspan
+         sodipodi:role="line"
+         id="tspan9-9-7-6"
+         style="stroke-width:0.264583px"
+         x="86.019829"
+         y="114.67182">receive with TX=1 RX=1</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="M 64.312968,47.219985 54.318402,84.107502"
+       id="path9"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:connection-start="#g5"
+       inkscape:connection-end="#g5-7-3" />
+    <g
+       id="g5-7"
+       transform="translate(134.28075,12.829274)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-0"
+         width="27.843758"
+         height="14.057042"
+         x="28.968746"
+         y="30.830273"
+         ry="7.0285211" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5-9"><flowRegion
+           id="flowRegion5-3"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-0"
+             id="use5-6" /></flowRegion><flowPara
+           id="flowPara5-0">decrypt</flowPara><flowPara
+           id="flowPara6">OSCORE</flowPara></flowRoot>
+    </g>
+    <g
+       id="g5-7-3"
+       transform="translate(5.8692863,53.277229)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-0-7"
+         width="35.200642"
+         height="13.877605"
+         x="28.968746"
+         y="30.830273"
+         ry="6.9388027" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5-9-4"><flowRegion
+           id="flowRegion5-3-5"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-0-7"
+             id="use5-6-25" /></flowRegion><flowPara
+           id="flowPara5-0-4">decrypt</flowPara><flowPara
+           id="flowPara6-7">w/ CTX_tmp</flowPara></flowRoot>
+    </g>
+    <g
+       id="g5-7-3-6"
+       transform="translate(64.480917,102.49313)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-0-7-1"
+         width="35.200642"
+         height="13.877605"
+         x="28.968746"
+         y="30.830273"
+         ry="6.9388027" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5-9-4-1"><flowRegion
+           id="flowRegion5-3-5-5"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-0-7-1"
+             id="use5-6-25-9" /></flowRegion><flowPara
+           id="flowPara5-0-4-84">decrypt</flowPara><flowPara
+           id="flowPara6-7-8">w/ CTX_NEW</flowPara></flowRoot>
+    </g>
+    <g
+       id="g5-7-1"
+       transform="translate(116.37453,-12.012923)">
+      <rect
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round"
+         id="rect5-0-8"
+         width="27.843758"
+         height="14.057042"
+         x="28.968746"
+         y="30.830273"
+         ry="7.0285211" />
+      <flowRoot
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93889px;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="flowRoot5-9-7"><flowRegion
+           id="flowRegion5-3-9"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'TeX Gyre Adventor';-inkscape-font-specification:'TeX Gyre Adventor';text-align:center;text-anchor:middle"><use
+             x="0"
+             y="0"
+             xlink:href="#rect5-0-8"
+             id="use5-6-2" /></flowRegion><flowPara
+           id="flowPara5-0-0">encrypt</flowPara><flowPara
+           id="flowPara6-2">OSCORE</flowPara></flowRoot>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="M 75.648951,47.219985 124.05819,83.294933"
+       id="path11"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g5"
+       inkscape:connection-end="#g10-4" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker7);marker-end:url(#marker7)"
+       id="path12"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       d="M 144.11284,97.351976 165.8775,111.75216"
+       inkscape:connection-end="#g5-7-3-4"
+       inkscape:connection-start="#g10-4" />
+    <path
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="m 85.197092,44.700051 c 117.444488,3.574935 82.924828,10.482804 -1.589599,2.408177"
+       id="path14"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="m 146.06104,81.643452 c 25.8388,-33.733999 41.44975,-23.685574 3.22985,0.897181"
+       id="path15" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="M 130.33157,97.351976 114.16792,133.3234"
+       id="path16"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g10-4"
+       inkscape:connection-end="#g5-7-3-6" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="M 109.20074,147.20101 88.729975,224.01202"
+       id="path17"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g5-7-3-6"
+       inkscape:connection-end="#g5-76" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="M 49.414161,97.985107 39.684255,120.30971"
+       id="path18"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:connection-end="#g10-4-8"
+       inkscape:connection-start="#g5-7-3" />
+    <path
+       style="fill:#ffffff;stroke:#000000;stroke-width:0.499999;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7-0)"
+       d="m 34.221919,117.903 c 5.203647,-29.606959 11.842785,-20.635151 2.870976,0.89719"
+       id="path20-0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="m 50.542839,129.75565 43.555885,7.56311"
+       id="path21"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g10-4-8"
+       inkscape:connection-end="#g5-7-3-6" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;white-space:pre;inline-size:90.3152;display:inline;opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       x="4.306468"
+       y="8.612936"
+       id="text22"><tspan
+         x="4.306468"
+         y="8.612936"
+         id="tspan1">All assuming that we may have criss-crossing messages, but </tspan><tspan
+         x="4.306468"
+         y="12.581687"
+         id="tspan2">with no consideration for reordered messages; receive </tspan><tspan
+         x="4.306468"
+         y="16.550437"
+         id="tspan3">situations not covered by arrows going out from a state </tspan><tspan
+         x="4.306468"
+         y="20.519187"
+         id="tspan4">require older key material.
+</tspan><tspan
+         x="4.306468"
+         y="24.487937"
+         id="tspan5">
+</tspan><tspan
+         x="4.306468"
+         y="28.456687"
+         id="tspan6">Any failed decrypts are errors as usual, and send the state </tspan><tspan
+         x="4.306468"
+         y="32.425437"
+         id="tspan7">back whence it came from.</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;font-variation-settings:normal;white-space:pre;inline-size:77.2164;display:inline;vector-effect:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       x="4.306468"
+       y="8.612936"
+       id="text22-2"
+       transform="translate(125.02316,213.90937)"><tspan
+         x="4.306468"
+         y="8.612936"
+         id="tspan8">Note that the &quot;receive&quot; tables do not differ between </tspan><tspan
+         x="4.306468"
+         y="12.581687"
+         id="tspan11">&quot;ahead&quot; and &quot;behind&quot;; only for sending there is a </tspan><tspan
+         x="4.306468"
+         y="16.550437"
+         id="tspan12">difference (and that's taking &quot;do I know the peer's </tspan><tspan
+         x="4.306468"
+         y="20.519187"
+         id="tspan13">nonce&quot; into account). The distinction between </tspan><tspan
+         x="4.306468"
+         y="24.487937"
+         id="tspan14">&quot;ahead&quot; and &quot;behind&quot; matters more from the </tspan><tspan
+         x="4.306468"
+         y="28.456687"
+         id="tspan15">perspective of coupled state machines than for </tspan><tspan
+         x="4.306468"
+         y="32.425437"
+         id="tspan16">implementations.</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker7)"
+       d="M 119.56794,90.447616 70.036951,90.889353"
+       id="path25"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-end="#g5-7-3"
+       inkscape:connection-start="#g10-4" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker7);marker-end:url(#marker7)"
+       d="m 37.904047,134.36675 3.654193,20.01702"
+       id="path26"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g10-4-8"
+       inkscape:connection-end="#g5-7-3-4-8" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker7);marker-end:url(#marker7)"
+       d="M 80.139205,38.045067 145.65921,27.94356"
+       id="path27"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#g5"
+       inkscape:connection-end="#g5-7-1" />
+  </g>
+</svg>
