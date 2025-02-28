@@ -482,7 +482,9 @@ Table of Contents
    concatenation of input1_cbor and input2_cbor.  In order for
    updateCtx() to be agnostic of the order the nonce values were
    exchanged, the input1_cbor and input2_cbor value are first sorted in
-   lexicographical order before they are concatenated.
+   lexicographical order before they are concatenated.  E.g. if
+   input1_cbor comes before input2_cbor in lexicographical ordering,
+   then X_N takes the value input1_cbor | input2_cbor and vice-versa.
 
    After that, the updateCtx() function derives the new values of the
    Master Secret and Master Salt for CTX_OUT.  In particular, the new
@@ -670,7 +672,8 @@ Table of Contents
    derive a new OSCORE Security Context.  As for any new OSCORE Security
    Context, the Sender Sequence Number and the Replay Window are re-
    initialized accordingly (see Section 3.2.2 of [RFC8613]).
-   Specifically, the input to updateCtx() is built as follows:
+   Specifically, the input to updateCtx() is built as follows, where |
+   denotes byte concatenation:
 
    *  Protecting a divergent outgoing message: Input1 is X1 | N1, and
       input2 is 0x.  The output is CTX_TEMP.
