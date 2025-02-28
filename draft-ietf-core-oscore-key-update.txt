@@ -1358,6 +1358,9 @@ Table of Contents
       using CTX_NEW.  If decryption fails, a second attempt can use
       CTX_OLD.
 
+   *  KUDOS messages MUST NOT be protected or unprotected by using
+      CTX_OLD.
+
    *  When an amount of time defined by the policy has elapsed since the
       establishment of CTX_NEW, the peer deletes CTX_OLD.
 

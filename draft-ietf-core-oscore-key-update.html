@@ -2202,7 +2202,10 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
             <p id="section-4.6-3.2.1">Incoming non KUDOS messages <span class="bcp14">MUST</span> first be attempted to decrypt by using CTX_NEW. If decryption fails, a second attempt can use CTX_OLD.<a href="#section-4.6-3.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.6-3.3">
-            <p id="section-4.6-3.3.1">When an amount of time defined by the policy has elapsed since the establishment of CTX_NEW, the peer deletes CTX_OLD.<a href="#section-4.6-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-4.6-3.3.1">KUDOS messages <span class="bcp14">MUST NOT</span> be protected or unprotected by using CTX_OLD.<a href="#section-4.6-3.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.6-3.4">
+            <p id="section-4.6-3.4.1">When an amount of time defined by the policy has elapsed since the establishment of CTX_NEW, the peer deletes CTX_OLD.<a href="#section-4.6-3.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.6-4">A peer <span class="bcp14">MUST NOT</span> retain CTX_OLD beyond the establishment of CTX_NEW and the achievement of key confirmation, if any of the following conditions holds: CTX_OLD is expired; limits set for safe key usage have been reached <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>, for the Recipient Key of the Recipient Context of CTX_OLD.<a href="#section-4.6-4" class="pilcrow">¶</a></p>
