@@ -613,8 +613,10 @@ Table of Contents
    Before starting KUDOS, the two peers share the OSCORE Security
    Context CTX_OLD.  Once successfully completed the KUDOS execution,
    the two peers agree on a newly established OSCORE Security Context
-   CTX_NEW that replaces CTX_OLD.  The latter can be safely deleted upon
-   receiving key confirmation from the other peer.
+   CTX_NEW that replaces CTX_OLD.  During the execution of KUDOS,
+   temporary OSCORE Security Contexts, denoted CTX_TEMP, are dervied.
+   CTX_OLD can be safely deleted upon receiving key confirmation from
+   the other peer.
 
    In particular, CTX_OLD is the most recent OSCORE Security Context
    that a peer has with a given ID Context or without ID Context, before
@@ -671,13 +673,13 @@ Table of Contents
    Specifically, the input to updateCtx() is built as follows:
 
    *  Protecting a divergent outgoing message: Input1 is X1 | N1, and
-      input2 is 0x
+      input2 is 0x.  The output is CTX_TEMP.
 
    *  Unprotecting a divergent incoming message: Input1 is X2 | N2, and
-      input2 is 0x
+      input2 is 0x.  The output is CTX_TEMP.
 
    *  (Un)protecting a convergent message: Input1 is X1 | N1, and input2
-      is X2 | N2
+      is X2 | N2.  The output is CTX_NEW.
 
    A pair (X, nonce) offered by a peer is bound to CTX_OLD, and is
    reused as much as possible during the same KUDOS execution.  (X,
