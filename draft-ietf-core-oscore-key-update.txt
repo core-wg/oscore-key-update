@@ -106,7 +106,7 @@ Table of Contents
    7.  References
      7.1.  Normative References
      7.2.  Informative References
-   Appendix A.  Forward Message Flow using two CoAP Requests
+   Appendix A.  KUDOS using two CoAP Requests
    Appendix B.  Document Updates
      B.1.  Version -09 to -10
      B.2.  Version -08 to -09
@@ -619,11 +619,11 @@ Table of Contents
    In particular, CTX_OLD is the most recent OSCORE Security Context
    that a peer has with a given ID Context or without ID Context, before
    initiating the KUDOS procedure or upon having received and
-   successfully verified the first KUDOS message.  In turn, CTX_NEW is
-   the most recent OSCORE Security Context that a peer has with a given
-   ID Context or without ID Context, before sending the second KUDOS
-   message or upon having received and successfully verified the second
-   KUDOS message.
+   successfully verified the a divergent KUDOS message.  In turn,
+   CTX_NEW is the most recent OSCORE Security Context that a peer has
+   with a given ID Context or without ID Context, before sending a
+   convergent KUDOS message or upon having received and successfully
+   verified a convergent KUDOS message.
 
    The following specifically defines how KUDOS is run in its stateful
    FS mode achieving forward secrecy.  That is, in the OSCORE Option
@@ -651,15 +651,17 @@ Table of Contents
    [RFC4086] provides guidance on the generation of random values.
 
    Furthermore, X1 and X2 are the value of the 'x' byte specified in the
-   OSCORE Option of the first and second KUDOS message, respectively.
-   The X1 and X2 values are calculated by the sender peer based on: the
-   length of nonce N1 and N2, specified in the 'nonce' field of the
-   OSCORE Option of the first and second KUDOS message, respectively; as
-   well as on the specific settings the peer wishes to run KUDOS with.
-   Note that a peer may not change the value of the 'x' byte during a
-   KUDOS execution without restrictions.  Specifically, during the same
-   KUDOS execution, all the KUDOS messages sent by a peer must have the
-   same value in the bit 'b' for preserving ongoing observations.
+   OSCORE Option of a KUDOS message X1 and N1 are the 'x' byte and nonce
+   created by a peer, and X2 and N2 are the 'x' byte and nonce received
+   from the other peer.  The X1 and X2 values are calculated by the
+   sender peer based on: the length of nonce N1 and N2, specified in the
+   'nonce' field of the OSCORE Option of a KUDOS message, respectively;
+   as well as on the specific settings the peer wishes to run KUDOS
+   with.  Note that a peer may not change the value of the 'x' byte
+   during a KUDOS execution without restrictions.  Specifically, during
+   the same KUDOS execution, all the KUDOS messages sent by a peer must
+   have the same value in the bit 'b' for preserving ongoing
+   observations.
 
    N1, N2, X1, and X2 are used by the peers to build the 'input1' and
    'input2' values provided to the updateCtx() function, in order to
@@ -714,8 +716,8 @@ Table of Contents
 
 4.3.3.  Avoiding In-Transit Requests During a Key Update
 
-   Before sending a KUDOS message, the initiator MUST ensure that it has
-   no outstanding interactions with the other peer (see Section 4.7 of
+   Before sending a KUDOS message, the peer MUST ensure that it has no
+   outstanding interactions with the other peer (see Section 4.7 of
    [RFC7252]), with the exception of ongoing observations [RFC7641].
 
    If any such outstanding interactions are found, the peer MUST NOT
@@ -929,8 +931,8 @@ Table of Contents
 
    The following properties hold for a execution of KUDOS.
 
-   *  Both the initiator and the responder use and preserve the same
-      respective OSCORE Sender ID and Recipient ID.
+   *  Both the peers use and preserve the same respective OSCORE Sender
+      ID and Recipient ID.
 
    *  If CTX_OLD specifies an OSCORE ID Context, both peers use and
       preserve the same OSCORE ID Context.
@@ -947,9 +949,9 @@ Table of Contents
       execution of KUDOS, both the following conditions hold:
 
       -  CTX_DEL was used for deriving the OSCORE Security Context
-         CTX_TEMP used to protect the first KUDOS message; and
+         CTX_TEMP used to protect the divergent KUDOS message; and
 
-      -  CTX_OLD was used to protect the second KUDOS message.
+      -  CTX_OLD was used to protect the convergent KUDOS message.
 
    Note that if the procedure for updating IDs is run there may be a
    change of Sender/Recipient IDs between CTX_DEL and CTX_OLD.  The way
@@ -1157,8 +1159,7 @@ Table of Contents
    *  If a peer A is a CAPABLE device and has learned that another peer
       B is also a CAPABLE device (and hence able to run KUDOS in FS
       mode), then the peer A MUST NOT run KUDOS with the peer B in no-FS
-      mode.  This also means that, if the peer A acts as responder when
-      running KUDOS with the peer B, the peer A MUST terminate the KUDOS
+      mode.  This also means that peer A MUST terminate the KUDOS
       execution if it receives a KUDOS message from the peer B where the
       'p' bit of the 'x' byte in the OSCORE Option value is set to 1.
 
@@ -1278,14 +1279,14 @@ Table of Contents
    Observations", 'b', in the 'x' byte of the OSCORE Option value (see
    Section 4.1), in the KUDOS message it sends to the other peer B.
 
-   If a peer acting as responder receives the first KUDOS message with
-   the bit 'b' set to 0, then the peer MUST set to 0 the bit 'b' in the
-   KUDOS message it sends as follow-up, regardless of its wish to
-   preserve ongoing observations with the other peer.
+   If a peer acting receives a KUDOS message with the bit 'b' set to 0,
+   then the peer MUST set to 0 the bit 'b' in the KUDOS message it sends
+   as follow-up, regardless of its wish to preserve ongoing observations
+   with the other peer.
 
-   If a peer acting as initiator has sent the first KUDOS message with
-   the bit 'b' set to 0, the peer MUST ignore the bit 'b' in the follow-
-   up KUDOS message that it receives from the other peer.
+   If a peer acting has sent a KUDOS message with the bit 'b' set to 0,
+   the peer MUST ignore the bit 'b' in the follow-up KUDOS message that
+   it receives from the other peer.
 
    After successfully completing the KUDOS execution (i.e., after having
    successfully derived the new OSCORE Security Context CTX_NEW), both
@@ -1393,11 +1394,10 @@ Table of Contents
    corresponding request from the CoAP client that started the
    observation was protected with CTX_OLD.
 
-   Another case is when running KUDOS in the reverse message flow, if
-   the client uses NSTART > 1 and one of its requests triggers a KUDOS
-   execution, i.e., the server replies with the first KUDOS message by
-   acting as responder.  The other requests would be latest served by
-   the server after KUDOS has been completed.
+   Another case is when running KUDOS, if the client uses NSTART > 1 and
+   one of its requests triggers a KUDOS execution, i.e., the server
+   replies with a divergent KUDOS message.  The other requests would be
+   latest served by the server after KUDOS has been completed.
 
 4.7.2.  Communication Overhead
 
@@ -1412,12 +1412,6 @@ Table of Contents
    *  The nonce conveyed in the 'nonce' field of the OSCORE Option.  Its
       size ranges from 1 to 16 bytes as indicated in the 'x' byte, and
       is typically of 8 bytes.
-
-   *  The byte 'y' of the OSCORE Option value, if present.
-
-   *  The nonce conveyed in the 'old_nonce' field of the OSCORE Option
-      value, if present.  When present, its size ranges from 1 to 16
-      bytes as indicated in the 'y' byte, and is typically of 8 bytes.
 
    *  The 'Partial IV' parameter of the OSCORE Option value, in a CoAP
       response message that is a KUDOS message.
@@ -1441,11 +1435,12 @@ Table of Contents
       case where the length of the OSCORE Option value is between 13 and
       255 bytes (see Section 2 of [RFC8613]).
 
-   The results shown below are the minimum, typical, and maximum
-   communication overhead introduced by KUDOS, when considering a nonce
-   with size 1, 8, and 16 bytes.  Table 1 and Table 2 refer to the KUDOS
-   forward message flow and reverse message flow, respectively.  All the
-   indicated values are in bytes.
+   The results shown in figure {table-overhead-forward} are the minimum,
+   typical, and maximum communication overhead introduced by KUDOS, when
+   considering a nonce with size 1, 8, and 16 bytes.  All the indicated
+   values are in bytes.  The overhead is calculated based on a scenario
+   of a CoAP request serving as the divergent message, followed by a
+   CoAP response server as the convergent message.
 
    In particular, the shown results build on the following assumptions.
 
@@ -1462,29 +1457,18 @@ Table of Contents
    *  CoAP response messages do not include the 'kid' parameter in the
       OSCORE Option value.
 
-    +============+=====================+======================+=======+
-    | Nonce size | First KUDOS message | Second KUDOS message | Total |
-    +============+=====================+======================+=======+
-    | 1          | 3                   | 5                    | 8     |
-    +------------+---------------------+----------------------+-------+
-    | 8          | 11                  | 12                   | 23    |
-    +------------+---------------------+----------------------+-------+
-    | 16         | 19                  | 21                   | 40    |
-    +------------+---------------------+----------------------+-------+
+      +============+=======================+===============+=======+
+      | Nonce size | Request KUDOS message | Response      | Total |
+      |            |                       | KUDOS message |       |
+      +============+=======================+===============+=======+
+      | 1          | 3                     | 5             | 8     |
+      +------------+-----------------------+---------------+-------+
+      | 8          | 11                    | 12            | 23    |
+      +------------+-----------------------+---------------+-------+
+      | 16         | 19                    | 21            | 40    |
+      +------------+-----------------------+---------------+-------+
 
-           Table 1: Communication overhead (forward message flow)
-
-    +============+=====================+======================+=======+
-    | Nonce size | First KUDOS message | Second KUDOS message | Total |
-    +============+=====================+======================+=======+
-    | 1          | 5                   | 5                    | 10    |
-    +------------+---------------------+----------------------+-------+
-    | 8          | 12                  | 20                   | 32    |
-    +------------+---------------------+----------------------+-------+
-    | 16         | 21                  | 36                   | 57    |
-    +------------+---------------------+----------------------+-------+
-
-           Table 2: Communication overhead (reverse message flow)
+            Table 1: Communication overhead (request-response)
 
 4.7.3.  Resource Type core.kudos
 
@@ -1502,13 +1486,13 @@ Table of Contents
 
    According to this specification, KUDOS is transferred in POST
    requests and 2.04 (Changed) responses.  If a client wishes to execute
-   the KUDOS procedure as initiator without triggering any application
-   processing on the server, then the request sent as first KUDOS
-   message can target a KUDOS resource with resource type "core.kudos"
-   (see Section 4.7.3), e.g., at the Uri-Path "/.well-known/kudos" (see
-   Section 6.4).  An alternative KUDOS resource can be discovered, e.g.,
-   by using a resource directory [RFC9176], by using the resource type
-   "core.kudos" as filter criterion.
+   the KUDOS procedure without triggering any application processing on
+   the server, then a request sent as a KUDOS message can target a KUDOS
+   resource with resource type "core.kudos" (see Section 4.7.3), e.g.,
+   at the Uri-Path "/.well-known/kudos" (see Section 6.4).  An
+   alternative KUDOS resource can be discovered, e.g., by using a
+   resource directory [RFC9176], by using the resource type "core.kudos"
+   as filter criterion.
 
 4.7.5.  Rekeying when Using SCHC with OSCORE
 
@@ -1574,7 +1558,7 @@ Table of Contents
      |      |          | KUDOS in no-FS mode only.                   |
      +------+----------+---------------------------------------------+
 
-              Table 3: Values for the EDHOC EAD item KUDOS_EAD
+              Table 2: Values for the EDHOC EAD item KUDOS_EAD
 
    When the KUDOS_EAD item is included in EDHOC message_1 with
    'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item
@@ -1774,7 +1758,7 @@ Table of Contents
    |          |             | OSCORE flag bits 56-63     |            |
    +----------+-------------+----------------------------+------------+
 
-         Table 4: Registrations in the OSCORE Flag Bits Registry
+         Table 3: Registrations in the OSCORE Flag Bits Registry
 
    In the same registry, IANA is asked to mark as 'Unassigned' the entry
    with Bit Position of 1, i.e., to update the entry as follows.
@@ -1785,7 +1769,7 @@ Table of Contents
           | 1            | Unassigned |             |           |
           +--------------+------------+-------------+-----------+
 
-              Table 5: Update in the OSCORE Flag Bits Registry
+              Table 4: Update in the OSCORE Flag Bits Registry
 
 6.2.  CoAP Option Numbers Registry
 
@@ -1807,7 +1791,7 @@ Table of Contents
        |       | supports KUDOS and in which mode(s) |            |
        +-------+-------------------------------------+------------+
 
-               Table 6: Registrations in the EDHOC External
+               Table 5: Registrations in the EDHOC External
                        Authorization Data Registry
 
 6.4.  The Well-Known URI Registry
@@ -1990,11 +1974,10 @@ Table of Contents
               and PQ3", February 2024,
               <https://eprint.iacr.org/2024/220>.
 
-Appendix A.  Forward Message Flow using two CoAP Requests
+Appendix A.  KUDOS using two CoAP Requests
 
-   This section presents an example of KUDOS run in the forward message
-   flow, with the client acting as KUDOS initiator, and both KUDOS
-   messages being CoAP requests.
+   This section presents an example of KUDOS with the client acting as
+   KUDOS initiator, and both KUDOS messages being CoAP requests.
 
    TODO
 

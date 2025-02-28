@@ -1279,7 +1279,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-forward-message-flow-using-" class="internal xref">Forward Message Flow using two CoAP Requests</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-kudos-using-two-coap-reques" class="internal xref">KUDOS using two CoAP Requests</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
@@ -1635,7 +1635,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 <p id="section-4.3-2">A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage <span>[<a href="#I-D.ietf-core-oscore-key-limits" class="cite xref">I-D.ietf-core-oscore-key-limits</a>]</span>, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3-3">The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer <span class="bcp14">MUST</span> stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <p id="section-4.3-4">Before starting KUDOS, the two peers share the OSCORE Security Context CTX_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX_NEW that replaces CTX_OLD. The latter can be safely deleted upon receiving key confirmation from the other peer.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
-<p id="section-4.3-5">In particular, CTX_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the first KUDOS message. In turn, CTX_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending the second KUDOS message or upon having received and successfully verified the second KUDOS message.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+<p id="section-4.3-5">In particular, CTX_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the a divergent KUDOS message. In turn, CTX_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending a convergent KUDOS message or upon having received and successfully verified a convergent KUDOS message.<a href="#section-4.3-5" class="pilcrow">¶</a></p>
 <p id="section-4.3-6">The following specifically defines how KUDOS is run in its stateful FS mode achieving forward secrecy. That is, in the OSCORE Option value of all the exchanged KUDOS messages, the "No Forward Secrecy" bit is set to 0.<a href="#section-4.3-6" class="pilcrow">¶</a></p>
 <p id="section-4.3-7">In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX_NEW, the peers <span class="bcp14">MUST</span> store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.1" class="relref">Section 3.2.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. If the peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.4</a>).<a href="#section-4.3-7" class="pilcrow">¶</a></p>
 <div id="ssec-nonces-x-bytes">
@@ -1644,7 +1644,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 <a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-nonces-and-x-bytes" class="section-name selfRef">Nonces and X Bytes</a>
           </h4>
 <p id="section-4.3.1-1">When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is <span class="bcp14">RECOMMENDED</span>. The nonces N1 and N2 <span class="bcp14">MUST</span> be random values, with the possible exception described later in <a href="#key-material-handling" class="auto internal xref">Section 4.4.1</a>. Note that a good amount of randomness is important for the nonce generation. <span>[<a href="#RFC4086" class="cite xref">RFC4086</a>]</span> provides guidance on the generation of random values.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.1-2">Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of the first and second KUDOS message, respectively. The X1 and X2 values are calculated by the sender peer based on: the length of nonce N1 and N2, specified in the 'nonce' field of the OSCORE Option of the first and second KUDOS message, respectively; as well as on the specific settings the peer wishes to run KUDOS with. Note that a peer may not change the value of the 'x' byte during a KUDOS execution without restrictions. Specifically, during the same KUDOS execution, all the KUDOS messages sent by a peer must have the same value in the bit 'b' for preserving ongoing observations.<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-2">Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Option of a KUDOS message X1 and N1 are the 'x' byte and nonce created by a peer, and X2 and N2 are the 'x' byte and nonce received from the other peer. The X1 and X2 values are calculated by the sender peer based on: the length of nonce N1 and N2, specified in the 'nonce' field of the OSCORE Option of a KUDOS message, respectively; as well as on the specific settings the peer wishes to run KUDOS with. Note that a peer may not change the value of the 'x' byte during a KUDOS execution without restrictions. Specifically, during the same KUDOS execution, all the KUDOS messages sent by a peer must have the same value in the bit 'b' for preserving ongoing observations.<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.3.1-3">N1, N2, X1, and X2 are used by the peers to build the 'input1' and 'input2' values provided to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.2" class="relref">Section 3.2.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>). Specifically, the input to updateCtx() is built as follows:<a href="#section-4.3.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.1-4.1">
@@ -1683,7 +1683,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
           <h4 id="name-avoiding-in-transit-request">
 <a href="#section-4.3.3" class="section-number selfRef">4.3.3. </a><a href="#name-avoiding-in-transit-request" class="section-name selfRef">Avoiding In-Transit Requests During a Key Update</a>
           </h4>
-<p id="section-4.3.3-1">Before sending a KUDOS message, the initiator <span class="bcp14">MUST</span> ensure that it has no outstanding interactions with the other peer (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>), with the exception of ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>.<a href="#section-4.3.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-1">Before sending a KUDOS message, the peer <span class="bcp14">MUST</span> ensure that it has no outstanding interactions with the other peer (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>), with the exception of ongoing observations <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>.<a href="#section-4.3.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3.3-2">If any such outstanding interactions are found, the peer <span class="bcp14">MUST NOT</span> initiate or continue the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the other peer.<a href="#section-4.3.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3.3-3">Later on, this prevents a non KUDOS response protected with the new Security Context CTX_NEW from cryptographically matching with both the corresponding request also protected with CTX_NEW and with an older request protected with CTX_OLD, in case the two requests were protected using the same OSCORE Partial IV.<a href="#section-4.3.3-3" class="pilcrow">¶</a></p>
 <p id="section-4.3.3-4">During an ongoing KUDOS execution, a peer <span class="bcp14">MUST NOT</span> send a non KUDOS message to the other peer, until having aborted or successfully completed the key update process on its side. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>).<a href="#section-4.3.3-4" class="pilcrow">¶</a></p>
@@ -1963,7 +1963,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 <p id="section-4.3.6-2">The following properties hold for a execution of KUDOS.<a href="#section-4.3.6-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.6-3.1">
-              <p id="section-4.3.6-3.1.1">Both the initiator and the responder use and preserve the same respective OSCORE Sender ID and Recipient ID.<a href="#section-4.3.6-3.1.1" class="pilcrow">¶</a></p>
+              <p id="section-4.3.6-3.1.1">Both the peers use and preserve the same respective OSCORE Sender ID and Recipient ID.<a href="#section-4.3.6-3.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.3.6-3.2">
               <p id="section-4.3.6-3.2.1">If CTX_OLD specifies an OSCORE ID Context, both peers use and preserve the same OSCORE ID Context.<a href="#section-4.3.6-3.2.1" class="pilcrow">¶</a></p>
@@ -1978,10 +1978,10 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
               <p id="section-4.3.6-5.2.1">The peer <span class="bcp14">MUST</span> delete the OSCORE Security Context CTX_DEL older than CTX_OLD such that, with reference to the immediately previous execution of KUDOS, both the following conditions hold:<a href="#section-4.3.6-5.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.6-5.2.2.1">
-                  <p id="section-4.3.6-5.2.2.1.1">CTX_DEL was used for deriving the OSCORE Security Context CTX_TEMP used to protect the first KUDOS message; and<a href="#section-4.3.6-5.2.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-4.3.6-5.2.2.1.1">CTX_DEL was used for deriving the OSCORE Security Context CTX_TEMP used to protect the divergent KUDOS message; and<a href="#section-4.3.6-5.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-4.3.6-5.2.2.2">
-                  <p id="section-4.3.6-5.2.2.2.1">CTX_OLD was used to protect the second KUDOS message.<a href="#section-4.3.6-5.2.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-4.3.6-5.2.2.2.1">CTX_OLD was used to protect the convergent KUDOS message.<a href="#section-4.3.6-5.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -2107,7 +2107,7 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
               </ul>
 </li>
             <li class="normal" id="section-4.4.2-4.3">
-              <p id="section-4.4.2-4.3.1">If a peer A is a CAPABLE device and has learned that another peer B is also a CAPABLE device (and hence able to run KUDOS in FS mode), then the peer A <span class="bcp14">MUST NOT</span> run KUDOS with the peer B in no-FS mode. This also means that, if the peer A acts as responder when running KUDOS with the peer B, the peer A <span class="bcp14">MUST</span> terminate the KUDOS execution if it receives a KUDOS message from the peer B where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1.<a href="#section-4.4.2-4.3.1" class="pilcrow">¶</a></p>
+              <p id="section-4.4.2-4.3.1">If a peer A is a CAPABLE device and has learned that another peer B is also a CAPABLE device (and hence able to run KUDOS in FS mode), then the peer A <span class="bcp14">MUST NOT</span> run KUDOS with the peer B in no-FS mode. This also means that peer A <span class="bcp14">MUST</span> terminate the KUDOS execution if it receives a KUDOS message from the peer B where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1.<a href="#section-4.4.2-4.3.1" class="pilcrow">¶</a></p>
 <p id="section-4.4.2-4.3.2">
 Note that, if the peer A is a CAPABLE device, it is able to store such information about the other peer B on disk and it <span class="bcp14">MUST</span> do so. This ensures that the peer A will perform every execution of KUDOS with the peer B in FS mode. In turn, this prevents a possible downgrading attack, aimed at making A believe that B is a non-CAPABLE device, and thus to run KUDOS in no-FS mode although the FS mode can actually be used by both peers.<a href="#section-4.4.2-4.3.2" class="pilcrow">¶</a></p>
 </li>
@@ -2161,8 +2161,8 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
 <p id="section-4.5.1-3">If the client receives back the successful response above from the server, then the client also registers the observation as ongoing.<a href="#section-4.5.1-3" class="pilcrow">¶</a></p>
 <p id="section-4.5.1-4">In case the client can ever consider to preserve ongoing observations beyond a key update as defined below, then the client <span class="bcp14">MUST NOT</span> simply forget about an ongoing observation if not interested in it anymore. Instead, the client <span class="bcp14">MUST</span> send an explicit cancellation request to the server, i.e., a request including the Observe Option with value 1 (see <span><a href="https://rfc-editor.org/rfc/rfc7641#section-3.6" class="relref">Section 3.6</a> of [<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client <span class="bcp14">MUST NOT</span> consider the observation terminated. The client <span class="bcp14">MAY</span> try again to terminate the observation by sending a new cancellation request.<a href="#section-4.5.1-4" class="pilcrow">¶</a></p>
 <p id="section-4.5.1-5">In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve beyond the key update, then A can explicitly indicate its interest to do so. To this end, the peer A sets to 1 the bit "Preserve Observations", 'b', in the 'x' byte of the OSCORE Option value (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>), in the KUDOS message it sends to the other peer B.<a href="#section-4.5.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.5.1-6">If a peer acting as responder receives the first KUDOS message with the bit 'b' set to 0, then the peer <span class="bcp14">MUST</span> set to 0 the bit 'b' in the KUDOS message it sends as follow-up, regardless of its wish to preserve ongoing observations with the other peer.<a href="#section-4.5.1-6" class="pilcrow">¶</a></p>
-<p id="section-4.5.1-7">If a peer acting as initiator has sent the first KUDOS message with the bit 'b' set to 0, the peer <span class="bcp14">MUST</span> ignore the bit 'b' in the follow-up KUDOS message that it receives from the other peer.<a href="#section-4.5.1-7" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-6">If a peer acting receives a KUDOS message with the bit 'b' set to 0, then the peer <span class="bcp14">MUST</span> set to 0 the bit 'b' in the KUDOS message it sends as follow-up, regardless of its wish to preserve ongoing observations with the other peer.<a href="#section-4.5.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-7">If a peer acting has sent a KUDOS message with the bit 'b' set to 0, the peer <span class="bcp14">MUST</span> ignore the bit 'b' in the follow-up KUDOS message that it receives from the other peer.<a href="#section-4.5.1-7" class="pilcrow">¶</a></p>
 <p id="section-4.5.1-8">After successfully completing the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX_NEW), both peers have expressed their interest in preserving their common ongoing observations if and only if the bit 'b' was set to 1 in both the exchanged KUDOS messages. In such a case, each peer X performs the following actions.<a href="#section-4.5.1-8" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.5.1-9">
 <li id="section-4.5.1-9.1">
@@ -2222,7 +2222,7 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
           </h4>
 <p id="section-4.7.1-1">During a KUDOS execution, a peer that is a CoAP Client must be ready to receive CoAP responses that are not KUDOS messages and that are protected with a different OSCORE Security Context than the one that was used to protect the corresponding request.<a href="#section-4.7.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.7.1-2">This can happen, for instance, when a CoAP client sends a request and, shortly after that, it executes KUDOS. In such a case, the CoAP request is protected with CTX_OLD, while the CoAP response from the server is protected with CTX_NEW. Another case is when incoming responses are Observe notifications protected with CTX_NEW, while the corresponding request from the CoAP client that started the observation was protected with CTX_OLD.<a href="#section-4.7.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.7.1-3">Another case is when running KUDOS in the reverse message flow, if the client uses NSTART &gt; 1 and one of its requests triggers a KUDOS execution, i.e., the server replies with the first KUDOS message by acting as responder. The other requests would be latest served by the server after KUDOS has been completed.<a href="#section-4.7.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.7.1-3">Another case is when running KUDOS, if the client uses NSTART &gt; 1 and one of its requests triggers a KUDOS execution, i.e., the server replies with a divergent KUDOS message. The other requests would be latest served by the server after KUDOS has been completed.<a href="#section-4.7.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="communication-overhead">
@@ -2242,26 +2242,20 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
               <p id="section-4.7.2-2.3.1">The nonce conveyed in the 'nonce' field of the OSCORE Option. Its size ranges from 1 to 16 bytes as indicated in the 'x' byte, and is typically of 8 bytes.<a href="#section-4.7.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.7.2-2.4">
-              <p id="section-4.7.2-2.4.1">The byte 'y' of the OSCORE Option value, if present.<a href="#section-4.7.2-2.4.1" class="pilcrow">¶</a></p>
+              <p id="section-4.7.2-2.4.1">The 'Partial IV' parameter of the OSCORE Option value, in a CoAP response message that is a KUDOS message.<a href="#section-4.7.2-2.4.1" class="pilcrow">¶</a></p>
+<p id="section-4.7.2-2.4.2">
+This takes into account the fact that OSCORE-protected CoAP response messages normally do not include the 'Partial IV' parameter, but they have to when they are KUDOS messages (see Section 3).<a href="#section-4.7.2-2.4.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.7.2-2.5">
-              <p id="section-4.7.2-2.5.1">The nonce conveyed in the 'old_nonce' field of the OSCORE Option value, if present. When present, its size ranges from 1 to 16 bytes as indicated in the 'y' byte, and is typically of 8 bytes.<a href="#section-4.7.2-2.5.1" class="pilcrow">¶</a></p>
+              <p id="section-4.7.2-2.5.1">The first byte of the OSCORE Option value (i.e., the first OSCORE flag byte), in a CoAP response message that is a KUDOS message.<a href="#section-4.7.2-2.5.1" class="pilcrow">¶</a></p>
+<p id="section-4.7.2-2.5.2">
+This takes into account the fact that OSCORE-protected CoAP response messages normally convey an OSCORE Option that only consists of the all zero (0x00) flag byte. In turn, this results in the OSCORE Option being encoded as with empty value (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-2" class="relref">Section 2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.7.2-2.5.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.7.2-2.6">
-              <p id="section-4.7.2-2.6.1">The 'Partial IV' parameter of the OSCORE Option value, in a CoAP response message that is a KUDOS message.<a href="#section-4.7.2-2.6.1" class="pilcrow">¶</a></p>
-<p id="section-4.7.2-2.6.2">
-This takes into account the fact that OSCORE-protected CoAP response messages normally do not include the 'Partial IV' parameter, but they have to when they are KUDOS messages (see Section 3).<a href="#section-4.7.2-2.6.2" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-4.7.2-2.7">
-              <p id="section-4.7.2-2.7.1">The first byte of the OSCORE Option value (i.e., the first OSCORE flag byte), in a CoAP response message that is a KUDOS message.<a href="#section-4.7.2-2.7.1" class="pilcrow">¶</a></p>
-<p id="section-4.7.2-2.7.2">
-This takes into account the fact that OSCORE-protected CoAP response messages normally convey an OSCORE Option that only consists of the all zero (0x00) flag byte. In turn, this results in the OSCORE Option being encoded as with empty value (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-2" class="relref">Section 2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-4.7.2-2.7.2" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-4.7.2-2.8">
-              <p id="section-4.7.2-2.8.1">The possible presence of the 1-byte Option Length (extended) field in the OSCORE Option (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>). This is the case where the length of the OSCORE Option value is between 13 and 255 bytes (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-2" class="relref">Section 2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>).<a href="#section-4.7.2-2.8.1" class="pilcrow">¶</a></p>
+              <p id="section-4.7.2-2.6.1">The possible presence of the 1-byte Option Length (extended) field in the OSCORE Option (see <span><a href="https://rfc-editor.org/rfc/rfc7252#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>). This is the case where the length of the OSCORE Option value is between 13 and 255 bytes (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-2" class="relref">Section 2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>).<a href="#section-4.7.2-2.6.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-4.7.2-3">The results shown below are the minimum, typical, and maximum communication overhead introduced by KUDOS, when considering a nonce with size 1, 8, and 16 bytes. <a href="#_table-overhead-forward" class="auto internal xref">Table 1</a> and <a href="#_table-overhead-reverse" class="auto internal xref">Table 2</a> refer to the KUDOS forward message flow and reverse message flow, respectively. All the indicated values are in bytes.<a href="#section-4.7.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.7.2-3">The results shown in figure {table-overhead-forward} are the minimum, typical, and maximum communication overhead introduced by KUDOS, when considering a nonce with size 1, 8, and 16 bytes. All the indicated values are in bytes. The overhead is calculated based on a scenario of a CoAP request serving as the divergent message, followed by a CoAP response server as the convergent message.<a href="#section-4.7.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.7.2-4">In particular, the shown results build on the following assumptions.<a href="#section-4.7.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.7.2-5.1">
@@ -2277,17 +2271,17 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
               <p id="section-4.7.2-5.4.1">CoAP response messages do not include the 'kid' parameter in the OSCORE Option value.<a href="#section-4.7.2-5.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<span id="name-communication-overhead-forw"></span><div id="_table-overhead-forward">
+<span id="name-communication-overhead-requ"></span><div id="_table-overhead-forward">
 <table class="center" id="table-1">
             <caption>
 <a href="#table-1" class="selfRef">Table 1</a>:
-<a href="#name-communication-overhead-forw" class="selfRef">Communication overhead (forward message flow)</a>
+<a href="#name-communication-overhead-requ" class="selfRef">Communication overhead (request-response)</a>
             </caption>
 <thead>
               <tr>
                 <th class="text-left" rowspan="1" colspan="1">Nonce size</th>
-                <th class="text-left" rowspan="1" colspan="1">First KUDOS message</th>
-                <th class="text-left" rowspan="1" colspan="1">Second KUDOS message</th>
+                <th class="text-left" rowspan="1" colspan="1">Request KUDOS message</th>
+                <th class="text-left" rowspan="1" colspan="1">Response KUDOS message</th>
                 <th class="text-left" rowspan="1" colspan="1">Total</th>
               </tr>
             </thead>
@@ -2313,42 +2307,6 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
             </tbody>
           </table>
 </div>
-<span id="name-communication-overhead-reve"></span><div id="_table-overhead-reverse">
-<table class="center" id="table-2">
-            <caption>
-<a href="#table-2" class="selfRef">Table 2</a>:
-<a href="#name-communication-overhead-reve" class="selfRef">Communication overhead (reverse message flow)</a>
-            </caption>
-<thead>
-              <tr>
-                <th class="text-left" rowspan="1" colspan="1">Nonce size</th>
-                <th class="text-left" rowspan="1" colspan="1">First KUDOS message</th>
-                <th class="text-left" rowspan="1" colspan="1">Second KUDOS message</th>
-                <th class="text-left" rowspan="1" colspan="1">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="text-left" rowspan="1" colspan="1">1</td>
-                <td class="text-left" rowspan="1" colspan="1">5</td>
-                <td class="text-left" rowspan="1" colspan="1">5</td>
-                <td class="text-left" rowspan="1" colspan="1">10</td>
-              </tr>
-              <tr>
-                <td class="text-left" rowspan="1" colspan="1">8</td>
-                <td class="text-left" rowspan="1" colspan="1">12</td>
-                <td class="text-left" rowspan="1" colspan="1">20</td>
-                <td class="text-left" rowspan="1" colspan="1">32</td>
-              </tr>
-              <tr>
-                <td class="text-left" rowspan="1" colspan="1">16</td>
-                <td class="text-left" rowspan="1" colspan="1">21</td>
-                <td class="text-left" rowspan="1" colspan="1">36</td>
-                <td class="text-left" rowspan="1" colspan="1">57</td>
-              </tr>
-            </tbody>
-          </table>
-</div>
 </section>
 </div>
 <div id="core-kudos-resource-type">
@@ -2364,7 +2322,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
           <h4 id="name-well-known-kudos-resource">
 <a href="#section-4.7.4" class="section-number selfRef">4.7.4. </a><a href="#name-well-known-kudos-resource" class="section-name selfRef">Well-Known KUDOS Resource</a>
           </h4>
-<p id="section-4.7.4-1">According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure as initiator without triggering any application processing on the server, then the request sent as first KUDOS message can target a KUDOS resource with resource type "core.kudos" (see <a href="#core-kudos-resource-type" class="auto internal xref">Section 4.7.3</a>), e.g., at the Uri-Path "/.well-known/kudos" (see <a href="#well-known-kudos" class="auto internal xref">Section 6.4</a>). An alternative KUDOS resource can be discovered, e.g., by using a resource directory <span>[<a href="#RFC9176" class="cite xref">RFC9176</a>]</span>, by using the resource type "core.kudos" as filter criterion.<a href="#section-4.7.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.7.4-1">According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure without triggering any application processing on the server, then a request sent as a KUDOS message can target a KUDOS resource with resource type "core.kudos" (see <a href="#core-kudos-resource-type" class="auto internal xref">Section 4.7.3</a>), e.g., at the Uri-Path "/.well-known/kudos" (see <a href="#well-known-kudos" class="auto internal xref">Section 6.4</a>). An alternative KUDOS resource can be discovered, e.g., by using a resource directory <span>[<a href="#RFC9176" class="cite xref">RFC9176</a>]</span>, by using the resource type "core.kudos" as filter criterion.<a href="#section-4.7.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="rekeying-when-using-schc-with-oscore">
@@ -2388,9 +2346,9 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 <p id="section-4.8-1">The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see <span><a href="https://rfc-editor.org/rfc/rfc9528#section-3.8" class="relref">Section 3.8</a> of [<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer, and an optional 'ead_value' encoded as a CBOR bstr.<a href="#section-4.8-1" class="pilcrow">¶</a></p>
 <p id="section-4.8-2">This document defines a new EDHOC EAD item KUDOS_EAD and registers its 'ead_label' in <a href="#iana-edhoc-aad" class="auto internal xref">Section 6.3</a>. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, irrespective of the modes they support. A KUDOS peer <span class="bcp14">MUST</span> only use the EDHOC EAD item KUDOS_EAD as non-critical. That is, when included in an EDHOC message, its 'ead_label' <span class="bcp14">MUST</span> be used with positive sign. The possible values of the 'ead_value' are as follows:<a href="#section-4.8-2" class="pilcrow">¶</a></p>
 <span id="name-values-for-the-edhoc-ead-it"></span><div id="_table-kudos-ead">
-<table class="center" id="table-3">
+<table class="center" id="table-2">
           <caption>
-<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-values-for-the-edhoc-ead-it" class="selfRef">Values for the EDHOC EAD item KUDOS_EAD</a>
           </caption>
 <thead>
@@ -2538,9 +2496,9 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
         </h3>
 <p id="section-6.1-1">IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <span id="name-registrations-in-the-oscore"></span><div id="_table-iana-oscore-flag-bits">
-<table class="center" id="table-4">
+<table class="center" id="table-3">
           <caption>
-<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#table-3" class="selfRef">Table 3</a>:
 <a href="#name-registrations-in-the-oscore" class="selfRef">Registrations in the OSCORE Flag Bits Registry</a>
           </caption>
 <thead>
@@ -2605,9 +2563,9 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 </div>
 <p id="section-6.1-3">In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit Position of 1, i.e., to update the entry as follows.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 <span id="name-update-in-the-oscore-flag-b"></span><div id="_table-iana-oscore-flag-bits-2">
-<table class="center" id="table-5">
+<table class="center" id="table-4">
           <caption>
-<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#table-4" class="selfRef">Table 4</a>:
 <a href="#name-update-in-the-oscore-flag-b" class="selfRef">Update in the OSCORE Flag Bits Registry</a>
           </caption>
 <thead>
@@ -2645,9 +2603,9 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
         </h3>
 <p id="section-6.3-1">IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in <span><a href="https://rfc-editor.org/rfc/rfc9528#section-10.5" class="relref">Section 10.5</a> of [<a href="#RFC9528" class="cite xref">RFC9528</a>]</span> within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <span id="name-registrations-in-the-edhoc-"></span><div id="_table-iana-edhoc-ead">
-<table class="center" id="table-6">
+<table class="center" id="table-5">
           <caption>
-<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#table-5" class="selfRef">Table 5</a>:
 <a href="#name-registrations-in-the-edhoc-" class="selfRef">Registrations in the EDHOC External Authorization Data Registry</a>
           </caption>
 <thead>
@@ -2842,10 +2800,10 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 </div>
 <div id="ssec-derive-ctx-client-init-requests-only">
 <section id="appendix-A">
-      <h2 id="name-forward-message-flow-using-">
-<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-forward-message-flow-using-" class="section-name selfRef">Forward Message Flow using two CoAP Requests</a>
+      <h2 id="name-kudos-using-two-coap-reques">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-kudos-using-two-coap-reques" class="section-name selfRef">KUDOS using two CoAP Requests</a>
       </h2>
-<p id="appendix-A-1">This section presents an example of KUDOS run in the forward message flow, with the client acting as KUDOS initiator, and both KUDOS messages being CoAP requests.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">This section presents an example of KUDOS with the client acting as KUDOS initiator, and both KUDOS messages being CoAP requests.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <p id="appendix-A-2">TODO<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 </section>
 </div>
