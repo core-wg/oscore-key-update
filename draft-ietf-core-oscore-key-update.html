@@ -2163,25 +2163,26 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
 <p id="section-4.5.1-5">In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve beyond the key update, then A can explicitly indicate its interest to do so. To this end, the peer A sets to 1 the bit "Preserve Observations", 'b', in the 'x' byte of the OSCORE Option value (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>), in the KUDOS message it sends to the other peer B.<a href="#section-4.5.1-5" class="pilcrow">¶</a></p>
 <p id="section-4.5.1-6">If a peer acting receives a KUDOS message with the bit 'b' set to 0, then the peer <span class="bcp14">MUST</span> set to 0 the bit 'b' in the KUDOS message it sends as follow-up, regardless of its wish to preserve ongoing observations with the other peer.<a href="#section-4.5.1-6" class="pilcrow">¶</a></p>
 <p id="section-4.5.1-7">If a peer acting has sent a KUDOS message with the bit 'b' set to 0, the peer <span class="bcp14">MUST</span> ignore the bit 'b' in the follow-up KUDOS message that it receives from the other peer.<a href="#section-4.5.1-7" class="pilcrow">¶</a></p>
-<p id="section-4.5.1-8">After successfully completing the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX_NEW), both peers have expressed their interest in preserving their common ongoing observations if and only if the bit 'b' was set to 1 in both the exchanged KUDOS messages. In such a case, each peer X performs the following actions.<a href="#section-4.5.1-8" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.5.1-9">
-<li id="section-4.5.1-9.1">
-              <p id="section-4.5.1-9.1.1">The peer X considers all the still ongoing observations that it has with the other peer, such that X acts as client in those observations. If there are no such observations, the peer X takes no further actions. Otherwise, it moves to step 2.<a href="#section-4.5.1-9.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-8">Note that during the same KUDOS execution, all the KUDOS messages sent by a peer must have the same value in the bit 'b' for preserving ongoing observations.<a href="#section-4.5.1-8" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-9">After successfully completing the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX_NEW), both peers have expressed their interest in preserving their common ongoing observations if and only if the bit 'b' was set to 1 in both the exchanged KUDOS messages. In such a case, each peer X performs the following actions.<a href="#section-4.5.1-9" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.5.1-10">
+<li id="section-4.5.1-10.1">
+              <p id="section-4.5.1-10.1.1">The peer X considers all the still ongoing observations that it has with the other peer, such that X acts as client in those observations. If there are no such observations, the peer X takes no further actions. Otherwise, it moves to step 2.<a href="#section-4.5.1-10.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.5.1-9.2">
-              <p id="section-4.5.1-9.2.1">The peer X considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations determined at step 1.<a href="#section-4.5.1-9.2.1" class="pilcrow">¶</a></p>
+            <li id="section-4.5.1-10.2">
+              <p id="section-4.5.1-10.2.1">The peer X considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations determined at step 1.<a href="#section-4.5.1-10.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.5.1-9.3">
-              <p id="section-4.5.1-9.3.1">The peer X determines the value PIV* as the highest OSCORE Partial IV value among those considered at step 2.<a href="#section-4.5.1-9.3.1" class="pilcrow">¶</a></p>
+            <li id="section-4.5.1-10.3">
+              <p id="section-4.5.1-10.3.1">The peer X determines the value PIV* as the highest OSCORE Partial IV value among those considered at step 2.<a href="#section-4.5.1-10.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.5.1-9.4">
-              <p id="section-4.5.1-9.4.1">In the Sender Context of the OSCORE Security Context shared with the other peer, the peer X sets its own Sender Sequence Number to (PIV* + 1), rather than to 0.<a href="#section-4.5.1-9.4.1" class="pilcrow">¶</a></p>
+            <li id="section-4.5.1-10.4">
+              <p id="section-4.5.1-10.4.1">In the Sender Context of the OSCORE Security Context shared with the other peer, the peer X sets its own Sender Sequence Number to (PIV* + 1), rather than to 0.<a href="#section-4.5.1-10.4.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
-<p id="section-4.5.1-10">As a result, each peer X will "jump" beyond the OSCORE Partial IV (PIV) values that are occupied and in use for ongoing observations with the other peer where X acts as client.<a href="#section-4.5.1-10" class="pilcrow">¶</a></p>
-<p id="section-4.5.1-11">Note that, each time it runs KUDOS, a peer must determine if it wishes to preserve ongoing observations with the other peer or not, before sending its KUDOS message.<a href="#section-4.5.1-11" class="pilcrow">¶</a></p>
-<p id="section-4.5.1-12">To this end, the peer should also assess the new value that PIV* would take after a successful completion of KUDOS, in case ongoing observations with the other peer are going to be preserved. If the peer considers such a new value of PIV* to be too close to or equal to the maximum possible value admitted for the OSCORE Partial IV, then the peer may choose to run KUDOS with no intention to preserve its ongoing observations with the other peer, in order to "start over" from a fresh, entirely unused PIV space.<a href="#section-4.5.1-12" class="pilcrow">¶</a></p>
-<p id="section-4.5.1-13">Application policies can further influence whether attempting to preserve observations beyond a key update is appropriate or not.<a href="#section-4.5.1-13" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-11">As a result, each peer X will "jump" beyond the OSCORE Partial IV (PIV) values that are occupied and in use for ongoing observations with the other peer where X acts as client.<a href="#section-4.5.1-11" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-12">Note that, each time it runs KUDOS, a peer must determine if it wishes to preserve ongoing observations with the other peer or not, before sending its KUDOS message.<a href="#section-4.5.1-12" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-13">To this end, the peer should also assess the new value that PIV* would take after a successful completion of KUDOS, in case ongoing observations with the other peer are going to be preserved. If the peer considers such a new value of PIV* to be too close to or equal to the maximum possible value admitted for the OSCORE Partial IV, then the peer may choose to run KUDOS with no intention to preserve its ongoing observations with the other peer, in order to "start over" from a fresh, entirely unused PIV space.<a href="#section-4.5.1-13" class="pilcrow">¶</a></p>
+<p id="section-4.5.1-14">Application policies can further influence whether attempting to preserve observations beyond a key update is appropriate or not.<a href="#section-4.5.1-14" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

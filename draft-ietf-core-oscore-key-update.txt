@@ -1288,6 +1288,10 @@ Table of Contents
    the peer MUST ignore the bit 'b' in the follow-up KUDOS message that
    it receives from the other peer.
 
+   Note that during the same KUDOS execution, all the KUDOS messages
+   sent by a peer must have the same value in the bit 'b' for preserving
+   ongoing observations.
+
    After successfully completing the KUDOS execution (i.e., after having
    successfully derived the new OSCORE Security Context CTX_NEW), both
    peers have expressed their interest in preserving their common
