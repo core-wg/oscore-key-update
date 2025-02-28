@@ -339,7 +339,7 @@ A peer can run KUDOS for active rekeying at any time, or for a variety of more c
 
 The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer MUST stop using the keying material in the OSCORE Security Context for conventional communication with the other peer, and has to perform a rekeying before resuming secure communication.
 
-Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW that replaces CTX\_OLD. The latter can be safely deleted upon receiving key confirmation from the other peer.
+Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW that replaces CTX\_OLD. During the execution of KUDOS, temporary OSCORE Security Contexts, denoted CTX\_TEMP, are dervied. CTX\_OLD can be safely deleted upon receiving key confirmation from the other peer.
 
 In particular, CTX\_OLD is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before initiating the KUDOS procedure or upon having received and successfully verified the a divergent KUDOS message. In turn, CTX\_NEW is the most recent OSCORE Security Context that a peer has with a given ID Context or without ID Context, before sending a convergent KUDOS message or upon having received and successfully verified a convergent KUDOS message.
 
@@ -355,9 +355,9 @@ Furthermore, X1 and X2 are the value of the 'x' byte specified in the OSCORE Opt
 
 N1, N2, X1, and X2 are used by the peers to build the 'input1' and 'input2' values provided to the updateCtx() function, in order to derive a new OSCORE Security Context. As for any new OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}). Specifically, the input to updateCtx() is built as follows:
 
-* Protecting a divergent outgoing message: Input1 is X1 \| N1, and input2 is 0x
-* Unprotecting a divergent incoming message: Input1 is X2 \| N2, and input2 is 0x
-* (Un)protecting a convergent message: Input1 is X1 \| N1, and input2 is X2 \| N2
+* Protecting a divergent outgoing message: Input1 is X1 \| N1, and input2 is 0x. The output is CTX\_TEMP.
+* Unprotecting a divergent incoming message: Input1 is X2 \| N2, and input2 is 0x. The output is CTX\_TEMP.
+* (Un)protecting a convergent message: Input1 is X1 \| N1, and input2 is X2 \| N2. The output is CTX\_NEW.
 
 A pair (X, nonce) offered by a peer is bound to CTX\_OLD, and is reused as much as possible during the same KUDOS execution. (X, nonce) is generated before invoking updateCtx(), in case a pair is not already associated with the CTX\_OLD to use within updateCtx(). The newly generated pair is associated with CTX\_OLD before entering updateCtx().
 
