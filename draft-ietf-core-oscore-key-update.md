@@ -409,7 +409,7 @@ At startup, the peer enter a **Pre-IDLE** state.
 
 #### Pre-IDLE
 
-1. If the peer has any CTX_1 Security Contexts, delete them.
+1. If the peer has any CTX\_TEMP Security Contexts, delete them.
 2. If the peer has both an old and a new OSCORE Security Contexts:
     a. Delete the (X, nonce) pair associated with the old OSCORE Security Context.
     b. Delete the old OSCORE Security Context, or retain it only for processing of late incoming messages as allowed by retention policies.
@@ -447,13 +447,13 @@ While in the **BUSY** state, the peer must not send non-KUDOS messages.
     2. Move to **Pre-IDLE**.
 
 * @Sending divergent message while in **BUSY**
-    * If CTX_1 is usable to protect the intended divergent message, send the message and then stay in **BUSY**.
-    * If CTX_1 is not usable to protect the intended divergent message, perform the following steps. (E.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_1)
-        1. Delete CTX_1.
-        2. Delete the (X, nonce) pair associated with CTX_OLD, i.e., whichever was used as CTX_IN to generate the CTX_1 deleted at the previous step.
+    * If CTX\_TEMP is usable to protect the intended divergent message, send the message and then stay in **BUSY**.
+    * If CTX\_TEMP is not usable to protect the intended divergent message, perform the following steps. (E.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX\_TEMP)
+        1. Delete CTX\_TEMP.
+        2. Delete the (X, nonce) pair associated with CTX_OLD, i.e., whichever was used as CTX_IN to generate the CTX\_TEMP deleted at the previous step.
         3. Generate a new (X, nonce) pair and associate it with CTX_OLD.
-        4. Generate a new CTX_1 from CTX_OLD.
-        5. Send the intended divergent message protected with the CTX_1 generated at the previous step.
+        4. Generate a new CTX\_TEMP from CTX_OLD.
+        5. Send the intended divergent message protected with the CTX\_TEMP generated at the previous step.
         6. Stay in **BUSY**.
 
 #### Pending
@@ -472,14 +472,14 @@ While in the **PENDING** state, the peer must not send non-KUDOS messages.
     2. Stay in **PENDING**.
 
 * @Receiving a divergent message while in **PENDING**
-     * If decryption and verification of the divergent message work using a CTX_1 derived from CTX_OLD:
+     * If decryption and verification of the divergent message work using a CTX\_TEMP derived from CTX_OLD:
         1. Delete CTX_NEW.
         2. Delete the pair (X, nonce) associated with CTX_OLD, i.e., whichever was used as CTX_IN to generate the CTX_NEW deleted at the previous step.
         3. Abort the ongoing KUDOS execution.
         4. Move to **BUSY**.
-    * If decryption and verification of the divergent message work using a CTX_1 derived from CTX_NEW:
-        1. Delete the oldest CTX_1
-        2. Delete CTX_OLD, i.e., whichever of the two was used as CTX_IN to generate the CTX_1 deleted at the previous step.
+    * If decryption and verification of the divergent message work using a CTX\_TEMP derived from CTX_NEW:
+        1. Delete the oldest CTX\_TEMP
+        2. Delete CTX_OLD, i.e., whichever of the two was used as CTX_IN to generate the CTX\_TEMP deleted at the previous step.
         3. CTX_NEW becomes the oldest Security Context. Next steps in this algorithm will refer to that Security Context as CTX_OLD.
         4. Abort the ongoing KUDOS execution.
         5. Move to **BUSY**.
