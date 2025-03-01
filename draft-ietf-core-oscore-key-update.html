@@ -1747,7 +1747,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
             </h5>
 <ol start="1" type="1" class="normal type-1" id="section-4.3.5.2-1">
 <li id="section-4.3.5.2-1.1">
-                <p id="section-4.3.5.2-1.1.1">If the peer has any CTX_1 Security Contexts, delete them.<a href="#section-4.3.5.2-1.1.1" class="pilcrow">¶</a></p>
+                <p id="section-4.3.5.2-1.1.1">If the peer has any CTX_TEMP Security Contexts, delete them.<a href="#section-4.3.5.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
               <li id="section-4.3.5.2-1.2">
                 <p id="section-4.3.5.2-1.2.1">If the peer has both an old and a new OSCORE Security Contexts:
@@ -1848,25 +1848,25 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
                 <p id="section-4.3.5.4-2.5.1">@Sending divergent message while in <strong>BUSY</strong><a href="#section-4.3.5.4-2.5.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.5.4-2.5.2.1">
-                    <p id="section-4.3.5.4-2.5.2.1.1">If CTX_1 is usable to protect the intended divergent message, send the message and then stay in <strong>BUSY</strong>.<a href="#section-4.3.5.4-2.5.2.1.1" class="pilcrow">¶</a></p>
+                    <p id="section-4.3.5.4-2.5.2.1.1">If CTX_TEMP is usable to protect the intended divergent message, send the message and then stay in <strong>BUSY</strong>.<a href="#section-4.3.5.4-2.5.2.1.1" class="pilcrow">¶</a></p>
 </li>
                   <li class="normal" id="section-4.3.5.4-2.5.2.2">
-                    <p id="section-4.3.5.4-2.5.2.2.1">If CTX_1 is not usable to protect the intended divergent message, perform the following steps. (E.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_1)<a href="#section-4.3.5.4-2.5.2.2.1" class="pilcrow">¶</a></p>
+                    <p id="section-4.3.5.4-2.5.2.2.1">If CTX_TEMP is not usable to protect the intended divergent message, perform the following steps. (E.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_TEMP)<a href="#section-4.3.5.4-2.5.2.2.1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.3.5.4-2.5.2.2.2">
 <li id="section-4.3.5.4-2.5.2.2.2.1">
-                        <p id="section-4.3.5.4-2.5.2.2.2.1.1">Delete CTX_1.<a href="#section-4.3.5.4-2.5.2.2.2.1.1" class="pilcrow">¶</a></p>
+                        <p id="section-4.3.5.4-2.5.2.2.2.1.1">Delete CTX_TEMP.<a href="#section-4.3.5.4-2.5.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
                       <li id="section-4.3.5.4-2.5.2.2.2.2">
-                        <p id="section-4.3.5.4-2.5.2.2.2.2.1">Delete the (X, nonce) pair associated with CTX_OLD, i.e., whichever was used as CTX_IN to generate the CTX_1 deleted at the previous step.<a href="#section-4.3.5.4-2.5.2.2.2.2.1" class="pilcrow">¶</a></p>
+                        <p id="section-4.3.5.4-2.5.2.2.2.2.1">Delete the (X, nonce) pair associated with CTX_OLD, i.e., whichever was used as CTX_IN to generate the CTX_TEMP deleted at the previous step.<a href="#section-4.3.5.4-2.5.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
                       <li id="section-4.3.5.4-2.5.2.2.2.3">
                         <p id="section-4.3.5.4-2.5.2.2.2.3.1">Generate a new (X, nonce) pair and associate it with CTX_OLD.<a href="#section-4.3.5.4-2.5.2.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
                       <li id="section-4.3.5.4-2.5.2.2.2.4">
-                        <p id="section-4.3.5.4-2.5.2.2.2.4.1">Generate a new CTX_1 from CTX_OLD.<a href="#section-4.3.5.4-2.5.2.2.2.4.1" class="pilcrow">¶</a></p>
+                        <p id="section-4.3.5.4-2.5.2.2.2.4.1">Generate a new CTX_TEMP from CTX_OLD.<a href="#section-4.3.5.4-2.5.2.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
                       <li id="section-4.3.5.4-2.5.2.2.2.5">
-                        <p id="section-4.3.5.4-2.5.2.2.2.5.1">Send the intended divergent message protected with the CTX_1 generated at the previous step.<a href="#section-4.3.5.4-2.5.2.2.2.5.1" class="pilcrow">¶</a></p>
+                        <p id="section-4.3.5.4-2.5.2.2.2.5.1">Send the intended divergent message protected with the CTX_TEMP generated at the previous step.<a href="#section-4.3.5.4-2.5.2.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
                       <li id="section-4.3.5.4-2.5.2.2.2.6">
                         <p id="section-4.3.5.4-2.5.2.2.2.6.1">Stay in <strong>BUSY</strong>.<a href="#section-4.3.5.4-2.5.2.2.2.6.1" class="pilcrow">¶</a></p>
@@ -1919,7 +1919,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
                 <p id="section-4.3.5.5-2.4.1">@Receiving a divergent message while in <strong>PENDING</strong><a href="#section-4.3.5.5-2.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.5.5-2.4.2.1">
-                    <p id="section-4.3.5.5-2.4.2.1.1">If decryption and verification of the divergent message work using a CTX_1 derived from CTX_OLD:<a href="#section-4.3.5.5-2.4.2.1.1" class="pilcrow">¶</a></p>
+                    <p id="section-4.3.5.5-2.4.2.1.1">If decryption and verification of the divergent message work using a CTX_TEMP derived from CTX_OLD:<a href="#section-4.3.5.5-2.4.2.1.1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.3.5.5-2.4.2.1.2">
 <li id="section-4.3.5.5-2.4.2.1.2.1">
                         <p id="section-4.3.5.5-2.4.2.1.2.1.1">Delete CTX_NEW.<a href="#section-4.3.5.5-2.4.2.1.2.1.1" class="pilcrow">¶</a></p>
@@ -1936,13 +1936,13 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
                     </ol>
 </li>
                   <li class="normal" id="section-4.3.5.5-2.4.2.2">
-                    <p id="section-4.3.5.5-2.4.2.2.1">If decryption and verification of the divergent message work using a CTX_1 derived from CTX_NEW:<a href="#section-4.3.5.5-2.4.2.2.1" class="pilcrow">¶</a></p>
+                    <p id="section-4.3.5.5-2.4.2.2.1">If decryption and verification of the divergent message work using a CTX_TEMP derived from CTX_NEW:<a href="#section-4.3.5.5-2.4.2.2.1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.3.5.5-2.4.2.2.2">
 <li id="section-4.3.5.5-2.4.2.2.2.1">
-                        <p id="section-4.3.5.5-2.4.2.2.2.1.1">Delete the oldest CTX_1<a href="#section-4.3.5.5-2.4.2.2.2.1.1" class="pilcrow">¶</a></p>
+                        <p id="section-4.3.5.5-2.4.2.2.2.1.1">Delete the oldest CTX_TEMP<a href="#section-4.3.5.5-2.4.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
                       <li id="section-4.3.5.5-2.4.2.2.2.2">
-                        <p id="section-4.3.5.5-2.4.2.2.2.2.1">Delete CTX_OLD, i.e., whichever of the two was used as CTX_IN to generate the CTX_1 deleted at the previous step.<a href="#section-4.3.5.5-2.4.2.2.2.2.1" class="pilcrow">¶</a></p>
+                        <p id="section-4.3.5.5-2.4.2.2.2.2.1">Delete CTX_OLD, i.e., whichever of the two was used as CTX_IN to generate the CTX_TEMP deleted at the previous step.<a href="#section-4.3.5.5-2.4.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
                       <li id="section-4.3.5.5-2.4.2.2.2.3">
                         <p id="section-4.3.5.5-2.4.2.2.2.3.1">CTX_NEW becomes the oldest Security Context. Next steps in this algorithm will refer to that Security Context as CTX_OLD.<a href="#section-4.3.5.5-2.4.2.2.2.3.1" class="pilcrow">¶</a></p>

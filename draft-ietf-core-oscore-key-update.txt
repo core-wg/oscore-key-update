@@ -795,7 +795,7 @@ Table of Contents
 
 4.3.5.2.  Pre-IDLE
 
-   1.  If the peer has any CTX_1 Security Contexts, delete them.
+   1.  If the peer has any CTX_TEMP Security Contexts, delete them.
 
    2.  If the peer has both an old and a new OSCORE Security Contexts:
        a.  Delete the (X, nonce) pair associated with the old OSCORE
@@ -850,27 +850,27 @@ Table of Contents
 
    *  @Sending divergent message while in *BUSY*
 
-      -  If CTX_1 is usable to protect the intended divergent message,
-         send the message and then stay in *BUSY*.
+      -  If CTX_TEMP is usable to protect the intended divergent
+         message, send the message and then stay in *BUSY*.
 
-      -  If CTX_1 is not usable to protect the intended divergent
+      -  If CTX_TEMP is not usable to protect the intended divergent
          message, perform the following steps.  (E.g., this happens upon
          eventually exhausting the Sender Sequence Number values of
-         CTX_1)
+         CTX_TEMP)
 
-         1.  Delete CTX_1.
+         1.  Delete CTX_TEMP.
 
          2.  Delete the (X, nonce) pair associated with CTX_OLD, i.e.,
-             whichever was used as CTX_IN to generate the CTX_1 deleted
-             at the previous step.
+             whichever was used as CTX_IN to generate the CTX_TEMP
+             deleted at the previous step.
 
          3.  Generate a new (X, nonce) pair and associate it with
              CTX_OLD.
 
-         4.  Generate a new CTX_1 from CTX_OLD.
+         4.  Generate a new CTX_TEMP from CTX_OLD.
 
          5.  Send the intended divergent message protected with the
-             CTX_1 generated at the previous step.
+             CTX_TEMP generated at the previous step.
 
          6.  Stay in *BUSY*.
 
@@ -904,7 +904,7 @@ Table of Contents
    *  @Receiving a divergent message while in *PENDING*
 
       -  If decryption and verification of the divergent message work
-         using a CTX_1 derived from CTX_OLD:
+         using a CTX_TEMP derived from CTX_OLD:
 
          1.  Delete CTX_NEW.
 
@@ -917,12 +917,13 @@ Table of Contents
          4.  Move to *BUSY*.
 
       -  If decryption and verification of the divergent message work
-         using a CTX_1 derived from CTX_NEW:
+         using a CTX_TEMP derived from CTX_NEW:
 
-         1.  Delete the oldest CTX_1
+         1.  Delete the oldest CTX_TEMP
 
          2.  Delete CTX_OLD, i.e., whichever of the two was used as
-             CTX_IN to generate the CTX_1 deleted at the previous step.
+             CTX_IN to generate the CTX_TEMP deleted at the previous
+             step.
 
          3.  CTX_NEW becomes the oldest Security Context.  Next steps in
              this algorithm will refer to that Security Context as
