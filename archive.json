@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-27T00:52:55.635068+00:00",
+  "timestamp": "2025-03-02T00:56:34.381195+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2732,7 +2732,7 @@
       "id": "I_kwDOGfmof86nk8P0",
       "title": "Detailed definition of KUDOS execution success and failure",
       "url": "https://github.com/core-wg/oscore-key-update/issues/107",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -2741,16 +2741,24 @@
       ],
       "body": "Add a detailed definition of KUDOS execution success and failure.\n\nFail, abort and mark execution as finished:\n\n- If receiving a RST, or CoAP error message, or an invalid KUDOS message\n- If exhausting the number of retransmissions for a sent KUDOS message\n- If not receiving KUDOS message 2 after a pre-defined amount of time since the first transmission of KUDOS message 1\n\nSucceed and mark execution as finished:\n\n- If the peer has sent KUDOS message 2\n- If the peer has received KUDOS message 2",
       "createdAt": "2025-01-26T11:41:06Z",
-      "updatedAt": "2025-01-26T11:41:57Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-02-28T22:55:50Z",
+      "closedAt": "2025-02-28T22:55:49Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "body": "We now have start, failure and success criterias based on the state machine",
+          "createdAt": "2025-02-28T22:55:49Z",
+          "updatedAt": "2025-02-28T22:55:49Z"
+        }
+      ]
     },
     {
       "number": 108,
       "id": "I_kwDOGfmof86nk8ZL",
       "title": "Terminology: Do not consider the bits based on counters",
       "url": "https://github.com/core-wg/oscore-key-update/issues/108",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -2759,16 +2767,24 @@
       ],
       "body": "Do not refer to the signaling bits as based on counters at all",
       "createdAt": "2025-01-26T11:42:37Z",
-      "updatedAt": "2025-01-26T11:42:37Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-02-28T22:55:04Z",
+      "closedAt": "2025-02-28T22:55:03Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "body": "No longer relevant. The draft does not refer to the signaling bits as based on counters at all",
+          "createdAt": "2025-02-28T22:55:03Z",
+          "updatedAt": "2025-02-28T22:55:03Z"
+        }
+      ]
     },
     {
       "number": 109,
       "id": "I_kwDOGfmof86nk8oM",
       "title": "Analyze current content in light of the alternative design",
       "url": "https://github.com/core-wg/oscore-key-update/issues/109",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "rikard-sics",
       "authorAssociation": "MEMBER",
       "assignees": [],
@@ -2777,7 +2793,33 @@
       ],
       "body": "What needs to be changed, kept and deleted?",
       "createdAt": "2025-01-26T11:44:55Z",
-      "updatedAt": "2025-01-26T11:44:55Z",
+      "updatedAt": "2025-02-28T22:54:05Z",
+      "closedAt": "2025-02-28T22:54:04Z",
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "body": "Done for v-10",
+          "createdAt": "2025-02-28T22:54:04Z",
+          "updatedAt": "2025-02-28T22:54:04Z"
+        }
+      ]
+    },
+    {
+      "number": 111,
+      "id": "I_kwDOGfmof86sJpWy",
+      "title": "Improvement for case when Receiving a divergent message while in PENDING",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/111",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [
+        "Alternative design"
+      ],
+      "body": "The following line can be extended:\n_Receiving a divergent message while in PENDING_\n\nThe peer should compare the incoming divergent message (_a_) with a previously possibly received divergent message (_b_) which put it in the **PENDING** (or **BUSY**) state in the first place. If the nonce and X byte match for those two messages _a_ and _b_ then the peer can remain in **PENDING** and re-send its previously sent convergent message.\n\nThis would avoid complications for the recipient peer, and allow it to avoid proceeding in the state machine via\n_If decryption and verification of the divergent message work using a CTX_1 derived from CTX_OLD:_\nor\n_If decryption and verification of the divergent message work using a CTX_1 derived from CTX_NEW:_\n\n**Comparison**\n\nThe comparison can be done in this way:\n- First decompose the Master Salt in the current CTX_NEW into its component CBOR byte strings. Then identify which byte string contains the peer's own X and Nonce. The other byte string contains the other peer's X and Nonce that it used in its previously sent divergent message (_b_).\n- Take the X and Nonce received in the latest received divergent message (_a_) from the other peer.\n\nNow compare if the two X bytes and the two Nonces are the same. If that is the case, stay in **PENDING** and re-send the previously sent convergent message. If that is not the case, proceed in the state machine according to the two steps listed above (as normal).",
+      "createdAt": "2025-02-28T23:05:51Z",
+      "updatedAt": "2025-02-28T23:16:41Z",
       "closedAt": null,
       "comments": []
     }
