@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            1 March 2025
-Expires: 2 September 2025
+Intended status: Standards Track                            3 March 2025
+Expires: 4 September 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -20,9 +20,7 @@ Abstract
    it updates the use of the OSCORE flag bits in the CoAP OSCORE Option
    as well as the protection of CoAP response messages with OSCORE, and
    it deprecates the key update procedure specified in Appendix B.2 of
-   RFC 8613.  Thus, this document updates RFC 8613.  Also, this document
-   defines a procedure that two endpoints can use to update their OSCORE
-   identifiers, run either stand-alone or during a KUDOS execution.
+   RFC 8613.  Thus, this document updates RFC 8613.
 
 Discussion Venues
 
@@ -50,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 September 2025.
+   This Internet-Draft will expire on 4 September 2025.
 
 Copyright Notice
 
@@ -77,11 +75,11 @@ Table of Contents
      4.2.  Function for Security Context Update
      4.3.  Key Update
        4.3.1.  Nonces and X Bytes
-       4.3.2.  Handling of Messages
-       4.3.3.  Avoiding In-Transit Requests During a Key Update
-       4.3.4.  KUDOS States
-       4.3.5.  KUDOS State Machine
-       4.3.6.  Handling of OSCORE Security Contexts
+       4.3.2.  KUDOS States
+       4.3.3.  KUDOS State Machine
+       4.3.4.  Handling of OSCORE Security Contexts
+       4.3.5.  KUDOS Messages as CoAP Requests or Responses
+       4.3.6.  Avoiding In-Transit Requests During a Key Update
      4.4.  Key Update Admitting no Forward Secrecy
        4.4.1.  Handling and Use of Keying Material
        4.4.2.  Selection of KUDOS Mode
@@ -90,11 +88,10 @@ Table of Contents
        4.5.1.  Management of Observations
      4.6.  Retention Policies
      4.7.  Discussion
-       4.7.1.  KUDOS Interleaved with Other Message Exchanges
-       4.7.2.  Communication Overhead
-       4.7.3.  Resource Type core.kudos
-       4.7.4.  Well-Known KUDOS Resource
-       4.7.5.  Rekeying when Using SCHC with OSCORE
+       4.7.1.  Communication Overhead
+       4.7.2.  Resource Type core.kudos
+       4.7.3.  Well-Known KUDOS Resource
+       4.7.4.  Rekeying when Using SCHC with OSCORE
      4.8.  Signaling KUDOS support in EDHOC
    5.  Security Considerations
    6.  IANA Considerations
@@ -159,10 +156,6 @@ Table of Contents
       specified in Section 8.3 of [RFC8613], as defined in Section 3 of
       this document.
 
-   Furthermore, this document specifies a method that two peers can use
-   to update their OSCORE identifiers.  This can be run as a stand-alone
-   procedure, or instead integrated in a KUDOS execution.
-
 1.1.  Terminology
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -183,8 +176,9 @@ Table of Contents
    *  No-FS mode: the KUDOS execution mode that does not achieve forward
       secrecy (see Section 4.4).
 
-   *  Equilibrium: KUDOS is in an idle state where no execution of KUDOS
-      is currently ongoing.
+   *  Equilibrium: The situation where a peer has no execution of KUDOS
+      currently ongoing with the other KUDOS peer for updating one of
+      their OSCORE Security Contexts.
 
 2.  Current Methods for Rekeying OSCORE
 
@@ -307,7 +301,7 @@ Table of Contents
 3.  Updated Protection of Responses with OSCORE
 
    The protection of CoAP responses with OSCORE is updated, by adding
-   the following text at the end of step 3 of Section 8.3 of [RFC8613].
+   the following text at the end of Step 3 of Section 8.3 of [RFC8613].
 
    |  If the server is using a different Security Context for the
    |  response compared to what was used to verify the request (e.g.,
@@ -332,47 +326,47 @@ Table of Contents
 
    This section defines KUDOS, a lightweight procedure that two OSCORE
    peers can use to update their keying material and establish a new
-   OSCORE Security Context.
+   OSCORE Security Context.  Hereafter, the document refers to two
+   specific peers that run KUDOS to update specifically one of their
+   OSCORE Security Contexts.
 
    KUDOS relies on the OSCORE Option defined in [RFC8613] and extended
    as defined in Section 4.1, as well as on the support function
    updateCtx() defined in Section 4.2.
 
-   In order to run KUDOS, two peers perform a message exchange of
-   OSCORE-protected CoAP messages.  This message exchange between the
-   two peers is defined in Section 4.3, with particular reference to the
-   stateful FS mode providing forward secrecy.  Building on the same
-   message exchange, the possible use of the stateless no-FS mode is
-   defined in Section 4.4, as intended to peers that are not able to
-   write in non-volatile memory.  Two peers MUST run KUDOS in FS mode if
-   they are both capable to.
+   In order to run KUDOS, two peers exchange OSCORE-protected CoAP
+   messages.  The key update procedure is defined in Section 4.3, with
+   particular reference to the stateful FS mode providing forward
+   secrecy.  The possible use of the stateless no-FS mode is defined in
+   Section 4.4, as intended to peers that are not able to write in non-
+   volatile memory.  Two peers MUST run KUDOS in FS mode if they are
+   both capable to.
 
    The key update procedure has the following properties.
 
-   *  KUDOS can be initiated by either peer.  In particular, the CoAP
-      client or the CoAP server may start KUDOS by sending a rekeying
-      message.
+   *  KUDOS can be initiated by either peer.
 
    *  The new OSCORE Security Context enjoys forward secrecy, unless
       KUDOS is run in no-FS mode (see Section 4.4).
 
    *  The same ID Context value used in the old OSCORE Security Context
-      is preserved in the new Security Context.  Furthermore, the ID
-      Context value never changes throughout the KUDOS execution.
+      (if set) is preserved in the new OSCORE Security Context.
 
-   *  KUDOS is robust against a peer rebooting, and it especially avoids
-      the reuse of AEAD (nonce, key) pairs.
+   *  The same Sender and Recipient IDs used in the old OSCORE Security
+      Context are preserved in the new OSCORE Security Context.
 
-   *  KUDOS completes in one round trip by exchanging two CoAP messages.
-      The two peers achieve mutual key confirmation in a following
-      exchange, which is protected with the newly established OSCORE
-      Security Context.
+   *  KUDOS is robust against a peer rebooting and loss of state, and it
+      especially avoids the reuse of AEAD (nonce, key) pairs.
+
+   *  KUDOS typically completes in one round trip by exchanging two
+      OSCORE-protected CoAP messages.  The two peers achieve mutual key
+      confirmation in a following exchange, which is protected with the
+      newly established OSCORE Security Context.
 
 4.1.  Extensions to the OSCORE Option
 
-   In order to support the message exchange for establishing a new
-   OSCORE Security Context, this document extends the use of the OSCORE
-   Option originally defined in [RFC8613] as follows.
+   This document extends the use of the OSCORE Option originally defined
+   in [RFC8613] as follows.
 
    *  This document defines the usage of the eight least significant
       bit, called "Extension-1 Flag", in the first byte of the OSCORE
@@ -395,10 +389,10 @@ Table of Contents
       together with signaling bits that indicate the specific behavior
       to adopt during the KUDOS execution.
 
-      Hereafter, a message is referred to as a "KUDOS (request/response)
-      message", if and only if the second byte of flags is present and
-      the 'd' bit is set to 1.  If that is not the case, the message is
-      referred to as a "non KUDOS (request/response) message".
+      Hereafter, a message is referred to as a "KUDOS message", if and
+      only if the second byte of flags is present and the 'd' bit is set
+      to 1.  If that is not the case, the message is referred to as a
+      "non KUDOS message".
 
       The encoding of 'x' is as follows:
 
@@ -425,16 +419,17 @@ Table of Contents
 
          o  z = 0: This is a "divergent" message, that is a KUDOS
             message protected with a temporary OSCORE Security Context
-            and indicating that this peer is moving away from
-            “equilibrium”. The peer is offering its own nonce in the
-            message and waiting to receive the other peer’s nonce.
+            and indicating that the sender peer is moving away from
+            "equilibrium".  The sender peer is offering its own nonce in
+            the 'nonce' field of this message and is waiting to receive
+            the other peer's nonce.
 
          o  z = 1: This is a "convergent" message, that is a KUDOS
             message protected with the newly established OSCORE Security
-            Context and indicating that this is offering its own nonce
-            in the message, has received the other peer’s nonce, and is
-            going to wait for key confirmation (to return to
-            equilibrium).
+            Context and indicating that the sender peer is offering its
+            own nonce in the 'nonce' field of this message, has received
+            the other peer's nonce, and is going to wait for key
+            confirmation (to return to equilibrium).
 
       -  The eight least significant bit is reserved for future use.
          This bit SHALL be set to zero when not in use.  According to
@@ -466,8 +461,7 @@ Table of Contents
                                   |  |0|z|b|p|   m   |  |
                                   |  +-+-+-+-+-+-+-+-+  |
 
-     Figure 1: The extended OSCORE Option value, with the possible
-                  presence of 'nonce' and 'old_nonce'
+               Figure 1: The extended OSCORE Option value
 
 4.2.  Function for Security Context Update
 
@@ -483,23 +477,23 @@ Table of Contents
    input1 and input2, respectively.  Then, it builds X_N, as the byte
    concatenation of input1_cbor and input2_cbor.  In order for
    updateCtx() to be agnostic of the order the nonce values were
-   exchanged, the input1_cbor and input2_cbor value are first sorted in
-   lexicographical order before they are concatenated.  E.g. if
+   exchanged, the input1_cbor and input2_cbor values are first sorted in
+   lexicographical order before they are concatenated.  E.g., if
    input1_cbor comes before input2_cbor in lexicographical ordering,
    then X_N takes the value input1_cbor | input2_cbor and vice-versa.
 
    After that, the updateCtx() function derives the new values of the
    Master Secret and Master Salt for CTX_OUT.  In particular, the new
-   Master Secret is derived through a KUDOS-Expand() step, which takes
-   as input the Master Secret value from the Security Context CTX_IN,
-   the literal string "key update", X_N, and the length of the Master
-   Secret.  Instead, the new Master Salt takes N as value.
+   Master Secret is derived through a KUDOS-Expand step, which takes as
+   input the Master Secret value from the Security Context CTX_IN, the
+   literal string "key update", X_N, and the length of the Master
+   Secret.  Instead, the new Master Salt takes X_N as value.
 
    The definition of KUDOS-Expand depends on the key derivation function
-   used for OSCORE by the two peers, as specified in CTX_IN. either peer
-   If the key derivation function is an HKDF Algorithm (see Section 3.1
-   of [RFC8613]), then KUDOS-Expand is mapped to HKDF-Expand [RFC5869],
-   as shown below.  Also, the hash algorithm is the same one used by the
+   used for OSCORE by the two peers, as specified in CTX_IN.  If the key
+   derivation function is an HKDF Algorithm (see Section 3.1 of
+   [RFC8613]), then KUDOS-Expand is mapped to HKDF-Expand [RFC5869], as
+   shown below.  Also, the hash algorithm is the same one used by the
    HKDF Algorithm specified in CTX_IN.
 
    KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
@@ -542,65 +536,68 @@ Table of Contents
 
    function updateCtx(input1, input2, CTX_IN):
 
-     // Output values
-     CTX_OUT       // The new Security Context
-     MSECRET_NEW   // The new Master Secret
-     MSALT_NEW     // The new Master Salt
+    // Output values
+    CTX_OUT       // The new Security Context
+    MSECRET_NEW   // The new Master Secret
+    MSALT_NEW     // The new Master Salt
 
-     // Define the label for the key update
-     Label = "key update"
+    // Define the label for the key update
+    Label = "key update"
 
-     // Create CBOR byte strings from input1 and input2
-     input1_cbor = create_cbor_bstr(input1)
-     input2_cbor = create_cbor_bstr(input2)
+    // Create CBOR byte strings from input1 and input2
+    input1_cbor = create_cbor_bstr(input1)
+    input2_cbor = create_cbor_bstr(input2)
 
-     // Concatenate the CBOR-encoded input1 and input2
-     // according to their lexicographic order
-     X_N = input1_cbor.lexicographic.shorter(input1_cbor, input2_cbor) ?
-           (input1_cbor | input2_cbor) : (input2_cbor | input1_cbor)
+    // Concatenate the CBOR-encoded input1 and input2
+    // according to their lexicographic order
+    X_N = is_lexicographic_shorter(input1_cbor, input2_cbor) ?
+          (input1_cbor | input2_cbor) : (input2_cbor | input1_cbor)
 
-     // Determine the length in bytes of the current Master Secret
-     oscore_key_length = length(CTX_IN.MasterSecret)
+    // Determine the length in bytes of the current Master Secret
+    oscore_key_length = length(CTX_IN.MasterSecret)
 
-     // Create the new Master Secret using KUDOS-Expand-Label
-     MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
-                                      X_N, oscore_key_length)
+    // Create the new Master Secret using KUDOS-Expand-Label
+    MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
+                                     X_N, oscore_key_length)
 
-     // Set the new Master Salt to X_N
-     MSALT_NEW = X_N
+    // Set the new Master Salt to X_N
+    MSALT_NEW = X_N
 
-     // Derive the new Security Context CTX_OUT, using
-     // the new Master Secret, the new Master Salt,
-     // and other parameters from CTX_IN
-     CTX_OUT = derive_security_context(MSECRET_NEW, MSALT_NEW, CTX_IN)
+    // Derive the new Security Context CTX_OUT, using
+    // the new Master Secret, the new Master Salt,
+    // and other parameters from CTX_IN
+    CTX_OUT = derive_security_context(MSECRET_NEW, MSALT_NEW, CTX_IN)
 
-     // Return the new Security Context
-     return CTX_OUT
+    // Return the new Security Context
+    return CTX_OUT
 
 
    function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
-     struct {
-         uint16 length = key_length;
-         opaque label<7..255> = "oscore " + Label;
-         opaque context<0..255> = X_N;
-     } ExpandLabel;
+    struct {
+        uint16 length = key_length;
+        opaque label<7..255> = "oscore " + Label;
+        opaque context<0..255> = X_N;
+    } ExpandLabel;
 
-     return KUDOS_Expand(master_secret, ExpandLabel, key_length)
+    return KUDOS_Expand(master_secret, ExpandLabel, key_length)
 
        Figure 2: Functions for deriving a new OSCORE Security Context
 
 4.3.  Key Update
 
-   In this section, we define the KUDOS procedure that two peers use to
-   update their OSCORE keying material.  Using KUDOS as described in
-   this section will achieve forward secrecy for the new keying material
-   produced by the execution of KUDOS, as long as the OSCORE keying
-   material was also established with forward secrecy.  For peers unable
-   to store information to persistent memory, Section 4.4 provides an
-   alternative approach to perform key update without achieving forward
-   secrecy.  This alternative ensures that also very constrained peers
-   are able to use KUDOS, although without achieving forward secrecy.
+   This section defines KUDOS, a lightweight procedure that two OSCORE
+   peers can use to update their keying material and establish a new
+   OSCORE Security Context.
+
+   Using KUDOS as described in this section will achieve forward secrecy
+   for the new keying material produced by the execution of KUDOS, as
+   long as the original OSCORE keying material was also established with
+   forward secrecy.  For peers unable to store information to persistent
+   memory, Section 4.4 provides an alternative approach to perform key
+   update without achieving forward secrecy.  This alternative ensures
+   that also very constrained peers are able to use KUDOS, although
+   without achieving forward secrecy.
 
    A peer can run KUDOS for active rekeying at any time, or for a
    variety of more compelling reasons.  These include the (approaching)
@@ -610,31 +607,30 @@ Table of Contents
 
    The expiration time of an OSCORE Security Context and the key usage
    limits are hard limits.  Once reached them, a peer MUST stop using
-   the keying material in the OSCORE Security Context for conventional
-   communication with the other peer, and has to perform a rekeying
+   the keying material in the OSCORE Security Context for exchanging
+   application data with the other peer, and has to perform a rekeying
    before resuming secure communication.
 
    Before starting KUDOS, the two peers share the OSCORE Security
-   Context CTX_OLD.  Once successfully completed the KUDOS execution,
-   the two peers agree on a newly established OSCORE Security Context
-   CTX_NEW that replaces CTX_OLD.  During the execution of KUDOS,
-   temporary OSCORE Security Contexts, denoted CTX_TEMP, are dervied.
-   CTX_OLD can be safely deleted upon receiving key confirmation from
-   the other peer.
-
-   In particular, CTX_OLD is the most recent OSCORE Security Context
-   that a peer has with a given ID Context or without ID Context, before
+   Context CTX_OLD.  In particular, CTX_OLD is the most recent OSCORE
+   Security Context that a peer has with the other peer, before
    initiating the KUDOS procedure or upon having received and
-   successfully verified the a divergent KUDOS message.  In turn,
-   CTX_NEW is the most recent OSCORE Security Context that a peer has
-   with a given ID Context or without ID Context, before sending a
-   convergent KUDOS message or upon having received and successfully
-   verified a convergent KUDOS message.
+   successfully verified a divergent KUDOS message.  During an execution
+   of KUDOS, a temporary OSCORE Security Context CTX_TEMP is derived.
+
+   Once successfully completed the KUDOS execution, the two peers agree
+   on a newly established OSCORE Security Context CTX_NEW that replaces
+   CTX_OLD.  In particular, CTX_NEW is the most recent OSCORE Security
+   Context that a peer has, before sending a convergent KUDOS message or
+   upon having received and successfully verified a convergent KUDOS
+   message.  CTX_OLD can be safely deleted upon receiving key
+   confirmation from the other peer, i.e., that the other peer also has
+   CTX_NEW.
 
    The following specifically defines how KUDOS is run in its stateful
    FS mode achieving forward secrecy.  That is, in the OSCORE Option
    value of all the exchanged KUDOS messages, the "No Forward Secrecy"
-   bit is set to 0.
+   'p' bit is set to 0.
 
    In order to run KUDOS in FS mode, both peers have to be able to write
    in non-volatile memory.  From the newly derived Security Context
@@ -656,51 +652,266 @@ Table of Contents
    good amount of randomness is important for the nonce generation.
    [RFC4086] provides guidance on the generation of random values.
 
-   Furthermore, X1 and X2 are the value of the 'x' byte specified in the
-   OSCORE Option of a KUDOS message X1 and N1 are the 'x' byte and nonce
-   created by a peer, and X2 and N2 are the 'x' byte and nonce received
-   from the other peer.  The X1 and X2 values are calculated by the
-   sender peer based on: the length of nonce N1 and N2, specified in the
-   'nonce' field of the OSCORE Option of a KUDOS message, respectively;
-   as well as on the specific settings the peer wishes to run KUDOS
-   with.  Note that a peer may not change the value of the 'x' byte
-   during a KUDOS execution without restrictions.  Specifically, during
-   the same KUDOS execution, all the KUDOS messages sent by a peer must
-   have the same value in the bit 'b' for preserving ongoing
-   observations.
+   Furthermore, X1 and X2 are the value of the 'x' field specified in
+   the OSCORE Option of a KUDOS message.  From one peer's point of view,
+   X1 and N1 are generated by that peer, while X2 and N2 are obtained
+   from the other peer.
+
+   In a KUDOS message, the sender peer sets the X1 value based on: the
+   length of N1 in bytes, the specific settings the peer wishes to run
+   KUDOS with, and in accordance with the message being divergent or
+   convergent.  During the same KUDOS execution, all the KUDOS messages
+   sent by a peer MUST have the same value of the bit 'b' in the 'x'
+   field conveying X1.
 
    N1, N2, X1, and X2 are used by the peers to build the 'input1' and
    'input2' values provided to the updateCtx() function, in order to
-   derive a new OSCORE Security Context.  As for any new OSCORE Security
-   Context, the Sender Sequence Number and the Replay Window are re-
-   initialized accordingly (see Section 3.2.2 of [RFC8613]).
+   derive an OSCORE Security Context.  As for any newly derived OSCORE
+   Security Context, the Sender Sequence Number and the Replay Window
+   are re-initialized accordingly (see Section 3.2.2 of [RFC8613]).
    Specifically, the input to updateCtx() is built as follows, where |
    denotes byte concatenation:
 
-   *  Protecting a divergent outgoing message: Input1 is X1 | N1, and
-      input2 is 0x.  The output is CTX_TEMP.
+   *  When deriving CTX_TEMP to protect a divergent outgoing message,
+      input1 is X1 | N1 and input2 is 0x.
 
-   *  Unprotecting a divergent incoming message: Input1 is X2 | N2, and
-      input2 is 0x.  The output is CTX_TEMP.
+   *  When deriving CTX_TEMP to unprotect a divergent incoming message,
+      input1 is X2 | N2 and input2 is 0x.
 
-   *  (Un)protecting a convergent message: Input1 is X1 | N1, and input2
-      is X2 | N2.  The output is CTX_NEW.
+   *  When deriving CTX_NEW to protect or unprotect a convergent
+      message, input1 is X1 | N1 and input2 is X2 | N2.
+
+   For any divergent KUDOS message, the sender peer's (X, nonce) are
+   included in the message.  Also, both peers use those as input to
+   updateCtx() for deriving CTX_TEMP, which is used to protect or
+   unprotect that KUDOS message.
+
+   For any convergent KUDOS message, the sender peer's (X, nonce) are
+   included in the message.  Both the sender peer's (X, nonce) and the
+   recipient peer's (X, nonce) are used as input to updateCtx() for
+   deriving CTX_NEW, which is used to protect or unprotect that KUDOS
+   message.
 
    A pair (X, nonce) offered by a peer is bound to CTX_OLD, and is
-   reused as much as possible during the same KUDOS execution.  (X,
-   nonce) is generated before invoking updateCtx(), in case a pair is
-   not already associated with the CTX_OLD to use within updateCtx().
-   The newly generated pair is associated with CTX_OLD before entering
-   updateCtx().
+   reused as much as possible during the same KUDOS execution.  A peer
+   generates its (X, nonce) pair before invoking updateCtx(), in case
+   the peer does not have one such pair already associated with the
+   CTX_OLD to use as input for updateCtx().  The peer associates the
+   newly generated pair with CTX_OLD before entering updateCtx().
 
-4.3.2.  Handling of Messages
+4.3.2.  KUDOS States
+
+   A peer performs a KUDOS execution according to the state machine
+   specified in Section 4.3.3, where the following states are
+   considered.
+
+   The peer can be in three possible states: IDLE, BUSY, and PENDING.
+   Normally, the peer is in the IDLE state, i.e., in "equilibrium".  The
+   peer starts a KUDOS execution upon entering the BUSY state from a
+   state different than BUSY.  The peer succesfully completes a KUDOS
+   execution by entering the IDLE state, at which point the peer has the
+   OSCORE Security Context CTX_NEW and has achieved key confirmation.
+
+   The sending of a KUDOS message is per the KUDOS state machine, and is
+   based on the perception that the sender peer has about what the other
+   peer has done.
+
+   The processing of a received KUDOS message is per the KUDOS state
+   machine, and is based on the local status of the recipient peer.
+   Moving to a state due to a received KUDOS message occurs only in case
+   of successful decryption and verification of the message with OSCORE.
+
+   In its local status, a peer tracks its current KUDOS state by means
+   of the bits (c_tx, c_rx) as follows:
+
+   *  (00) IDLE - The peer is not running KUDOS.
+
+   *  BUSY - The peer is running KUDOS and:
+
+      -  (01) has not offered a nonce, but has received the nonce from
+         the other peer; or
+
+      -  (10) has offered a nonce, but has not received the nonce from
+         the other peer.
+
+   *  (11) PENDING: the peer is running KUDOS, has offered its nonce,
+      has received the nonce from the other peer, and is waiting for key
+      confirmation.
+
+   While in the *BUSY* or the *PENDING* state, the peer MUST NOT send
+   non KUDOS messages.
+
+4.3.3.  KUDOS State Machine
+
+   From a peer's point of view, the change of KUDOS states works as
+   follows.
+
+4.3.3.1.  Startup
+
+   At startup, the peer enter a *Pre-IDLE* stage.
+
+4.3.3.2.  Pre-IDLE Stage
+
+   1.  If the peer has any CTX_TEMP Security Contexts, it deletes them.
+
+   2.  If the peer has both an old and a new OSCORE Security Context: a.
+       Delete the (X, nonce) pair associated with the old OSCORE
+       Security Context. b.  Delete the old OSCORE Security Context, or
+       retain it only for processing late incoming messages as allowed
+       by retention policies (see Section 4.6).
+
+   3.  Move to *IDLE*.
+
+4.3.3.3.  IDLE
+
+   *  Upon receiving a divergent message while in *IDLE*
+
+      1.  Move to *BUSY*.
+
+   *  Upon sending a divergent message while in *IDLE*
+
+      1.  Move to *BUSY*.
+
+   *  Upon receiving a convergent message while in *IDLE*
+
+      1.  Ignore the message for the sake of KUDOS processing, but
+          process it as a CoAP message.
+
+      2.  Stay in *IDLE*.
+
+4.3.3.4.  BUSY
+
+   *  Upon entering *BUSY* due to receiving a divergent message
+
+      1.  Send a convergent message.
+
+      2.  Move to *PENDING*.
+
+   *  Upon receiving a divergent message while in *BUSY*
+
+      1.  Send a convergent message.
+
+      2.  Move to *PENDING*.
+
+   *  Upon receiving a convergent message while in *BUSY*
+
+      1.  Achieve key confirmation.
+
+      2.  Move to the *Pre-IDLE* stage.
+
+   *  Upon sending a divergent message while in *BUSY*
+
+      -  If, as in most cases, CTX_TEMP is usable to protect the
+         intended divergent message, send the message and then stay in
+         *BUSY*.
+
+      -  Otherwise, perform the following steps.  (E.g., this happens
+         upon eventually exhausting the Sender Sequence Number values of
+         CTX_TEMP)
+
+         1.  Delete CTX_TEMP.
+
+         2.  Delete the (X, nonce) pair associated with the Security
+             Context CTX_IN that was used to generate the CTX_TEMP
+             deleted at the previous step.
+
+         3.  Generate a new (X, nonce) pair and associate it with
+             CTX_IN.
+
+         4.  Generate a new CTX_TEMP from CTX_IN.
+
+         5.  Send the intended divergent message protected with the
+             CTX_TEMP generated at the previous step.
+
+         6.  Stay in *BUSY*.
+
+4.3.3.5.  Pending
+
+   *  Upon receiving a convergent message while in *PENDING*
+
+      1.  Achieve key confirmation.
+
+      2.  Move to the *Pre-IDLE* stage.
+
+   *  Upon receiving a non KUDOS message protected with the latest
+      CTX_NEW while in *PENDING*
+
+      1.  Achieve key confirmation.
+
+      2.  Move to the *Pre-IDLE* stage.
+
+   *  Upon needing to send a message (e.g., the application wants to
+      send a request) while in *PENDING*
+
+      1.  Send the message as a convergent message.
+
+      2.  Stay in *PENDING*.
+
+   *  Upon receiving a divergent message while in *PENDING*
+
+      -  In case of successful decryption and verification of the
+         divergent message using a CTX_TEMP derived from CTX_OLD:
+
+         1.  Delete CTX_NEW.
+
+         2.  Delete the pair (X, nonce) associated with the Security
+             Context CTX_IN used to generate the CTX_NEW deleted at the
+             previous step.
+
+         3.  Abort the ongoing KUDOS execution.
+
+         4.  Move to *BUSY*.
+
+      -  In case of successful decryption and verification of the
+         divergent message using a CTX_TEMP derived from CTX_NEW:
+
+         1.  Delete the oldest CTX_TEMP.
+
+         2.  Delete the Security Context that was used as CTX_IN to
+             generate the CTX_TEMP deleted at the previous step.
+
+         3.  CTX_NEW becomes the oldest Security Context.  From this
+             point on, that Security Context is what this KUDOS
+             execution refers to as CTX_OLD.
+
+         4.  Abort the ongoing KUDOS execution.
+
+         5.  Move to *BUSY*.
+
+4.3.4.  Handling of OSCORE Security Contexts
+
+   A peer completes the key update procedure when it has derived the new
+   OSCORE Security Context CTX_NEW and achieved key confirmation, and
+   thus has moved back to the IDLE state.
+
+   Once the peer has successfully derived CTX_NEW, the peer MUST use
+   CTX_NEW to protect outgoing non KUDOS messages, and MUST NOT use the
+   originally shared OSCORE Security Context CTX_OLD for protecting
+   outgoing messages.
+
+   The peer MUST terminate all the ongoing observations [RFC7641] that
+   it has with the other peer as protected with the old Security Context
+   CTX_OLD, unless the two peers have explicitly agreed otherwise as
+   defined in Section 4.5.
+
+   More specifically, if either or both peers indicate the wish to
+   cancel their observations, those will be all cancelled following a
+   successful KUDOS execution.
+
+   Note that, even though a peer had no real reason to update its OSCORE
+   keying material, running KUDOS can be intentionally exploited as a
+   more efficient way to terminate all the ongoing observations with the
+   other peer, compared to sending one cancellation request per
+   observation (see Section 3.6 of [RFC7641]).
+
+4.3.5.  KUDOS Messages as CoAP Requests or Responses
 
    If a KUDOS message is a CoAP request, then it can target two
    different types of resources at the recipient CoAP server:
 
    *  The well-known KUDOS resource at /.well-known/kudos, or an
       alternative KUDOS resource with resource type "core.kudos" (see
-      Section 4.7.4 and Section 6.5).  In such a case, no application
+      Section 4.7.3 and Section 6.5).  In such a case, no application
       processing is expected at the CoAP server, and the plain CoAP
       request composed before OSCORE protection should not include an
       application payload.
@@ -708,7 +919,7 @@ Table of Contents
    *  A non-KUDOS resource, i.e., an actual application resource that a
       CoAP request can target in order to trigger application processing
       at the CoAP server.  In such a case, the plain CoAP request
-      composed before OSCORE protection may include an application
+      composed before OSCORE protection can include an application
       payload, if admitted by the request method.
 
    In either case, the link to the target resource can have the "osc"
@@ -717,11 +928,11 @@ Table of Contents
 
    Similarly, any CoAP response can also be a KUDOS message.  If the
    corresponding CoAP request has targeted a KUDOS resource, then the
-   plain CoAP response composed before OSCORE encryption should not
+   plain CoAP response composed before OSCORE encryption SHOULD NOT
    include an application payload.  Otherwise, an application payload
-   may be included.
+   MAY be included.
 
-4.3.3.  Avoiding In-Transit Requests During a Key Update
+4.3.6.  Avoiding In-Transit Requests During a Key Update
 
    Before sending a KUDOS message, the peer MUST ensure that it has no
    outstanding interactions with the other peer (see Section 4.7 of
@@ -741,247 +952,9 @@ Table of Contents
 
    During an ongoing KUDOS execution, a peer MUST NOT send a non KUDOS
    message to the other peer, until having aborted or successfully
-   completed the key update process on its side.  This could otherwise
+   completed the key update procedure on its side.  This could otherwise
    be possible, if the client is using a value of NSTART greater than 1
    (see Section 4.7 of [RFC7252]).
-
-4.3.4.  KUDOS States
-
-   A peer performs a KUDOS execution according to a state machine.
-   Normally, the two peers are in "equilibrium", in the IDLE state of
-   the KUDOS state machine.  During a KUDOS execution a peer can
-   traverse three possible states: IDLE, BUSY, and PENDING.  A KUDOS
-   execution starts upon entering the BUSY state from a state different
-   from BUSY.  A peer succesfully completes a KUDOS execution by
-   entering the IDLE state, at which point the peer has the OSCORE
-   Security Context CTX_NEW and has achieved key confirmation.
-
-   The decision about sending a KUDOS message is per the KUDOS state
-   machine, and is based on the perception that this peer has about what
-   the other peer has done.  That is, there is no need to take into
-   account the details of one’s own local state.  The decision on
-   processing a received KUDOS message is per the KUDOS state machine,
-   and is based on what the recipient’s local status is.  Moving to a
-   state due to a received message occurs only if the message passed
-   decryption and verification with OSCORE.
-
-   In its local status with the other peer, a peer tracks its current
-   KUDOS state by means of the bits (c_tx, c_rx):
-
-   *  (00) IDLE - The peer is not running KUDOS.
-
-   *  BUSY - The peer is running KUDOS and:
-
-      -  (01) has not offered a nonce, but has received the nonce from
-         the other peer; or
-
-      -  (10) has offered a nonce, but has not received the nonce from
-         the other peer.
-
-   *  (11) PENDING: the peer is running KUDOS, has offered its nonce,
-      has received the nonce from the other peer, and is waiting for key
-      confirmation.
-
-4.3.5.  KUDOS State Machine
-
-   Ane execution of KUDOS is driven by a state machine that the two
-   peers independantly execute.  The current state determines correct
-   actions for the peers to take, in terms of transitioning to other
-   states and processing of messages.
-
-4.3.5.1.  Startup
-
-   At startup, the peer enter a *Pre-IDLE* state.
-
-4.3.5.2.  Pre-IDLE
-
-   1.  If the peer has any CTX_TEMP Security Contexts, delete them.
-
-   2.  If the peer has both an old and a new OSCORE Security Contexts:
-       a.  Delete the (X, nonce) pair associated with the old OSCORE
-       Security Context.  b.  Delete the old OSCORE Security Context, or
-       retain it only for processing of late incoming messages as
-       allowed by retention policies.
-
-   3.  Move to *IDLE*.
-
-4.3.5.3.  IDLE
-
-   *  @Receiving a convergent message while in *IDLE*
-
-      1.  Ignore the message for the sake of KUDOS processing, but
-          process it as a CoAP message.
-
-      2.  Stay in *IDLE*
-
-   *  @Receiving a divergent message while in *IDLE*
-
-      1.  Move to *BUSY*.
-
-   *  @Sending a divergent message while in *IDLE*
-
-      1.  Move to *BUSY*.
-
-4.3.5.4.  BUSY
-
-   While in the *BUSY* state, the peer must not send non-KUDOS messages.
-
-   *  @Entering *BUSY* due to receiving a divergent message
-
-      1.  Send a convergent message.
-
-      2.  Move to *PENDING*.
-
-   *  @Entering *BUSY* due to sending a divergent message
-
-      1.  Stay *BUSY*.
-
-   *  @Receiving a divergent message while in *BUSY*
-
-      1.  Send a convergent message.
-
-      2.  Move to *PENDING*.
-
-   *  @Receiving a convergent message while in *BUSY*
-
-      1.  Achieve key confirmation
-
-      2.  Move to *Pre-IDLE*.
-
-   *  @Sending divergent message while in *BUSY*
-
-      -  If CTX_TEMP is usable to protect the intended divergent
-         message, send the message and then stay in *BUSY*.
-
-      -  If CTX_TEMP is not usable to protect the intended divergent
-         message, perform the following steps.  (E.g., this happens upon
-         eventually exhausting the Sender Sequence Number values of
-         CTX_TEMP)
-
-         1.  Delete CTX_TEMP.
-
-         2.  Delete the (X, nonce) pair associated with CTX_OLD, i.e.,
-             whichever was used as CTX_IN to generate the CTX_TEMP
-             deleted at the previous step.
-
-         3.  Generate a new (X, nonce) pair and associate it with
-             CTX_OLD.
-
-         4.  Generate a new CTX_TEMP from CTX_OLD.
-
-         5.  Send the intended divergent message protected with the
-             CTX_TEMP generated at the previous step.
-
-         6.  Stay in *BUSY*.
-
-4.3.5.5.  Pending
-
-   While in the *PENDING* state, the peer must not send non-KUDOS
-   messages.
-
-   *  @Receiving a convergent message while in *PENDING*
-
-      1.  Move to *Pre-IDLE*.
-
-   *  @Receiving a non-KUDOS message protected with the latest CTX_NEW
-      while in *PENDING*
-
-      1.  Achieve key confirmation
-
-      2.  Move to *Pre-IDLE*.
-
-   *  @Needing to send something (e.g., the application wants to send a
-      request) while in *PENDING*
-
-      1.  Send a convergent message, protected with the same, latest
-          CTX_NEW.  (This is not possible anymore in case CTX_NEW
-          becomes usable to protect outgoing messages, e.g., upon
-          eventually exhausting the Sender Sequence Number values of
-          CTX_NEW).
-
-      2.  Stay in *PENDING*.
-
-   *  @Receiving a divergent message while in *PENDING*
-
-      -  If decryption and verification of the divergent message work
-         using a CTX_TEMP derived from CTX_OLD:
-
-         1.  Delete CTX_NEW.
-
-         2.  Delete the pair (X, nonce) associated with CTX_OLD, i.e.,
-             whichever was used as CTX_IN to generate the CTX_NEW
-             deleted at the previous step.
-
-         3.  Abort the ongoing KUDOS execution.
-
-         4.  Move to *BUSY*.
-
-      -  If decryption and verification of the divergent message work
-         using a CTX_TEMP derived from CTX_NEW:
-
-         1.  Delete the oldest CTX_TEMP
-
-         2.  Delete CTX_OLD, i.e., whichever of the two was used as
-             CTX_IN to generate the CTX_TEMP deleted at the previous
-             step.
-
-         3.  CTX_NEW becomes the oldest Security Context.  Next steps in
-             this algorithm will refer to that Security Context as
-             CTX_OLD.
-
-         4.  Abort the ongoing KUDOS execution.
-
-         5.  Move to *BUSY*.
-
-4.3.6.  Handling of OSCORE Security Contexts
-
-   A peer completes the key update process when it has achieved key
-   confirmation and thus moved back to the IDLE state.
-
-   The following properties hold for a execution of KUDOS.
-
-   *  Both the peers use and preserve the same respective OSCORE Sender
-      ID and Recipient ID.
-
-   *  If CTX_OLD specifies an OSCORE ID Context, both peers use and
-      preserve the same OSCORE ID Context.
-
-   Once a peer has successfully derived the new OSCORE Security Context
-   CTX_NEW, the following applies.
-
-   *  The peer MUST use CTX_NEW to protect outgoing non KUDOS messages,
-      and MUST NOT use the originally shared OSCORE Security Context
-      CTX_OLD for protecting outgoing messages.
-
-   *  The peer MUST delete the OSCORE Security Context CTX_DEL older
-      than CTX_OLD such that, with reference to the immediately previous
-      execution of KUDOS, both the following conditions hold:
-
-      -  CTX_DEL was used for deriving the OSCORE Security Context
-         CTX_TEMP used to protect the divergent KUDOS message; and
-
-      -  CTX_OLD was used to protect the convergent KUDOS message.
-
-   Note that if the procedure for updating IDs is run there may be a
-   change of Sender/Recipient IDs between CTX_DEL and CTX_OLD.  The way
-   to correctly keep the relation between the OSCORE Security Contexts
-   is implementation specific.
-
-   *  The peer MUST terminate all the ongoing observations [RFC7641]
-      that it has with the other peer as protected with the old Security
-      Context CTX_OLD, unless the two peers have explicitly agreed
-      otherwise as defined in Section 4.5.
-
-      More specifically, if either or both peers indicate the wish to
-      cancel their observations, those will be all cancelled following a
-      successful KUDOS execution.
-
-      Note that, even though a peer had no real reason to update its
-      OSCORE keying material, running KUDOS can be intentionally
-      exploited as a more efficient way to terminate all the ongoing
-      observations with the other peer, compared to sending one
-      cancellation request per observation (see Section 3.6 of
-      [RFC7641]).
 
 4.4.  Key Update Admitting no Forward Secrecy
 
@@ -1002,19 +975,17 @@ Table of Contents
    In order to address these limitations, KUDOS can be run in its
    stateless no-FS mode, as defined in the following.  This allows two
    peers to achieve the same results as when running KUDOS in FS mode
-   (see Section 4.3), with the difference that no forward secrecy is
+   (see Section 4.3), with the difference that forward secrecy is not
    achieved and no state information is required to be dynamically
    written in non-volatile memory.
 
    From a practical point of view, the two modes differ as to what exact
    OSCORE Master Secret and Master Salt are used as part of the OSCORE
-   Security Context provided as input to the updateCtx() function (see
-   Section 4.2).
+   Security Context CTX_IN that is provided as input to the updateCtx()
+   function (see Section 4.2).
 
-   If either or both peers are not able to write in non-volatile memory
-   the OSCORE Master Secret and OSCORE Master Salt from the newly
-   derived Security Context CTX_NEW, then the two peers have to run
-   KUDOS in no-FS mode.
+   If either or both peers are not able to write in non-volatile memory,
+   then the two peers have to run KUDOS in no-FS mode.
 
 4.4.1.  Handling and Use of Keying Material
 
@@ -1103,44 +1074,54 @@ Table of Contents
       reusing old keying material, such as that described in
       Appendix B.1 of [RFC8613]; or
 
-   *  The device is exchanging OSCORE-protected data as part of a KUDOS
-      execution in either of the KUDOS messages, as described in
-      Section 4.3.2.  In such case, the plain CoAP request composed
-      before OSCORE protection of the KUDOS message may include an
-      application payload, if admitted by the request method.
+   *  The device is exchanging OSCORE-protected data within a KUDOS
+      messages, as described in Section 4.3.5.  In such case, the plain
+      CoAP message composed before OSCORE protection of the KUDOS
+      message can include an application payload, if admitted.
 
 4.4.2.  Selection of KUDOS Mode
+
+   The following refers to CTX_BOOTSTRAP as to the OSCORE Security
+   Context where the OSCORE Master Secret is the Bootstrap Master Secret
+   and the Master Salt is the Bootstrap Master Salt Section 4.4.1.
 
    During a KUDOS execution, the two peers agree on whether to perform
    the key update procedure in FS mode or no-FS mode, by leveraging the
    "No Forward Secrecy" bit, 'p', in the 'x' byte of the OSCORE Option
    value of the KUDOS messages (see Section 4.1).  The 'p' bit
-   practically determines what OSCORE Security Context to use as input
-   to updateCtx() during the KUDOS execution, consistently with the
-   indicated mode.
+   practically determines what OSCORE Security Context CTX_IN to use as
+   input to updateCtx() during the KUDOS execution, consistently with
+   the indicated mode.
 
    *  If the 'p' bit is set to 0 (FS mode), the updateCtx() function
-      used to derive CTX_TEMP or CTX_NEW considers as input CTX_OLD,
-      meaning the current OSCORE Security Context shared with the other
+      used to derive CTX_TEMP or CTX_NEW considers CTX_IN to be CTX_OLD,
+      i.e., the current OSCORE Security Context shared with the other
       peer as is.  In particular, CTX_OLD includes Latest Master Secret
       as OSCORE Master Secret and Latest Master Salt as OSCORE Master
       Salt.
 
    *  If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function
-      used to derive CTX_TEMP or CTX_NEW considers as input
-      CTX_BOOTSTRAP, that is it derives a new OSCORE Security Context
-      using the Bootstrap Master Secret as OSCORE Master Secret and
-      Bootstrap Master Salt as OSCORE Master Salt.  Thus, every
-      execution of KUDOS in no-FS mode between these two peers considers
-      the same pair (Master Secret, Master Salt) in the OSCORE Security
-      Context CTX_BOOTSTRAP provided as input to the updateCtx()
-      function, hence the impossibility to achieve forward secrecy.
+      used to derive CTX_TEMP or CTX_NEW considers CTX_IN to be
+      CTX_BOOTSTRAP.  Thus, every execution of KUDOS in no-FS mode
+      between these two peers considers the same CTX_BOOTSTRAP, i.e.,
+      the same CTX_IN, as input to the updateCtx() function, hence the
+      impossibility to achieve forward secrecy.
 
-      Note that this means that in the state machine described in
-      sechtion {#ssec-state-machine}, any derived OSCORE Security
-      Context created for protection or unprotection of a KUDOS message
-      where the 'p' bit is set to 1 will take CTX_BOOTSTRAP as input to
-      updateCtx().
+      Note that, in the state machine described in section {#ssec-state-
+      machine}, updateCtx() will take CTX_BOOTSTRAP as input when
+      creating every OSCORE Security Context for protecting or
+      unprotecting a KUDOS message where the 'p' bit is set to 1.
+
+      If at least one KUDOS message in a successful KUDOS execution had
+      the 'p' bit set to 1, that KUDOS execution is considered to have
+      been run in the no-FS mode.
+
+      When a peer moves to the *Pre-IDLE* stage after having succesfully
+      completed a KUDOS execution in the no-FS mode, then the peer MUST
+      additionally perform the following as first step of the *Pre-IDLE*
+      stage:
+
+      1.  Delete CTX_BOOTSTRAP
 
    A peer determines to run KUDOS either in FS or no-FS mode with
    another peer as follows.
@@ -1174,17 +1155,19 @@ Table of Contents
    *  If a peer A is a CAPABLE device and has learned that another peer
       B is also a CAPABLE device (and hence able to run KUDOS in FS
       mode), then the peer A MUST NOT run KUDOS with the peer B in no-FS
-      mode.  This also means that peer A MUST terminate the KUDOS
-      execution if it receives a KUDOS message from the peer B where the
-      'p' bit of the 'x' byte in the OSCORE Option value is set to 1.
+      mode.  If the peer A receives a KUDOS message from the peer B
+      where the 'p' bit of the 'x' byte in the OSCORE Option value is
+      set to 1, then the peer A MUST ignore the message for the sake of
+      KUDOS processing, but process it as a CoAP message.
 
-      Note that, if the peer A is a CAPABLE device, it is able to store
-      such information about the other peer B on disk and it MUST do so.
-      This ensures that the peer A will perform every execution of KUDOS
-      with the peer B in FS mode.  In turn, this prevents a possible
-      downgrading attack, aimed at making A believe that B is a non-
-      CAPABLE device, and thus to run KUDOS in no-FS mode although the
-      FS mode can actually be used by both peers.
+      Note that, if the peer A is a CAPABLE device, it is able to
+      remember that the peer B is also a CAPABLE device and thus to
+      store such information on disk, which it MUST do.  This ensures
+      that the peer A will perform every execution of KUDOS with the
+      peer B in FS mode.  In turn, this prevents a possible downgrading
+      attack, aimed at making A believe that B is a non-CAPABLE device,
+      and thus to run KUDOS in no-FS mode although the FS mode can
+      actually be used by both peers.
 
 4.4.3.  Non-CAPABLE Devices Operating in FS Mode
 
@@ -1193,12 +1176,13 @@ Table of Contents
    particular use cases.  Bootstrap material means specifically the
    Bootstrap Master Secret and Bootstrap Master Salt, and Latest
    material means the Latest Master Secret and Latest Master Salt as
-   defined in Section 4.4.1.  Normally, a non-CAPABLE device always uses
-   KUDOS in no-FS mode.  An exception is possible, if the Bootstrap
-   material is dynamically installed at that device through an in-band
-   process between that device and the peer device.  In such a case, it
-   is possible for this device to run KUDOS in FS mode with the peer
-   device.
+   defined in Section 4.4.1.
+
+   Normally, a non-CAPABLE device always uses KUDOS in no-FS mode.  An
+   exception is possible, if the Bootstrap material is dynamically
+   installed at that device through an in-band process between that
+   device and the peer device.  In such a case, it is possible for that
+   device to run KUDOS in FS mode with the peer device.
 
    Note that, under the assumption that peer A does not have any
    Bootstrap material with another peer B, peer A cannot use the no-FS
@@ -1218,12 +1202,12 @@ Table of Contents
       considers that keying material as the Latest material with peer B,
       and stores it only in volatile memory.
 
-      -  An example of such an in-band procedure is the EDHOC and OSCORE
-         profile of ACE [I-D.ietf-ace-edhoc-oscore-profile], according
-         to which the two peers run the EDHOC protocol [RFC9528] for
-         establishing an OSCORE Security Context to associate with
-         access rights.  This in-band procedure may occur multiple times
-         over the device's lifetime.
+      An example of such an in-band procedure is the EDHOC and OSCORE
+      profile of ACE [I-D.ietf-ace-edhoc-oscore-profile], according to
+      which the two peers run the EDHOC protocol [RFC9528] for
+      establishing an OSCORE Security Context to associate with access
+      rights.  This in-band procedure may occur multiple times over the
+      device's lifetime.
 
    *  Peer A runs KUDOS in FS mode with peer B, thereby achieving
       forward secrecy for subsequent key update epochs, as long as the
@@ -1261,7 +1245,7 @@ Table of Contents
    another, as defined in Section 4.5.1.  If, at the end of a KUDOS
    execution, the two peers have not agreed on that, they MUST terminate
    the ongoing observations that they have with one another, just as
-   defined in Section 4.3.6.
+   defined in Section 4.3.4.
 
 4.5.1.  Management of Observations
 
@@ -1294,23 +1278,23 @@ Table of Contents
    Observations", 'b', in the 'x' byte of the OSCORE Option value (see
    Section 4.1), in the KUDOS message it sends to the other peer B.
 
-   If a peer acting receives a KUDOS message with the bit 'b' set to 0,
-   then the peer MUST set to 0 the bit 'b' in the KUDOS message it sends
-   as follow-up, regardless of its wish to preserve ongoing observations
+   If a peer receives a KUDOS message with the bit 'b' set to 0, then
+   the peer MUST set to 0 the bit 'b' in the KUDOS message it sends as
+   follow-up, regardless of its wish to preserve ongoing observations
    with the other peer.
 
-   If a peer acting has sent a KUDOS message with the bit 'b' set to 0,
-   the peer MUST ignore the bit 'b' in the follow-up KUDOS message that
-   it receives from the other peer.
+   If a peer has sent a KUDOS message with the bit 'b' set to 0, the
+   peer MUST ignore the bit 'b' in the follow-up KUDOS message that it
+   receives from the other peer.
 
    Note that during the same KUDOS execution, all the KUDOS messages
-   sent by a peer must have the same value in the bit 'b' for preserving
+   sent by a peer MUST have the same value in the bit 'b' for preserving
    ongoing observations.
 
    After successfully completing the KUDOS execution (i.e., after having
    successfully derived the new OSCORE Security Context CTX_NEW), both
    peers have expressed their interest in preserving their common
-   ongoing observations if and only if the bit 'b' was set to 1 in both
+   ongoing observations if and only if the bit 'b' was set to 1 in all
    the exchanged KUDOS messages.  In such a case, each peer X performs
    the following actions.
 
@@ -1336,7 +1320,7 @@ Table of Contents
 
    Note that, each time it runs KUDOS, a peer must determine if it
    wishes to preserve ongoing observations with the other peer or not,
-   before sending its KUDOS message.
+   before sending a KUDOS message.
 
    To this end, the peer should also assess the new value that PIV*
    would take after a successful completion of KUDOS, in case ongoing
@@ -1355,9 +1339,9 @@ Table of Contents
    Applications MAY define policies that allow a peer to temporarily
    keep the old Security Context CTX_OLD beyond having established the
    new Security Context CTX_NEW and having achieved key confirmation,
-   rather than simply overwriting CTX_OLD with CTX_NEW.  This allows the
-   peer to decrypt late, still on-the-fly incoming messages protected
-   with CTX_OLD.
+   rather than simply deleting CTX_OLD.  This allows the peer to decrypt
+   late, still on-the-fly incoming non KUDOS messages protected with
+   CTX_OLD.
 
    When enforcing such policies, the following applies.
 
@@ -1376,9 +1360,13 @@ Table of Contents
 
    A peer MUST NOT retain CTX_OLD beyond the establishment of CTX_NEW
    and the achievement of key confirmation, if any of the following
-   conditions holds: CTX_OLD is expired; limits set for safe key usage
-   have been reached [I-D.ietf-core-oscore-key-limits], for the
-   Recipient Key of the Recipient Context of CTX_OLD.
+   conditions holds:
+
+   *  CTX_OLD is expired.
+
+   *  Limits set for safe key usage have been reached
+      [I-D.ietf-core-oscore-key-limits], for the Recipient Key of the
+      Recipient Context of CTX_OLD.
 
 4.7.  Discussion
 
@@ -1401,31 +1389,11 @@ Table of Contents
    once assigned, and thus ID Context values used as pledge identifiers
    can be employed in the long-term as originally intended.
 
-4.7.1.  KUDOS Interleaved with Other Message Exchanges
+4.7.1.  Communication Overhead
 
-   During a KUDOS execution, a peer that is a CoAP Client must be ready
-   to receive CoAP responses that are not KUDOS messages and that are
-   protected with a different OSCORE Security Context than the one that
-   was used to protect the corresponding request.
-
-   This can happen, for instance, when a CoAP client sends a request
-   and, shortly after that, it executes KUDOS.  In such a case, the CoAP
-   request is protected with CTX_OLD, while the CoAP response from the
-   server is protected with CTX_NEW.  Another case is when incoming
-   responses are Observe notifications protected with CTX_NEW, while the
-   corresponding request from the CoAP client that started the
-   observation was protected with CTX_OLD.
-
-   Another case is when running KUDOS, if the client uses NSTART > 1 and
-   one of its requests triggers a KUDOS execution, i.e., the server
-   replies with a divergent KUDOS message.  The other requests would be
-   latest served by the server after KUDOS has been completed.
-
-4.7.2.  Communication Overhead
-
-   Each of the two KUDOS messages results in communication overhead.
-   This is determined by the following, additional information conveyed
-   in the OSCORE Option (see Section 4.1).
+   Each KUDOS messages results in communication overhead.  This is
+   determined by the following, additional information conveyed in the
+   OSCORE Option (see Section 4.1).
 
    *  The second byte of the OSCORE Option value.
 
@@ -1458,13 +1426,15 @@ Table of Contents
       255 bytes (see Section 2 of [RFC8613]).
 
    The results shown in figure {table-overhead-forward} are the minimum,
-   typical, and maximum communication overhead introduced by KUDOS, when
-   considering a nonce with size 1, 8, and 16 bytes.  All the indicated
-   values are in bytes.  The overhead is calculated based on a scenario
-   of a CoAP request serving as the divergent message, followed by a
-   CoAP response server as the convergent message.
+   typical, and maximum communication overhead in bytes introduced by
+   KUDOS, when considering a nonce with size 1, 8, and 16 bytes.  All
+   the indicated values are in bytes.
 
-   In particular, the shown results build on the following assumptions.
+   The overhead is calculated based on a scenario of a CoAP request
+   serving as the divergent message, followed by a CoAP response serving
+   as the convergent message.
+
+   In particular, the results build on the following assumptions.
 
    *  Both messages of the same KUDOS execution use nonces of the same
       size, and do not include the 'kid context' parameter in the OSCORE
@@ -1490,9 +1460,9 @@ Table of Contents
       | 16         | 19                    | 21            | 40    |
       +------------+-----------------------+---------------+-------+
 
-            Table 1: Communication overhead (request-response)
+                 Table 1: Communication overhead (bytes)
 
-4.7.3.  Resource Type core.kudos
+4.7.2.  Resource Type core.kudos
 
    The "core.kudos" resource type registered in Section 6.5 is defined
    to ensure a means for clients to send KUDOS requests without
@@ -1504,19 +1474,19 @@ Table of Contents
    request composed before OSCORE protection, or when no application-
    layer processing is intended to occur on the server.
 
-4.7.4.  Well-Known KUDOS Resource
+4.7.3.  Well-Known KUDOS Resource
 
    According to this specification, KUDOS is transferred in POST
    requests and 2.04 (Changed) responses.  If a client wishes to execute
    the KUDOS procedure without triggering any application processing on
    the server, then a request sent as a KUDOS message can target a KUDOS
-   resource with resource type "core.kudos" (see Section 4.7.3), e.g.,
+   resource with resource type "core.kudos" (see Section 4.7.2), e.g.,
    at the Uri-Path "/.well-known/kudos" (see Section 6.4).  An
    alternative KUDOS resource can be discovered, e.g., by using a
    resource directory [RFC9176], by using the resource type "core.kudos"
    as filter criterion.
 
-4.7.5.  Rekeying when Using SCHC with OSCORE
+4.7.4.  Rekeying when Using SCHC with OSCORE
 
    In the interest of rekeying, the following points must be taken into
    account when using the Static Context Header Compression and
@@ -1892,9 +1862,9 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-06, 21 October 2024,
+              draft-ietf-ace-edhoc-oscore-profile-07, 3 March 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-06>.
+              edhoc-oscore-profile-07>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
@@ -2004,7 +1974,7 @@ Appendix A.  Examples
 A.1.  Successful KUDOS Initiated with a Request
 
    The following shows a succesful execution of KUDOS where KUDOS is
-   started by the Client sending a divergent KUDOS message.
+   started by the client sending a divergent KUDOS message.
 
 KUDOS status:                                         KUDOS status:
 - CTX_OLD: -,-                                        - CTX_OLD: -,-
