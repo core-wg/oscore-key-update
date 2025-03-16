@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-13T00:54:26.243652+00:00",
+  "timestamp": "2025-03-16T00:58:30.366281+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2820,6 +2820,22 @@
       "body": "The following line can be extended:\n_Receiving a divergent message while in PENDING_\n\nThe peer should compare the incoming divergent message (_a_) with a previously possibly received divergent message (_b_) which put it in the **PENDING** (or **BUSY**) state in the first place. If the nonce and X byte match for those two messages _a_ and _b_ then the peer can remain in **PENDING** and re-send its previously sent convergent message.\n\nThis would avoid complications for the recipient peer, and allow it to avoid proceeding in the state machine via\n_If decryption and verification of the divergent message work using a CTX_1 derived from CTX_OLD:_\nor\n_If decryption and verification of the divergent message work using a CTX_1 derived from CTX_NEW:_\n\n**Comparison**\n\nThe comparison can be done in this way:\n- First decompose the Master Salt in the current CTX_NEW into its component CBOR byte strings. Then identify which byte string contains the peer's own X and Nonce. The other byte string contains the other peer's X and Nonce that it used in its previously sent divergent message (_b_).\n- Take the X and Nonce received in the latest received divergent message (_a_) from the other peer.\n\nNow compare if the two X bytes and the two Nonces are the same. If that is the case, stay in **PENDING** and re-send the previously sent convergent message. If that is not the case, proceed in the state machine according to the two steps listed above (as normal).",
       "createdAt": "2025-02-28T23:05:51Z",
       "updatedAt": "2025-02-28T23:16:41Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 112,
+      "id": "I_kwDOGfmof86uHReY",
+      "title": "Update according to March 2025 feedback from IANA",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/112",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": ">  Section 6.3 says that \u201cIANA is asked to add the following entries\u201d to a registry, and the name of the table refers to \u201cRegistrations,\u201d but the table contains only one entry. Has anything been left out?",
+      "createdAt": "2025-03-14T19:40:13Z",
+      "updatedAt": "2025-03-14T19:40:13Z",
       "closedAt": null,
       "comments": []
     }
