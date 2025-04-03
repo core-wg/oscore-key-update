@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-04-01T01:02:34.516834+00:00",
+  "timestamp": "2025-04-03T00:55:46.102376+00:00",
   "repo": "core-wg/oscore-key-update",
   "labels": [
     {
@@ -2836,6 +2836,22 @@
       "body": ">  Section 6.3 says that \u201cIANA is asked to add the following entries\u201d to a registry, and the name of the table refers to \u201cRegistrations,\u201d but the table contains only one entry. Has anything been left out?",
       "createdAt": "2025-03-14T19:40:13Z",
       "updatedAt": "2025-03-14T19:40:13Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 113,
+      "id": "I_kwDOGfmof86w0HNx",
+      "title": "Update figure of extended OSCORE option to include KID",
+      "url": "https://github.com/core-wg/oscore-key-update/issues/113",
+      "state": "OPEN",
+      "author": "rikard-sics",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "It's missing currently",
+      "createdAt": "2025-04-02T13:46:58Z",
+      "updatedAt": "2025-04-02T13:46:58Z",
       "closedAt": null,
       "comments": []
     }
