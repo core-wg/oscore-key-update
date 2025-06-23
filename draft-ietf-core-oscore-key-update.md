@@ -362,7 +362,7 @@ Once successfully completed a KUDOS execution, the two peers agree on a newly es
 
 The following specifically defines how KUDOS is run in its stateful FS mode achieving forward secrecy. That is, in the OSCORE Option value of all the exchanged KUDOS messages, the "No Forward Secrecy" 'p' bit is set to 0.
 
-In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX\_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in {{Section 3.1 of RFC8613}}, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in {{Section 3.2.1 of RFC8613}}. If either peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
+In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX\_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in {{Section 3.1 of RFC8613}}, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in {{Section 3.2.1 of RFC8613}}. If either or both peers are unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
 
 ### Nonces and X Bytes {#ssec-nonces-x-bytes}
 
@@ -418,7 +418,7 @@ From a peer's point of view, KUDOS states evolve as follows.
 
 At startup, the peer enters a **Pre-IDLE** stage.
 
-#### Pre-IDLE Stage
+#### Pre-IDLE Stage {#ssec-state-machine-pre-idle}
 
 Upon entering the **Pre-IDLE** stage, perform the following steps:
 
@@ -540,47 +540,55 @@ While in **PENDING**, the following applies:
 
 A peer completes the key update procedure when it has derived the new OSCORE Security Context CTX\_NEW and achieved key confirmation, and thus has moved back to the IDLE state.
 
-Once the peer has successfully derived CTX\_NEW, the peer MUST use CTX\_NEW to protect outgoing non KUDOS messages, and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages.
+Once the peer has successfully derived CTX\_NEW, the peer MUST use CTX\_NEW to protect outgoing non KUDOS messages and MUST NOT use the originally shared OSCORE Security Context CTX\_OLD for protecting outgoing messages.
 
 The peer MUST terminate all the ongoing observations {{RFC7641}} that it has with the other peer as protected with the old Security Context CTX\_OLD, unless the two peers have explicitly agreed otherwise as defined in {{preserving-observe}}.
 
-  More specifically, if either or both peers indicate the wish to cancel their observations, those will be all cancelled following a successful KUDOS execution.
+More specifically, if either or both peers indicate the wish to cancel their observations, those will all be cancelled following a successful KUDOS execution.
 
-  Note that, even though a peer had no real reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see {{Section 3.6 of RFC7641}}).
+Note that, even in case a peer has no fundamental reason to update its OSCORE keying material, running KUDOS can be intentionally exploited as a more efficient way to terminate all the ongoing observations with the other peer, compared to sending one cancellation request per observation (see {{Section 3.6 of RFC7641}}).
 
 ### KUDOS Messages as CoAP Requests or Responses {#ssec-message-handling}
 
 If a KUDOS message is a CoAP request, then it can target two different types of resources at the recipient CoAP server:
 
-* The well-known KUDOS resource at /.well-known/kudos, or an alternative KUDOS resource with resource type "core.kudos" (see {{well-known-kudos-desc}} and {{rt-kudos}}). In such a case, no application processing is expected at the CoAP server, and the plain CoAP request composed before OSCORE protection should not include an application payload.
+* The well-known KUDOS resource at /.well-known/kudos (see {{well-known-kudos}}), or an alternative KUDOS resource with resource type "core.kudos" (see {{well-known-kudos-desc}} and {{rt-kudos}}).
 
-* A non-KUDOS resource, i.e., an actual application resource that a CoAP request can target in order to trigger application processing at the CoAP server. In such a case, the plain CoAP request composed before OSCORE protection can include an application payload, if admitted by the request method.
+  In such a case, no application processing is expected at the CoAP server and the plain CoAP request composed before OSCORE protection SHOULD NOT include an application payload.
 
-In either case, the link to the target resource can have the "osc" target attribute to indicate that the resource is only accessible using OSCORE (see {{Section 9 of RFC8613}}).
+* A non-KUDOS resource, i.e., an actual application resource that a CoAP request can target in order to trigger application processing at the CoAP server.
 
-Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE encryption SHOULD NOT include an application payload. Otherwise, an application payload MAY be included.
+  In such a case, the plain CoAP request composed before OSCORE protection can include an application payload, if admitted by the request method.
+
+In either case, the link to the target resource can be accompanied by the "osc" target attribute to indicate that the resource is only accessible using OSCORE (see {{Section 9 of RFC8613}}).
+
+Similarly, any CoAP response can also be a KUDOS message. If the corresponding CoAP request has targeted a KUDOS resource, then the plain CoAP response composed before OSCORE protection SHOULD NOT include an application payload. Otherwise, an application payload MAY be included.
 
 ### Avoiding In-Transit Requests During a Key Update {#ssec-in-transit}
 
-Before sending a KUDOS message, the peer MUST ensure that it has no outstanding interactions with the other peer (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}}.
+Before sending a KUDOS message, a peer MUST ensure that it has no outstanding interactions with the other peer (see {{Section 4.7 of RFC7252}}), with the exception of ongoing observations {{RFC7641}}.
 
-If any such outstanding interactions are found, the peer MUST NOT initiate or continue the KUDOS execution, before either: i) having all those outstanding interactions cleared; or ii) freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the other peer.
+If any such outstanding interactions are found, the peer MUST NOT initiate or continue the KUDOS execution, before either:
+
+* having all those outstanding interactions cleared; or
+
+* freeing up the Token values used with those outstanding interactions, with the exception of ongoing observations with the other peer.
 
 Later on, this prevents a non KUDOS response protected with the new Security Context CTX\_NEW from cryptographically matching with both the corresponding request also protected with CTX\_NEW and with an older request protected with CTX\_OLD, in case the two requests were protected using the same OSCORE Partial IV.
 
-During an ongoing KUDOS execution, a peer MUST NOT send a non KUDOS message to the other peer, until having aborted or successfully completed the key update procedure on its side. This could otherwise be possible, if the client is using a value of NSTART greater than 1 (see {{Section 4.7 of RFC7252}}).
+During an ongoing KUDOS execution, a peer MUST NOT send a non KUDOS message to the other peer, until having aborted or successfully completed the key update procedure on its side. Note that, without the constraint above, this could otherwise be possible if a client running KUDOS uses a value of NSTART greater than 1 (see {{Section 4.7 of RFC7252}}).
 
 ## Key Update Admitting no Forward Secrecy {#no-fs-mode}
 
-The FS mode of the KUDOS procedure defined in {{ssec-derive-ctx}} ensures forward secrecy of the OSCORE keying material. However, it requires peers executing KUDOS to preserve their state (e.g., across a device reboot), by writing information such as data from the newly derived OSCORE Security Context CTX\_NEW in non-volatile memory.
+The FS mode of the KUDOS procedure defined in {{ssec-derive-ctx}} ensures forward secrecy of the OSCORE keying material. However, it requires peers running KUDOS to preserve their state (e.g., across a device reboot occurred in an unprepared way), by writing information such as data from the newly derived OSCORE Security Context CTX\_NEW in non-volatile memory.
 
-This can be problematic for devices that cannot dynamically write information to non-volatile memory. For example, some devices may support only a single writing in persistent memory when initial keying material is provided (e.g., at manufacturing or commissioning time), but no further writing after that. Therefore, these devices cannot perform a stateful key update procedure, and thus are not capable to run KUDOS in FS mode to achieve forward secrecy.
+This can be problematic for devices that cannot dynamically write information to non-volatile memory. For example, some devices may support only a single writing in persistent memory when initial keying material is provided (e.g., at manufacturing or commissioning time), but no further writing after that. Therefore, these devices cannot perform a stateful key update procedure and thus are not capable to run KUDOS in FS mode to achieve forward secrecy.
 
-In order to address these limitations, KUDOS can be run in its stateless no-FS mode, as defined in the following. This allows two peers to achieve the same results as when running KUDOS in FS mode (see {{ssec-derive-ctx}}), with the difference that forward secrecy is not achieved and no state information is required to be dynamically written in non-volatile memory.
+In order to address these limitations, KUDOS can be run in its stateless no-FS mode, as defined in the following. This allows two peers to accomplish the same results as when running KUDOS in FS mode (see {{ssec-derive-ctx}}), with the difference that forward secrecy is not achieved and no state information is required to be dynamically written in non-volatile memory.
 
-From a practical point of view, the two modes differ as to what exact OSCORE Master Secret and Master Salt are used as part of the OSCORE Security Context CTX\_IN that is provided as input to the updateCtx() function (see {{ssec-update-function}}).
+From a practical point of view, the two modes differ in which exact OSCORE Master Secret and Master Salt are used as part of the OSCORE Security Context CTX\_IN that is provided as input to the updateCtx() function (see {{ssec-update-function}}).
 
-If either or both peers are not able to write in non-volatile memory, then the two peers have to run KUDOS in no-FS mode.
+If either or both peers are unable to write in non-volatile memory, then the two peers have to run KUDOS in no-FS mode.
 
 ### Handling and Use of Keying Material {#key-material-handling}
 
@@ -596,19 +604,21 @@ Note that:
 
 * A peer running KUDOS can have none of the pairs above associated with another peer, only one, or both.
 
-* A peer that has neither of the pairs above associated with another peer, cannot run KUDOS in any mode with that other peer.
+* If a peer has neither of the pairs above associated with another peer, then the peer cannot run KUDOS in any mode with that other peer.
 
-* A peer that has only one of the pairs above associated with another peer can attempt to run KUDOS with that other peer, but the procedure might fail depending on the other peer's capabilities. In particular:
+* If a peer has only one of the pairs above associated with another peer, then the peer can attempt to run KUDOS with that other peer, but the procedure might fail depending on the other peer's capabilities. In particular:
 
    - In order to run KUDOS in FS mode, a peer must be a CAPABLE device. It follows that two peers have to both be CAPABLE devices in order to be able to run KUDOS in FS mode with one another.
 
    - In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.
 
-* A peer that is a non-CAPABLE device MUST support the no-FS mode. Note that an exception described in {{non-capable-fs-mode}} exists for non-CAPABLE devices that lack Bootstrap Master Secret and Bootstrap Master Salt.
+* A peer that is a non-CAPABLE device MUST support the no-FS mode, with the exception described in {{non-capable-fs-mode}} for non-CAPABLE devices that lack Bootstrap Master Secret and Bootstrap Master Salt.
 
 * A peer that is a CAPABLE device MUST support the FS mode and the no-FS mode.
 
-* As an exception to the nonces being generated as random values (see {{ssec-nonces-x-bytes}}), a peer that is a CAPABLE device MAY use a value obtained from a monotonically incremented counter as nonce. This has privacy implications, which are described in {{sec-cons}}. In such a case, the peer MUST enforce measures to ensure freshness of the nonce values. For example, the peer can use the same procedure described in {{Section B.1.1 of RFC8613}} for handling the OSCORE Sender Sequence Number values. These measures require to regularly store the used counter values in non-volatile memory, which makes non-CAPABLE devices unable to safely use counter values as nonce values.
+* As an exception to the nonces being generated as random values (see {{ssec-nonces-x-bytes}}), a peer that is a CAPABLE device MAY use a value obtained from a monotonically incremented counter as nonce. Related privacy implications are described in {{sec-cons}}.
+
+  In such a case, the peer MUST enforce measures to ensure freshness of the nonce values. For example, the peer can use the same procedure described in {{Section B.1.1 of RFC8613}} for handling the OSCORE Sender Sequence Number values. These measures require to regularly store the used counter values in non-volatile memory, which makes non-CAPABLE devices unable to safely use counter values as nonce values.
 
 As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX\_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol {{RFC9528}}), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:
 
@@ -616,59 +626,63 @@ As a general rule, once successfully generated a new OSCORE Security Context CTX
 
 * The peer MUST store Latest Master Secret and Latest Master Salt in volatile memory, thus making them available to OSCORE message processing and possible key update procedures.
 
-Following a state loss (e.g., due to a reboot), a device MUST complete a successful KUDOS execution before performing an exchange of OSCORE-protected application data with another peer, unless:
+Following a state loss (e.g., due to a reboot occurred in an unprepared way), a device MUST complete a successful KUDOS execution before performing an exchange of OSCORE-protected application data with another peer, unless:
 
 * The device is CAPABLE and implements a functionality for safely reusing old keying material, such as that described in {{Section B.1 of RFC8613}}; or
-* The device is exchanging OSCORE-protected data within a KUDOS messages, as described in {{ssec-message-handling}}. In such case, the plain CoAP message composed before OSCORE protection of the KUDOS message can include an application payload, if admitted.
+
+* The device is exchanging OSCORE-protected data within a KUDOS message, as described in {{ssec-message-handling}}. In such a case, the plain CoAP message composed before OSCORE protection can include an application payload, if admitted.
 
 ### Selection of KUDOS Mode {#no-fs-signaling}
 
 The following refers to CTX\_BOOTSTRAP as to the OSCORE Security Context where the OSCORE Master Secret is the Bootstrap Master Secret and the Master Salt is the Bootstrap Master Salt {{key-material-handling}}.
 
-During a KUDOS execution, the two peers agree on whether to perform the key update procedure in FS mode or no-FS mode, by leveraging the "No Forward Secrecy" bit, 'p', in the 'x' byte of the OSCORE Option value of the KUDOS messages (see {{ssec-oscore-option-extensions}}). The 'p' bit practically determines what OSCORE Security Context CTX\_IN to use as input to updateCtx() during the KUDOS execution, consistently with the indicated mode.
+During a KUDOS execution, the two peers agree on whether to perform the key update procedure in FS mode or no-FS mode, by leveraging the "No Forward Secrecy" bit, 'p', in the 'x' byte of the OSCORE Option value of the KUDOS messages (see {{ssec-oscore-option-extensions}}).
+
+The 'p' bit practically determines what OSCORE Security Context CTX\_IN to use as input to updateCtx() during the KUDOS execution, consistently with the indicated mode. That is:
 
 * If the 'p' bit is set to 0 (FS mode), the updateCtx() function used to derive CTX\_TEMP or CTX\_NEW considers CTX\_IN to be CTX\_OLD, i.e., the current OSCORE Security Context shared with the other peer as is. In particular, CTX\_OLD includes Latest Master Secret as OSCORE Master Secret and Latest Master Salt as OSCORE Master Salt.
 
-* If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX\_TEMP or CTX\_NEW considers CTX\_IN to be CTX\_BOOTSTRAP. Thus, every execution of KUDOS in no-FS mode between these two peers considers the same CTX\_BOOTSTRAP, i.e., the same CTX\_IN, as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.
+* If the 'p' bit is set to 1 (no-FS mode), the updateCtx() function used to derive CTX\_TEMP or CTX\_NEW considers CTX\_IN to be CTX\_BOOTSTRAP. Thus, every execution of KUDOS in no-FS mode between these two peers considers the same CTX\_BOOTSTRAP, i.e., the same CTX\_IN as input to the updateCtx() function, hence the impossibility to achieve forward secrecy.
 
-  Note that, in the state machine described in section {#ssec-state-machine}, updateCtx() will take CTX\_BOOTSTRAP as input when creating every OSCORE Security Context for protecting or unprotecting a KUDOS message where the 'p' bit is set to 1.
+  In particular, updateCtx() will take CTX\_BOOTSTRAP as input when creating every OSCORE Security Context for protecting or unprotecting a KUDOS message where the 'p' bit is set to 1.
 
-  If at least one KUDOS message in a successful KUDOS execution had the 'p' bit set to 1, that KUDOS execution is considered to have been run in the no-FS mode.
+  If at least one KUDOS message in a successful KUDOS execution had the 'p' bit set to 1, then that KUDOS execution was run in no-FS mode.
 
-  When a peer moves to the **Pre-IDLE** stage after having succesfully completed a KUDOS execution in the no-FS mode, then the peer MUST additionally perform the following as first step of the **Pre-IDLE** stage:
+  When a peer moves to the **Pre-IDLE** stage after having succesfully completed a KUDOS execution in no-FS mode, then the peer MUST additionally perform the following Step A before Step 1 in {{ssec-state-machine-pre-idle}}:
 
-   0. Delete CTX\_BOOTSTRAP
+   A. Delete CTX\_BOOTSTRAP.
 
-A peer determines to run KUDOS either in FS or no-FS mode with another peer as follows.
+A peer determines to run KUDOS either in FS mode or in no-FS mode with another peer as follows.
 
-* If a peer A is a non-CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value. Note that, if peer A lacks a Bootstrap Master Secret and Bootstrap Master Salt to use with the other peer B, it can still run KUDOS in FS mode according to what is defined in {{non-capable-fs-mode}}.
+* If a peer A is a non-CAPABLE device, it MUST run KUDOS only in no-FS mode. That is, when sending a KUDOS message, it MUST set to 1 the 'p' bit of the 'x' byte in the OSCORE Option value. Note that, if the peer A lacks a Bootstrap Master Secret and Bootstrap Master Salt to use with the other peer B, it can still run KUDOS in FS mode according to what is defined in {{non-capable-fs-mode}}.
 
 * If a peer A is a CAPABLE device, it SHOULD run KUDOS only in FS mode. That is, when sending a KUDOS message, it SHOULD set to 0 the 'p' bit of the 'x' byte in the OSCORE Option value. An exception applies in the following cases.
 
-   * The peer A is running KUDOS with another peer B, which A has learned to be a non-CAPABLE device (and hence not able to run KUDOS in FS mode).
+  * The peer A is running KUDOS with another peer B, which A has learned to be a non-CAPABLE device (and hence not able to run KUDOS in FS mode).
 
-      Note that, if the peer A is a CAPABLE device, it is able to store such information about the other peer B on disk and it MUST do so. From then on, the peer A will perform every execution of KUDOS with the peer B in no-FS mode, including after a possible reboot.
+     Note that, if the peer A is a CAPABLE device, it is able to store such information about the other peer B on disk and it MUST do so. From then on, the peer A will perform every execution of KUDOS with the peer B in no-FS mode, including after a possible reboot.
 
-   * The peer A is running KUDOS with another peer B without knowing its capabilities, and A receives a KUDOS message where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1.
+  * While the peer A is running KUDOS with another peer B without knowing its capabilities, the peer A receives a KUDOS message where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1.
 
-* If a peer A is a CAPABLE device and has learned that another peer B is also a CAPABLE device (and hence able to run KUDOS in FS mode), then the peer A MUST NOT run KUDOS with the peer B in no-FS mode. If the peer A receives a KUDOS message from the peer B where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1, then the peer A MUST ignore the message for the sake of KUDOS processing, but process it as a CoAP message.
+* If a peer A is a CAPABLE device and has learned that another peer B is also a CAPABLE device (and hence able to run KUDOS in FS mode), then the peer A MUST NOT run KUDOS with the peer B in no-FS mode. If the peer A receives a KUDOS message from the peer B where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1, then the peer A MUST ignore the message for the sake of KUDOS processing, but processes it as a CoAP message.
 
-   Note that, if the peer A is a CAPABLE device, it is able to remember that the peer B is also a CAPABLE device and thus to store such information on disk, which it MUST do. This ensures that the peer A will perform every execution of KUDOS with the peer B in FS mode. In turn, this prevents a possible downgrading attack, aimed at making A believe that B is a non-CAPABLE device, and thus to run KUDOS in no-FS mode although the FS mode can actually be used by both peers.
+  Note that, if the peer A is a CAPABLE device, it is able to remember that the peer B is also a CAPABLE device and thus to store such information on disk, which it MUST do. This ensures that the peer A will perform every execution of KUDOS with the peer B in FS mode. This also prevents a possible downgrading attack aimed at making A believe that B is a non-CAPABLE device, hence at making A run KUDOS in no-FS mode although the FS mode can actually be used by both peers.
 
 ### Non-CAPABLE Devices Operating in FS Mode {#non-capable-fs-mode}
 
-Devices may not be pre-provisioned with Bootstrap material, for instance due to storage limitations of persistent memory or to fulfil particular use cases. Bootstrap material means specifically the Bootstrap Master Secret and Bootstrap Master Salt, and Latest material means the Latest Master Secret and Latest Master Salt as defined in {{key-material-handling}}.
+Devices may not be pre-provisioned with Bootstrap material, for instance due to storage limitations of their persistent memory or to fulfill particular use cases. Bootstrap material specifically consists in the Bootstrap Master Secret and Bootstrap Master Salt, while Latest material specifically consists in the Latest Master Secret and Latest Master Salt as defined in {{key-material-handling}}.
 
 Normally, a non-CAPABLE device always uses KUDOS in no-FS mode. An exception is possible, if the Bootstrap material is dynamically installed at that device through an in-band process between that device and the peer device. In such a case, it is possible for that device to run KUDOS in FS mode with the peer device.
 
 Note that, under the assumption that peer A does not have any Bootstrap material with another peer B, peer A cannot use the no-FS mode with peer B, even though peer A is a non-CAPABLE device. Thus, allowing peer A to use KUDOS in FS mode ensures that peer A can perform a key update using KUDOS at all.
 
-The following describes how a non-CAPABLE device in the situation outlined above, namely peer A, runs KUDOS in FS mode with another peer B:
+In the situation outlined above, the following describes how a non-CAPABLE device, namely peer A, runs KUDOS in FS mode with another peer B:
 
 * Peer A is not provisioned with Bootstrap material associated with peer B at the time of manufacturing or commissioning.
-* Peer A establishes OSCORE keying material associated with peer B through an in-band procedure run with peer B. Then, peer A considers that keying material as the Latest material with peer B, and stores it only in volatile memory.
 
-   An example of such an in-band procedure is the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, according to which the two peers run the EDHOC protocol {{RFC9528}} for establishing an OSCORE Security Context to associate with access rights. This in-band procedure may occur multiple times over the device's lifetime.
+* Peer A establishes OSCORE keying material associated with peer B through an in-band procedure run with peer B. Then, peer A considers that keying material as the Latest material with peer B and stores it only in volatile memory.
+
+  An example of such an in-band procedure is the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, according to which the two peers run the EDHOC protocol {{RFC9528}} for establishing an OSCORE Security Context to associate with access rights. This in-band procedure may occur multiple times over the device's lifetime.
 
 * Peer A runs KUDOS in FS mode with peer B, thereby achieving forward secrecy for subsequent key update epochs, as long as the OSCORE keying material was originally established with forward secrecy. Peer A stores each newly derived Security Context in volatile memory.
 
@@ -676,7 +690,7 @@ As long as peer A does not reboot, executions of KUDOS rely on the Latest materi
 
 ## Preserving Observations Across Key Updates # {#preserving-observe}
 
-As defined in {{ssec-derive-ctx}}, once a peer has completed the KUDOS execution and successfully derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations it has with the other peer {{RFC7641}}, as protected with the old OSCORE Security Context CTX\_OLD.
+As defined in {{ssec-derive-ctx}}, once a peer has successfully completed the KUDOS execution and derived the new OSCORE Security Context CTX\_NEW, that peer normally terminates all the ongoing observations that it has with the other peer {{RFC7641}} and that are protected with the old OSCORE Security Context CTX\_OLD.
 
 This section describes a method that the two peers can use to safely preserve the ongoing observations that they have with one another, beyond the completion of a KUDOS execution. In particular, this method ensures that an Observe notification can never successfully cryptographically match against the Observe requests of two different observations, e.g., against an Observe request protected with CTX\_OLD and an Observe request protected with CTX\_NEW.
 
@@ -692,21 +706,21 @@ If the client receives back the successful response above from the server, then 
 
 In case the client can ever consider to preserve ongoing observations beyond a key update as defined below, then the client MUST NOT simply forget about an ongoing observation if not interested in it anymore. Instead, the client MUST send an explicit cancellation request to the server, i.e., a request including the Observe Option with value 1 (see {{Section 3.6 of RFC7641}}). After sending this cancellation request, if the client does not receive back a response confirming that the observation has been terminated, the client MUST NOT consider the observation terminated. The client MAY try again to terminate the observation by sending a new cancellation request.
 
-In case a peer A performs a KUDOS execution with another peer B, and A has ongoing observations with B that it is interested to preserve beyond the key update, then A can explicitly indicate its interest to do so. To this end, the peer A sets to 1 the bit "Preserve Observations", 'b', in the 'x' byte of the OSCORE Option value (see {{ssec-oscore-option-extensions}}), in the KUDOS message it sends to the other peer B.
+In case a peer A performs a KUDOS execution with another peer B and A has ongoing observations with B that it is interested to preserve beyond the key update, then A can explicitly indicate its interest to do so. To this end, the peer A sets to 1 the bit "Preserve Observations", 'b', in the 'x' byte of the OSCORE Option value (see {{ssec-oscore-option-extensions}}), in the KUDOS message that it sends to the other peer B.
 
-If a peer receives a KUDOS message with the bit 'b' set to 0, then the peer MUST set to 0 the bit 'b' in the KUDOS message it sends as follow-up, regardless of its wish to preserve ongoing observations with the other peer.
+If a peer receives a KUDOS message with the bit 'b' set to 0, then the peer MUST set to 0 the bit 'b' in the KUDOS message that it sends as follow-up, regardless of its wish to preserve ongoing observations with the other peer.
 
 If a peer has sent a KUDOS message with the bit 'b' set to 0, the peer MUST ignore the bit 'b' in the follow-up KUDOS message that it receives from the other peer.
 
 Note that during the same KUDOS execution, all the KUDOS messages sent by a peer MUST have the same value in the bit 'b' for preserving ongoing observations.
 
-After successfully completing the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), both peers have expressed their interest in preserving their common ongoing observations if and only if the bit 'b' was set to 1 in all the exchanged KUDOS messages. In such a case, each peer X performs the following actions.
+After successfully completing the KUDOS execution (i.e., after having successfully derived the new OSCORE Security Context CTX\_NEW), both peers have expressed their interest in preserving their common ongoing observations if and only if the bit 'b' was set to 1 in all the exchanged KUDOS messages. In such a case, each peer X performs the following actions:
 
-1. The peer X considers all the still ongoing observations that it has with the other peer, such that X acts as client in those observations. If there are no such observations, the peer X takes no further actions. Otherwise, it moves to step 2.
+1. The peer X considers all the still ongoing observations that it has with the other peer, such that X acts as client in those observations. If there are no such observations, the peer X takes no further actions. Otherwise, it moves to Step 2.
 
-2. The peer X considers all the OSCORE Partial IV values used in the Observe registration request associated with any of the still ongoing observations determined at step 1.
+2. The peer X considers all the OSCORE Partial IV values used in the Observe registration requests associated with any of the still ongoing observations determined at Step 1.
 
-3. The peer X determines the value PIV\* as the highest OSCORE Partial IV value among those considered at step 2.
+3. The peer X determines the value PIV\* as the highest OSCORE Partial IV value among those considered at Step 2.
 
 4. In the Sender Context of the OSCORE Security Context shared with the other peer, the peer X sets its own Sender Sequence Number to (PIV\* + 1), rather than to 0.
 
@@ -714,17 +728,17 @@ As a result, each peer X will "jump" beyond the OSCORE Partial IV (PIV) values t
 
 Note that, each time it runs KUDOS, a peer must determine if it wishes to preserve ongoing observations with the other peer or not, before sending a KUDOS message.
 
-To this end, the peer should also assess the new value that PIV\* would take after a successful completion of KUDOS, in case ongoing observations with the other peer are going to be preserved. If the peer considers such a new value of PIV\* to be too close to or equal to the maximum possible value admitted for the OSCORE Partial IV, then the peer may choose to run KUDOS with no intention to preserve its ongoing observations with the other peer, in order to "start over" from a fresh, entirely unused PIV space.
+To this end, the peer should also assess the new value that PIV\* would take after a successful completion of KUDOS, in case ongoing observations with the other peer are going to be preserved. If the peer considers such a new value of PIV\* to be too close to or equal to the maximum possible value admitted for the OSCORE Partial IV, then the peer may choose to run KUDOS with no intention to preserve its ongoing observations with the other peer, in order to "start over" from a fresh, entirely unused Sender Sequence Number space.
 
 Application policies can further influence whether attempting to preserve observations beyond a key update is appropriate or not.
 
 ## Retention Policies # {#ssec-retention}
 
-Applications MAY define policies that allow a peer to temporarily keep the old Security Context CTX\_OLD beyond having established the new Security Context CTX\_NEW and having achieved key confirmation, rather than simply deleting CTX\_OLD. This allows the peer to decrypt late, still on-the-fly incoming non KUDOS messages protected with CTX\_OLD.
+Applications MAY define policies that allow a peer to temporarily keep the old Security Context CTX\_OLD beyond having established the new Security Context CTX\_NEW and having achieved key confirmation, rather than simply deleting CTX\_OLD. This allows the peer to decrypt late, still on-the-fly incoming non KUDOS messages that are protected with CTX\_OLD.
 
-When enforcing such policies, the following applies.
+When enforcing such policies, the following applies:
 
-* Outgoing non KUDOS messages MUST be protected by using only CTX\_NEW.
+* Outgoing non KUDOS messages MUST be protected only by using CTX\_NEW.
 
 * Incoming non KUDOS messages MUST first be attempted to decrypt by using CTX\_NEW. If decryption fails, a second attempt can use CTX\_OLD.
 
@@ -736,7 +750,7 @@ A peer MUST NOT retain CTX\_OLD beyond the establishment of CTX\_NEW and the ach
 
 * CTX\_OLD is expired.
 
-* Limits set for safe key usage have been reached {{I-D.ietf-core-oscore-key-limits}}, for the Recipient Key of the Recipient Context of CTX\_OLD.
+* Limits set for safe key usage have been reached for the Recipient Key of the Recipient Context of CTX\_OLD (see {{I-D.ietf-core-oscore-key-limits}}).
 
 ## Discussion # {#ssec-discussion}
 
@@ -792,7 +806,7 @@ The "core.kudos" resource type registered in {{rt-kudos}} is defined to ensure a
 
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
-According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to execute the KUDOS procedure without triggering any application processing on the server, then a request sent as a KUDOS message can target a KUDOS resource with resource type "core.kudos" (see {{core-kudos-resource-type}}), e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}). An alternative KUDOS resource can be discovered, e.g., by using a resource directory {{RFC9176}}, by using the resource type "core.kudos" as filter criterion.
+According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to run the KUDOS procedure without triggering any application processing on the server, then a request sent as a KUDOS message can target a KUDOS resource with resource type "core.kudos" (see {{core-kudos-resource-type}}), e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}). An alternative KUDOS resource can be discovered, e.g., by using a resource directory {{RFC9176}}, by using the resource type "core.kudos" as filter criterion.
 
 ### Rekeying when Using SCHC with OSCORE
 
