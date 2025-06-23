@@ -350,41 +350,41 @@ Note that, thanks to the input parameters input1 and input2 provided to the upda
 
 ## Key Update # {#ssec-derive-ctx}
 
-This section defines KUDOS, a lightweight procedure that two OSCORE peers can use to update their keying material and establish a new OSCORE Security Context.
+When using KUDOS as described in this section, forward secrecy is achieved for the new OSCORE keying material that results from the KUDOS execution, as long as the original OSCORE keying material was also established with forward secrecy. For peers that are unable to store information to persistent memory, {{no-fs-mode}} provides an alternative approach that does not achieve forward secrecy but allows also such very constrained peers to perform a key update.
 
-Using KUDOS as described in this section will achieve forward secrecy for the new keying material produced by the execution of KUDOS, as long as the original OSCORE keying material was also established with forward secrecy. For peers unable to store information to persistent memory, {{no-fs-mode}} provides an alternative approach to perform key update without achieving forward secrecy. This alternative ensures that also very constrained peers are able to use KUDOS, although without achieving forward secrecy.
+A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching the limits for the corresponding key usage {{I-D.ietf-core-oscore-key-limits}}, the enforcement of application policies, and the (approaching) exhaustion of the OSCORE Sender Sequence Number space.
 
-A peer can run KUDOS for active rekeying at any time, or for a variety of more compelling reasons. These include the (approaching) expiration of the OSCORE Security Context, approaching limits for the key usage {{I-D.ietf-core-oscore-key-limits}}, application policies, and imminent exhaustion of the OSCORE Sender Sequence Number space.
+The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer MUST stop using the keying material in the OSCORE Security Context for exchanging application data with the other peer and has to perform a rekeying before resuming secure communication.
 
-The expiration time of an OSCORE Security Context and the key usage limits are hard limits. Once reached them, a peer MUST stop using the keying material in the OSCORE Security Context for exchanging application data with the other peer, and has to perform a rekeying before resuming secure communication.
+Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. In particular, CTX\_OLD is the most recent OSCORE Security Context that a peer has with the other peer, before initiating the KUDOS procedure or upon having received and successfully verified a divergent KUDOS message. During an execution of KUDOS, a temporary OSCORE Security Context CTX\_TEMP is also derived.
 
-Before starting KUDOS, the two peers share the OSCORE Security Context CTX\_OLD. In particular, CTX\_OLD is the most recent OSCORE Security Context that a peer has with the other peer, before initiating the KUDOS procedure or upon having received and successfully verified a divergent KUDOS message. During an execution of KUDOS, a temporary OSCORE Security Context CTX\_TEMP is derived.
-
-Once successfully completed the KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW that replaces CTX\_OLD. In particular, CTX\_NEW is the most recent OSCORE Security Context that a peer has, before sending a convergent KUDOS message or upon having received and successfully verified a convergent KUDOS message. CTX\_OLD can be safely deleted upon receiving key confirmation from the other peer, i.e., that the other peer also has CTX\_NEW.
+Once successfully completed a KUDOS execution, the two peers agree on a newly established OSCORE Security Context CTX\_NEW that replaces CTX\_OLD. In particular, CTX\_NEW is the most recent OSCORE Security Context that a peer has with the other peer, before sending a convergent KUDOS message to the other peer or upon having received and successfully verified a convergent KUDOS message from that other peer. CTX\_OLD can be safely deleted upon receiving key confirmation from the other peer, i.e., upon gaining knowledge that the other peer also has CTX\_NEW.
 
 The following specifically defines how KUDOS is run in its stateful FS mode achieving forward secrecy. That is, in the OSCORE Option value of all the exchanged KUDOS messages, the "No Forward Secrecy" 'p' bit is set to 0.
 
-In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX\_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in {{Section 3.1 of RFC8613}}, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in {{Section 3.2.1 of RFC8613}}. If the peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
+In order to run KUDOS in FS mode, both peers have to be able to write in non-volatile memory. From the newly derived Security Context CTX\_NEW, the peers MUST store to non-volatile memory the immutable parts of the OSCORE Security Context as specified in {{Section 3.1 of RFC8613}}, with the possible exception of the Common IV, Sender Key, and Recipient Key that can be derived again when needed, as specified in {{Section 3.2.1 of RFC8613}}. If either peer is unable to write in non-volatile memory, the two peers have to run KUDOS in its stateless no-FS mode (see {{no-fs-mode}}).
 
 ### Nonces and X Bytes {#ssec-nonces-x-bytes}
 
-When running KUDOS, each peer contributes by generating a nonce value N1 or N2, and providing it to the other peer. The size of the nonces N1 and N2 is application specific, and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 MUST be random values, with the possible exception described later in {{key-material-handling}}. Note that a good amount of randomness is important for the nonce generation. {{RFC4086}} provides guidance on the generation of random values.
+When running KUDOS, each peer contributes by generating a nonce value N1 or N2 and providing it to the other peer. The size of the nonces N1 and N2 is application specific and the use of 8 byte nonce values is RECOMMENDED. The nonces N1 and N2 MUST be random values, with the possible exception described later in {{key-material-handling}}. Note that a good amount of randomness is important for the nonce generation. {{RFC4086}} provides guidance on the generation of random values.
 
-Furthermore, X1 and X2 are the value of the 'x' field specified in the OSCORE Option of a KUDOS message. From one peer's point of view, X1 and N1 are generated by that peer, while X2 and N2 are obtained from the other peer.
+In the following, X1 and X2 denote the value of the 'x' field specified in the OSCORE Option value of a KUDOS message. From one peer's point of view, X1 and N1 are generated by that peer, while X2 and N2 are obtained from the other peer.
 
-In a KUDOS message, the sender peer sets the X1 value based on: the length of N1 in bytes, the specific settings the peer wishes to run KUDOS with, and in accordance with the message being divergent or convergent. During the same KUDOS execution, all the KUDOS messages sent by a peer MUST have the same value of the bit 'b' in the 'x' field conveying X1.
+In a KUDOS message, the sender peer sets the X1 value based on: the length of N1 in bytes, the specific settings that the peer wishes to run KUDOS with, and the message being divergent or convergent. During the same KUDOS execution, all the KUDOS messages sent by a peer MUST have the same value of the bit 'b' in the 'x' field conveying X1.
 
-N1, N2, X1, and X2 are used by the peers to build the 'input1' and 'input2' values provided to the updateCtx() function, in order to derive an OSCORE Security Context. As for any newly derived OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}). Specifically, the input to updateCtx() is built as follows, where \| denotes byte concatenation:
+N1, N2, X1, and X2 are used by the peers to build the 'input1' and 'input2' values provided as input to the updateCtx() function, in order to derive an OSCORE Security Context (see {{ssec-update-function}}). As for any newly derived OSCORE Security Context, the Sender Sequence Number and the Replay Window are re-initialized accordingly (see {{Section 3.2.2 of RFC8613}}).
+
+Specifically, the input to updateCtx() is built as follows, where \| denotes byte concatenation:
 
 * When deriving CTX\_TEMP to protect a divergent outgoing message, input1 is X1 \| N1 and input2 is 0x.
 * When deriving CTX\_TEMP to unprotect a divergent incoming message, input1 is X2 \| N2 and input2 is 0x.
 * When deriving CTX\_NEW to protect or unprotect a convergent message, input1 is X1 \| N1 and input2 is X2 \| N2.
 
-For any divergent KUDOS message, the sender peer's (X, nonce) are included in the message. Also, both peers use those as input to updateCtx() for deriving CTX\_TEMP, which is used to protect or unprotect that KUDOS message.
+For any divergent KUDOS message, the sender peer's (X, nonce) are included in the 'x' and 'nonce' field of the OSCORE Option value, respectively. Also, both peers use those as input to updateCtx() for deriving CTX\_TEMP, which is used to protect and unprotect the KUDOS message.
 
-For any convergent KUDOS message, the sender peer's (X, nonce) are included in the message. Both the sender peer's (X, nonce) and the recipient peer's (X, nonce) are used as input to updateCtx() for deriving CTX\_NEW, which is used to protect or unprotect that KUDOS message.
+For any convergent KUDOS message, the sender peer's (X, nonce) are included in the 'x' and 'nonce' field of the OSCORE Option value, respectively. Both the sender peer's (X, nonce) and the recipient peer's (X, nonce) are used as input to updateCtx() for deriving CTX\_NEW, which is used to protect and unprotect the KUDOS message.
 
-A pair (X, nonce) offered by a peer is bound to CTX\_OLD, and is reused as much as possible during the same KUDOS execution. A peer generates its (X, nonce) pair before invoking updateCtx(), in case the peer does not have one such pair already associated with the CTX\_OLD to use as input for updateCtx(). The peer associates the newly generated pair with CTX\_OLD before entering updateCtx().
+A pair (X, nonce) offered by a peer is bound to CTX\_OLD, and is reused as much as possible during the same KUDOS execution. A peer generates its (X, nonce) pair before invoking updateCtx(), if the peer does not have one such pair already associated with the CTX\_OLD to use as input CTX\_IN for updateCtx(). The peer associates the newly generated pair with CTX\_OLD before entering updateCtx().
 
 ### KUDOS States {#ssec-states}
 
