@@ -5,8 +5,6 @@ title:  Key Update for OSCORE (KUDOS)
 abbrev: Key Update for OSCORE (KUDOS)
 docname: draft-ietf-core-oscore-key-update-latest
 
-# stand_alone: true
-
 ipr: trust200902
 wg: CoRE Working Group
 kw: Internet-Draft
@@ -85,7 +83,7 @@ entity:
 
 --- abstract
 
-This document defines Key Update for OSCORE (KUDOS), a lightweight procedure that two CoAP endpoints can use to update their keying material by establishing a new OSCORE Security Context. Accordingly, it updates the use of the OSCORE flag bits in the CoAP OSCORE Option as well as the protection of CoAP response messages with OSCORE, and it deprecates the key update procedure specified in Appendix B.2 of RFC 8613. Thus, this document updates RFC 8613.
+Communications with the Constrained Application Protocol (CoAP) can be protected end-to-end at the application-layer by using the security protocol Object Security for Constrained RESTful Environments (OSCORE). Under some circumstances, two CoAP endpoints need to update their OSCORE keying material before communications can securely continue, e.g., due to approaching key usage limits. This document defines Key Update for OSCORE (KUDOS), a lightweight procedure that two CoAP endpoints can use to update their OSCORE keying material by establishing a new OSCORE Security Context. Accordingly, this document updates the use of the OSCORE flag bits in the CoAP OSCORE Option as well as the protection of CoAP response messages with OSCORE. Also, it deprecates the key update procedure specified in Appendix B.2 of RFC 8613. Therefore, this document updates RFC 8613.
 
 --- middle
 
