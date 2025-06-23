@@ -176,57 +176,69 @@ The protection of CoAP responses with OSCORE is updated, by adding the following
 
 # Key Update for OSCORE (KUDOS) # {#sec-rekeying-method}
 
-This section defines KUDOS, a lightweight procedure that two OSCORE peers can use to update their keying material and establish a new OSCORE Security Context. Hereafter, the document refers to two specific peers that run KUDOS to update specifically one of their OSCORE Security Contexts.
+This section defines KUDOS, a lightweight procedure that two OSCORE peers can use to update their keying material and establish a new OSCORE Security Context.
+
+Hereafter, this document refers to two specific peers that run KUDOS to update specifically one OSCORE Security Context that they share with each other.
 
 KUDOS relies on the OSCORE Option defined in {{RFC8613}} and extended as defined in {{ssec-oscore-option-extensions}}, as well as on the support function updateCtx() defined in {{ssec-update-function}}.
 
-In order to run KUDOS, two peers exchange OSCORE-protected CoAP messages. The key update procedure is defined in {{ssec-derive-ctx}}, with particular reference to the stateful FS mode providing forward secrecy. The possible use of the stateless no-FS mode is defined in {{no-fs-mode}}, as intended to peers that are not able to write in non-volatile memory. Two peers MUST run KUDOS in FS mode if they are both capable to.
+In order to run KUDOS, two peers exchange OSCORE-protected CoAP messages. The key update procedure is described in detail in {{ssec-derive-ctx}}, with particular reference to the stateful FS mode providing forward secrecy. The possible use of the stateless no-FS mode is described in {{no-fs-mode}}, as intended to peers that are not able to write in non-volatile memory. Two peers MUST run KUDOS in FS mode if they are both capable to do so.
 
-The key update procedure has the following properties.
+The key update procedure has the following properties:
 
-* KUDOS can be initiated by either peer.
+* It can be initiated by either peer.
 
-* The new OSCORE Security Context enjoys forward secrecy, unless KUDOS is run in no-FS mode (see {{no-fs-mode}}).
+* The new OSCORE Security Context enjoys forward secrecy, unless the no-FS mode is used (see {{no-fs-mode}}).
 
 * The same ID Context value used in the old OSCORE Security Context (if set) is preserved in the new OSCORE Security Context.
 
 * The same Sender and Recipient IDs used in the old OSCORE Security Context are preserved in the new OSCORE Security Context.
 
-* KUDOS is robust against a peer rebooting and loss of state, and it especially avoids the reuse of AEAD (nonce, key) pairs.
+* It is robust against a peer rebooting and loss of state, avoiding the reuse of AEAD (nonce, key) pairs also in such cases.
 
-* KUDOS typically completes in one round trip by exchanging two OSCORE-protected CoAP messages. The two peers achieve mutual key confirmation in a following exchange, which is protected with the newly established OSCORE Security Context.
+* It typically completes in one round trip by exchanging two OSCORE-protected CoAP messages. The two peers achieve mutual key confirmation in a following exchange, which is protected with the newly established OSCORE Security Context.
 
 ## Extensions to the OSCORE Option # {#ssec-oscore-option-extensions}
 
-This document extends the use of the OSCORE Option originally defined in {{RFC8613}} as follows.
+This document extends the use of the OSCORE Option originally defined in {{RFC8613}} as follows:
 
 * This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in {{iana-cons-flag-bits}}.
 
-   When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the OSCORE flag bits 8-15.
+  When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the OSCORE flag bits 8-15.
 
-* This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. This flag bit is specified in {{iana-cons-flag-bits}}.
+* This document defines the usage of the least significant bit "Nonce Flag", 'd', in the second byte of the OSCORE Option containing the OSCORE flag bits 8-15. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in {{iana-cons-flag-bits}}.
 
-   When it is set to 1, the compressed COSE object contains a field 'x' and a field 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. In particular, the 1 byte 'x' following 'kid context' (if any) encodes the size of the following field 'nonce', together with signaling bits that indicate the specific behavior to adopt during the KUDOS execution.
+  When it is set to 1, the compressed COSE object contains a field 'x' and a field 'nonce', to be used for the steps defined in {{ssec-derive-ctx}}. In particular, the 1 byte 'x' following 'kid context' (if any) includes the size of the following field 'nonce' as well as a number of signaling bits that indicate the specific behavior to adopt during the KUDOS execution.
 
-   Hereafter, a message is referred to as a "KUDOS message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is referred to as a "non KUDOS message".
+  Hereafter, a message is referred to as a "KUDOS message", if and only if the second byte of flags is present and the 'd' bit is set to 1. If that is not the case, the message is referred to as a "non KUDOS message".
 
-   The encoding of 'x' is as follows:
+  The encoding of the 'x' field is as follows:
 
-   * The four least significant bits encode the 'nonce' size in bytes minus 1, namely 'm'.
+  * The four least significant bits encode the 'nonce' size in bytes minus 1, namely 'm'.
 
-   * The fifth least significant bit is the "No Forward Secrecy" 'p' bit. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively. This makes KUDOS possible to run also for peers that cannot support the FS mode. At the same time, two peers MUST run KUDOS in FS mode if they are both capable to, as per {{ssec-derive-ctx}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
+  * The fifth least significant bit is the "No Forward Secrecy" 'p' bit. The sender peer indicates its wish to run KUDOS in FS mode or in no-FS mode, by setting the 'p' bit to 0 or 1, respectively.
 
-   * The sixth least significant bit is the "Preserve Observations" 'b' bit. The sender peer indicates its wish to preserve ongoing observations beyond the KUDOS execution or not, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
+    This makes KUDOS possible to run also for peers that cannot support the FS mode. At the same time, two peers MUST run KUDOS in FS mode if they are both capable to do so, as per {{ssec-derive-ctx}}. The execution of KUDOS in no-FS mode is defined in {{no-fs-mode}}.
 
-   * The seventh least significant bit is the 'z' bit. The meaning of 'z' is as follows:
+  * The sixth least significant bit is the "Preserve Observations" 'b' bit. The sender peer indicates its wish to preserve or terminate the ongoing observations with the other peer beyond the KUDOS execution, by setting the 'b' bit to 1 or 0, respectively. The related processing is defined in {{preserving-observe}}.
 
-     * z = 0: This is a "divergent" message, that is a KUDOS message protected with a temporary OSCORE Security Context and indicating that the sender peer is moving away from "equilibrium". The sender peer is offering its own nonce in the 'nonce' field of this message and is waiting to receive the other peer's nonce.
+  * The seventh least significant bit is the 'z' bit, which has the following meaning:
 
-     * z = 1: This is a "convergent" message, that is a KUDOS message protected with the newly established OSCORE Security Context and indicating that the sender peer is offering its own nonce in the 'nonce' field of this message, has received the other peer's nonce, and is going to wait for key confirmation (to return to equilibrium).
+    * If the bit 'z' is set to 0, the present message is a "divergent" KUDOS message, i.e., it is protected with a temporary OSCORE Security Context and indicates that the sender peer is moving away from "equilibrium".
 
-   * The eight least significant bit is reserved for future use. This bit SHALL be set to zero when not in use. According to this specification, if this bit is set to 1: i) if the message is a request, it is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}; ii) if the message is a response, it is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.4 of RFC8613}} and the client SHALL discard the response as specified in item 8 of {{Section 8.4 of RFC8613}}.
+      That is, the sender peer is offering its own nonce in the 'nonce' field of the message and is waiting to receive the other peer's nonce.
 
-{{fig-oscore-option}} shows extended OSCORE Option value, with the presence of 'nonce'.
+    * If the bit 'z' is set to 1, the present message is a "convergent" KUDOS message, i.e., it is protected with the newly established OSCORE Security Context and indicates that the sender peer is attempting to return to "equilibrium".
+
+      That is, the sender peer is offering its own nonce in the 'nonce' field of the message, has received the other peer's nonce, and is going to wait for key confirmation (as a pre-condition to return to equilibrium).
+
+  * The eight least significant bit is reserved for future use. This bit SHALL be set to 0 when not in use. According to this specification, if this bit is set to 1, the following applies:
+
+    * If the message is a request, it is considered to be malformed and decompression fails as specified in item 2 of {{Section 8.2 of RFC8613}}.
+
+    * If the message is a response, it is considered to be malformed, decompression fails as specified in item 2 of {{Section 8.4 of RFC8613}}, and the client SHALL discard the response as specified in item 8 of {{Section 8.4 of RFC8613}}.
+
+{{fig-oscore-option}} shows the extended OSCORE Option value, with the presence of the 'x' and 'nonce' fields.
 
 ~~~~~~~~~~~
  0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
@@ -246,7 +258,7 @@ This document extends the use of the OSCORE Option originally defined in {{RFC86
                                  |  |0|z|b|p|   m   |  |
                                  |  +-+-+-+-+-+-+-+-+  |
 ~~~~~~~~~~~
-{: #fig-oscore-option title="The extended OSCORE Option value" artwork-align="center"}
+{: #fig-oscore-option title="The Extended OSCORE Option Value" artwork-align="center"}
 
 ## Function for Security Context Update # {#ssec-update-function}
 
