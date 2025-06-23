@@ -390,11 +390,13 @@ A pair (X, nonce) offered by a peer is bound to CTX\_OLD, and is reused as much 
 
 A peer performs a KUDOS execution according to the state machine specified in {{ssec-state-machine}}, where the following states are considered.
 
-The peer can be in three possible states: IDLE, BUSY, and PENDING. Normally, the peer is in the IDLE state, i.e., in "equilibrium". The peer starts a KUDOS execution upon entering the BUSY state from a state different than BUSY. The peer succesfully completes a KUDOS execution by entering the IDLE state, at which point the peer has the OSCORE Security Context CTX\_NEW and has achieved key confirmation.
+The peer can be in three possible states: IDLE, BUSY, and PENDING.
 
-The sending of a KUDOS message is per the KUDOS state machine, and is based on the perception that the sender peer has about what the other peer has done.
+Normally, the peer is in the IDLE state, i.e., in "equilibrium". The peer starts a KUDOS execution upon entering the BUSY state from a state different than BUSY. The peer succesfully completes a KUDOS execution by entering the IDLE state, at which point the peer has the OSCORE Security Context CTX\_NEW and has achieved key confirmation.
 
-The processing of a received KUDOS message is per the KUDOS state machine, and is based on the local status of the recipient peer. Moving to a state due to a received KUDOS message occurs only in case of successful decryption and verification of the message with OSCORE.
+The sending of a KUDOS message is per the KUDOS state machine and is based on the perception that the sender peer has about the state of the other peer.
+
+The processing of a received KUDOS message is per the KUDOS state machine and is based on the local status of the recipient peer. Moving to a state due to a received KUDOS message occurs only in case of successful decryption and verification of the message with OSCORE.
 
 In its local status, a peer tracks its current KUDOS state by means of the bits (c_tx, c_rx) as follows:
 
@@ -410,82 +412,129 @@ While in the **BUSY** or the **PENDING** state, the peer MUST NOT send non KUDOS
 
 ### KUDOS State Machine {#ssec-state-machine}
 
-From a peer's point of view, the change of KUDOS states works as follows.
+From a peer's point of view, KUDOS states evolve as follows.
 
 #### Startup
 
-At startup, the peer enter a **Pre-IDLE** stage.
+At startup, the peer enters a **Pre-IDLE** stage.
 
 #### Pre-IDLE Stage
 
-1. If the peer has any CTX\_TEMP Security Contexts, it deletes them.
+Upon entering the **Pre-IDLE** stage, perform the following steps:
+
+1. If the peer has any CTX\_TEMP Security Contexts, delete them.
+
 2. If the peer has both an old and a new OSCORE Security Context:
-   a. Delete the (X, nonce) pair associated with the old OSCORE Security Context.
-   b. Delete the old OSCORE Security Context, or retain it only for processing late incoming messages as allowed by retention policies (see {{ssec-retention}}).
+
+   * Delete the (X, nonce) pair associated with the old OSCORE Security Context.
+
+   * Delete the old OSCORE Security Context, or retain it only for processing late incoming messages as allowed by retention policies (see {{ssec-retention}}).
+
 3. Move to **IDLE**.
 
 #### IDLE
 
-* Upon receiving a divergent message while in **IDLE**
-  1. Move to **BUSY**.
+While in **IDLE**, the following applies:
 
-* Upon sending a divergent message while in **IDLE**
-  1. Move to **BUSY**.
+* Upon receiving a divergent message, move to **BUSY**.
 
-* Upon receiving a convergent message while in **IDLE**
+* Upon sending a divergent message, move to **BUSY**.
+
+* Upon receiving a convergent message:
+
   1. Ignore the message for the sake of KUDOS processing, but process it as a CoAP message.
+
   2. Stay in **IDLE**.
 
 #### BUSY
 
-* Upon entering **BUSY** due to receiving a divergent message
+Upon entering **BUSY** due to receiving a divergent message:
+
+1. Send a convergent message.
+
+2. Move to **PENDING**.
+
+While in **BUSY**, the following applies:
+
+* Upon receiving a divergent message:
+
   1. Send a convergent message.
+
   2. Move to **PENDING**.
 
-* Upon receiving a divergent message while in **BUSY**
-  1. Send a convergent message.
-  2. Move to **PENDING**.
+* Upon receiving a convergent message:
 
-* Upon receiving a convergent message while in **BUSY**
   1. Achieve key confirmation.
+
   2. Move to the **Pre-IDLE** stage.
 
-* Upon sending a divergent message while in **BUSY**
-  * If, as in most cases, CTX\_TEMP is usable to protect the intended divergent message, send the message and then stay in **BUSY**.
-  * Otherwise, perform the following steps. (E.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX\_TEMP)
+* Upon sending a divergent message:
+
+  * If, as in most cases, CTX\_TEMP is usable to protect the intended divergent message:
+
+    1. Send the message protected with CTX\_TEMP.
+
+    2. Stay in **BUSY**.
+
+  * Otherwise, perform the following steps (e.g., this happens upon eventually exhausting the Sender Sequence Number space of CTX\_TEMP):
+
     1. Delete CTX\_TEMP.
+
     2. Delete the (X, nonce) pair associated with the Security Context CTX\_IN that was used to generate the CTX\_TEMP deleted at the previous step.
+
     3. Generate a new (X, nonce) pair and associate it with CTX\_IN.
+
     4. Generate a new CTX\_TEMP from CTX\_IN.
-    5. Send the intended divergent message protected with the CTX\_TEMP generated at the previous step.
+
+    5. Send the message protected with the CTX\_TEMP generated at the previous step.
+
     6. Stay in **BUSY**.
 
 #### Pending
 
-* Upon receiving a convergent message while in **PENDING**
+While in **PENDING**, the following applies:
+
+* Upon receiving a convergent message:
+
   1. Achieve key confirmation.
+
   2. Move to the **Pre-IDLE** stage.
 
-* Upon receiving a non KUDOS message protected with the latest CTX_NEW while in **PENDING**
+* Upon receiving a non KUDOS message protected with the latest CTX_NEW:
+
   1. Achieve key confirmation.
+
   2. Move to the **Pre-IDLE** stage.
 
-* Upon needing to send a message (e.g., the application wants to send a request) while in **PENDING**
+* Upon needing to send a message (e.g., the application wants to send a request):
+
   1. Send the message as a convergent message.
+
   2. Stay in **PENDING**.
 
-* Upon receiving a divergent message while in **PENDING**
-  * In case of successful decryption and verification of the divergent message using a CTX\_TEMP derived from CTX_OLD:
+* Upon receiving a divergent message:
+
+  * In case of successful decryption and verification of the message using a CTX\_TEMP derived from CTX_OLD:
+
     1. Delete CTX_NEW.
-    2. Delete the pair (X, nonce) associated with the Security Context CTX\_IN used to generate the CTX\_NEW deleted at the previous step.
+
+    2. Delete the pair (X, nonce) associated with the Security Context CTX\_IN that was used to generate the CTX\_NEW deleted at the previous step.
+
     3. Abort the ongoing KUDOS execution.
-    4. Move to **BUSY**.
-  * In case of successful decryption and verification of the divergent message using a CTX\_TEMP derived from CTX_NEW:
+
+    4. Move to **BUSY** and enter it consistently with the reception of a divergent message.
+
+  * Otherwise, in case of successful decryption and verification of the message using a CTX\_TEMP derived from CTX_NEW:
+
     1. Delete the oldest CTX\_TEMP.
+
     2. Delete the Security Context that was used as CTX\_IN to generate the CTX\_TEMP deleted at the previous step.
-    3. CTX_NEW becomes the oldest Security Context. From this point on, that Security Context is what this KUDOS execution refers to as CTX\_OLD.
+
+    3. CTX\_NEW becomes the oldest Security Context. From this point on, that Security Context is what this KUDOS execution refers to as CTX\_OLD.
+
     4. Abort the ongoing KUDOS execution.
-    5. Move to **BUSY**.
+
+    5. Move to **BUSY** and enter it consistently with the reception of a divergent message.
 
 ### Handling of OSCORE Security Contexts {#ssec-context-handling}
 
