@@ -494,11 +494,11 @@ While in **BUSY**, the following applies:
 
 While in **PENDING**, the following applies:
 
-* Upon receiving a convergent message:
+* Upon needing to send a message (e.g., the application wants to send a request):
 
-  1. Achieve key confirmation.
+  1. Send the message as a convergent message.
 
-  2. Move to the **Pre-IDLE** stage.
+  2. Stay in **PENDING**.
 
 * Upon receiving a non KUDOS message protected with the latest CTX_NEW:
 
@@ -506,11 +506,11 @@ While in **PENDING**, the following applies:
 
   2. Move to the **Pre-IDLE** stage.
 
-* Upon needing to send a message (e.g., the application wants to send a request):
+* Upon receiving a convergent message:
 
-  1. Send the message as a convergent message.
+  1. Achieve key confirmation.
 
-  2. Stay in **PENDING**.
+  2. Move to the **Pre-IDLE** stage.
 
 * Upon receiving a divergent message:
 
