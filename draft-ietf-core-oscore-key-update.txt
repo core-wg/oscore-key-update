@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            3 March 2025
-Expires: 4 September 2025
+Intended status: Standards Track                            23 June 2025
+Expires: 25 December 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -14,13 +14,20 @@ Expires: 4 September 2025
 
 Abstract
 
-   This document defines Key Update for OSCORE (KUDOS), a lightweight
-   procedure that two CoAP endpoints can use to update their keying
-   material by establishing a new OSCORE Security Context.  Accordingly,
-   it updates the use of the OSCORE flag bits in the CoAP OSCORE Option
-   as well as the protection of CoAP response messages with OSCORE, and
-   it deprecates the key update procedure specified in Appendix B.2 of
-   RFC 8613.  Thus, this document updates RFC 8613.
+   Communications with the Constrained Application Protocol (CoAP) can
+   be protected end-to-end at the application-layer by using the
+   security protocol Object Security for Constrained RESTful
+   Environments (OSCORE).  Under some circumstances, two CoAP endpoints
+   need to update their OSCORE keying material before communications can
+   securely continue, e.g., due to approaching key usage limits.  This
+   document defines Key Update for OSCORE (KUDOS), a lightweight
+   procedure that two CoAP endpoints can use to update their OSCORE
+   keying material by establishing a new OSCORE Security Context.
+   Accordingly, this document updates the use of the OSCORE flag bits in
+   the CoAP OSCORE Option as well as the protection of CoAP response
+   messages with OSCORE.  Also, it deprecates the key update procedure
+   specified in Appendix B.2 of RFC 8613.  Therefore, this document
+   updates RFC 8613.
 
 Discussion Venues
 
@@ -48,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 September 2025.
+   This Internet-Draft will expire on 25 December 2025.
 
 Copyright Notice
 
@@ -1876,9 +1883,9 @@ Table of Contents
    [I-D.irtf-cfrg-aead-limits]
               Günther, F., Thomson, M., and C. A. Wood, "Usage Limits on
               AEAD Algorithms", Work in Progress, Internet-Draft, draft-
-              irtf-cfrg-aead-limits-09, 9 October 2024,
+              irtf-cfrg-aead-limits-10, 8 April 2025,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              aead-limits-09>.
+              aead-limits-10>.
 
    [LwM2M]    Open Mobile Alliance, "Lightweight Machine to Machine
               Technical Specification - Core, Approved Version 1.2, OMA-
