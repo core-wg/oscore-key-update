@@ -743,18 +743,19 @@ Table of Contents
    considered.
 
    The peer can be in three possible states: IDLE, BUSY, and PENDING.
+
    Normally, the peer is in the IDLE state, i.e., in "equilibrium".  The
    peer starts a KUDOS execution upon entering the BUSY state from a
    state different than BUSY.  The peer succesfully completes a KUDOS
    execution by entering the IDLE state, at which point the peer has the
    OSCORE Security Context CTX_NEW and has achieved key confirmation.
 
-   The sending of a KUDOS message is per the KUDOS state machine, and is
-   based on the perception that the sender peer has about what the other
-   peer has done.
+   The sending of a KUDOS message is per the KUDOS state machine and is
+   based on the perception that the sender peer has about the state of
+   the other peer.
 
    The processing of a received KUDOS message is per the KUDOS state
-   machine, and is based on the local status of the recipient peer.
+   machine and is based on the local status of the recipient peer.
    Moving to a state due to a received KUDOS message occurs only in case
    of successful decryption and verification of the message with OSCORE.
 
@@ -780,36 +781,38 @@ Table of Contents
 
 4.3.3.  KUDOS State Machine
 
-   From a peer's point of view, the change of KUDOS states works as
-   follows.
+   From a peer's point of view, KUDOS states evolve as follows.
 
 4.3.3.1.  Startup
 
-   At startup, the peer enter a *Pre-IDLE* stage.
+   At startup, the peer enters a *Pre-IDLE* stage.
 
 4.3.3.2.  Pre-IDLE Stage
 
-   1.  If the peer has any CTX_TEMP Security Contexts, it deletes them.
+   Upon entering the *Pre-IDLE* stage, perform the following steps:
 
-   2.  If the peer has both an old and a new OSCORE Security Context: a.
-       Delete the (X, nonce) pair associated with the old OSCORE
-       Security Context. b.  Delete the old OSCORE Security Context, or
-       retain it only for processing late incoming messages as allowed
-       by retention policies (see Section 4.6).
+   1.  If the peer has any CTX_TEMP Security Contexts, delete them.
+
+   2.  If the peer has both an old and a new OSCORE Security Context:
+
+       *  Delete the (X, nonce) pair associated with the old OSCORE
+          Security Context.
+
+       *  Delete the old OSCORE Security Context, or retain it only for
+          processing late incoming messages as allowed by retention
+          policies (see Section 4.6).
 
    3.  Move to *IDLE*.
 
 4.3.3.3.  IDLE
 
-   *  Upon receiving a divergent message while in *IDLE*
+   While in *IDLE*, the following applies:
 
-      1.  Move to *BUSY*.
+   *  Upon receiving a divergent message, move to *BUSY*.
 
-   *  Upon sending a divergent message while in *IDLE*
+   *  Upon sending a divergent message, move to *BUSY*.
 
-      1.  Move to *BUSY*.
-
-   *  Upon receiving a convergent message while in *IDLE*
+   *  Upon receiving a convergent message:
 
       1.  Ignore the message for the sake of KUDOS processing, but
           process it as a CoAP message.
@@ -818,33 +821,38 @@ Table of Contents
 
 4.3.3.4.  BUSY
 
-   *  Upon entering *BUSY* due to receiving a divergent message
+   Upon entering *BUSY* due to receiving a divergent message:
+
+   1.  Send a convergent message.
+
+   2.  Move to *PENDING*.
+
+   While in *BUSY*, the following applies:
+
+   *  Upon receiving a divergent message:
 
       1.  Send a convergent message.
 
       2.  Move to *PENDING*.
 
-   *  Upon receiving a divergent message while in *BUSY*
-
-      1.  Send a convergent message.
-
-      2.  Move to *PENDING*.
-
-   *  Upon receiving a convergent message while in *BUSY*
+   *  Upon receiving a convergent message:
 
       1.  Achieve key confirmation.
 
       2.  Move to the *Pre-IDLE* stage.
 
-   *  Upon sending a divergent message while in *BUSY*
+   *  Upon sending a divergent message:
 
       -  If, as in most cases, CTX_TEMP is usable to protect the
-         intended divergent message, send the message and then stay in
-         *BUSY*.
+         intended divergent message:
 
-      -  Otherwise, perform the following steps.  (E.g., this happens
-         upon eventually exhausting the Sender Sequence Number values of
-         CTX_TEMP)
+         1.  Send the message protected with CTX_TEMP.
+
+         2.  Stay in *BUSY*.
+
+      -  Otherwise, perform the following steps (e.g., this happens upon
+         eventually exhausting the Sender Sequence Number space of
+         CTX_TEMP):
 
          1.  Delete CTX_TEMP.
 
@@ -857,50 +865,53 @@ Table of Contents
 
          4.  Generate a new CTX_TEMP from CTX_IN.
 
-         5.  Send the intended divergent message protected with the
-             CTX_TEMP generated at the previous step.
+         5.  Send the message protected with the CTX_TEMP generated at
+             the previous step.
 
          6.  Stay in *BUSY*.
 
 4.3.3.5.  Pending
 
-   *  Upon receiving a convergent message while in *PENDING*
+   While in *PENDING*, the following applies:
+
+   *  Upon receiving a convergent message:
 
       1.  Achieve key confirmation.
 
       2.  Move to the *Pre-IDLE* stage.
 
    *  Upon receiving a non KUDOS message protected with the latest
-      CTX_NEW while in *PENDING*
+      CTX_NEW:
 
       1.  Achieve key confirmation.
 
       2.  Move to the *Pre-IDLE* stage.
 
    *  Upon needing to send a message (e.g., the application wants to
-      send a request) while in *PENDING*
+      send a request):
 
       1.  Send the message as a convergent message.
 
       2.  Stay in *PENDING*.
 
-   *  Upon receiving a divergent message while in *PENDING*
+   *  Upon receiving a divergent message:
 
       -  In case of successful decryption and verification of the
-         divergent message using a CTX_TEMP derived from CTX_OLD:
+         message using a CTX_TEMP derived from CTX_OLD:
 
          1.  Delete CTX_NEW.
 
          2.  Delete the pair (X, nonce) associated with the Security
-             Context CTX_IN used to generate the CTX_NEW deleted at the
-             previous step.
+             Context CTX_IN that was used to generate the CTX_NEW
+             deleted at the previous step.
 
          3.  Abort the ongoing KUDOS execution.
 
-         4.  Move to *BUSY*.
+         4.  Move to *BUSY* and enter it consistently with the reception
+             of a divergent message.
 
-      -  In case of successful decryption and verification of the
-         divergent message using a CTX_TEMP derived from CTX_NEW:
+      -  Otherwise, in case of successful decryption and verification of
+         the message using a CTX_TEMP derived from CTX_NEW:
 
          1.  Delete the oldest CTX_TEMP.
 
@@ -913,7 +924,8 @@ Table of Contents
 
          4.  Abort the ongoing KUDOS execution.
 
-         5.  Move to *BUSY*.
+         5.  Move to *BUSY* and enter it consistently with the reception
+             of a divergent message.
 
 4.3.4.  Handling of OSCORE Security Contexts
 

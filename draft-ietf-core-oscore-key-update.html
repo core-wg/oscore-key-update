@@ -1696,30 +1696,31 @@ KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
 <a href="#section-4.3.2" class="section-number selfRef">4.3.2. </a><a href="#name-kudos-states" class="section-name selfRef">KUDOS States</a>
           </h4>
 <p id="section-4.3.2-1">A peer performs a KUDOS execution according to the state machine specified in <a href="#ssec-state-machine" class="auto internal xref">Section 4.3.3</a>, where the following states are considered.<a href="#section-4.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-2">The peer can be in three possible states: IDLE, BUSY, and PENDING. Normally, the peer is in the IDLE state, i.e., in "equilibrium". The peer starts a KUDOS execution upon entering the BUSY state from a state different than BUSY. The peer succesfully completes a KUDOS execution by entering the IDLE state, at which point the peer has the OSCORE Security Context CTX_NEW and has achieved key confirmation.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-3">The sending of a KUDOS message is per the KUDOS state machine, and is based on the perception that the sender peer has about what the other peer has done.<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-4">The processing of a received KUDOS message is per the KUDOS state machine, and is based on the local status of the recipient peer. Moving to a state due to a received KUDOS message occurs only in case of successful decryption and verification of the message with OSCORE.<a href="#section-4.3.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.3.2-5">In its local status, a peer tracks its current KUDOS state by means of the bits (c_tx, c_rx) as follows:<a href="#section-4.3.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-2">The peer can be in three possible states: IDLE, BUSY, and PENDING.<a href="#section-4.3.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-3">Normally, the peer is in the IDLE state, i.e., in "equilibrium". The peer starts a KUDOS execution upon entering the BUSY state from a state different than BUSY. The peer succesfully completes a KUDOS execution by entering the IDLE state, at which point the peer has the OSCORE Security Context CTX_NEW and has achieved key confirmation.<a href="#section-4.3.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-4">The sending of a KUDOS message is per the KUDOS state machine and is based on the perception that the sender peer has about the state of the other peer.<a href="#section-4.3.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-5">The processing of a received KUDOS message is per the KUDOS state machine and is based on the local status of the recipient peer. Moving to a state due to a received KUDOS message occurs only in case of successful decryption and verification of the message with OSCORE.<a href="#section-4.3.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-6">In its local status, a peer tracks its current KUDOS state by means of the bits (c_tx, c_rx) as follows:<a href="#section-4.3.2-6" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.2-6.1">
-              <p id="section-4.3.2-6.1.1">(00) IDLE - The peer is not running KUDOS.<a href="#section-4.3.2-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.2-7.1">
+              <p id="section-4.3.2-7.1.1">(00) IDLE - The peer is not running KUDOS.<a href="#section-4.3.2-7.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-4.3.2-6.2">
-              <p id="section-4.3.2-6.2.1">BUSY - The peer is running KUDOS and:<a href="#section-4.3.2-6.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.2-7.2">
+              <p id="section-4.3.2-7.2.1">BUSY - The peer is running KUDOS and:<a href="#section-4.3.2-7.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.2-6.2.2.1">
-                  <p id="section-4.3.2-6.2.2.1.1">(01) has not offered a nonce, but has received the nonce from the other peer; or<a href="#section-4.3.2-6.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.2-7.2.2.1">
+                  <p id="section-4.3.2-7.2.2.1.1">(01) has not offered a nonce, but has received the nonce from the other peer; or<a href="#section-4.3.2-7.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-4.3.2-6.2.2.2">
-                  <p id="section-4.3.2-6.2.2.2.1">(10) has offered a nonce, but has not received the nonce from the other peer.<a href="#section-4.3.2-6.2.2.2.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-4.3.2-7.2.2.2">
+                  <p id="section-4.3.2-7.2.2.2.1">(10) has offered a nonce, but has not received the nonce from the other peer.<a href="#section-4.3.2-7.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
-            <li class="normal" id="section-4.3.2-6.3">
-              <p id="section-4.3.2-6.3.1">(11) PENDING: the peer is running KUDOS, has offered its nonce, has received the nonce from the other peer, and is waiting for key confirmation.<a href="#section-4.3.2-6.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4.3.2-7.3">
+              <p id="section-4.3.2-7.3.1">(11) PENDING: the peer is running KUDOS, has offered its nonce, has received the nonce from the other peer, and is waiting for key confirmation.<a href="#section-4.3.2-7.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-4.3.2-7">While in the <strong>BUSY</strong> or the <strong>PENDING</strong> state, the peer <span class="bcp14">MUST NOT</span> send non KUDOS messages.<a href="#section-4.3.2-7" class="pilcrow">¶</a></p>
+<p id="section-4.3.2-8">While in the <strong>BUSY</strong> or the <strong>PENDING</strong> state, the peer <span class="bcp14">MUST NOT</span> send non KUDOS messages.<a href="#section-4.3.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-state-machine">
@@ -1727,13 +1728,13 @@ KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
           <h4 id="name-kudos-state-machine">
 <a href="#section-4.3.3" class="section-number selfRef">4.3.3. </a><a href="#name-kudos-state-machine" class="section-name selfRef">KUDOS State Machine</a>
           </h4>
-<p id="section-4.3.3-1">From a peer's point of view, the change of KUDOS states works as follows.<a href="#section-4.3.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.3-1">From a peer's point of view, KUDOS states evolve as follows.<a href="#section-4.3.3-1" class="pilcrow">¶</a></p>
 <div id="startup">
 <section id="section-4.3.3.1">
             <h5 id="name-startup">
 <a href="#section-4.3.3.1" class="section-number selfRef">4.3.3.1. </a><a href="#name-startup" class="section-name selfRef">Startup</a>
             </h5>
-<p id="section-4.3.3.1-1">At startup, the peer enter a <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.3.1-1">At startup, the peer enters a <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="pre-idle-stage">
@@ -1741,17 +1742,24 @@ KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
             <h5 id="name-pre-idle-stage">
 <a href="#section-4.3.3.2" class="section-number selfRef">4.3.3.2. </a><a href="#name-pre-idle-stage" class="section-name selfRef">Pre-IDLE Stage</a>
             </h5>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.2-1">
-<li id="section-4.3.3.2-1.1">
-                <p id="section-4.3.3.2-1.1.1">If the peer has any CTX_TEMP Security Contexts, it deletes them.<a href="#section-4.3.3.2-1.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.3.3.2-1">Upon entering the <strong>Pre-IDLE</strong> stage, perform the following steps:<a href="#section-4.3.3.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.2-2">
+<li id="section-4.3.3.2-2.1">
+                <p id="section-4.3.3.2-2.1.1">If the peer has any CTX_TEMP Security Contexts, delete them.<a href="#section-4.3.3.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-4.3.3.2-1.2">
-                <p id="section-4.3.3.2-1.2.1">If the peer has both an old and a new OSCORE Security Context:
-a. Delete the (X, nonce) pair associated with the old OSCORE Security Context.
-b. Delete the old OSCORE Security Context, or retain it only for processing late incoming messages as allowed by retention policies (see <a href="#ssec-retention" class="auto internal xref">Section 4.6</a>).<a href="#section-4.3.3.2-1.2.1" class="pilcrow">¶</a></p>
+              <li id="section-4.3.3.2-2.2">
+                <p id="section-4.3.3.2-2.2.1">If the peer has both an old and a new OSCORE Security Context:<a href="#section-4.3.3.2-2.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.3.3.2-2.2.2.1">
+                    <p id="section-4.3.3.2-2.2.2.1.1">Delete the (X, nonce) pair associated with the old OSCORE Security Context.<a href="#section-4.3.3.2-2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-4.3.3.2-1.3">
-                <p id="section-4.3.3.2-1.3.1">Move to <strong>IDLE</strong>.<a href="#section-4.3.3.2-1.3.1" class="pilcrow">¶</a></p>
+                  <li class="normal" id="section-4.3.3.2-2.2.2.2">
+                    <p id="section-4.3.3.2-2.2.2.2.1">Delete the old OSCORE Security Context, or retain it only for processing late incoming messages as allowed by retention policies (see <a href="#ssec-retention" class="auto internal xref">Section 4.6</a>).<a href="#section-4.3.3.2-2.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                </ul>
+</li>
+              <li id="section-4.3.3.2-2.3">
+                <p id="section-4.3.3.2-2.3.1">Move to <strong>IDLE</strong>.<a href="#section-4.3.3.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ol>
 </section>
@@ -1761,31 +1769,22 @@ b. Delete the old OSCORE Security Context, or retain it only for processing late
             <h5 id="name-idle">
 <a href="#section-4.3.3.3" class="section-number selfRef">4.3.3.3. </a><a href="#name-idle" class="section-name selfRef">IDLE</a>
             </h5>
+<p id="section-4.3.3.3-1">While in <strong>IDLE</strong>, the following applies:<a href="#section-4.3.3.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.3.3-1.1">
-                <p id="section-4.3.3.3-1.1.1">Upon receiving a divergent message while in <strong>IDLE</strong><a href="#section-4.3.3.3-1.1.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.3-1.1.2">
-<li id="section-4.3.3.3-1.1.2.1">
-                    <p id="section-4.3.3.3-1.1.2.1.1">Move to <strong>BUSY</strong>.<a href="#section-4.3.3.3-1.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.3.3-2.1">
+                <p id="section-4.3.3.3-2.1.1">Upon receiving a divergent message, move to <strong>BUSY</strong>.<a href="#section-4.3.3.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-                </ol>
+              <li class="normal" id="section-4.3.3.3-2.2">
+                <p id="section-4.3.3.3-2.2.1">Upon sending a divergent message, move to <strong>BUSY</strong>.<a href="#section-4.3.3.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-4.3.3.3-1.2">
-                <p id="section-4.3.3.3-1.2.1">Upon sending a divergent message while in <strong>IDLE</strong><a href="#section-4.3.3.3-1.2.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.3-1.2.2">
-<li id="section-4.3.3.3-1.2.2.1">
-                    <p id="section-4.3.3.3-1.2.2.1.1">Move to <strong>BUSY</strong>.<a href="#section-4.3.3.3-1.2.2.1.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.3.3.3-2.3">
+                <p id="section-4.3.3.3-2.3.1">Upon receiving a convergent message:<a href="#section-4.3.3.3-2.3.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.3-2.3.2">
+<li id="section-4.3.3.3-2.3.2.1">
+                    <p id="section-4.3.3.3-2.3.2.1.1">Ignore the message for the sake of KUDOS processing, but process it as a CoAP message.<a href="#section-4.3.3.3-2.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                </ol>
-</li>
-              <li class="normal" id="section-4.3.3.3-1.3">
-                <p id="section-4.3.3.3-1.3.1">Upon receiving a convergent message while in <strong>IDLE</strong><a href="#section-4.3.3.3-1.3.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.3-1.3.2">
-<li id="section-4.3.3.3-1.3.2.1">
-                    <p id="section-4.3.3.3-1.3.2.1.1">Ignore the message for the sake of KUDOS processing, but process it as a CoAP message.<a href="#section-4.3.3.3-1.3.2.1.1" class="pilcrow">¶</a></p>
-</li>
-                  <li id="section-4.3.3.3-1.3.2.2">
-                    <p id="section-4.3.3.3-1.3.2.2.1">Stay in <strong>IDLE</strong>.<a href="#section-4.3.3.3-1.3.2.2.1" class="pilcrow">¶</a></p>
+                  <li id="section-4.3.3.3-2.3.2.2">
+                    <p id="section-4.3.3.3-2.3.2.2.1">Stay in <strong>IDLE</strong>.<a href="#section-4.3.3.3-2.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ol>
 </li>
@@ -1797,66 +1796,73 @@ b. Delete the old OSCORE Security Context, or retain it only for processing late
             <h5 id="name-busy">
 <a href="#section-4.3.3.4" class="section-number selfRef">4.3.3.4. </a><a href="#name-busy" class="section-name selfRef">BUSY</a>
             </h5>
+<p id="section-4.3.3.4-1">Upon entering <strong>BUSY</strong> due to receiving a divergent message:<a href="#section-4.3.3.4-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-2">
+<li id="section-4.3.3.4-2.1">
+                <p id="section-4.3.3.4-2.1.1">Send a convergent message.<a href="#section-4.3.3.4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li id="section-4.3.3.4-2.2">
+                <p id="section-4.3.3.4-2.2.1">Move to <strong>PENDING</strong>.<a href="#section-4.3.3.4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ol>
+<p id="section-4.3.3.4-3">While in <strong>BUSY</strong>, the following applies:<a href="#section-4.3.3.4-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.3.4-1.1">
-                <p id="section-4.3.3.4-1.1.1">Upon entering <strong>BUSY</strong> due to receiving a divergent message<a href="#section-4.3.3.4-1.1.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-1.1.2">
-<li id="section-4.3.3.4-1.1.2.1">
-                    <p id="section-4.3.3.4-1.1.2.1.1">Send a convergent message.<a href="#section-4.3.3.4-1.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.3.4-4.1">
+                <p id="section-4.3.3.4-4.1.1">Upon receiving a divergent message:<a href="#section-4.3.3.4-4.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-4.1.2">
+<li id="section-4.3.3.4-4.1.2.1">
+                    <p id="section-4.3.3.4-4.1.2.1.1">Send a convergent message.<a href="#section-4.3.3.4-4.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li id="section-4.3.3.4-1.1.2.2">
-                    <p id="section-4.3.3.4-1.1.2.2.1">Move to <strong>PENDING</strong>.<a href="#section-4.3.3.4-1.1.2.2.1" class="pilcrow">¶</a></p>
-</li>
-                </ol>
-</li>
-              <li class="normal" id="section-4.3.3.4-1.2">
-                <p id="section-4.3.3.4-1.2.1">Upon receiving a divergent message while in <strong>BUSY</strong><a href="#section-4.3.3.4-1.2.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-1.2.2">
-<li id="section-4.3.3.4-1.2.2.1">
-                    <p id="section-4.3.3.4-1.2.2.1.1">Send a convergent message.<a href="#section-4.3.3.4-1.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-                  <li id="section-4.3.3.4-1.2.2.2">
-                    <p id="section-4.3.3.4-1.2.2.2.1">Move to <strong>PENDING</strong>.<a href="#section-4.3.3.4-1.2.2.2.1" class="pilcrow">¶</a></p>
+                  <li id="section-4.3.3.4-4.1.2.2">
+                    <p id="section-4.3.3.4-4.1.2.2.1">Move to <strong>PENDING</strong>.<a href="#section-4.3.3.4-4.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ol>
 </li>
-              <li class="normal" id="section-4.3.3.4-1.3">
-                <p id="section-4.3.3.4-1.3.1">Upon receiving a convergent message while in <strong>BUSY</strong><a href="#section-4.3.3.4-1.3.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-1.3.2">
-<li id="section-4.3.3.4-1.3.2.1">
-                    <p id="section-4.3.3.4-1.3.2.1.1">Achieve key confirmation.<a href="#section-4.3.3.4-1.3.2.1.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.3.3.4-4.2">
+                <p id="section-4.3.3.4-4.2.1">Upon receiving a convergent message:<a href="#section-4.3.3.4-4.2.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-4.2.2">
+<li id="section-4.3.3.4-4.2.2.1">
+                    <p id="section-4.3.3.4-4.2.2.1.1">Achieve key confirmation.<a href="#section-4.3.3.4-4.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li id="section-4.3.3.4-1.3.2.2">
-                    <p id="section-4.3.3.4-1.3.2.2.1">Move to the <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.4-1.3.2.2.1" class="pilcrow">¶</a></p>
+                  <li id="section-4.3.3.4-4.2.2.2">
+                    <p id="section-4.3.3.4-4.2.2.2.1">Move to the <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.4-4.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ol>
 </li>
-              <li class="normal" id="section-4.3.3.4-1.4">
-                <p id="section-4.3.3.4-1.4.1">Upon sending a divergent message while in <strong>BUSY</strong><a href="#section-4.3.3.4-1.4.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.3.3.4-4.3">
+                <p id="section-4.3.3.4-4.3.1">Upon sending a divergent message:<a href="#section-4.3.3.4-4.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.3.4-1.4.2.1">
-                    <p id="section-4.3.3.4-1.4.2.1.1">If, as in most cases, CTX_TEMP is usable to protect the intended divergent message, send the message and then stay in <strong>BUSY</strong>.<a href="#section-4.3.3.4-1.4.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.3.4-4.3.2.1">
+                    <p id="section-4.3.3.4-4.3.2.1.1">If, as in most cases, CTX_TEMP is usable to protect the intended divergent message:<a href="#section-4.3.3.4-4.3.2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-4.3.2.1.2">
+<li id="section-4.3.3.4-4.3.2.1.2.1">
+                        <p id="section-4.3.3.4-4.3.2.1.2.1.1">Send the message protected with CTX_TEMP.<a href="#section-4.3.3.4-4.3.2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li class="normal" id="section-4.3.3.4-1.4.2.2">
-                    <p id="section-4.3.3.4-1.4.2.2.1">Otherwise, perform the following steps. (E.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_TEMP)<a href="#section-4.3.3.4-1.4.2.2.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-1.4.2.2.2">
-<li id="section-4.3.3.4-1.4.2.2.2.1">
-                        <p id="section-4.3.3.4-1.4.2.2.2.1.1">Delete CTX_TEMP.<a href="#section-4.3.3.4-1.4.2.2.2.1.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.4-4.3.2.1.2.2">
+                        <p id="section-4.3.3.4-4.3.2.1.2.2.1">Stay in <strong>BUSY</strong>.<a href="#section-4.3.3.4-4.3.2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.4-1.4.2.2.2.2">
-                        <p id="section-4.3.3.4-1.4.2.2.2.2.1">Delete the (X, nonce) pair associated with the Security Context CTX_IN that was used to generate the CTX_TEMP deleted at the previous step.<a href="#section-4.3.3.4-1.4.2.2.2.2.1" class="pilcrow">¶</a></p>
+                    </ol>
 </li>
-                      <li id="section-4.3.3.4-1.4.2.2.2.3">
-                        <p id="section-4.3.3.4-1.4.2.2.2.3.1">Generate a new (X, nonce) pair and associate it with CTX_IN.<a href="#section-4.3.3.4-1.4.2.2.2.3.1" class="pilcrow">¶</a></p>
+                  <li class="normal" id="section-4.3.3.4-4.3.2.2">
+                    <p id="section-4.3.3.4-4.3.2.2.1">Otherwise, perform the following steps (e.g., this happens upon eventually exhausting the Sender Sequence Number space of CTX_TEMP):<a href="#section-4.3.3.4-4.3.2.2.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.4-4.3.2.2.2">
+<li id="section-4.3.3.4-4.3.2.2.2.1">
+                        <p id="section-4.3.3.4-4.3.2.2.2.1.1">Delete CTX_TEMP.<a href="#section-4.3.3.4-4.3.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.4-1.4.2.2.2.4">
-                        <p id="section-4.3.3.4-1.4.2.2.2.4.1">Generate a new CTX_TEMP from CTX_IN.<a href="#section-4.3.3.4-1.4.2.2.2.4.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.4-4.3.2.2.2.2">
+                        <p id="section-4.3.3.4-4.3.2.2.2.2.1">Delete the (X, nonce) pair associated with the Security Context CTX_IN that was used to generate the CTX_TEMP deleted at the previous step.<a href="#section-4.3.3.4-4.3.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.4-1.4.2.2.2.5">
-                        <p id="section-4.3.3.4-1.4.2.2.2.5.1">Send the intended divergent message protected with the CTX_TEMP generated at the previous step.<a href="#section-4.3.3.4-1.4.2.2.2.5.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.4-4.3.2.2.2.3">
+                        <p id="section-4.3.3.4-4.3.2.2.2.3.1">Generate a new (X, nonce) pair and associate it with CTX_IN.<a href="#section-4.3.3.4-4.3.2.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.4-1.4.2.2.2.6">
-                        <p id="section-4.3.3.4-1.4.2.2.2.6.1">Stay in <strong>BUSY</strong>.<a href="#section-4.3.3.4-1.4.2.2.2.6.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.4-4.3.2.2.2.4">
+                        <p id="section-4.3.3.4-4.3.2.2.2.4.1">Generate a new CTX_TEMP from CTX_IN.<a href="#section-4.3.3.4-4.3.2.2.2.4.1" class="pilcrow">¶</a></p>
+</li>
+                      <li id="section-4.3.3.4-4.3.2.2.2.5">
+                        <p id="section-4.3.3.4-4.3.2.2.2.5.1">Send the message protected with the CTX_TEMP generated at the previous step.<a href="#section-4.3.3.4-4.3.2.2.2.5.1" class="pilcrow">¶</a></p>
+</li>
+                      <li id="section-4.3.3.4-4.3.2.2.2.6">
+                        <p id="section-4.3.3.4-4.3.2.2.2.6.1">Stay in <strong>BUSY</strong>.<a href="#section-4.3.3.4-4.3.2.2.2.6.1" class="pilcrow">¶</a></p>
 </li>
                     </ol>
 </li>
@@ -1870,77 +1876,78 @@ b. Delete the old OSCORE Security Context, or retain it only for processing late
             <h5 id="name-pending">
 <a href="#section-4.3.3.5" class="section-number selfRef">4.3.3.5. </a><a href="#name-pending" class="section-name selfRef">Pending</a>
             </h5>
+<p id="section-4.3.3.5-1">While in <strong>PENDING</strong>, the following applies:<a href="#section-4.3.3.5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.3.5-1.1">
-                <p id="section-4.3.3.5-1.1.1">Upon receiving a convergent message while in <strong>PENDING</strong><a href="#section-4.3.3.5-1.1.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-1.1.2">
-<li id="section-4.3.3.5-1.1.2.1">
-                    <p id="section-4.3.3.5-1.1.2.1.1">Achieve key confirmation.<a href="#section-4.3.3.5-1.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.3.5-2.1">
+                <p id="section-4.3.3.5-2.1.1">Upon receiving a convergent message:<a href="#section-4.3.3.5-2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-2.1.2">
+<li id="section-4.3.3.5-2.1.2.1">
+                    <p id="section-4.3.3.5-2.1.2.1.1">Achieve key confirmation.<a href="#section-4.3.3.5-2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li id="section-4.3.3.5-1.1.2.2">
-                    <p id="section-4.3.3.5-1.1.2.2.1">Move to the <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.5-1.1.2.2.1" class="pilcrow">¶</a></p>
-</li>
-                </ol>
-</li>
-              <li class="normal" id="section-4.3.3.5-1.2">
-                <p id="section-4.3.3.5-1.2.1">Upon receiving a non KUDOS message protected with the latest CTX_NEW while in <strong>PENDING</strong><a href="#section-4.3.3.5-1.2.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-1.2.2">
-<li id="section-4.3.3.5-1.2.2.1">
-                    <p id="section-4.3.3.5-1.2.2.1.1">Achieve key confirmation.<a href="#section-4.3.3.5-1.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-                  <li id="section-4.3.3.5-1.2.2.2">
-                    <p id="section-4.3.3.5-1.2.2.2.1">Move to the <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.5-1.2.2.2.1" class="pilcrow">¶</a></p>
+                  <li id="section-4.3.3.5-2.1.2.2">
+                    <p id="section-4.3.3.5-2.1.2.2.1">Move to the <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.5-2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ol>
 </li>
-              <li class="normal" id="section-4.3.3.5-1.3">
-                <p id="section-4.3.3.5-1.3.1">Upon needing to send a message (e.g., the application wants to send a request) while in <strong>PENDING</strong><a href="#section-4.3.3.5-1.3.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-1.3.2">
-<li id="section-4.3.3.5-1.3.2.1">
-                    <p id="section-4.3.3.5-1.3.2.1.1">Send the message as a convergent message.<a href="#section-4.3.3.5-1.3.2.1.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.3.3.5-2.2">
+                <p id="section-4.3.3.5-2.2.1">Upon receiving a non KUDOS message protected with the latest CTX_NEW:<a href="#section-4.3.3.5-2.2.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-2.2.2">
+<li id="section-4.3.3.5-2.2.2.1">
+                    <p id="section-4.3.3.5-2.2.2.1.1">Achieve key confirmation.<a href="#section-4.3.3.5-2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                  <li id="section-4.3.3.5-1.3.2.2">
-                    <p id="section-4.3.3.5-1.3.2.2.1">Stay in <strong>PENDING</strong>.<a href="#section-4.3.3.5-1.3.2.2.1" class="pilcrow">¶</a></p>
+                  <li id="section-4.3.3.5-2.2.2.2">
+                    <p id="section-4.3.3.5-2.2.2.2.1">Move to the <strong>Pre-IDLE</strong> stage.<a href="#section-4.3.3.5-2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 </ol>
 </li>
-              <li class="normal" id="section-4.3.3.5-1.4">
-                <p id="section-4.3.3.5-1.4.1">Upon receiving a divergent message while in <strong>PENDING</strong><a href="#section-4.3.3.5-1.4.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-4.3.3.5-2.3">
+                <p id="section-4.3.3.5-2.3.1">Upon needing to send a message (e.g., the application wants to send a request):<a href="#section-4.3.3.5-2.3.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-2.3.2">
+<li id="section-4.3.3.5-2.3.2.1">
+                    <p id="section-4.3.3.5-2.3.2.1.1">Send the message as a convergent message.<a href="#section-4.3.3.5-2.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                  <li id="section-4.3.3.5-2.3.2.2">
+                    <p id="section-4.3.3.5-2.3.2.2.1">Stay in <strong>PENDING</strong>.<a href="#section-4.3.3.5-2.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                </ol>
+</li>
+              <li class="normal" id="section-4.3.3.5-2.4">
+                <p id="section-4.3.3.5-2.4.1">Upon receiving a divergent message:<a href="#section-4.3.3.5-2.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.3.5-1.4.2.1">
-                    <p id="section-4.3.3.5-1.4.2.1.1">In case of successful decryption and verification of the divergent message using a CTX_TEMP derived from CTX_OLD:<a href="#section-4.3.3.5-1.4.2.1.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-1.4.2.1.2">
-<li id="section-4.3.3.5-1.4.2.1.2.1">
-                        <p id="section-4.3.3.5-1.4.2.1.2.1.1">Delete CTX_NEW.<a href="#section-4.3.3.5-1.4.2.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.3.5-2.4.2.1">
+                    <p id="section-4.3.3.5-2.4.2.1.1">In case of successful decryption and verification of the message using a CTX_TEMP derived from CTX_OLD:<a href="#section-4.3.3.5-2.4.2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-2.4.2.1.2">
+<li id="section-4.3.3.5-2.4.2.1.2.1">
+                        <p id="section-4.3.3.5-2.4.2.1.2.1.1">Delete CTX_NEW.<a href="#section-4.3.3.5-2.4.2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.5-1.4.2.1.2.2">
-                        <p id="section-4.3.3.5-1.4.2.1.2.2.1">Delete the pair (X, nonce) associated with the Security Context CTX_IN used to generate the CTX_NEW deleted at the previous step.<a href="#section-4.3.3.5-1.4.2.1.2.2.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.5-2.4.2.1.2.2">
+                        <p id="section-4.3.3.5-2.4.2.1.2.2.1">Delete the pair (X, nonce) associated with the Security Context CTX_IN that was used to generate the CTX_NEW deleted at the previous step.<a href="#section-4.3.3.5-2.4.2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.5-1.4.2.1.2.3">
-                        <p id="section-4.3.3.5-1.4.2.1.2.3.1">Abort the ongoing KUDOS execution.<a href="#section-4.3.3.5-1.4.2.1.2.3.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.5-2.4.2.1.2.3">
+                        <p id="section-4.3.3.5-2.4.2.1.2.3.1">Abort the ongoing KUDOS execution.<a href="#section-4.3.3.5-2.4.2.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.5-1.4.2.1.2.4">
-                        <p id="section-4.3.3.5-1.4.2.1.2.4.1">Move to <strong>BUSY</strong>.<a href="#section-4.3.3.5-1.4.2.1.2.4.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.5-2.4.2.1.2.4">
+                        <p id="section-4.3.3.5-2.4.2.1.2.4.1">Move to <strong>BUSY</strong> and enter it consistently with the reception of a divergent message.<a href="#section-4.3.3.5-2.4.2.1.2.4.1" class="pilcrow">¶</a></p>
 </li>
                     </ol>
 </li>
-                  <li class="normal" id="section-4.3.3.5-1.4.2.2">
-                    <p id="section-4.3.3.5-1.4.2.2.1">In case of successful decryption and verification of the divergent message using a CTX_TEMP derived from CTX_NEW:<a href="#section-4.3.3.5-1.4.2.2.1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-1.4.2.2.2">
-<li id="section-4.3.3.5-1.4.2.2.2.1">
-                        <p id="section-4.3.3.5-1.4.2.2.2.1.1">Delete the oldest CTX_TEMP.<a href="#section-4.3.3.5-1.4.2.2.2.1.1" class="pilcrow">¶</a></p>
+                  <li class="normal" id="section-4.3.3.5-2.4.2.2">
+                    <p id="section-4.3.3.5-2.4.2.2.1">Otherwise, in case of successful decryption and verification of the message using a CTX_TEMP derived from CTX_NEW:<a href="#section-4.3.3.5-2.4.2.2.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.3.5-2.4.2.2.2">
+<li id="section-4.3.3.5-2.4.2.2.2.1">
+                        <p id="section-4.3.3.5-2.4.2.2.2.1.1">Delete the oldest CTX_TEMP.<a href="#section-4.3.3.5-2.4.2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.5-1.4.2.2.2.2">
-                        <p id="section-4.3.3.5-1.4.2.2.2.2.1">Delete the Security Context that was used as CTX_IN to generate the CTX_TEMP deleted at the previous step.<a href="#section-4.3.3.5-1.4.2.2.2.2.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.5-2.4.2.2.2.2">
+                        <p id="section-4.3.3.5-2.4.2.2.2.2.1">Delete the Security Context that was used as CTX_IN to generate the CTX_TEMP deleted at the previous step.<a href="#section-4.3.3.5-2.4.2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.5-1.4.2.2.2.3">
-                        <p id="section-4.3.3.5-1.4.2.2.2.3.1">CTX_NEW becomes the oldest Security Context. From this point on, that Security Context is what this KUDOS execution refers to as CTX_OLD.<a href="#section-4.3.3.5-1.4.2.2.2.3.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.5-2.4.2.2.2.3">
+                        <p id="section-4.3.3.5-2.4.2.2.2.3.1">CTX_NEW becomes the oldest Security Context. From this point on, that Security Context is what this KUDOS execution refers to as CTX_OLD.<a href="#section-4.3.3.5-2.4.2.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.5-1.4.2.2.2.4">
-                        <p id="section-4.3.3.5-1.4.2.2.2.4.1">Abort the ongoing KUDOS execution.<a href="#section-4.3.3.5-1.4.2.2.2.4.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.5-2.4.2.2.2.4">
+                        <p id="section-4.3.3.5-2.4.2.2.2.4.1">Abort the ongoing KUDOS execution.<a href="#section-4.3.3.5-2.4.2.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
-                      <li id="section-4.3.3.5-1.4.2.2.2.5">
-                        <p id="section-4.3.3.5-1.4.2.2.2.5.1">Move to <strong>BUSY</strong>.<a href="#section-4.3.3.5-1.4.2.2.2.5.1" class="pilcrow">¶</a></p>
+                      <li id="section-4.3.3.5-2.4.2.2.2.5">
+                        <p id="section-4.3.3.5-2.4.2.2.2.5.1">Move to <strong>BUSY</strong> and enter it consistently with the reception of a divergent message.<a href="#section-4.3.3.5-2.4.2.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
                     </ol>
 </li>
