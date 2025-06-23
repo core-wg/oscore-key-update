@@ -492,36 +492,94 @@ Table of Contents
 
 4.2.  Function for Security Context Update
 
-   The updateCtx() function shown in Figure 2 takes as input the three
-   parameters input1, input2, and CTX_IN.  In particular, input1 and
-   input2 are built from the 'x' and 'nonce' fields transported in the
-   OSCORE Option value of the exchanged KUDOS messages (see
-   Section 4.1), while CTX_IN is the OSCORE Security Context to update.
-   The function returns a new OSCORE Security Context CTX_OUT.
+   This section defines the updateCtx() function shown in Figure 2,
+   which takes as input the three parameters input1, input2, and CTX_IN.
 
-   As a first step, the updateCtx() function builds the two CBOR byte
-   strings input1_cbor and input2_cbor, with value the input parameter
-   input1 and input2, respectively.  Then, it builds X_N, as the byte
-   concatenation of input1_cbor and input2_cbor.  In order for
-   updateCtx() to be agnostic of the order the nonce values were
-   exchanged, the input1_cbor and input2_cbor values are first sorted in
-   lexicographical order before they are concatenated.  E.g., if
-   input1_cbor comes before input2_cbor in lexicographical ordering,
-   then X_N takes the value input1_cbor | input2_cbor and vice-versa.
+   In particular, input1 and input2 are built from the 'x' and 'nonce'
+   fields transported in the OSCORE Option value of the exchanged KUDOS
+   messages (see Section 4.1), while CTX_IN is the OSCORE Security
+   Context to update through the KUDOS execution.  The function returns
+   a new OSCORE Security Context CTX_OUT.
+
+ function updateCtx(input1, input2, CTX_IN):
+
+  // Output values
+  CTX_OUT       // The new Security Context
+  MSECRET_NEW   // The new Master Secret
+  MSALT_NEW     // The new Master Salt
+
+  // Define the label for the key update
+  Label = "key update"
+
+  // Create CBOR byte strings from input1 and input2
+  input1_cbor = create_cbor_bstr(input1)
+  input2_cbor = create_cbor_bstr(input2)
+
+  // Concatenate the CBOR-encoded input1 and input2
+  // according to their lexicographic order
+  X_N = is_lexicographically_shorter(input1_cbor, input2_cbor) ?
+        (input1_cbor | input2_cbor) : (input2_cbor | input1_cbor)
+
+  // Set the new Master Salt to X_N
+  MSALT_NEW = X_N
+
+  // Determine the length in bytes of the current Master Secret
+  oscore_key_length = length(CTX_IN.MasterSecret)
+
+  // Create the new Master Secret using KUDOS_Expand_Label
+  MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
+                                   X_N, oscore_key_length)
+
+  // Derive the new Security Context CTX_OUT, using
+  // the new Master Secret, the new Master Salt,
+  // and other parameters from CTX_IN
+  CTX_OUT = derive_security_context(MSECRET_NEW, MSALT_NEW, CTX_IN)
+
+  // Return the new Security Context
+  return CTX_OUT
+
+ === === === === === === === === === === === === === === === === === ===
+
+ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
+
+  struct {
+      uint16 length = key_length;
+      opaque label<7..255> = "oscore " + Label;
+      opaque context<0..255> = X_N;
+  } ExpandLabel;
+
+  return KUDOS_Expand(master_secret, ExpandLabel, key_length)
+
+     Figure 2: Functions for Deriving a new OSCORE Security Context
+
+   The updateCtx() function builds the two CBOR byte strings input1_cbor
+   and input2_cbor, whose values are the input parameter input1 and
+   input2, respectively.  Then, it builds X_N as the byte concatenation
+   of input1_cbor and input2_cbor.
+
+   In order to be agnostic of the order according to which the nonce
+   values were exchanged, the binary representations of input1_cbor and
+   input2_cbor are sorted in lexicographical order before they are
+   concatenated.  That is, with | denoting byte concatenation, X_N MUST
+   take input1_cbor | input2_cbor if input1_cbor comes before
+   input2_cbor in lexicographical order, or input2_cbor | input1_cbor
+   otherwise.
 
    After that, the updateCtx() function derives the new values of the
-   Master Secret and Master Salt for CTX_OUT.  In particular, the new
-   Master Secret is derived through a KUDOS-Expand step, which takes as
-   input the Master Secret value from the Security Context CTX_IN, the
-   literal string "key update", X_N, and the length of the Master
-   Secret.  Instead, the new Master Salt takes X_N as value.
+   Master Salt and Master Secret for the Security Context CTX_OUT.  In
+   particular, the new Master Salt takes X_N as value.  Instead, the new
+   Master Secret is derived through a KUDOS-Expand step that is invoked
+   through the KUDOS_Expand_Label() function.  The latter takes as input
+   the Master Secret value from the Security Context CTX_IN, the literal
+   string "key update", X_N, and the length of the Master Secret in
+   bytes.
 
    The definition of KUDOS-Expand depends on the key derivation function
    used for OSCORE by the two peers, as specified in CTX_IN.  If the key
    derivation function is an HKDF Algorithm (see Section 3.1 of
    [RFC8613]), then KUDOS-Expand is mapped to HKDF-Expand [RFC5869], as
-   shown below.  Also, the hash algorithm is the same one used by the
-   HKDF Algorithm specified in CTX_IN.
+   shown below.  In particular, the hash algorithm is the same one used
+   by the HKDF Algorithm specified in CTX_IN.
 
    KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
       HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length)
@@ -529,18 +587,18 @@ Table of Contents
    If a future specification updates [RFC8613] by admitting different
    key derivation functions than HKDF Algorithms (e.g., KMAC as based on
    the SHAKE128 or SHAKE256 hash functions), that specification has to
-   update also the present document in order to define the mapping
+   also update the present document in order to define the mapping
    between such key derivation functions and KUDOS-Expand.
 
    When an HKDF Algorithm is used, the derivation of new values follows
    the same approach used in TLS 1.3, which is also based on HKDF-Expand
-   (see Section 7.1 of [RFC8446]) and used for computing new keying
+   (see Section 7.1 of [RFC8446]) and is used for computing new keying
    material in case of key update (see Section 4.6.3 of [RFC8446]).
 
-   After that, the new Master Secret and Master Salt parameters are used
-   to derive a new Security Context CTX_OUT as per Section 3.2 of
-   [RFC8613].  Any other parameter required for the derivation takes the
-   same value as in the Security Context CTX_IN.
+   After that, the newly computed Master Secret and Master Salt are used
+   to derive a new Security Context CTX_OUT, as per Section 3.2 of
+   [RFC8613].  Any other parameter required for that derivation takes
+   the same value as in the Security Context CTX_IN.
 
    Note that the following holds for the newly derived CTX_OUT:
 
@@ -555,61 +613,12 @@ Table of Contents
    Finally, the updateCtx() function returns the newly derived Security
    Context CTX_OUT.
 
-   Since the updateCtx() function also takes X as input, the derivation
-   of CTX_OUT also considers as input the information from the 'x' field
-   transported in the OSCORE Option value of the exchanged KUDOS
-   messages.  In turn, this ensures that, if successfully completed, a
-   KUDOS execution occurs as intended by the two peers.
-
-   function updateCtx(input1, input2, CTX_IN):
-
-    // Output values
-    CTX_OUT       // The new Security Context
-    MSECRET_NEW   // The new Master Secret
-    MSALT_NEW     // The new Master Salt
-
-    // Define the label for the key update
-    Label = "key update"
-
-    // Create CBOR byte strings from input1 and input2
-    input1_cbor = create_cbor_bstr(input1)
-    input2_cbor = create_cbor_bstr(input2)
-
-    // Concatenate the CBOR-encoded input1 and input2
-    // according to their lexicographic order
-    X_N = is_lexicographic_shorter(input1_cbor, input2_cbor) ?
-          (input1_cbor | input2_cbor) : (input2_cbor | input1_cbor)
-
-    // Determine the length in bytes of the current Master Secret
-    oscore_key_length = length(CTX_IN.MasterSecret)
-
-    // Create the new Master Secret using KUDOS-Expand-Label
-    MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
-                                     X_N, oscore_key_length)
-
-    // Set the new Master Salt to X_N
-    MSALT_NEW = X_N
-
-    // Derive the new Security Context CTX_OUT, using
-    // the new Master Secret, the new Master Salt,
-    // and other parameters from CTX_IN
-    CTX_OUT = derive_security_context(MSECRET_NEW, MSALT_NEW, CTX_IN)
-
-    // Return the new Security Context
-    return CTX_OUT
-
-
-   function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
-
-    struct {
-        uint16 length = key_length;
-        opaque label<7..255> = "oscore " + Label;
-        opaque context<0..255> = X_N;
-    } ExpandLabel;
-
-    return KUDOS_Expand(master_secret, ExpandLabel, key_length)
-
-       Figure 2: Functions for deriving a new OSCORE Security Context
+   Note that, thanks to the input parameters input1 and input2 provided
+   to the updateCtx() function, the derivation of CTX_OUT also considers
+   as input the information from the 'x' field conveyed in the OSCORE
+   Option value of the exchanged KUDOS messages.  In turn, this ensures
+   that a successfully completed KUDOS execution has occurred as
+   intended by the two peers.
 
 4.3.  Key Update
 
