@@ -262,35 +262,9 @@ This document extends the use of the OSCORE Option originally defined in {{RFC86
 
 ## Function for Security Context Update # {#ssec-update-function}
 
-The updateCtx() function shown in {{function-update}} takes as input the three parameters input1, input2, and CTX\_IN. In particular, input1 and input2 are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-oscore-option-extensions}}), while CTX\_IN is the OSCORE Security Context to update. The function returns a new OSCORE Security Context CTX\_OUT.
+This section defines the updateCtx() function shown in {{function-update}}, which takes as input the three parameters input1, input2, and CTX\_IN.
 
-As a first step, the updateCtx() function builds the two CBOR byte strings input1\_cbor and input2\_cbor, with value the input parameter input1 and input2, respectively. Then, it builds X\_N, as the byte concatenation of input1\_cbor and input2\_cbor. In order for updateCtx() to be agnostic of the order the nonce values were exchanged, the input1\_cbor and input2\_cbor values are first sorted in lexicographical order before they are concatenated. E.g., if input1\_cbor comes before input2\_cbor in lexicographical ordering, then X\_N takes the value input1\_cbor \| input2\_cbor and vice-versa.
-
-After that, the updateCtx() function derives the new values of the Master Secret and Master Salt for CTX\_OUT. In particular, the new Master Secret is derived through a KUDOS-Expand step, which takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N, and the length of the Master Secret. Instead, the new Master Salt takes X\_N as value.
-
-The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX\_IN. If the key derivation function is an HKDF Algorithm (see {{Section 3.1 of RFC8613}}), then KUDOS-Expand is mapped to HKDF-Expand {{RFC5869}}, as shown below. Also, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX\_IN.
-
-~~~~~~~~~~~
-KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
-   HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length)
-~~~~~~~~~~~
-{: artwork-align="left"}
-
-If a future specification updates {{RFC8613}} by admitting different key derivation functions than HKDF Algorithms (e.g., KMAC as based on the SHAKE128 or SHAKE256 hash functions), that specification has to update also the present document in order to define the mapping between such key derivation functions and KUDOS-Expand.
-
-When an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
-
-After that, the new Master Secret and Master Salt parameters are used to derive a new Security Context CTX\_OUT as per {{Section 3.2 of RFC8613}}. Any other parameter required for the derivation takes the same value as in the Security Context CTX\_IN.
-
-Note that the following holds for the newly derived CTX\_OUT:
-
-* In its Sender Context, the Sender Sequence Number is initialized to 0 as per {{Section 3.2.2 of RFC8613}}.
-
-* If the peer that has derived CTX\_OUT supports CoAP Observe {{RFC7641}}, the Notification Number used for the replay protection of Observe notifications (see {{Section 7.4.1 of RFC8613}}) is left as not initialized.
-
-Finally, the updateCtx() function returns the newly derived Security Context CTX\_OUT.
-
-Since the updateCtx() function also takes X as input, the derivation of CTX\_OUT also considers as input the information from the 'x' field transported in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that, if successfully completed, a KUDOS execution occurs as intended by the two peers.
+In particular, input1 and input2 are built from the 'x' and 'nonce' fields transported in the OSCORE Option value of the exchanged KUDOS messages (see {{ssec-oscore-option-extensions}}), while CTX\_IN is the OSCORE Security Context to update through the KUDOS execution. The function returns a new OSCORE Security Context CTX\_OUT.
 
 ~~~~~~~~~~~
 function updateCtx(input1, input2, CTX_IN):
@@ -309,18 +283,18 @@ function updateCtx(input1, input2, CTX_IN):
 
  // Concatenate the CBOR-encoded input1 and input2
  // according to their lexicographic order
- X_N = is_lexicographic_shorter(input1_cbor, input2_cbor) ?
+ X_N = is_lexicographically_shorter(input1_cbor, input2_cbor) ?
        (input1_cbor | input2_cbor) : (input2_cbor | input1_cbor)
+
+ // Set the new Master Salt to X_N
+ MSALT_NEW = X_N
 
  // Determine the length in bytes of the current Master Secret
  oscore_key_length = length(CTX_IN.MasterSecret)
 
- // Create the new Master Secret using KUDOS-Expand-Label
+ // Create the new Master Secret using KUDOS_Expand_Label
  MSECRET_NEW = KUDOS_Expand_Label(CTX_IN.MasterSecret, Label,
                                   X_N, oscore_key_length)
-
- // Set the new Master Salt to X_N
- MSALT_NEW = X_N
 
  // Derive the new Security Context CTX_OUT, using
  // the new Master Secret, the new Master Salt,
@@ -330,6 +304,7 @@ function updateCtx(input1, input2, CTX_IN):
  // Return the new Security Context
  return CTX_OUT
 
+=== === === === === === === === === === === === === === === === === ===
 
 function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
@@ -341,7 +316,37 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
  return KUDOS_Expand(master_secret, ExpandLabel, key_length)
 ~~~~~~~~~~~
-{: #function-update title="Functions for deriving a new OSCORE Security Context" artwork-align="left"}
+{: #function-update title="Functions for Deriving a new OSCORE Security Context" artwork-align="left"}
+
+The updateCtx() function builds the two CBOR byte strings input1\_cbor and input2\_cbor, whose values are the input parameter input1 and input2, respectively. Then, it builds X\_N as the byte concatenation of input1\_cbor and input2\_cbor.
+
+In order to be agnostic of the order according to which the nonce values were exchanged, the binary representations of input1\_cbor and input2\_cbor are sorted in lexicographical order before they are concatenated. That is, with \| denoting byte concatenation, X\_N MUST take input1\_cbor \| input2\_cbor if input1\_cbor comes before input2\_cbor in lexicographical order, or input2\_cbor \| input1\_cbor otherwise.
+
+After that, the updateCtx() function derives the new values of the Master Salt and Master Secret for the Security Context CTX\_OUT. In particular, the new Master Salt takes X\_N as value. Instead, the new Master Secret is derived through a KUDOS-Expand step that is invoked through the KUDOS_Expand_Label() function. The latter takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N, and the length of the Master Secret in bytes.
+
+The definition of KUDOS-Expand depends on the key derivation function used for OSCORE by the two peers, as specified in CTX\_IN. If the key derivation function is an HKDF Algorithm (see {{Section 3.1 of RFC8613}}), then KUDOS-Expand is mapped to HKDF-Expand {{RFC5869}}, as shown below. In particular, the hash algorithm is the same one used by the HKDF Algorithm specified in CTX\_IN.
+
+~~~~~~~~~~~
+KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
+   HKDF-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length)
+~~~~~~~~~~~
+{: artwork-align="left"}
+
+If a future specification updates {{RFC8613}} by admitting different key derivation functions than HKDF Algorithms (e.g., KMAC as based on the SHAKE128 or SHAKE256 hash functions), that specification has to also update the present document in order to define the mapping between such key derivation functions and KUDOS-Expand.
+
+When an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and is used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
+
+After that, the newly computed Master Secret and Master Salt are used to derive a new Security Context CTX\_OUT, as per {{Section 3.2 of RFC8613}}. Any other parameter required for that derivation takes the same value as in the Security Context CTX\_IN.
+
+Note that the following holds for the newly derived CTX\_OUT:
+
+* In its Sender Context, the Sender Sequence Number is initialized to 0 as per {{Section 3.2.2 of RFC8613}}.
+
+* If the peer that has derived CTX\_OUT supports CoAP Observe {{RFC7641}}, the Notification Number used for the replay protection of Observe notifications (see {{Section 7.4.1 of RFC8613}}) is left as not initialized.
+
+Finally, the updateCtx() function returns the newly derived Security Context CTX\_OUT.
+
+Note that, thanks to the input parameters input1 and input2 provided to the updateCtx() function, the derivation of CTX\_OUT also considers as input the information from the 'x' field conveyed in the OSCORE Option value of the exchanged KUDOS messages. In turn, this ensures that a successfully completed KUDOS execution has occurred as intended by the two peers.
 
 ## Key Update # {#ssec-derive-ctx}
 
