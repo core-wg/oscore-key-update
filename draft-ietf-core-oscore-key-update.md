@@ -975,11 +975,11 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 # Examples
 
-The following sections shows two examples of KUDOS being executed and successfully completing.
+The following sections show two examples of KUDOS being executed and successfully completing.
 
-## Successful KUDOS Initiated with a Request
+## Successful KUDOS Execution Initiated with a Request Message
 
-The following shows a succesful execution of KUDOS where KUDOS is started by the client sending a divergent KUDOS message.
+The following shows a succesful execution of KUDOS where KUDOS is started by the client sending a divergent KUDOS message as a CoAP request.
 
 ~~~~~~~~~~~ aasvg
 KUDOS status:                                         KUDOS status:
@@ -1074,9 +1074,9 @@ Verify with CTX_NEW     | OSCORE {             |
                         |                      |
 ~~~~~~~~~~~
 
-## Successful KUDOS Initiated with a Response
+## Successful KUDOS Execution Initiated with a Response Message
 
-The following shows a succesful execution of KUDOS where KUDOS is started by the Server sending a divergent KUDOS message.
+The following shows a succesful execution of KUDOS where KUDOS is started by the server sending a divergent KUDOS message as a CoAP response.
 
 ~~~~~~~~~~~ aasvg
 KUDOS status:                                         KUDOS status:
@@ -1173,6 +1173,12 @@ State: IDLE (0,0)       |                      |
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -09 to -10 ## {#sec-10-11}
+
+* Extended security considerations.
+
+* Clarifications and editorial improvements.
 
 ## Version -09 to -10 ## {#sec-09-10}
 
