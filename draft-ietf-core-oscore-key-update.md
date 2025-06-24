@@ -808,7 +808,7 @@ This allows clients to issue KUDOS requests when they do not include any actiona
 
 ### Well-Known KUDOS Resource # {#well-known-kudos-desc}
 
-According to this specification, KUDOS is transferred in POST requests and 2.04 (Changed) responses. If a client wishes to run the KUDOS procedure without triggering any application processing on the server, then a request sent as a KUDOS message can target a KUDOS resource with resource type "core.kudos" (see {{core-kudos-resource-type}}), e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}). An alternative KUDOS resource can be discovered, e.g., by using a resource directory {{RFC9176}}, by using the resource type "core.kudos" as filter criterion.
+If a client wishes to run the KUDOS procedure without triggering any application processing on the server, then a request sent as a KUDOS message can target a KUDOS resource with resource type "core.kudos" (see {{core-kudos-resource-type}}), e.g., at the Uri-Path "/.well-known/kudos" (see {{well-known-kudos}}). An alternative KUDOS resource can be discovered, e.g., by using a resource directory {{RFC9176}}, by using the resource type "core.kudos" as filter criterion.
 
 ### Rekeying when Using SCHC with OSCORE
 
