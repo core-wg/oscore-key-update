@@ -111,19 +111,21 @@ Table of Contents
      7.1.  Normative References
      7.2.  Informative References
    Appendix A.  Examples
-     A.1.  Successful KUDOS Initiated with a Request
-     A.2.  Successful KUDOS Initiated with a Response
+     A.1.  Successful KUDOS Execution Initiated with a Request Message
+     A.2.  Successful KUDOS Execution Initiated with a Response
+           Message
    Appendix B.  Document Updates
      B.1.  Version -09 to -10
-     B.2.  Version -08 to -09
-     B.3.  Version -07 to -08
-     B.4.  Version -06 to -07
-     B.5.  Version -05 to -06
-     B.6.  Version -04 to -05
-     B.7.  Version -03 to -04
-     B.8.  Version -02 to -03
-     B.9.  Version -01 to -02
-     B.10. Version -00 to -01
+     B.2.  Version -09 to -10
+     B.3.  Version -08 to -09
+     B.4.  Version -07 to -08
+     B.5.  Version -06 to -07
+     B.6.  Version -05 to -06
+     B.7.  Version -04 to -05
+     B.8.  Version -03 to -04
+     B.9.  Version -02 to -03
+     B.10. Version -01 to -02
+     B.11. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2052,13 +2054,14 @@ Table of Contents
 
 Appendix A.  Examples
 
-   The following sections shows two examples of KUDOS being executed and
+   The following sections show two examples of KUDOS being executed and
    successfully completing.
 
-A.1.  Successful KUDOS Initiated with a Request
+A.1.  Successful KUDOS Execution Initiated with a Request Message
 
    The following shows a succesful execution of KUDOS where KUDOS is
-   started by the client sending a divergent KUDOS message.
+   started by the client sending a divergent KUDOS message as a CoAP
+   request.
 
 KUDOS status:                                         KUDOS status:
 - CTX_OLD: -,-                                        - CTX_OLD: -,-
@@ -2151,10 +2154,11 @@ Verify with CTX_NEW     | OSCORE {             |
                         | }                    |
                         |                      |
 
-A.2.  Successful KUDOS Initiated with a Response
+A.2.  Successful KUDOS Execution Initiated with a Response Message
 
    The following shows a succesful execution of KUDOS where KUDOS is
-   started by the Server sending a divergent KUDOS message.
+   started by the server sending a divergent KUDOS message as a CoAP
+   response.
 
 KUDOS status:                                         KUDOS status:
 - CTX_OLD: -,-                                        - CTX_OLD: -,-
@@ -2253,10 +2257,16 @@ Appendix B.  Document Updates
 
 B.1.  Version -09 to -10
 
+   *  Extended security considerations.
+
+   *  Clarifications and editorial improvements.
+
+B.2.  Version -09 to -10
+
    *  Major re-design building on a state machine driving the KUDOS
       execution.
 
-B.2.  Version -08 to -09
+B.3.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -2289,7 +2299,7 @@ B.2.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-B.3.  Version -07 to -08
+B.4.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -2315,7 +2325,7 @@ B.3.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-B.4.  Version -06 to -07
+B.5.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -2329,7 +2339,7 @@ B.4.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-B.5.  Version -05 to -06
+B.6.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -2349,7 +2359,7 @@ B.5.  Version -05 to -06
 
    *  Editorial improvements.
 
-B.6.  Version -04 to -05
+B.7.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -2372,7 +2382,7 @@ B.6.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-B.7.  Version -03 to -04
+B.8.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -2398,7 +2408,7 @@ B.7.  Version -03 to -04
 
    *  Editorial improvements.
 
-B.8.  Version -02 to -03
+B.9.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -2417,7 +2427,7 @@ B.8.  Version -02 to -03
 
    *  Editorial improvements.
 
-B.9.  Version -01 to -02
+B.10.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -2441,7 +2451,7 @@ B.9.  Version -01 to -02
 
    *  Editorial improvements.
 
-B.10.  Version -00 to -01
+B.11.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
