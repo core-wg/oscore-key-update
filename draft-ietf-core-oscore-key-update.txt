@@ -1540,15 +1540,13 @@ Table of Contents
 
 4.7.3.  Well-Known KUDOS Resource
 
-   According to this specification, KUDOS is transferred in POST
-   requests and 2.04 (Changed) responses.  If a client wishes to run the
-   KUDOS procedure without triggering any application processing on the
-   server, then a request sent as a KUDOS message can target a KUDOS
-   resource with resource type "core.kudos" (see Section 4.7.2), e.g.,
-   at the Uri-Path "/.well-known/kudos" (see Section 6.4).  An
-   alternative KUDOS resource can be discovered, e.g., by using a
-   resource directory [RFC9176], by using the resource type "core.kudos"
-   as filter criterion.
+   If a client wishes to run the KUDOS procedure without triggering any
+   application processing on the server, then a request sent as a KUDOS
+   message can target a KUDOS resource with resource type "core.kudos"
+   (see Section 4.7.2), e.g., at the Uri-Path "/.well-known/kudos" (see
+   Section 6.4).  An alternative KUDOS resource can be discovered, e.g.,
+   by using a resource directory [RFC9176], by using the resource type
+   "core.kudos" as filter criterion.
 
 4.7.4.  Rekeying when Using SCHC with OSCORE
 
