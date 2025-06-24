@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            23 June 2025
-Expires: 25 December 2025
+Intended status: Standards Track                            24 June 2025
+Expires: 26 December 2025
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 December 2025.
+   This Internet-Draft will expire on 26 December 2025.
 
 Copyright Notice
 
@@ -228,7 +228,7 @@ Table of Contents
    *  The two peers can run the procedure defined in Appendix B.2 of
       [RFC8613].  That is, the two peers exchange three or four messages
       that are protected with temporary Security Contexts, thus adding
-      randomness to the ID Context.
+      randomness to the OSCORE ID Context.
 
       As a result, the two peers establish a new OSCORE Security Context
       with new ID Context, Sender Key, and Recipient Key, while keeping
@@ -1432,14 +1432,14 @@ Table of Contents
 4.7.  Discussion
 
    KUDOS is intended to deprecate and replace the procedure defined in
-   Appendix B.2 of [RFC8613], as fundamentally achieving the same goal,
+   Appendix B.2 of [RFC8613], as fundamentally achieving the same goal
    while displaying a number of improvements and advantages.
 
    In particular, it is especially convenient for the handling of
    failure events concerning the JRC node in 6TiSCH networks (see
    Section 2).  That is, among its intrinsic advantages compared to the
    procedure defined in Appendix B.2 of [RFC8613], KUDOS preserves the
-   same ID Context value, when establishing a new OSCORE Security
+   same ID Context value when establishing a new OSCORE Security
    Context.
 
    Since the JRC uses ID Context values as identifiers of network nodes,
@@ -1447,7 +1447,7 @@ Table of Contents
    have to perform anymore a mapping between a new, different ID Context
    value and a certain pledge identifier (see Section 8.3.3 of
    [RFC9031]).  It follows that pledge identifiers can remain constant
-   once assigned, and thus ID Context values used as pledge identifiers
+   once assigned and thus ID Context values used as pledge identifiers
    can be employed in the long-term as originally intended.
 
 4.7.1.  Communication Overhead
@@ -1458,19 +1458,18 @@ Table of Contents
 
    *  The second byte of the OSCORE Option value.
 
-   *  The byte 'x' of the OSCORE Option value.
+   *  The 1-byte 'x' field of the OSCORE Option value.
 
-   *  The nonce conveyed in the 'nonce' field of the OSCORE Option.  Its
-      size ranges from 1 to 16 bytes as indicated in the 'x' byte, and
-      is typically of 8 bytes.
+   *  The nonce conveyed in the 'nonce' field of the OSCORE Option
+      value.  Its size ranges from 1 to 16 bytes, is typically of 8
+      bytes, and is indicated in the 'x' field.
 
-   *  The 'Partial IV' parameter of the OSCORE Option value, in a CoAP
+   *  The 'Partial IV' field of the OSCORE Option value, in a CoAP
       response message that is a KUDOS message.
 
       This takes into account the fact that OSCORE-protected CoAP
-      response messages normally do not include the 'Partial IV'
-      parameter, but they have to when they are KUDOS messages (see
-      Section 3).
+      response messages normally do not include the 'Partial IV' field,
+      but they have to when they are KUDOS messages (see Section 3).
 
    *  The first byte of the OSCORE Option value (i.e., the first OSCORE
       flag byte), in a CoAP response message that is a KUDOS message.
@@ -1479,35 +1478,35 @@ Table of Contents
       response messages normally convey an OSCORE Option that only
       consists of the all zero (0x00) flag byte.  In turn, this results
       in the OSCORE Option being encoded as with empty value (see
-      Section 2 of [RFC8613].
+      Section 2 of [RFC8613]).
 
-   *  The possible presence of the 1-byte Option Length (extended) field
-      in the OSCORE Option (see Section 3.1 of [RFC7252]).  This is the
-      case where the length of the OSCORE Option value is between 13 and
-      255 bytes (see Section 2 of [RFC8613]).
+   *  The possible presence of the 1-byte 'Option Length (extended)'
+      field in the OSCORE Option (see Section 3.1 of [RFC7252]).  This
+      is the case where the length of the OSCORE Option value is between
+      13 and 255 bytes (see Section 2 of [RFC8613]).
 
-   The results shown in figure {table-overhead-forward} are the minimum,
-   typical, and maximum communication overhead in bytes introduced by
-   KUDOS, when considering a nonce with size 1, 8, and 16 bytes.  All
-   the indicated values are in bytes.
+   The results shown in figure Table 1 are the minimum, typical, and
+   maximum communication overhead in bytes introduced by KUDOS, when
+   considering a nonce with size 1, 8, and 16 bytes.  All the indicated
+   values are in bytes.
 
-   The overhead is calculated based on a scenario of a CoAP request
-   serving as the divergent message, followed by a CoAP response serving
-   as the convergent message.
+   The overhead is calculated considering a scenario where a CoAP
+   request serves as the divergent message and a following,
+   corresponding CoAP response serves as the convergent message.
 
    In particular, the results build on the following assumptions.
 
    *  Both messages of the same KUDOS execution use nonces of the same
-      size, and do not include the 'kid context' parameter in the OSCORE
+      size and do not include the 'kid context' field in the OSCORE
       Option value.
 
-   *  When included in the OSCORE Option value, the 'Partial IV'
-      parameter has size 1 byte.
+   *  When included in the OSCORE Option value, the 'Partial IV' field
+      has size 1 byte.
 
-   *  CoAP request messages include the 'kid' parameter with size 1 byte
-      in the OSCORE Option value.
+   *  CoAP request messages include the 'kid' field with size 1 byte in
+      the OSCORE Option value.
 
-   *  CoAP response messages do not include the 'kid' parameter in the
+   *  CoAP response messages do not include the 'kid' field in the
       OSCORE Option value.
 
       +============+=======================+===============+=======+
@@ -1521,7 +1520,7 @@ Table of Contents
       | 16         | 19                    | 21            | 40    |
       +------------+-----------------------+---------------+-------+
 
-                 Table 1: Communication overhead (bytes)
+                 Table 1: Communication Overhead (Bytes)
 
 4.7.2.  Resource Type core.kudos
 
@@ -1530,10 +1529,12 @@ Table of Contents
    incurring any side effects.  Specifically, a resource of this type
    does not pertain to any real application, which ensures that no
    application-level actions are triggered as a result of the KUDOS
-   request.  This allows clients to issue KUDOS requests when they do
-   not include any actionable application payload in the plain CoAP
-   request composed before OSCORE protection, or when no application-
-   layer processing is intended to occur on the server.
+   request.
+
+   This allows clients to issue KUDOS requests when they do not include
+   any actionable application payload in the plain CoAP request composed
+   before OSCORE protection, or when no application-layer processing is
+   intended to occur on the server.
 
 4.7.3.  Well-Known KUDOS Resource
 
@@ -1554,22 +1555,24 @@ Table of Contents
    fragmentation (SCHC) framework [RFC8724] for compressing CoAP
    messages protected with OSCORE, as defined in [RFC8824].
 
-   Compression of the OSCORE Partial IV has implications for the
-   frequency of rekeying.  That is, if the Partial IV is compressed, the
-   communicating peers must perform rekeying more often, as the
-   available Partial IV space becomes smaller due to the compression.
-   For instance, if only 3 bits of the Partial IV are sent, then the
-   maximum PIV before having to rekey is only 2^3 - 1 = 7.
+   The SCHC compression of the 'Partial IV' field in the OSCORE Option
+   value has implications for the frequency of rekeying.  That is, if
+   the 'Partial IV' field is compressed, the communicating peers must
+   perform rekeying more often, as the available Sender Sequence Number
+   space that is used for the Partial IV becomes effectively smaller due
+   to the compression.  For instance, if only 3 bits of the Partial IV
+   are sent, then the maximum Partial IV that can be used before having
+   to rekey is only 2^3 - 1 = 7.
 
    Furthermore, any time the SCHC context Rules are updated on an OSCORE
    endpoint, that endpoint must perform a rekeying (see Section 9 of
    [RFC8824]).
 
    That is, the use of SCHC plays a role in triggering KUDOS executions
-   and in affecting their cadence.  Hence, the used SCHC Rules and their
-   update policies should ensure that the KUDOS executions occurring as
-   their side effect do not significantly impair the gain from message
-   compression.
+   and in affecting their cadence.  Hence, the employed SCHC Rules and
+   their update policies should ensure that the KUDOS executions
+   occurring as their side effect do not significantly impair the gain
+   expected from message compression.
 
 4.8.  Signaling KUDOS support in EDHOC
 
@@ -1577,8 +1580,8 @@ Table of Contents
    Authorization Data (EAD) within an optional EAD field of the EDHOC
    messages (see Section 3.8 of [RFC9528]).  An EAD field is composed of
    one or multiple EAD items, each of which specifies an identifying
-   'ead_label' encoded as a CBOR integer, and an optional 'ead_value'
-   encoded as a CBOR bstr.
+   'ead_label' encoded as a CBOR integer and an optional 'ead_value'
+   encoded as a CBOR byte string.
 
    This document defines a new EDHOC EAD item KUDOS_EAD and registers
    its 'ead_label' in Section 6.3.  By including this EAD item in an
@@ -1586,8 +1589,8 @@ Table of Contents
    supports KUDOS and in which modes, as well as query the other peer
    about its support.  Note that peers do not have to use this EDHOC EAD
    item to be able to run KUDOS with each other, irrespective of the
-   modes they support.  A KUDOS peer MUST only use the EDHOC EAD item
-   KUDOS_EAD as non-critical.  That is, when included in an EDHOC
+   modes that they support.  A KUDOS peer MUST only use the EDHOC EAD
+   item KUDOS_EAD as non-critical.  That is, when included in an EDHOC
    message, its 'ead_label' MUST be used with positive sign.  The
    possible values of the 'ead_value' are as follows:
 
@@ -1611,7 +1614,7 @@ Table of Contents
      |      |          | KUDOS in no-FS mode only.                   |
      +------+----------+---------------------------------------------+
 
-              Table 2: Values for the EDHOC EAD item KUDOS_EAD
+              Table 2: Values for the EDHOC EAD Item KUDOS_EAD
 
    When the KUDOS_EAD item is included in EDHOC message_1 with
    'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item
@@ -1634,7 +1637,7 @@ Table of Contents
    MUST NOT specify whether it supports KUDOS in EDHOC message_3.
 
    In the following cases, the recipient peer silently ignores the
-   KUDOS_EAD item specified in the received EDHOC message, and does not
+   KUDOS_EAD item specified in the received EDHOC message and does not
    include a KUDOS_EAD item in the next EDHOC message it sends (if any).
 
    *  The recipient peer does not support the KUDOS_EAD item.
@@ -1649,16 +1652,25 @@ Table of Contents
 
    That is, by specifying 'ead_value' ASK in EDHOC message_1, a peer A
    can indicate to the other peer B that it wishes to know if B supports
-   KUDOS and in what mode(s).  In the following EDHOC message_2, B
-   indicates whether it supports KUDOS and in what mode(s), by
+   KUDOS and in what mode(s).  In the following EDHOC message_2, the
+   peer B indicates whether it supports KUDOS and in what mode(s), by
    specifying either NONE, FULL, or PART as 'ead_value'.  Specifying the
    'ead_value' FULL or PART in EDHOC message_2 also asks A to indicate
    whether it supports KUDOS in EDHOC message_3.
 
-   To further illustrate the functionality, two examples are presented
-   below as EDHOC executions where only the new KUDOS_EAD item is shown
-   when present, and assuming that no other EAD items are used by the
-   two peers.
+   To further illustrate the signaling process defined above, the
+   following presents two examples of EDHOC execution where only the new
+   KUDOS_EAD item is shown when present, assuming that no other EAD
+   items are used by the two peers.
+
+   In the example shown in Figure 3, the EDHOC Initiator asks the EDHOC
+   Responder about its support for KUDOS ('ead_value' = ASK).  In EDHOC
+   message_2, the Responder indicates that it supports both the FS and
+   no-FS mode of KUDOS ('ead_value' = FULL).  Finally, in EDHOC
+   message_3, the Initiator indicates that it also supports both the FS
+   and no-FS mode of KUDOS ('ead_value' = FULL).  After the EDHOC
+   execution has been successfully completed, both peers are aware that
+   they both support KUDOS, in the FS and no-FS modes.
 
         EDHOC                                                 EDHOC
         Initiator                                         Responder
@@ -1676,14 +1688,18 @@ Table of Contents
         |                        message_3                        |
         |                                                         |
 
-   In the example above, the Initiator asks the EDHOC Responder about
-   its support for KUDOS ('ead_value' = ASK).  In EDHOC message_2, the
-   Responder indicates that it supports both the FS and no-FS mode of
-   KUDOS ('ead_value' = FULL).  Finally, in EDHOC message_3, the
-   Initiator indicates that it also supports both the FS and no-FS mode
-   of KUDOS ('ead_value' = FULL).  After the EDHOC execution has
-   successfully finished, both peers are aware that they both support
-   KUDOS, in the FS and no-FS modes.
+       Figure 3: Example of EDHOC Execution with Signaling of Support
+                    for KUDOS (Both Peers Support KUDOS)
+
+   In the example shown in Figure 4, the EDHOC Initiator asks the EDHOC
+   Responder about its support for KUDOS ('ead_value' = ASK).  In EDHOC
+   message_2, the Responder indicates that it does not support KUDOS at
+   all ('ead_value' = NONE).  Finally, in EDHOC message_3, the Initiator
+   does not include the KUDOS_EAD item, since it already knows that
+   using KUDOS with the other peer will not be possible.  After the
+   EDHOC execution has been successfully completed, the Initiator is
+   aware that the Responder does not support KUDOS, which the two peers
+   are not going to use with each other.
 
         EDHOC                                                 EDHOC
         Initiator                                         Responder
@@ -1700,15 +1716,8 @@ Table of Contents
         |                        message_3                        |
         |                                                         |
 
-   In this second example, the Initiator asks the EDHOC Responder about
-   its support for KUDOS ('ead_value' = ASK).  In EDHOC message_2, the
-   Responder indicates that it does not support KUDOS at all
-   ('ead_value' = NONE).  Finally, in EDHOC message_3, the Initiator
-   does not include the KUDOS_EAD item, since it already knows that
-   using KUDOS with the other peer will not be possible.  After the
-   EDHOC execution has successfully finished, the Initiator is aware
-   that the Responder does not support KUDOS, which the two peers are
-   not going to use with each other.
+       Figure 4: Example of EDHOC Execution with Signaling of Support
+           for KUDOS (the EDHOC Responder Does Not Support KUDOS)
 
 5.  Security Considerations
 
@@ -1717,29 +1726,43 @@ Table of Contents
    apply.
 
    As mentioned in Section 4.3.1, it is RECOMMENDED that the size for
-   nonces N1 and N2 is 8 bytes.  The application needs to set the size
+   the nonces N1 and N2 is 8 bytes.  Applications need to set the size
    of each nonce such that the probability of its value being repeated
-   is negligible.  Note that the probability of collision of nonce
-   values is heightened by the birthday paradox.  However, considering a
-   nonce size of 8 bytes there will be a collision on average after
-   approximately 2^32 instances of Response #1 messages.
+   is negligible throughout executions of KUDOS that aim to update a
+   given OSCORE Security Context, even in case of loss of state (e.g.,
+   due to a reboot occurred in an unprepared way).
+
+   Considering the birthday paradox and a nonce size of 8 bytes, the
+   average collision for each nonce will happen after the generation of
+   2^32 (X, nonce) pairs generated by a given peer (see Section 4.3.1),
+   which is considerably more than the number of such pairs that a peer
+   is expected to generate throughout the update of a given OSCORE
+   Security Context using KUDOS (in fact, that number is expected to
+   typically be 1).  Yet, determining the appropriate nonce size also
+   ought to take into account the possible use of KUDOS in no-FS mode
+   (see Section 4.4), in which case every execution in no-FS mode
+   between two given peers considers the same CTX_BOOTSTRAP as the
+   OSCORE Security Context to update (see Section 4.4.2), hence raising
+   the chances of reusing a nonce.
 
    Overall, the size of the nonces N1 and N2 should be set such that the
    security level is harmonized with other components of the deployment.
    Considering the constraints of embedded implementations, there might
-   be a need for allowing N1 and N2 values that are smaller in size.
-   This is acceptable, provided that safety, reliability, and robustness
-   within the system can still be assured.  Although using nonces that
-   are smaller in size means that there will be a collision on average
-   after fewer KUDOS messages have been sent, this should not pose
-   significant problems even for a constrained server operating at a
-   capacity of one request per second.
+   be a need for allowing N1 and N2 values that have a size smaller than
+   the recommended one.  This is acceptable, provided that safety,
+   reliability, and robustness within the system can still be assured.
+   That is, if nonces with a smaller size are used and thus a collision
+   will occur on average after fewer KUDOS executions that aim to update
+   a given OSCORE Security Context, care must be taken to ensure that
+   this does not pose significant problems, e.g., considering as
+   benchmark a constrained server operating at a capacity of one request
+   per second.
 
    The nonces exchanged in the KUDOS messages are sent in the clear, so
-   using random nonces is preferable for maintaining privacy.  If
-   instead a counter value is used, this can leak some information about
-   the peers.  Specifically, using counters will reveal the frequency of
-   rekeying procedures performed.
+   using random nonces is preferable for maintaining privacy.  Instead,
+   if counter values are used (see Section 4.4.1), this can leak
+   information such as the frequency according to which two peers
+   perform a key update.
 
    As discussed in [Symmetric-Security], key update methods built on
    symmetric key exchange have weaker security properties compared to
@@ -1751,8 +1774,8 @@ Table of Contents
    protocol [RFC9528]).  The cadence of such periodic key updates should
    be determined based on how much the two peers and their network
    environment are constrained, as well as on the maximum amount of time
-   and of exchanged data that are acceptable between two consecutive key
-   updates.
+   and of exchanged data that are acceptable between two such
+   consecutive key updates.
 
 6.  IANA Considerations
 
