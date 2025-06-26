@@ -945,8 +945,8 @@ IANA is asked to add this document as a reference for the OSCORE Option in the "
 
 IANA is asked to add the following entry to the "EDHOC External Authorization Data" registry defined in {{Section 10.5 of RFC9528}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
 
-| Label   | Description                                                     | Reference |
-| TBD1    | Indicates whether this peer supports KUDOS and in which mode(s) | {{&SELF}} |
+| Name      | Label   | Description                                                     | Reference |
+| KUDOS_EAD | TBD1    | Indicates whether this peer supports KUDOS and in which mode(s) | {{&SELF}} |
 {: #table-iana-edhoc-ead title="Registrations in the EDHOC External Authorization Data Registry" align="center"}
 
 ## The Well-Known URI Registry {#well-known-kudos}
