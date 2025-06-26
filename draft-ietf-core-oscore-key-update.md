@@ -1188,11 +1188,19 @@ State: IDLE (0,0)       |                      |
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
-## Version -09 to -10 ## {#sec-10-11}
+## Version -10 to -11 ## {#sec-10-11}
 
 * Extended security considerations.
 
 * Clarifications and editorial improvements.
+
+* Updates to IANA considerations according to IANA early reviews.
+
+* Extended section about updated protection of CoAP responses.
+
+* Discussion about combining usage of KUDOS with profiles of ACE.
+
+* Optimization for traversing the state machine upon reception of a divergent message.
 
 ## Version -09 to -10 ## {#sec-09-10}
 
