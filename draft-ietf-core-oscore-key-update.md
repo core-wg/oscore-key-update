@@ -920,15 +920,15 @@ Note to RFC Editor: Please replace all occurrences of "{{&SELF}}" with the RFC n
 
 IANA is asked to add the following entries to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
-| Bit Position | Name             | Description                                                                                       | Reference |
-| 0            | Extension-1 Flag | Set to 1 if the OSCORE Option specifies a second byte, which includes the OSCORE flag bits 8-15   | {{&SELF}} |
-| 8            | Extension-2 Flag | Set to 1 if the OSCORE Option specifies a third byte, which includes the OSCORE flag bits 16-23   | {{&SELF}} |
-| 15           | Nonce Flag       | Set to 1 if nonce is present in the compressed COSE object                                        | {{&SELF}} |
-| 16           | Extension-3 Flag | Set to 1 if the OSCORE Option specifies a fourth byte, which includes the OSCORE flag bits 24-31  | {{&SELF}} |
-| 24           | Extension-4 Flag | Set to 1 if the OSCORE Option specifies a fifth byte, which includes the OSCORE flag bits 32-39   | {{&SELF}} |
-| 32           | Extension-5 Flag | Set to 1 if the OSCORE Option specifies a sixth byte, which includes the OSCORE flag bits 40-47   | {{&SELF}} |
-| 40           | Extension-6 Flag | Set to 1 if the OSCORE Option specifies a seventh byte, which includes the OSCORE flag bits 48-55 | {{&SELF}} |
-| 48           | Extension-7 Flag | Set to 1 if the OSCORE Option specifies an eighth byte, which includes the OSCORE flag bits 56-63  | {{&SELF}} |
+| Bit Position  | Name             | Description                                                                                       | Reference |
+| 0 (suggested) | Extension-1 Flag | Set to 1 if the OSCORE Option specifies a second byte, which includes the OSCORE flag bits 8-15   | {{&SELF}} |
+| 8             | Extension-2 Flag | Set to 1 if the OSCORE Option specifies a third byte, which includes the OSCORE flag bits 16-23   | {{&SELF}} |
+| 15            | Nonce Flag       | Set to 1 if nonce is present in the compressed COSE object                                        | {{&SELF}} |
+| 16            | Extension-3 Flag | Set to 1 if the OSCORE Option specifies a fourth byte, which includes the OSCORE flag bits 24-31  | {{&SELF}} |
+| 24            | Extension-4 Flag | Set to 1 if the OSCORE Option specifies a fifth byte, which includes the OSCORE flag bits 32-39   | {{&SELF}} |
+| 32            | Extension-5 Flag | Set to 1 if the OSCORE Option specifies a sixth byte, which includes the OSCORE flag bits 40-47   | {{&SELF}} |
+| 40            | Extension-6 Flag | Set to 1 if the OSCORE Option specifies a seventh byte, which includes the OSCORE flag bits 48-55 | {{&SELF}} |
+| 48            | Extension-7 Flag | Set to 1 if the OSCORE Option specifies an eighth byte, which includes the OSCORE flag bits 56-63 | {{&SELF}} |
 {: #table-iana-oscore-flag-bits title="Registrations in the OSCORE Flag Bits Registry" align="center"}
 
 In the same registry, IANA is asked to mark as 'Unassigned' the entry with Bit Position of 1, i.e., to update the entry as follows.
