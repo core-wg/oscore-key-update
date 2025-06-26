@@ -943,7 +943,7 @@ IANA is asked to add this document as a reference for the OSCORE Option in the "
 
 ## EDHOC External Authorization Data Registry {#iana-edhoc-aad}
 
-IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in {{Section 10.5 of RFC9528}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
+IANA is asked to add the following entry to the "EDHOC External Authorization Data" registry defined in {{Section 10.5 of RFC9528}} within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.
 
 | Label   | Description                                                     | Reference |
 | TBD1    | Indicates whether this peer supports KUDOS and in which mode(s) | {{&SELF}} |
