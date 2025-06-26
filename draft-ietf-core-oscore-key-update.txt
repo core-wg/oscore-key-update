@@ -99,6 +99,7 @@ Table of Contents
        4.7.2.  Resource Type core.kudos
        4.7.3.  Well-Known KUDOS Resource
        4.7.4.  Rekeying when Using SCHC with OSCORE
+       4.7.5.  Combining KUDOS with Profiles of ACE
      4.8.  Signaling KUDOS support in EDHOC
    5.  Security Considerations
    6.  IANA Considerations
@@ -316,7 +317,9 @@ Table of Contents
 3.  Updated Protection of Responses with OSCORE
 
    The protection of CoAP responses with OSCORE is updated, by adding
-   the following text at the end of Step 3 of Section 8.3 of [RFC8613].
+   the following text at the end of step 3 of Section 8.3 of [RFC8613]
+   as well as before the text "Then, go to 4." of Section 8.3.1 of
+   [RFC8613].
 
    |  If the server is using a different Security Context for the
    |  response compared to what was used to verify the request (e.g.,
@@ -1574,6 +1577,32 @@ Table of Contents
    occurring as their side effect do not significantly impair the gain
    expected from message compression.
 
+4.7.5.  Combining KUDOS with Profiles of ACE
+
+   When combining KUDOS with the EDHOC and OSCORE profile of ACE
+   [I-D.ietf-ace-edhoc-oscore-profile], certain considerations must be
+   taken into account to ensure proper access control behavior:
+
+   *  A KUDOS request that targets a non-KUDOS resource MUST trigger
+      standard ACE-based access control checks.
+
+   *  A KUDOS request that targets a KUDOS-specific resource MUST NOT
+      trigger ACE-based access control.
+
+   To support this, the path of any KUDOS-specific resource can be
+   included in the ACE access control exclusion list (i.e., the "do not
+   enforce access control" list).
+
+   In some deployment scenarios, an Access Token may be bound to both
+   CTX_OLD and CTX_NEW, allowing it to be valid and still usable after
+   the execution of a KUDOS procedure.
+
+   It is important to note that KUDOS is not compatible with the OSCORE
+   profile of ACE [RFC9203], this is because KUDOS changes the OSCORE
+   Master Secret, which is used as proof-of-possession key in that
+   profile.  However, as described above, KUDOS is compatible with the
+   EDHOC and OSCORE profile of ACE [I-D.ietf-ace-edhoc-oscore-profile].
+
 4.8.  Signaling KUDOS support in EDHOC
 
    The EDHOC protocol defines the transport of additional External
@@ -1790,51 +1819,58 @@ Table of Contents
    registry within the "Constrained RESTful Environments (CoRE)
    Parameters" registry group.
 
-   +==========+=============+============================+============+
-   | Bit      | Name        | Description                | Reference  |
-   | Position |             |                            |            |
-   +==========+=============+============================+============+
-   | 0        | Extension-1 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies a second  |            |
-   |          |             | byte, which includes the   |            |
-   |          |             | OSCORE flag bits 8-15      |            |
-   +----------+-------------+----------------------------+------------+
-   | 8        | Extension-2 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies a third   |            |
-   |          |             | byte, which includes the   |            |
-   |          |             | OSCORE flag bits 16-23     |            |
-   +----------+-------------+----------------------------+------------+
-   | 15       | Nonce Flag  | Set to 1 if nonce is       | [RFC-XXXX] |
-   |          |             | present in the compressed  |            |
-   |          |             | COSE object                |            |
-   +----------+-------------+----------------------------+------------+
-   | 16       | Extension-3 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies a fourth  |            |
-   |          |             | byte, which includes the   |            |
-   |          |             | OSCORE flag bits 24-31     |            |
-   +----------+-------------+----------------------------+------------+
-   | 24       | Extension-4 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies a fifth   |            |
-   |          |             | byte, which includes the   |            |
-   |          |             | OSCORE flag bits 32-39     |            |
-   +----------+-------------+----------------------------+------------+
-   | 32       | Extension-5 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies a sixth   |            |
-   |          |             | byte, which includes the   |            |
-   |          |             | OSCORE flag bits 40-47     |            |
-   +----------+-------------+----------------------------+------------+
-   | 40       | Extension-6 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies a seventh |            |
-   |          |             | byte, which includes the   |            |
-   |          |             | OSCORE flag bits 48-55     |            |
-   +----------+-------------+----------------------------+------------+
-   | 48       | Extension-7 | Set to 1 if the OSCORE     | [RFC-XXXX] |
-   |          | Flag        | Option specifies an eighth |            |
-   |          |             | byte, which includes the   |            |
-   |          |             | OSCORE flag bits 56-63     |            |
-   +----------+-------------+----------------------------+------------+
+    +=============+=============+========================+============+
+    | Bit         | Name        | Description            | Reference  |
+    | Position    |             |                        |            |
+    +=============+=============+========================+============+
+    | 0           | Extension-1 | Set to 1 if the OSCORE | [RFC-XXXX] |
+    | (suggested) | Flag        | Option specifies a     |            |
+    |             |             | second byte, which     |            |
+    |             |             | includes the OSCORE    |            |
+    |             |             | flag bits 8-15         |            |
+    +-------------+-------------+------------------------+------------+
+    | 8           | Extension-2 | Set to 1 if the OSCORE | [RFC-XXXX] |
+    |             | Flag        | Option specifies a     |            |
+    |             |             | third byte, which      |            |
+    |             |             | includes the OSCORE    |            |
+    |             |             | flag bits 16-23        |            |
+    +-------------+-------------+------------------------+------------+
+    | 15          | Nonce Flag  | Set to 1 if nonce is   | [RFC-XXXX] |
+    |             |             | present in the         |            |
+    |             |             | compressed COSE object |            |
+    +-------------+-------------+------------------------+------------+
+    | 16          | Extension-3 | Set to 1 if the OSCORE | [RFC-XXXX] |
+    |             | Flag        | Option specifies a     |            |
+    |             |             | fourth byte, which     |            |
+    |             |             | includes the OSCORE    |            |
+    |             |             | flag bits 24-31        |            |
+    +-------------+-------------+------------------------+------------+
+    | 24          | Extension-4 | Set to 1 if the OSCORE | [RFC-XXXX] |
+    |             | Flag        | Option specifies a     |            |
+    |             |             | fifth byte, which      |            |
+    |             |             | includes the OSCORE    |            |
+    |             |             | flag bits 32-39        |            |
+    +-------------+-------------+------------------------+------------+
+    | 32          | Extension-5 | Set to 1 if the OSCORE | [RFC-XXXX] |
+    |             | Flag        | Option specifies a     |            |
+    |             |             | sixth byte, which      |            |
+    |             |             | includes the OSCORE    |            |
+    |             |             | flag bits 40-47        |            |
+    +-------------+-------------+------------------------+------------+
+    | 40          | Extension-6 | Set to 1 if the OSCORE | [RFC-XXXX] |
+    |             | Flag        | Option specifies a     |            |
+    |             |             | seventh byte, which    |            |
+    |             |             | includes the OSCORE    |            |
+    |             |             | flag bits 48-55        |            |
+    +-------------+-------------+------------------------+------------+
+    | 48          | Extension-7 | Set to 1 if the OSCORE | [RFC-XXXX] |
+    |             | Flag        | Option specifies an    |            |
+    |             |             | eighth byte, which     |            |
+    |             |             | includes the OSCORE    |            |
+    |             |             | flag bits 56-63        |            |
+    +-------------+-------------+------------------------+------------+
 
-         Table 3: Registrations in the OSCORE Flag Bits Registry
+          Table 3: Registrations in the OSCORE Flag Bits Registry
 
    In the same registry, IANA is asked to mark as 'Unassigned' the entry
    with Bit Position of 1, i.e., to update the entry as follows.
@@ -1855,20 +1891,21 @@ Table of Contents
 
 6.3.  EDHOC External Authorization Data Registry
 
-   IANA is asked to add the following entries to the "EDHOC External
+   IANA is asked to add the following entry to the "EDHOC External
    Authorization Data" registry defined in Section 10.5 of [RFC9528]
    within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry
    group.
 
-       +=======+=====================================+============+
-       | Label | Description                         | Reference  |
-       +=======+=====================================+============+
-       | TBD1  | Indicates whether this peer         | [RFC-XXXX] |
-       |       | supports KUDOS and in which mode(s) |            |
-       +-------+-------------------------------------+------------+
+        +===========+=======+========================+============+
+        | Name      | Label | Description            | Reference  |
+        +===========+=======+========================+============+
+        | KUDOS_EAD | TBD1  | Indicates whether this | [RFC-XXXX] |
+        |           |       | peer supports KUDOS    |            |
+        |           |       | and in which mode(s)   |            |
+        +-----------+-------+------------------------+------------+
 
-               Table 5: Registrations in the EDHOC External
-                       Authorization Data Registry
+                Table 5: Registrations in the EDHOC External
+                        Authorization Data Registry
 
 6.4.  The Well-Known URI Registry
 

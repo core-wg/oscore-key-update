@@ -1234,6 +1234,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.7.2.4">
                     <p id="section-toc.1-1.4.2.7.2.4.1"><a href="#section-4.7.4" class="auto internal xref">4.7.4</a>.  <a href="#name-rekeying-when-using-schc-wi" class="internal xref">Rekeying when Using SCHC with OSCORE</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.7.2.5">
+                    <p id="section-toc.1-1.4.2.7.2.5.1"><a href="#section-4.7.5" class="auto internal xref">4.7.5</a>.  <a href="#name-combining-kudos-with-profil" class="internal xref">Combining KUDOS with Profiles of ACE</a></p>
+</li>
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.8">
@@ -1436,7 +1439,7 @@ The LwM2M Client, the LwM2M Server, and the LwM2M Bootstrap server are also requ
       <h2 id="name-updated-protection-of-respo">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-updated-protection-of-respo" class="section-name selfRef">Updated Protection of Responses with OSCORE</a>
       </h2>
-<p id="section-3-1">The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of Step 3 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3" class="relref">Section 8.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of step 3 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3" class="relref">Section 8.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as well as before the text "Then, go to 4." of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3.1" class="relref">Section 8.3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <blockquote id="section-3-2">
         <p id="section-3-2.1">If the server is using a different Security Context for the response compared to what was used to verify the request (e.g., due to an occurred key update), then the server <span class="bcp14">MUST</span> take the second alternative. That is, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response.<a href="#section-3-2.1" class="pilcrow">¶</a></p>
 <p id="section-3-2.2">This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts.<a href="#section-3-2.2" class="pilcrow">¶</a></p>
@@ -2366,6 +2369,25 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 <p id="section-4.7.4-4">That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the employed SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain expected from message compression.<a href="#section-4.7.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="combining-kudos-with-profiles-of-ace">
+<section id="section-4.7.5">
+          <h4 id="name-combining-kudos-with-profil">
+<a href="#section-4.7.5" class="section-number selfRef">4.7.5. </a><a href="#name-combining-kudos-with-profil" class="section-name selfRef">Combining KUDOS with Profiles of ACE</a>
+          </h4>
+<p id="section-4.7.5-1">When combining KUDOS with the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>, certain considerations must be taken into account to ensure proper access control behavior:<a href="#section-4.7.5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.7.5-2.1">
+              <p id="section-4.7.5-2.1.1">A KUDOS request that targets a non-KUDOS resource <span class="bcp14">MUST</span> trigger standard ACE-based access control checks.<a href="#section-4.7.5-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4.7.5-2.2">
+              <p id="section-4.7.5-2.2.1">A KUDOS request that targets a KUDOS-specific resource <span class="bcp14">MUST NOT</span> trigger ACE-based access control.<a href="#section-4.7.5-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-4.7.5-3">To support this, the path of any KUDOS-specific resource can be included in the ACE access control exclusion list (i.e., the "do not enforce access control" list).<a href="#section-4.7.5-3" class="pilcrow">¶</a></p>
+<p id="section-4.7.5-4">In some deployment scenarios, an Access Token may be bound to both CTX_OLD and CTX_NEW, allowing it to be valid and still usable after the execution of a KUDOS procedure.<a href="#section-4.7.5-4" class="pilcrow">¶</a></p>
+<p id="section-4.7.5-5">It is important to note that KUDOS is not compatible with the OSCORE profile of ACE <span>[<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>, this is because KUDOS changes the OSCORE Master Secret, which is used as proof-of-possession key in that profile. However, as described above, KUDOS is compatible with the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-4.7.5-5" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="edhoc-ead-signaling">
@@ -2554,7 +2576,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
           </thead>
           <tbody>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">0</td>
+              <td class="text-left" rowspan="1" colspan="1">0 (suggested)</td>
               <td class="text-left" rowspan="1" colspan="1">Extension-1 Flag</td>
               <td class="text-left" rowspan="1" colspan="1">Set to 1 if the OSCORE Option specifies a second byte, which includes the OSCORE flag bits 8-15</td>
               <td class="text-left" rowspan="1" colspan="1">[RFC-XXXX]</td>
@@ -2644,7 +2666,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
         <h3 id="name-edhoc-external-authorizatio">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-edhoc-external-authorizatio" class="section-name selfRef">EDHOC External Authorization Data Registry</a>
         </h3>
-<p id="section-6.3-1">IANA is asked to add the following entries to the "EDHOC External Authorization Data" registry defined in <span><a href="https://rfc-editor.org/rfc/rfc9528#section-10.5" class="relref">Section 10.5</a> of [<a href="#RFC9528" class="cite xref">RFC9528</a>]</span> within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-1">IANA is asked to add the following entry to the "EDHOC External Authorization Data" registry defined in <span><a href="https://rfc-editor.org/rfc/rfc9528#section-10.5" class="relref">Section 10.5</a> of [<a href="#RFC9528" class="cite xref">RFC9528</a>]</span> within the "Ephemeral Diffie-Hellman Over COSE (EDHOC)" registry group.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <span id="name-registrations-in-the-edhoc-"></span><div id="_table-iana-edhoc-ead">
 <table class="center" id="table-5">
           <caption>
@@ -2653,6 +2675,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
           </caption>
 <thead>
             <tr>
+              <th class="text-left" rowspan="1" colspan="1">Name</th>
               <th class="text-left" rowspan="1" colspan="1">Label</th>
               <th class="text-left" rowspan="1" colspan="1">Description</th>
               <th class="text-left" rowspan="1" colspan="1">Reference</th>
@@ -2660,6 +2683,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
           </thead>
           <tbody>
             <tr>
+              <td class="text-left" rowspan="1" colspan="1">KUDOS_EAD</td>
               <td class="text-left" rowspan="1" colspan="1">TBD1</td>
               <td class="text-left" rowspan="1" colspan="1">Indicates whether this peer supports KUDOS and in which mode(s)</td>
               <td class="text-left" rowspan="1" colspan="1">[RFC-XXXX]</td>
