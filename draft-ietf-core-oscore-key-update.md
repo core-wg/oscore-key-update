@@ -820,6 +820,20 @@ Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, 
 
 That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the employed SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain expected from message compression.
 
+### Combining KUDOS with the EDHOC and OSCORE Profile of ACE
+
+When combining KUDOS with the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, certain considerations must be taken into account to ensure proper access control behavior:
+
+  * A KUDOS request that targets a non-KUDOS resource MUST trigger standard ACE-based access control checks.
+
+  * A KUDOS request that targets a KUDOS-specific resource MUST NOT trigger ACE-based access control.
+
+To support this, the path of any KUDOS-specific resource can be included in the ACE access control exclusion list (i.e., the "do not enforce access control" list).
+
+In some deployment scenarios, an Access Token may be bound to both CTX\_OLD and CTX\_NEW, allowing it to be valid and still usable after the execution of a KUDOS procedure.
+
+It is important to note that KUDOS is not compatible with the OSCORE profile of ACE {{RFC9203}}, this is because KUDOS changes the OSCORE Master Secret, which is used as proof-of-possession key in that profile. However, as described above, KUDOS is compatible with the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}.
+
 ## Signaling KUDOS support in EDHOC # {#edhoc-ead-signaling}
 
 The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see {{Section 3.8 of RFC9528}}). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead\_label' encoded as a CBOR integer and an optional 'ead\_value' encoded as a CBOR byte string.
