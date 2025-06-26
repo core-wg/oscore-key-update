@@ -165,7 +165,7 @@ Even when any of the alternatives mentioned above is available, it is RECOMMENDE
 
 # Updated Protection of Responses with OSCORE # {#sec-updated-response-protection}
 
-The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of Step 3 of {{Section 8.3 of RFC8613}}.
+The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of step 3 of {{Section 8.3 of RFC8613}} as well as before the text "Then, go to 4." of {{Section 8.3.1 of RFC8613}}.
 
 {:quote}
 > If the server is using a different Security Context for the response compared to what was used to verify the request (e.g., due to an occurred key update), then the server MUST take the second alternative. That is, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response.
