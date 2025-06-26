@@ -84,9 +84,11 @@ Table of Contents
        4.3.1.  Nonces and X Bytes
        4.3.2.  KUDOS States
        4.3.3.  KUDOS State Machine
-       4.3.4.  Handling of OSCORE Security Contexts
-       4.3.5.  KUDOS Messages as CoAP Requests or Responses
-       4.3.6.  Avoiding In-Transit Requests During a Key Update
+       4.3.4.  Optimization upon Receiving a Divergent Message while
+               in PENDING
+       4.3.5.  Handling of OSCORE Security Contexts
+       4.3.6.  KUDOS Messages as CoAP Requests or Responses
+       4.3.7.  Avoiding In-Transit Requests During a Key Update
      4.4.  Key Update Admitting no Forward Secrecy
        4.4.1.  Handling and Use of Keying Material
        4.4.2.  Selection of KUDOS Mode
@@ -932,7 +934,59 @@ Table of Contents
          5.  Move to *BUSY* and enter it consistently with the reception
              of a divergent message.
 
-4.3.4.  Handling of OSCORE Security Contexts
+4.3.4.  Optimization upon Receiving a Divergent Message while in PENDING
+
+   When a peer is in the *PENDING* state and receives a divergent
+   message, an optimization can be applied to avoid unnecessary state
+   transitions and cryptographic derivations.  It relies on comparing
+   the newly received divergent message MSG_A with a previously received
+   divergent message MSG_B that originally caused the transition to
+   *PENDING* (or *BUSY*).
+
+   If the two messages MSG_A and MSG_B are found to carry the same X
+   byte and Nonce from the other peer, then the local peer can remain in
+   *PENDING* and re-transmit its previously sent convergent message,
+   without further processing.
+
+   This optimization avoids repeated cryptographic operations and
+   redundant transitions in the state machine when divergent messages
+   originate from the same peer and carry the same KUDOS parameters for
+   key update.
+
+   To determine whether messages MSG_A and MSG_A are equivalent, the
+   peer MUST:
+
+   1.  Decompose the Master Salt from the current CTX_NEW into its CBOR
+       byte string components, as described in Section 4.2.  Identify:
+
+       *  The component containing the peer’s own X and Nonce.
+
+       *  The component containing the other peer’s X and Nonce that was
+          used in the divergent message MSG_B.
+
+   2.  Extract the X and Nonce values from the latest received divergent
+       message MSG_A.
+
+   3.  The peer performs the following comparison:
+
+       *  If the X and Nonce from message MSG_A match those from message
+          MSG_B:
+
+          -  The peer remains in the *PENDING* state.
+
+          -  The peer re-transmits its previously sent convergent
+             message.
+
+          -  No further processing or OSCORE Security Context derivation
+             is performed.
+
+       *  If they do not match:
+
+          -  The peer proceeds with the state machine steps as described
+             in Section 4.3.3, either by trying to decrypt using a CTX_1
+             derived from CTX_OLD or CTX_NEW.
+
+4.3.5.  Handling of OSCORE Security Contexts
 
    A peer completes the key update procedure when it has derived the new
    OSCORE Security Context CTX_NEW and achieved key confirmation, and
@@ -958,7 +1012,7 @@ Table of Contents
    observations with the other peer, compared to sending one
    cancellation request per observation (see Section 3.6 of [RFC7641]).
 
-4.3.5.  KUDOS Messages as CoAP Requests or Responses
+4.3.6.  KUDOS Messages as CoAP Requests or Responses
 
    If a KUDOS message is a CoAP request, then it can target two
    different types of resources at the recipient CoAP server:
@@ -989,7 +1043,7 @@ Table of Contents
    include an application payload.  Otherwise, an application payload
    MAY be included.
 
-4.3.6.  Avoiding In-Transit Requests During a Key Update
+4.3.7.  Avoiding In-Transit Requests During a Key Update
 
    Before sending a KUDOS message, a peer MUST ensure that it has no
    outstanding interactions with the other peer (see Section 4.7 of
@@ -1140,7 +1194,7 @@ Table of Contents
       Appendix B.1 of [RFC8613]; or
 
    *  The device is exchanging OSCORE-protected data within a KUDOS
-      message, as described in Section 4.3.5.  In such a case, the plain
+      message, as described in Section 4.3.6.  In such a case, the plain
       CoAP message composed before OSCORE protection can include an
       application payload, if admitted.
 
@@ -1311,7 +1365,7 @@ Table of Contents
    another, as defined in Section 4.5.1.  If, at the end of a KUDOS
    execution, the two peers have not agreed on that, they MUST terminate
    the ongoing observations that they have with one another, just as
-   defined in Section 4.3.4.
+   defined in Section 4.3.5.
 
 4.5.1.  Management of Observations
 
