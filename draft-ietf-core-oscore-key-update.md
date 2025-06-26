@@ -536,6 +536,31 @@ While in **PENDING**, the following applies:
 
     5. Move to **BUSY** and enter it consistently with the reception of a divergent message.
 
+### Optimization upon Receiving a Divergent Message while in PENDING {#ssec-state-machine-optimization}
+
+When a peer is in the **PENDING** state and receives a divergent message, an optimization can be applied to avoid unnecessary state transitions and cryptographic derivations. It relies on comparing the newly received divergent message MSG\_A with a previously received divergent message MSG\_B that originally caused the transition to **PENDING** (or **BUSY**).
+
+If the two messages MSG\_A and MSG\_B are found to carry the same X byte and Nonce from the other peer, then the local peer can remain in **PENDING** and re-transmit its previously sent convergent message, without further processing.
+
+This optimization avoids repeated cryptographic operations and redundant transitions in the state machine when divergent messages originate from the same peer and carry the same KUDOS parameters for key update.
+
+To determine whether messages MSG\_A and MSG\_A are equivalent, the peer MUST:
+
+1. Decompose the Master Salt from the current CTX\_NEW into its CBOR byte string components, as described in {{ssec-update-function}}. Identify:
+   - The component containing the peer’s own X and Nonce.
+   - The component containing the other peer’s X and Nonce that was used in the divergent message MSG\_B.
+
+2. Extract the X and Nonce values from the latest received divergent message MSG\_A.
+
+3. The peer performs the following comparison:
+   - If the X and Nonce from message MSG\_A match those from message MSG\_B:
+     * The peer remains in the **PENDING** state.
+     * The peer re-transmits its previously sent convergent message.
+     * No further processing or OSCORE Security Context derivation is performed.
+
+   - If they do not match:
+     * The peer proceeds with the state machine steps as described in {{ssec-state-machine}}, either by trying to decrypt using a CTX\_1 derived from CTX\_OLD or CTX\_NEW.
+
 ### Handling of OSCORE Security Contexts {#ssec-context-handling}
 
 A peer completes the key update procedure when it has derived the new OSCORE Security Context CTX\_NEW and achieved key confirmation, and thus has moved back to the IDLE state.
