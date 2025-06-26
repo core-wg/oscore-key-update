@@ -116,7 +116,7 @@ Table of Contents
      A.2.  Successful KUDOS Execution Initiated with a Response
            Message
    Appendix B.  Document Updates
-     B.1.  Version -09 to -10
+     B.1.  Version -10 to -11
      B.2.  Version -09 to -10
      B.3.  Version -08 to -09
      B.4.  Version -07 to -08
@@ -2290,11 +2290,20 @@ Appendix B.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-B.1.  Version -09 to -10
+B.1.  Version -10 to -11
 
    *  Extended security considerations.
 
    *  Clarifications and editorial improvements.
+
+   *  Updates to IANA considerations according to IANA early reviews.
+
+   *  Extended section about updated protection of CoAP responses.
+
+   *  Discussion about combining usage of KUDOS with profiles of ACE.
+
+   *  Optimization for traversing the state machine upon reception of a
+      divergent message.
 
 B.2.  Version -09 to -10
 
