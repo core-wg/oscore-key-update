@@ -820,7 +820,7 @@ Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, 
 
 That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the employed SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain expected from message compression.
 
-### Combining KUDOS with the EDHOC and OSCORE Profile of ACE
+### Combining KUDOS with Profiles of ACE
 
 When combining KUDOS with the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, certain considerations must be taken into account to ensure proper access control behavior:
 
