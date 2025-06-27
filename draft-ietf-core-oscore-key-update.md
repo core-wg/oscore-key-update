@@ -398,7 +398,7 @@ The sending of a KUDOS message is per the KUDOS state machine and is based on th
 
 The processing of a received KUDOS message is per the KUDOS state machine and is based on the local status of the recipient peer. Moving to a state due to a received KUDOS message occurs only in case of successful decryption and verification of the message with OSCORE.
 
-In its local status, a peer tracks its current KUDOS state by means of the bits (c_tx, c_rx) as follows:
+In its local status, a peer tracks its current KUDOS state by means of the bits (c\_tx, c\_rx) as follows:
 
 * (00) IDLE - The peer is not running KUDOS.
 
@@ -538,28 +538,23 @@ While in **PENDING**, the following applies:
 
 ### Optimization upon Receiving a Divergent Message while in PENDING {#ssec-state-machine-optimization}
 
-When a peer is in the **PENDING** state and receives a divergent message, an optimization can be applied to avoid unnecessary state transitions and cryptographic derivations. It relies on comparing the newly received divergent message MSG\_A with a previously received divergent message MSG\_B that originally caused the transition to **PENDING** (or **BUSY**).
+When a peer is in the **PENDING** state and receives a divergent message, an optimization can be applied to avoid unnecessary state transitions and cryptographic derivations. It builds on comparing the just received divergent message MSG\_A with a previously received divergent message MSG\_B that originally caused the latest transition to **PENDING** or **BUSY**. Normally the reception of MSG\_A would move the peer to **BUSY** state.
 
-If the two messages MSG\_A and MSG\_B are found to carry the same X byte and Nonce from the other peer, then the local peer can remain in **PENDING** and re-transmit its previously sent convergent message, without further processing.
+If the two messages MSG\_A and MSG\_B contain the same X byte and Nonce from the other peer, then the peer stays in **PENDING**. Otherwise, the peer moves to **BUSY** upon reception of the divergent message MSG_\A, as normal.
 
-This optimization avoids repeated cryptographic operations and redundant transitions in the state machine when divergent messages originate from the same peer and carry the same KUDOS parameters for key update.
+If upon reception of MSG\_A, CTX\_NEW is not usable to protect outgoing messages (e.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_TEMP), the peer moves to **BUSY**, as normal.
 
-To determine whether messages MSG\_A and MSG\_A are equivalent, the peer MUST:
+This optimization avoids repeated cryptographic operations and redundant transitions in the state machine when divergent messages originate from the same peer and carry identical X byte and Nonce.
 
-1. Decompose the Master Salt from the current CTX\_NEW into its CBOR byte string components, as described in {{ssec-update-function}}. Identify:
-   - The component containing the peer’s own X and Nonce.
-   - The component containing the other peer’s X and Nonce that was used in the divergent message MSG\_B.
+To determine whether message MSG\_A and MSG\_B are equivalent, the peer MUST:
+
+1. Decompose the Master Salt from the current CTX\_NEW into its CBOR byte string components, as described in {{ssec-update-function}}. Then identify:
+   - The component containing the peer's own X and Nonce, i.e., the (X, nonce) pair associated with the Security Context CTX\_IN that was used to generate the CTX\_TEMP used to unprotect MSG\_A.
+   - The component containing the other peer's X and Nonce that was used in the divergent message MSG\_B, i.e., the result of removing from the Master Salt the component above related to this peer.
 
 2. Extract the X and Nonce values from the latest received divergent message MSG\_A.
 
-3. The peer performs the following comparison:
-   - If the X and Nonce from message MSG\_A match those from message MSG\_B:
-     * The peer remains in the **PENDING** state.
-     * The peer re-transmits its previously sent convergent message.
-     * No further processing or OSCORE Security Context derivation is performed.
-
-   - If they do not match:
-     * The peer proceeds with the state machine steps as described in {{ssec-state-machine}}, either by trying to decrypt using a CTX\_1 derived from CTX\_OLD or CTX\_NEW.
+3. There is a match if the X and Nonce from message MSG\_A are the same as those from message MSG\_B identified above.
 
 ### Handling of OSCORE Security Contexts {#ssec-context-handling}
 
@@ -845,17 +840,17 @@ Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, 
 
 That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the employed SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain expected from message compression.
 
-### Combining KUDOS with Profiles of ACE
+### Combining KUDOS with Access Control
 
-When combining KUDOS with the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, certain considerations must be taken into account to ensure proper access control behavior:
+Resource where messages can be sent at the server might be following the enforcement of access control means on the request. For example, when combining KUDOS with the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}, certain considerations must be taken into account to ensure proper access control behavior:
 
   * A KUDOS request that targets a non-KUDOS resource MUST trigger standard ACE-based access control checks.
 
-  * A KUDOS request that targets a KUDOS-specific resource MUST NOT trigger ACE-based access control.
+  * A KUDOS request that targets a KUDOS resource MUST NOT trigger ACE-based access control.
 
-To support this, the path of any KUDOS-specific resource can be included in the ACE access control exclusion list (i.e., the "do not enforce access control" list).
+To support this, the path of any KUDOS resource can be included in the ACE access control exclusion list (i.e., the "do not enforce access control" list). The same principles have to be applied if other means are used to enforce access control.
 
-In some deployment scenarios, an Access Token may be bound to both CTX\_OLD and CTX\_NEW, allowing it to be valid and still usable after the execution of a KUDOS procedure.
+In some deployment scenarios, an ACE Access Token may be bound to both CTX\_OLD and CTX\_NEW, allowing it to be valid and still usable after the execution of a KUDOS procedure.
 
 It is important to note that KUDOS is not compatible with the OSCORE profile of ACE {{RFC9203}}, this is because KUDOS changes the OSCORE Master Secret, which is used as proof-of-possession key in that profile. However, as described above, KUDOS is compatible with the EDHOC and OSCORE profile of ACE {{I-D.ietf-ace-edhoc-oscore-profile}}.
 
