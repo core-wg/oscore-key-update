@@ -1049,7 +1049,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 28 December 2025</td>
+<td class="center">Expires 29 December 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-06-26" class="published">26 June 2025</time>
+<time datetime="2025-06-27" class="published">27 June 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-12-28">28 December 2025</time></dd>
+<dd class="expires"><time datetime="2025-12-29">29 December 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1119,7 +1119,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 28 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1238,7 +1238,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                     <p id="section-toc.1-1.4.2.7.2.4.1"><a href="#section-4.7.4" class="auto internal xref">4.7.4</a>.  <a href="#name-rekeying-when-using-schc-wi" class="internal xref">Rekeying when Using SCHC with OSCORE</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.7.2.5">
-                    <p id="section-toc.1-1.4.2.7.2.5.1"><a href="#section-4.7.5" class="auto internal xref">4.7.5</a>.  <a href="#name-combining-kudos-with-profil" class="internal xref">Combining KUDOS with Profiles of ACE</a></p>
+                    <p id="section-toc.1-1.4.2.7.2.5.1"><a href="#section-4.7.5" class="auto internal xref">4.7.5</a>.  <a href="#name-combining-kudos-with-access" class="internal xref">Combining KUDOS with Access Control</a></p>
 </li>
                 </ul>
 </li>
@@ -1972,51 +1972,28 @@ KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
           <h4 id="name-optimization-upon-receiving">
 <a href="#section-4.3.4" class="section-number selfRef">4.3.4. </a><a href="#name-optimization-upon-receiving" class="section-name selfRef">Optimization upon Receiving a Divergent Message while in PENDING</a>
           </h4>
-<p id="section-4.3.4-1">When a peer is in the <strong>PENDING</strong> state and receives a divergent message, an optimization can be applied to avoid unnecessary state transitions and cryptographic derivations. It relies on comparing the newly received divergent message MSG_A with a previously received divergent message MSG_B that originally caused the transition to <strong>PENDING</strong> (or <strong>BUSY</strong>).<a href="#section-4.3.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-2">If the two messages MSG_A and MSG_B are found to carry the same X byte and Nonce from the other peer, then the local peer can remain in <strong>PENDING</strong> and re-transmit its previously sent convergent message, without further processing.<a href="#section-4.3.4-2" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-3">This optimization avoids repeated cryptographic operations and redundant transitions in the state machine when divergent messages originate from the same peer and carry the same KUDOS parameters for key update.<a href="#section-4.3.4-3" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-4">To determine whether messages MSG_A and MSG_A are equivalent, the peer <span class="bcp14">MUST</span>:<a href="#section-4.3.4-4" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4.3.4-5">
-<li id="section-4.3.4-5.1">
-              <p id="section-4.3.4-5.1.1">Decompose the Master Salt from the current CTX_NEW into its CBOR byte string components, as described in <a href="#ssec-update-function" class="auto internal xref">Section 4.2</a>. Identify:<a href="#section-4.3.4-5.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-1">When a peer is in the <strong>PENDING</strong> state and receives a divergent message, an optimization can be applied to avoid unnecessary state transitions and cryptographic derivations. It builds on comparing the just received divergent message MSG_A with a previously received divergent message MSG_B that originally caused the latest transition to <strong>PENDING</strong> or <strong>BUSY</strong>. Normally the reception of MSG_A would move the peer to <strong>BUSY</strong> state.<a href="#section-4.3.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-2">If the two messages MSG_A and MSG_B contain the same X byte and Nonce from the other peer, then the peer stays in <strong>PENDING</strong>. Otherwise, the peer moves to <strong>BUSY</strong> upon reception of the divergent message MSG_\A, as normal.<a href="#section-4.3.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-3">If upon reception of MSG_A, CTX_NEW is not usable to protect outgoing messages (e.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_TEMP), the peer moves to <strong>BUSY</strong>, as normal.<a href="#section-4.3.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-4">This optimization avoids repeated cryptographic operations and redundant transitions in the state machine when divergent messages originate from the same peer and carry identical X byte and Nonce.<a href="#section-4.3.4-4" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-5">To determine whether message MSG_A and MSG_B are equivalent, the peer <span class="bcp14">MUST</span>:<a href="#section-4.3.4-5" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3.4-6">
+<li id="section-4.3.4-6.1">
+              <p id="section-4.3.4-6.1.1">Decompose the Master Salt from the current CTX_NEW into its CBOR byte string components, as described in <a href="#ssec-update-function" class="auto internal xref">Section 4.2</a>. Then identify:<a href="#section-4.3.4-6.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.3.4-5.1.2.1">
-                  <p id="section-4.3.4-5.1.2.1.1">The component containing the peer’s own X and Nonce.<a href="#section-4.3.4-5.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.3.4-6.1.2.1">
+                  <p id="section-4.3.4-6.1.2.1.1">The component containing the peer's own X and Nonce, i.e., the (X, nonce) pair associated with the Security Context CTX_IN that was used to generate the CTX_TEMP used to unprotect MSG_A.<a href="#section-4.3.4-6.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-4.3.4-5.1.2.2">
-                  <p id="section-4.3.4-5.1.2.2.1">The component containing the other peer’s X and Nonce that was used in the divergent message MSG_B.<a href="#section-4.3.4-5.1.2.2.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-4.3.4-6.1.2.2">
+                  <p id="section-4.3.4-6.1.2.2.1">The component containing the other peer's X and Nonce that was used in the divergent message MSG_B, i.e., the result of removing from the Master Salt the component above related to this peer.<a href="#section-4.3.4-6.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
-            <li id="section-4.3.4-5.2">
-              <p id="section-4.3.4-5.2.1">Extract the X and Nonce values from the latest received divergent message MSG_A.<a href="#section-4.3.4-5.2.1" class="pilcrow">¶</a></p>
+            <li id="section-4.3.4-6.2">
+              <p id="section-4.3.4-6.2.1">Extract the X and Nonce values from the latest received divergent message MSG_A.<a href="#section-4.3.4-6.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-4.3.4-5.3">
-              <p id="section-4.3.4-5.3.1">The peer performs the following comparison:<a href="#section-4.3.4-5.3.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.3.4-5.3.2.1">
-                  <p id="section-4.3.4-5.3.2.1.1">If the X and Nonce from message MSG_A match those from message MSG_B:<a href="#section-4.3.4-5.3.2.1.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.3.4-5.3.2.1.2.1">
-                      <p id="section-4.3.4-5.3.2.1.2.1.1">The peer remains in the <strong>PENDING</strong> state.<a href="#section-4.3.4-5.3.2.1.2.1.1" class="pilcrow">¶</a></p>
-</li>
-                    <li class="normal" id="section-4.3.4-5.3.2.1.2.2">
-                      <p id="section-4.3.4-5.3.2.1.2.2.1">The peer re-transmits its previously sent convergent message.<a href="#section-4.3.4-5.3.2.1.2.2.1" class="pilcrow">¶</a></p>
-</li>
-                    <li class="normal" id="section-4.3.4-5.3.2.1.2.3">
-                      <p id="section-4.3.4-5.3.2.1.2.3.1">No further processing or OSCORE Security Context derivation is performed.<a href="#section-4.3.4-5.3.2.1.2.3.1" class="pilcrow">¶</a></p>
-</li>
-                  </ul>
-</li>
-                <li class="normal" id="section-4.3.4-5.3.2.2">
-                  <p id="section-4.3.4-5.3.2.2.1">If they do not match:<a href="#section-4.3.4-5.3.2.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.3.4-5.3.2.2.2.1">
-                      <p id="section-4.3.4-5.3.2.2.2.1.1">The peer proceeds with the state machine steps as described in <a href="#ssec-state-machine" class="auto internal xref">Section 4.3.3</a>, either by trying to decrypt using a CTX_1 derived from CTX_OLD or CTX_NEW.<a href="#section-4.3.4-5.3.2.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-                  </ul>
-</li>
-              </ul>
+            <li id="section-4.3.4-6.3">
+              <p id="section-4.3.4-6.3.1">There is a match if the X and Nonce from message MSG_A are the same as those from message MSG_B identified above.<a href="#section-4.3.4-6.3.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 </section>
@@ -2426,22 +2403,22 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 <p id="section-4.7.4-4">That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the employed SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain expected from message compression.<a href="#section-4.7.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="combining-kudos-with-profiles-of-ace">
+<div id="combining-kudos-with-access-control">
 <section id="section-4.7.5">
-          <h4 id="name-combining-kudos-with-profil">
-<a href="#section-4.7.5" class="section-number selfRef">4.7.5. </a><a href="#name-combining-kudos-with-profil" class="section-name selfRef">Combining KUDOS with Profiles of ACE</a>
+          <h4 id="name-combining-kudos-with-access">
+<a href="#section-4.7.5" class="section-number selfRef">4.7.5. </a><a href="#name-combining-kudos-with-access" class="section-name selfRef">Combining KUDOS with Access Control</a>
           </h4>
-<p id="section-4.7.5-1">When combining KUDOS with the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>, certain considerations must be taken into account to ensure proper access control behavior:<a href="#section-4.7.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.7.5-1">Resource where messages can be sent at the server might be following the enforcement of access control means on the request. For example, when combining KUDOS with the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>, certain considerations must be taken into account to ensure proper access control behavior:<a href="#section-4.7.5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.7.5-2.1">
               <p id="section-4.7.5-2.1.1">A KUDOS request that targets a non-KUDOS resource <span class="bcp14">MUST</span> trigger standard ACE-based access control checks.<a href="#section-4.7.5-2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.7.5-2.2">
-              <p id="section-4.7.5-2.2.1">A KUDOS request that targets a KUDOS-specific resource <span class="bcp14">MUST NOT</span> trigger ACE-based access control.<a href="#section-4.7.5-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-4.7.5-2.2.1">A KUDOS request that targets a KUDOS resource <span class="bcp14">MUST NOT</span> trigger ACE-based access control.<a href="#section-4.7.5-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-4.7.5-3">To support this, the path of any KUDOS-specific resource can be included in the ACE access control exclusion list (i.e., the "do not enforce access control" list).<a href="#section-4.7.5-3" class="pilcrow">¶</a></p>
-<p id="section-4.7.5-4">In some deployment scenarios, an Access Token may be bound to both CTX_OLD and CTX_NEW, allowing it to be valid and still usable after the execution of a KUDOS procedure.<a href="#section-4.7.5-4" class="pilcrow">¶</a></p>
+<p id="section-4.7.5-3">To support this, the path of any KUDOS resource can be included in the ACE access control exclusion list (i.e., the "do not enforce access control" list). The same principles have to be applied if other means are used to enforce access control.<a href="#section-4.7.5-3" class="pilcrow">¶</a></p>
+<p id="section-4.7.5-4">In some deployment scenarios, an ACE Access Token may be bound to both CTX_OLD and CTX_NEW, allowing it to be valid and still usable after the execution of a KUDOS procedure.<a href="#section-4.7.5-4" class="pilcrow">¶</a></p>
 <p id="section-4.7.5-5">It is important to note that KUDOS is not compatible with the OSCORE profile of ACE <span>[<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>, this is because KUDOS changes the OSCORE Master Secret, which is used as proof-of-possession key in that profile. However, as described above, KUDOS is compatible with the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-4.7.5-5" class="pilcrow">¶</a></p>
 </section>
 </div>
