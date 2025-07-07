@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            27 June 2025
-Expires: 29 December 2025
+Intended status: Standards Track                             7 July 2025
+Expires: 8 January 2026
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 December 2025.
+   This Internet-Draft will expire on 8 January 2026.
 
 Copyright Notice
 
@@ -478,24 +478,27 @@ Table of Contents
    Figure 1 shows the extended OSCORE Option value, with the presence of
    the 'x' and 'nonce' fields.
 
- 0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
-+-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
-|1|0|0|h|k|  n  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | d | Partial IV (if any) |
-+-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
+  0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
+ +-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
+ |1|0|0|h|k|  n  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | d | Partial IV (if any) |
+ +-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
 
+  <------ 1 byte ------> <----- s bytes ------>
+ +----------------------+----------------------+
+ |      s (if any)      | kid context (if any) |
+ +----------------------+----------------------+
 
- <- 1 byte -> <----- s bytes ------> <- 1 byte -> <--- m + 1 bytes --->
-+------------+----------------------+------------+--------------------+--------------+
-| s (if any) | kid context (if any) | x (if any) | nonce (if any)     | kid (if any) |
-+------------+----------------------+------------+--------------------+--------------+
-                                   /              \____
-                                  /                    |
-                                 /   0 1 2 3 4 5 6 7   |
-                                 |  +-+-+-+-+-+-+-+-+  |
-                                 |  |0|z|b|p|   m   |  |
-                                 |  +-+-+-+-+-+-+-+-+  |
+  <----- 1 byte ------> <--- m + 1 bytes --->
+ +---------------------+---------------------+------------------+
+ |     x (if any)      |   nonce (if any)    |   kid (if any)   |
+ +---------------------+---------------------+------------------+
+ |                     |
+ |   0 1 2 3 4 5 6 7   |
+ |  +-+-+-+-+-+-+-+-+  |
+ |  |0|z|b|p|   m   |  |
+ |  +-+-+-+-+-+-+-+-+  |
 
-              Figure 1: The Extended OSCORE Option Value
+               Figure 1: The Extended OSCORE Option Value
 
 4.2.  Function for Security Context Update
 
@@ -2035,9 +2038,9 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-07, 3 March 2025,
+              draft-ietf-ace-edhoc-oscore-profile-08, 7 July 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-07>.
+              edhoc-oscore-profile-08>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
