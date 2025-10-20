@@ -1808,6 +1808,53 @@ Protect with CTX_NEW    +.....---------------->|
                         |                      |
 ~~~~~~~~~~~
 
+# KUDOS State Machine # {#kudos-state-machine}
+
+The following illustrates the states and transitions of the KUDOS state machine.
+
+~~~~~~~~~~~ aasvg
++-----------+
+| PRE-IDLE  |
++-----------+
+     |
+     |  (Clean up and delete CTX_TEMP / CTX_OLD)
+     v
++-----------+
+|   IDLE    |
++-----------+
+     |\
+     | \ Send or receive DIVERGENT
+     |  \-----------------------> (Go to BUSY)
+     |
+     |   Receive CONVERGENT:
+     |   - Stay in IDLE (atypical)
+     v
++-----------+
+|   BUSY    |
++-----------+
+     |\
+     | \  Send CONVERGENT
+     |  \ OR receive DIVERGENT
+     |   \---------------------> (Go to PENDING)
+     |
+     |  Send DIVERGENT:
+     |  - Stay in BUSY (only send if stalled)
+     v
++-----------+
+|  PENDING  |
++-----------+
+     |\
+     | \ Receive DIVERGENT (e.g. due to device reboot)
+     |  \-----------------------> (Go to BUSY)
+     |
+     | Need to send something?
+     | - Send as CONVERGENT (stay in PENDING)
+     |
+     | Receive CONVERGENT
+     | OR non-KUDOS protected with CTX_NEW
+     | ------------------------> (Go to PRE-IDLE)
+~~~~~~~~~~~
+
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
@@ -1816,6 +1863,8 @@ Protect with CTX_NEW    +.....---------------->|
 * Add multiple additional message flow examples.
 
 * Editorial improvements.
+
+* Add diagram of KUDOS state machine.
 
 ## Version -10 to -11 ## {#sec-10-11}
 
