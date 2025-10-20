@@ -1012,7 +1012,7 @@ IANA is requested to add the resource type "core.kudos" to the "Resource Type (r
 
 # Examples
 
-The following sections show two examples of KUDOS being executed and successfully completing.
+The following sections show two examples of KUDOS being executed, both showing successfully completion of KUDOS and the procedure failing.
 
 ## Successful KUDOS Execution Initiated with a Request Message
 
@@ -1208,8 +1208,614 @@ State: IDLE (0,0)       |                      |
                         |                      |
 ~~~~~~~~~~~
 
+## Successful KUDOS Execution Initiated with a Request Message, with Non-capable Server that has Rebooted
+
+The peers have run KUDOS prior to this KUDOS execution and have learned that they must from now on run KUDOS only in no-FS mode.
+
+~~~~~~~~~~~ aasvg
+
+KUDOS status:                                         KUDOS status:
+- CTX_OLD: -,-                                        - No CTX_OLD due to reboot
+- State: IDLE (0,0)                                   - State: IDLE (0,0)
+                     Client                  Server
+                   (initiator)            (responder)
+                        |                      |
+Generate N1, X1         |                      |
+                        |                      |
+CTX_TEMP = updateCtx(   |                      |
+        X1 | N1,        |                      |
+        0x,             |                      |
+        CTX_BOOTSTRAP ) |                      |
+                        |                      |
+                        |      Request #1      |
+Protect with CTX_TEMP   +--------------------->| /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 | CTX_TEMP = updateCtx(
+CTX_BOOTSTRAP: X1, N1   |  Partial IV: 0       |         0x,
+State: BUSY (1,0)       |  ...                 |         X1 | N1,
+                        |  d flag: 1           |         CTX_BOOTSTRAP )
+                        |  x: X1 = b'00010111' |
+                        |  nonce: N1           | Verify with CTX_TEMP
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        | }                    |
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_BOOTSTRAP: -,-
+                        |                      | State: BUSY (0,1)
+                        |                      |
+                        |                      |
+                        |                      | Generate N2, X2
+                        |                      |
+                        |                      | CTX_NEW = updateCtx(
+                        |                      |           X2 | N2),
+                        |                      |           X1 | N1),
+                        |                      |           CTX_BOOTSTRAP )
+                        |                      |
+                        |      Response #1     |
+                        |<---------------------+ Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 | KUDOS status:
+CTX_NEW = updateCtx(    |  Partial IV: 0       | CTX_BOOTSTRAP: X2, N2
+          X1 | N1,      |  ...                 | State: PENDING (1,1)
+          X2 | N2 ,     |  d flag: 1           |
+          CTX_BOOTSTRAP)|  x: X2 = b'01010111' |
+                        |  nonce: N2           |
+Verify with CTX_NEW     |  ...                 |
+                        | }                    |
+/ key confirmation /    |  Encrypted Payload { |
+                        |   ...                |
+Pre-IDLE steps:         | }                    |
+Delete CTX_BOOTSTRAP    |                      |
+  Delete X1, N1         |                      |
+Delete CTX_TEMP         |                      |
+Delete CTX_OLD          |                      |
+                        |                      |
+KUDOS status:           |                      |
+CTX_NEW: -, -           |                      |
+State: IDLE (0,0)       |                      |
+                        |                      |
+
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
+
+                        |                      |
+                        |      Request #2      |
+Protect with CTX_NEW    +--------------------->| /temp
+                        | OSCORE {             |
+                        |  ...                 |
+                        | }                    | Verify with CTX_NEW
+                        | Encrypted Payload {  |
+                        |  Application Payload | / key confirmation /
+                        |  ...                 |
+                        | }                    | Pre-IDLE steps:
+                        |                      | Delete CTX_BOOTSTRAP
+                        |                      |   Delete X2, N2
+                        |                      | Delete CTX_TEMP
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_NEW: -, -
+                        |                      | State: IDLE (0,0)
+                        |      Response #2     |
+                        |<---------------------+ Protect with CTX_NEW
+Verify with CTX_NEW     | OSCORE {             |
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+
+~~~~~~~~~~~
+
+## Successful KUDOS Execution Initiated with a Request Message, where the Client Executes KUDOS again after the first Execution
+
+A second KUDOS execution is started by the client immediately after a successful KUDOS key update.
+
+~~~~~~~~~~~ aasvg
+KUDOS status:                                         KUDOS status:
+- CTX_OLD: -,-                                        - CTX_OLD: -,-
+- State: IDLE (0,0)                                   - State: IDLE (0,0)
+                     Client                  Server
+                   (initiator)            (responder)
+                        |                      |
+Generate N1, X1         |                      |
+                        |                      |
+CTX_TEMP = updateCtx(   |                      |
+        X1 | N1,        |                      |
+        0x,             |                      |
+        CTX_OLD )       |                      |
+                        |                      |
+                        |      Request #1      |
+Protect with CTX_TEMP   +--------------------->| /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 | CTX_TEMP = updateCtx(
+CTX_OLD: X1, N1         |  Partial IV: 0       |         0x,
+State: BUSY (1,0)       |  ...                 |         X1 | N1,
+                        |  d flag: 1           |         CTX_OLD )
+                        |  x: X1 = b'00000111' |
+                        |  nonce: N1           | Verify with CTX_TEMP
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        | }                    |
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_OLD: -, -
+                        |                      | State: BUSY (0,1)
+                        |                      |
+                        |                      |
+                        |                      | Generate N2, X2
+                        |                      |
+                        |                      | CTX_NEW = updateCtx(
+                        |                      |           X2 | N2),
+                        |                      |           X1 | N1),
+                        |                      |           CTX_OLD )
+                        |                      |
+                        |      Response #1     |
+                        |<---------------------+ Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 | KUDOS status:
+CTX_NEW = updateCtx(    |  Partial IV: 0       | CTX_NEW: X2, N2
+          X1 | N1,      |  ...                 | State: PENDING (1,1)
+          X2 | N2 ,     |  d flag: 1           |
+          CTX_OLD )     |  x: X2 = b'01000111' |
+                        |  nonce: N2           |
+Verify with CTX_NEW     |  ...                 |
+                        | }                    |
+/ key confirmation /    |  Encrypted Payload { |
+                        |   ...                |
+Pre-IDLE steps:         | }                    |
+Delete CTX_TEMP         |                      |
+Delete CTX_OLD, X1, N1  |                      |
+                        |                      |
+KUDOS status:           |                      |
+CTX_NEW: -, -           |                      |
+State: IDLE (0,0)       |                      |
+                        |                      |
+
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
+
+Here the client sends a divergent message
+
+                        |                      |
+Generate N3, X3         |                      |
+                        |                      |
+CTX_TEMP' = updateCtx(  |                      |
+        X3 | N3,        |                      |
+        0x,             |                      |
+        CTX_NEW )       |                      |
+                        |                      |
+                        |      Request #2      |
+Protect with CTX_TEMP'  +--------------------->| /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 | CTX_TEMP' = updateCtx(
+CTX_NEW: X3, N3         |  Partial IV: 0       |         0x,
+State: BUSY (1,0)       |  ...                 |         X3 | N3,
+                        |  d flag: 1           |         CTX_OLD )
+                        |  x: X3 = b'00000111' |
+                        |  nonce: N3           | Verify with CTX_TEMP'
+                        |  ...                 | / verification fails /
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 | CTX_TEMP' = updateCtx(
+                        | }                    |         0x,
+                        |                      |         X3 | N3,
+                        |                      |         CTX_NEW )
+                        |                      |
+                        |                      | Verify with CTX_TEMP'
+                        |                      | / successful verification /
+                        |                      |
+                        |                      | Cleanup:
+                        |                      | Delete CTX_TEMP
+                        |                      | Delete CTX_OLD, -, -
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_NEW: X2, N2
+                        |                      | State: BUSY (0,1)
+                        |                      |
+                        |                      |
+                        |                      | CTX_NEW' = updateCtx(
+                        |                      |           X2 | N2),
+                        |                      |           X3 | N3),
+                        |                      |           CTX_NEW )
+                        |                      |
+                        |                      |
+                        |      Response #3     |
+                        |<---------------------+ Protect with CTX_NEW'
+                        | OSCORE {             |
+                        |  ...                 | KUDOS status:
+CTX_NEW' = updateCtx(   |  Partial IV: 0       | CTX_NEW': -, -
+          X3 | N3,      |  ...                 | State: PENDING (1,1)
+          X2 | N2 ,     |  d flag: 1           |
+          CTX_NEW )     |  x: X2 = b'01000111' |
+                        |  nonce: N2           |
+Verify with CTX_NEW'    |  ...                 |
+                        | }                    |
+/ key confirmation /    |  Encrypted Payload { |
+                        |   ...                |
+Pre-IDLE steps:         | }                    |
+Delete CTX_TEMP'        |                      |
+Delete CTX_NEW, X3, N3  |                      |
+                        |                      |
+KUDOS status:           |                      |
+CTX_NEW': -, -          |                      |
+State: IDLE (0,0)       |                      |
+                        |                      |
+
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
+
+                        |                      |
+                        |      Request #3      |
+Protect with CTX_NEW'   +--------------------->| /temp
+                        | OSCORE {             |
+                        |  ...                 |
+                        | }                    | Verify with CTX_NEW'
+                        | Encrypted Payload {  |
+                        |  Application Payload | / key confirmation /
+                        |  ...                 |
+                        | }                    | Pre-IDLE steps:
+                        |                      | Delete CTX_TEMP'
+                        |                      | Delete CTX_NEW, X2, N2
+                        |                      |
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_NEW': -, -
+                        |                      | State: IDLE (0,0)
+                        |      Response #3     |
+                        |<---------------------+ Protect with CTX_NEW'
+Verify with CTX_NEW'    | OSCORE {             |
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+~~~~~~~~~~~
+
+## Successful KUDOS Execution Initiated with a Request Message, where KUDOS Response #1 is Lost
+
+The server's first response is dropped by the network, thus the client retries and both sides end up deriving the same a CTX_NEW.
+
+~~~~~~~~~~~ aasvg
+
+KUDOS status:                                         KUDOS status:
+- CTX_OLD: -,-                                        - CTX_OLD: -,-
+- State: IDLE (0,0)                                   - State: IDLE (0,0)
+                     Client                  Server
+                   (initiator)            (responder)
+                        |                      |
+Generate N1, X1         |                      |
+                        |                      |
+CTX_TEMP = updateCtx(   |                      |
+        X1 | N1,        |                      |
+        0x,             |                      |
+        CTX_OLD )       |                      |
+                        |                      |
+                        |      Request #1      |
+Protect with CTX_TEMP   +--------------------->| /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 | CTX_TEMP = updateCtx(
+CTX_OLD: X1, N1         |  Partial IV: 0       |         0x,
+State: BUSY (1,0)       |  ...                 |         X1 | N1,
+                        |  d flag: 1           |         CTX_OLD )
+                        |  x: X1 = b'00000111' |
+                        |  nonce: N1           | Verify with CTX_TEMP
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        | }                    |
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_OLD: -, -
+                        |                      | State: BUSY (0,1)
+                        |                      |
+                        |                      |
+                        |                      | Generate X2, N2
+                        |                      |
+                        |                      | CTX_NEW = updateCtx(
+                        |                      |           X2 | N2),
+                        |                      |           X1 | N1),
+                        |                      |           CTX_OLD )
+                        |                      |
+                        |      Response #1     |
+                        |      <-- LOST -------+ Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 | KUDOS status:
+                        |  Partial IV: 0       | CTX_OLD: X2, N2
+                        |  ...                 | State: PENDING (1,1)
+                        |  d flag: 1           |
+                        |  x: X2 = b'01000111' |
+                        |  nonce: N2           |
+                        |  ...                 |
+                        | }                    |
+                        |  Encrypted Payload { |
+                        |   ...                |
+                        | }                    |
+                        |                      |
+
+                        time passes ...
+
+                        |                      |
+                        |      Request #2      |
+Protect with CTX_TEMP   +--------------------->| /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 | CTX_TEMP = updateCtx(
+CTX_OLD: X1, N1         |  Partial IV: 1       |         0x,
+State: BUSY (1,0)       |  ...                 |         X1 | N1,
+                        |  d flag: 1           |         CTX_OLD )
+                        |  x: X1 = b'00000111' |
+                        |  nonce: N1           | Verify with CTX_TEMP
+                        |  ...                 | / successful verification /
+                        | }                    |
+                        | Encrypted Payload {  | Cleanup:
+                        |  ...                 | Delete CTX_NEW
+                        | }                    | Delete X2, N2
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_OLD: -,-
+                        |                      | State: BUSY (0,1)
+                        |                      |
+                        |                      | Generate X3, N3
+                        |                      |
+                        |                      | CTX_NEW = updateCtx(
+                        |                      |           X3 | N3),
+                        |                      |           X1 | N1),
+                        |                      |           CTX_OLD )
+                        |                      |
+                        |      Response #2     |
+                        |<---------------------+ Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 | KUDOS status:
+CTX_NEW = updateCtx(    |  Partial IV: 0       | CTX_OLD: X3, N3
+          X1 | N1,      |  ...                 | State: PENDING (1,1)
+          X3 | N3 ,     |  d flag: 1           |
+          CTX_OLD )     |  x: X3 = b'01000111' |
+                        |  nonce: N3           |
+Verify with CTX_NEW     |  ...                 |
+                        | }                    |
+/ key confirmation /    |  Encrypted Payload { |
+                        |   ...                |
+Pre-IDLE steps:         | }                    |
+Delete CTX_TEMP         |                      |
+Delete CTX_OLD, X1, N1  |                      |
+                        |                      |
+KUDOS status:           |                      |
+CTX_NEW: -, -           |                      |
+State: IDLE (0,0)       |                      |
+                        |                      |
+
+The actual key update process ends here.
+The two peers can use the new Security Context CTX_NEW.
+
+                        |                      |
+                        |      Request #3      |
+Protect with CTX_NEW    +--------------------->| /temp
+                        | OSCORE {             |
+                        |  ...                 |
+                        | }                    | Verify with CTX_NEW
+                        | Encrypted Payload {  |
+                        |  Application Payload | / key confirmation /
+                        |  ...                 |
+                        | }                    | Pre-IDLE steps:
+                        |                      | Delete CTX_TEMP
+                        |                      | Delete CTX_OLD
+                        |                      |   Delete X3, N3
+                        |                      |
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_NEW: -, -
+                        |                      | State: IDLE (0,0)
+                        |      Response #3     |
+                        |<---------------------+ Protect with CTX_NEW
+Verify with CTX_NEW     | OSCORE {             |
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+~~~~~~~~~~~
+
+## Successful KUDOS Execution Completed using two Request Messages
+
+Both peers independently initiate KUDOS and exchange two request messages that ultimately result in the the same CTX_NEW.
+
+~~~~~~~~~~~ aasvg
+
+KUDOS status:                                         KUDOS status:
+- CTX_OLD: -,-                                        - CTX_OLD: -,-
+- State: IDLE (0,0)                                   - State: IDLE (0,0)
+
+                     Client                  Server
+                   (initiator)            (responder)
+                        |                      |
+Generate N1, X1         |                      |
+                        |                      |
+CTX_TEMP_A = updateCtx( |                      |
+          X1 | N1,      |                      |
+          0x,           |                      |
+          CTX_OLD )     |                      |
+                        |                      |
+                        |      Request #1_A    |
+Protect with CTX_TEMP_A +------------> ...     | /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 |
+CTX_OLD: X1, N1         |  Partial IV: 0       |
+State: BUSY (1,0)       |  ...                 |
+                        |  d flag: 1           |
+                        |  x: X1 = b'00000111' |
+                        |  nonce: N1           |
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        | }                    |
+                        |                      |
+                        |                      |
+                        |                      |
+                        |                      |
+                        |                      | Generate N2, X2
+                        |                      |
+                        |                      | CTX_TEMP_B = updateCtx(
+                        |                      |             X2 | N2),
+                        |                      |             0x),
+                        |                      |             CTX_OLD )
+                        |                      |
+                        |      Request #1_B    |
+                        |      <---------------+ Protect with CTX_TEMP_B
+                        | OSCORE {             |
+                        |  ...                 | KUDOS status:
+                        |  Partial IV: 0       | CTX_OLD: X2, N2
+                        |  ...                 | State: BUSY (1,0)
+                        |  d flag: 1           |
+                        |  x: X2 = b'00000111' |
+                        |  nonce: N2           |
+                        |  ...                 |
+                        | }                    |
+                        |  Encrypted Payload { |
+                        |   ...                |
+                        | }                    |
+                        |                      |
+                        |                      |
+                        |                      |
+                        |(Request #1_A arrives)|
+                        |                      |
+                        |      Request #1_A    |
+                        |             ... ---->| /.well-known/kudos
+                        | OSCORE {             |
+                        |  ...                 | CTX_TEMP_A = updateCtx(
+                        |  Partial IV: 0       |         0x,
+                        |  ...                 |         X1 | N1,
+                        |  d flag: 1           |         CTX_OLD )
+                        |  x:X1 = b'00000111'  |
+                        |  nonce: N1           | Verify with CTX_TEMP_A
+                        |  ...                 |
+                        | }                    | KUDOS status:
+                        | Encrypted Payload {  | CTX_OLD: X2, N2
+                        |  ...                 | State: BUSY (1,0)
+                        | }                    |
+                        |                      |
+                        |                      | CTX_NEW = updateCtx(
+                        |                      |            X2 | N2),
+                        |                      |            X1 | N1),
+                        |                      |            CTX_OLD )
+                        |                      |
+                        |      Response #2_A   |
+                        |      <---------------+ Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 | KUDOS status:
+                        |  Partial IV: 0       | CTX_OLD: X2, N2
+                        |  ...                 | State: PENDING (1,1)
+                        |  d flag: 1           |
+                        |  x: X2 = b'01000111' |
+                        |  nonce: N2           |
+                        |  ...                 |
+                        | }                    |
+                        |  Encrypted Payload { |
+                        |   ...                |
+                        | }                    |
+                        |                      |
+                        |                      |
+                        |                      |
+                        |(Request #1_B arrives)|
+                        |                      |
+                        |      Request #1_B    |
+                        |<--- ...              + Protect with CTX_TEMP_B
+                        | OSCORE {             |
+                        |  ...                 |
+CTX_TEMP_B = updateCtx( |  Partial IV: 0       |
+        0x,             |  ...                 |
+        X2 | N2,        |  d flag: 1           |
+        CTX_OLD )       |  x: X2 = b'00000111' |
+                        |  nonce: N2           |
+Verify with CTX_TEMP_B  |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        | ...                  |
+                        | }                    |
+                        |                      |
+                        |                      |
+                        |                      |
+CTX_NEW = updateCtx(    |                      |
+X1 | N1,                |                      |
+X2 | N2,                |                      |
+CTX_OLD )               |                      |
+                        |      Response #2_B   |
+Protect with CTX_NEW    +--------------->      | /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 |
+- CTX_OLD: X1, N1       |  d flag: 1           |
+- State: PENDING (1,1)  |  x: X1 = b'01000111' |
+                        |  nonce: N1           |
+                        |  ...                 |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  ...                 |
+                        |  Application Payload |
+                        |                      |
+                        |                      |
+                        |                      |
+                        |      Response #2_A   |
+                        |<---------------......+ Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  ...                 |
+                        |  Partial IV: 0       |
+                        |  ...                 |
+                        |  d flag: 1           |
+                        |  x: X2 = b'01000111' |
+                        |  nonce: N2           |
+Verify with CTX_NEW     |  ...                 |
+                        | }                    |
+/ key confirmation /    |  Encrypted Payload { |
+                        |   ...                |
+Pre-IDLE steps:         | }                    |
+Delete CTX_TEMP_A       |                      |
+Delete CTX_TEMP_B       |                      |
+Delete CTX_OLD, X1, N1  |                      |
+                        |                      |
+KUDOS status:           |                      |
+CTX_NEW: -, -           |                      |
+State: IDLE (0,0)       |                      |
+                        |                      |
+                        |                      |
+                        |      Response #2_B   |
+Protect with CTX_NEW    +.....---------------->|
+                        | OSCORE {             |
+                        |  ...                 |
+                        |  d flag: 1           | Verify with CTX_NEW
+                        |  x: X1 = b'01000111' | / key confirmation /
+                        |  nonce: N1           |
+                        |  ...                 | Pre-IDLE steps:
+                        | }                    | Delete CTX_TEMP_A
+                        | Encrypted Payload {  | Delete CTX_TEMP_B
+                        |  ...                 | Delete CTX_OLD, X2, N2
+                        |  Application Payload |
+                        | }                    |
+                        |                      | KUDOS status:
+                        |                      |
+                        |                      | CTX_NEW: -, -
+                        |                      | State: IDLE (0,0)
+                        |                      |
+~~~~~~~~~~~
+
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -11 to -12 ## {#sec-11-12}
+
+* Add multiple additional message flow examples.
+
+* Editorial improvements.
 
 ## Version -10 to -11 ## {#sec-10-11}
 
