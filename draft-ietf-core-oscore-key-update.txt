@@ -766,7 +766,7 @@ Table of Contents
 
    Normally, the peer is in the IDLE state, i.e., in "equilibrium".  The
    peer starts a KUDOS execution upon entering the BUSY state from a
-   state different than BUSY.  The peer succesfully completes a KUDOS
+   state different than BUSY.  The peer successfully completes a KUDOS
    execution by entering the IDLE state, at which point the peer has the
    OSCORE Security Context CTX_NEW and has achieved key confirmation.
 
@@ -1243,10 +1243,10 @@ Table of Contents
       the 'p' bit set to 1, then that KUDOS execution was run in no-FS
       mode.
 
-      When a peer moves to the *Pre-IDLE* stage after having succesfully
-      completed a KUDOS execution in no-FS mode, then the peer MUST
-      additionally perform the following Step A before Step 1 in
-      Section 4.3.3.2:
+      When a peer moves to the *Pre-IDLE* stage after having
+      successfully completed a KUDOS execution in no-FS mode, then the
+      peer MUST additionally perform the following Step A before Step 1
+      in Section 4.3.3.2:
 
       A.  Delete CTX_BOOTSTRAP.
 
@@ -2160,7 +2160,7 @@ Appendix A.  Examples
 
 A.1.  Successful KUDOS Execution Initiated with a Request Message
 
-   The following shows a succesful execution of KUDOS where KUDOS is
+   The following shows a successful execution of KUDOS where KUDOS is
    started by the client sending a divergent KUDOS message as a CoAP
    request.
 
@@ -2257,7 +2257,7 @@ Verify with CTX_NEW     | OSCORE {             |
 
 A.2.  Successful KUDOS Execution Initiated with a Response Message
 
-   The following shows a succesful execution of KUDOS where KUDOS is
+   The following shows a successful execution of KUDOS where KUDOS is
    started by the server sending a divergent KUDOS message as a CoAP
    response.
 
