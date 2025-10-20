@@ -395,7 +395,7 @@ A peer performs a KUDOS execution according to the state machine specified in {{
 
 The peer can be in three possible states: IDLE, BUSY, and PENDING.
 
-Normally, the peer is in the IDLE state, i.e., in "equilibrium". The peer starts a KUDOS execution upon entering the BUSY state from a state different than BUSY. The peer succesfully completes a KUDOS execution by entering the IDLE state, at which point the peer has the OSCORE Security Context CTX\_NEW and has achieved key confirmation.
+Normally, the peer is in the IDLE state, i.e., in "equilibrium". The peer starts a KUDOS execution upon entering the BUSY state from a state different than BUSY. The peer successfully completes a KUDOS execution by entering the IDLE state, at which point the peer has the OSCORE Security Context CTX\_NEW and has achieved key confirmation.
 
 The sending of a KUDOS message is per the KUDOS state machine and is based on the perception that the sender peer has about the state of the other peer.
 
@@ -671,7 +671,7 @@ The 'p' bit practically determines what OSCORE Security Context CTX\_IN to use a
 
   If at least one KUDOS message in a successful KUDOS execution had the 'p' bit set to 1, then that KUDOS execution was run in no-FS mode.
 
-  When a peer moves to the **Pre-IDLE** stage after having succesfully completed a KUDOS execution in no-FS mode, then the peer MUST additionally perform the following Step A before Step 1 in {{ssec-state-machine-pre-idle}}:
+  When a peer moves to the **Pre-IDLE** stage after having successfully completed a KUDOS execution in no-FS mode, then the peer MUST additionally perform the following Step A before Step 1 in {{ssec-state-machine-pre-idle}}:
 
    A. Delete CTX\_BOOTSTRAP.
 
@@ -1016,7 +1016,7 @@ The following sections show two examples of KUDOS being executed, both showing s
 
 ## Successful KUDOS Execution Initiated with a Request Message
 
-The following shows a succesful execution of KUDOS where KUDOS is started by the client sending a divergent KUDOS message as a CoAP request.
+The following shows a successful execution of KUDOS where KUDOS is started by the client sending a divergent KUDOS message as a CoAP request.
 
 ~~~~~~~~~~~ aasvg
 KUDOS status:                                         KUDOS status:
@@ -1113,7 +1113,7 @@ Verify with CTX_NEW     | OSCORE {             |
 
 ## Successful KUDOS Execution Initiated with a Response Message
 
-The following shows a succesful execution of KUDOS where KUDOS is started by the server sending a divergent KUDOS message as a CoAP response.
+The following shows a successful execution of KUDOS where KUDOS is started by the server sending a divergent KUDOS message as a CoAP response.
 
 ~~~~~~~~~~~ aasvg
 KUDOS status:                                         KUDOS status:
