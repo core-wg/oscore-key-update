@@ -391,7 +391,7 @@ A pair (X, nonce) offered by a peer is bound to CTX\_OLD, and is reused as much 
 
 ### KUDOS States {#ssec-states}
 
-A peer performs a KUDOS execution according to the state machine specified in {{ssec-state-machine}}, where the following states are considered.
+A peer performs a KUDOS execution according to the state machine specified in {{ssec-state-machine}} and illustrated as a figure in {{kudos-state-machine-figure}}, where the following states are considered.
 
 The peer can be in three possible states: IDLE, BUSY, and PENDING.
 
@@ -1808,7 +1808,7 @@ Protect with CTX_NEW    +.....---------------->|
                         |                      |
 ~~~~~~~~~~~
 
-# KUDOS State Machine # {#kudos-state-machine}
+# KUDOS State Machine # {#kudos-state-machine-figure}
 
 The following illustrates the states and transitions of the KUDOS state machine.
 
@@ -1820,38 +1820,44 @@ The following illustrates the states and transitions of the KUDOS state machine.
      |  (Clean up and delete CTX_TEMP / CTX_OLD)
      v
 +-----------+
-|   IDLE    |
-+-----------+
-     |\
-     | \ Send or receive DIVERGENT
-     |  \-----------------------> (Go to BUSY)
+|   IDLE    |<-------------+
++-----------+              |
+     |                     |
+     | Receive CONVERGENT: |
+     |  - Stay in IDLE ----+
      |
-     |   Receive CONVERGENT:
-     |   - Stay in IDLE (atypical)
+     | Send or receive DIVERGENT:
+     |  - Go to BUSY
      v
 +-----------+
-|   BUSY    |
-+-----------+
-     |\
-     | \  Send CONVERGENT
-     |  \ OR receive DIVERGENT
-     |   \---------------------> (Go to PENDING)
+|   BUSY    |<--------------------+
++-----------+                     |
+     |                            |
+     | Send DIVERGENT (stalled):  |
+     | - Stay in BUSY ------------+
      |
-     |  Send DIVERGENT:
-     |  - Stay in BUSY (only send if stalled)
+     | Receive CONVERGENT:
+     | -----------------------> (Go to PRE-IDLE)
+     |
+     | Send CONVERGENT
+     | or Receive DIVERGENT:
+     | - Go to PENDING
      v
 +-----------+
-|  PENDING  |
-+-----------+
-     |\
-     | \ Receive DIVERGENT (e.g. due to device reboot)
-     |  \-----------------------> (Go to BUSY)
+|  PENDING  |<-----------------+
++-----------+                  |
+     |                         |
+     | Need to send something: |
+     | - Send as CONVERGENT    |
+     | - Stay in PENDING ------+
      |
-     | Need to send something?
-     | - Send as CONVERGENT (stay in PENDING)
+     | Receive DIVERGENT:
+     | Attempt to decrypt using CTX_OLD, then CTX_NEW as input context
+     | Revert to using CTX_NEW as CTX_OLD, or continue using CTX_OLD
+     | -----------------------> (Go to BUSY)
      |
      | Receive CONVERGENT
-     | OR non-KUDOS protected with CTX_NEW
+     | OR non-KUDOS protected with CTX_NEW:
      | ------------------------> (Go to PRE-IDLE)
 ~~~~~~~~~~~
 
