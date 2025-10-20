@@ -1852,7 +1852,6 @@ The following illustrates the states and transitions of the KUDOS state machine.
      | - Send as CONVERGENT    |    |
      | - Stay in PENDING ------+    |
      |                              |
-     |                              |
      | Receive CONVERGENT           |
      | OR non-KUDOS message         |
      | protected with CTX_NEW:      |
