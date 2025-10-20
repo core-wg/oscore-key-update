@@ -126,19 +126,20 @@ Table of Contents
            Message, where KUDOS Response #1 is Lost
      A.6.  Successful KUDOS Execution Completed using two Request
            Messages
-   Appendix B.  Document Updates
-     B.1.  Version -11 to -12
-     B.2.  Version -10 to -11
-     B.3.  Version -09 to -10
-     B.4.  Version -08 to -09
-     B.5.  Version -07 to -08
-     B.6.  Version -06 to -07
-     B.7.  Version -05 to -06
-     B.8.  Version -04 to -05
-     B.9.  Version -03 to -04
-     B.10. Version -02 to -03
-     B.11. Version -01 to -02
-     B.12. Version -00 to -01
+   Appendix B.  KUDOS State Machine
+   Appendix C.  Document Updates
+     C.1.  Version -11 to -12
+     C.2.  Version -10 to -11
+     C.3.  Version -09 to -10
+     C.4.  Version -08 to -09
+     C.5.  Version -07 to -08
+     C.6.  Version -06 to -07
+     C.7.  Version -05 to -06
+     C.8.  Version -04 to -05
+     C.9.  Version -03 to -04
+     C.10. Version -02 to -03
+     C.11. Version -01 to -02
+     C.12. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2947,17 +2948,65 @@ Protect with CTX_NEW    +.....---------------->|
                         |                      | State: IDLE (0,0)
                         |                      |
 
-Appendix B.  Document Updates
+Appendix B.  KUDOS State Machine
+
+   The following illustrates the states and transitions of the KUDOS
+   state machine.
+
+   +-----------+
+   | PRE-IDLE  |
+   +-----------+
+        |
+        |  (Clean up and delete CTX_TEMP / CTX_OLD)
+        v
+   +-----------+
+   |   IDLE    |
+   +-----------+
+        |\
+        | \ Send or receive DIVERGENT
+        |  \-----------------------> (Go to BUSY)
+        |
+        |   Receive CONVERGENT:
+        |   - Stay in IDLE (atypical)
+        v
+   +-----------+
+   |   BUSY    |
+   +-----------+
+        |\
+        | \  Send CONVERGENT
+        |  \ OR receive DIVERGENT
+        |   \---------------------> (Go to PENDING)
+        |
+        |  Send DIVERGENT:
+        |  - Stay in BUSY (only send if stalled)
+        v
+   +-----------+
+   |  PENDING  |
+   +-----------+
+        |\
+        | \ Receive DIVERGENT (e.g. due to device reboot)
+        |  \-----------------------> (Go to BUSY)
+        |
+        | Need to send something?
+        | - Send as CONVERGENT (stay in PENDING)
+        |
+        | Receive CONVERGENT
+        | OR non-KUDOS protected with CTX_NEW
+        | ------------------------> (Go to PRE-IDLE)
+
+Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-B.1.  Version -11 to -12
+C.1.  Version -11 to -12
 
    *  Add multiple additional message flow examples.
 
    *  Editorial improvements.
 
-B.2.  Version -10 to -11
+   *  Add diagram of KUDOS state machine.
+
+C.2.  Version -10 to -11
 
    *  Extended security considerations.
 
@@ -2972,12 +3021,12 @@ B.2.  Version -10 to -11
    *  Optimization for traversing the state machine upon reception of a
       divergent message.
 
-B.3.  Version -09 to -10
+C.3.  Version -09 to -10
 
    *  Major re-design building on a state machine driving the KUDOS
       execution.
 
-B.4.  Version -08 to -09
+C.4.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -3010,7 +3059,7 @@ B.4.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-B.5.  Version -07 to -08
+C.5.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -3036,7 +3085,7 @@ B.5.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-B.6.  Version -06 to -07
+C.6.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -3050,7 +3099,7 @@ B.6.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-B.7.  Version -05 to -06
+C.7.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -3070,7 +3119,7 @@ B.7.  Version -05 to -06
 
    *  Editorial improvements.
 
-B.8.  Version -04 to -05
+C.8.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -3093,7 +3142,7 @@ B.8.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-B.9.  Version -03 to -04
+C.9.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3119,7 +3168,7 @@ B.9.  Version -03 to -04
 
    *  Editorial improvements.
 
-B.10.  Version -02 to -03
+C.10.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3138,7 +3187,7 @@ B.10.  Version -02 to -03
 
    *  Editorial improvements.
 
-B.11.  Version -01 to -02
+C.11.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3162,7 +3211,7 @@ B.11.  Version -01 to -02
 
    *  Editorial improvements.
 
-B.12.  Version -00 to -01
+C.12.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
