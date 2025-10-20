@@ -2049,9 +2049,9 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-08, 7 July 2025,
+              draft-ietf-ace-edhoc-oscore-profile-09, 20 October 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-08>.
+              edhoc-oscore-profile-09>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
@@ -2991,7 +2991,6 @@ Appendix B.  KUDOS State Machine
        | Need to send something: |    |
        | - Send as CONVERGENT    |    |
        | - Stay in PENDING ------+    |
-       |                              |
        |                              |
        | Receive CONVERGENT           |
        | OR non-KUDOS message         |
