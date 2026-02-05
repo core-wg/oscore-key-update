@@ -105,6 +105,7 @@ Table of Contents
      4.8.  Signaling KUDOS support in EDHOC
    5.  CoAP Header Compression with SCHC
    6.  Security Considerations
+     6.1.  YANG Module
    7.  IANA Considerations
      7.1.  OSCORE Flag Bits Registry
      7.2.  CoAP Option Numbers Registry
@@ -129,20 +130,21 @@ Table of Contents
      A.6.  Successful KUDOS Execution Completed using two Request
            Messages
    Appendix B.  KUDOS State Machine
-   Appendix C.  Document Updates
-     C.1.  Version -12 to -13
-     C.2.  Version -11 to -12
-     C.3.  Version -10 to -11
-     C.4.  Version -09 to -10
-     C.5.  Version -08 to -09
-     C.6.  Version -07 to -08
-     C.7.  Version -06 to -07
-     C.8.  Version -05 to -06
-     C.9.  Version -04 to -05
-     C.10. Version -03 to -04
-     C.11. Version -02 to -03
-     C.12. Version -01 to -02
-     C.13. Version -00 to -01
+   Appendix C.  YANG Data Model
+   Appendix D.  Document Updates
+     D.1.  Version -12 to -13
+     D.2.  Version -11 to -12
+     D.3.  Version -10 to -11
+     D.4.  Version -09 to -10
+     D.5.  Version -08 to -09
+     D.6.  Version -07 to -08
+     D.7.  Version -06 to -07
+     D.8.  Version -05 to -06
+     D.9.  Version -04 to -05
+     D.10. Version -03 to -04
+     D.11. Version -02 to -03
+     D.12. Version -01 to -02
+     D.13. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -2013,6 +2015,15 @@ Table of Contents
    and of exchanged data that are acceptable between two such
    consecutive key updates.
 
+6.1.  YANG Module
+
+   The YANG data model defined in Appendix C extends the ietf-schc
+   module defined in [RFC9363] and updated in Appendix A of
+   [I-D.ietf-schc-8824-update].
+
+   Therefore, all the security considerations compiled in Section 8 of
+   [RFC9363] also apply to the resulting extended YANG data model.
+
 7.  IANA Considerations
 
    This document has the following actions for IANA.
@@ -2234,6 +2245,11 @@ Table of Contents
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
+
+   [RFC9363]  Minaburo, A. and L. Toutain, "A YANG Data Model for Static
+              Context Header Compression (SCHC)", RFC 9363,
+              DOI 10.17487/RFC9363, March 2023,
+              <https://www.rfc-editor.org/rfc/rfc9363>.
 
    [RFC9528]  Selander, G., Preuß Mattsson, J., and F. Palombini,
               "Ephemeral Diffie-Hellman Over COSE (EDHOC)", RFC 9528,
@@ -3189,16 +3205,24 @@ Appendix B.  KUDOS State Machine
        | Revert to using CTX_NEW as CTX_OLD, or continue using CTX_OLD
        | -----------------------> (Go to BUSY)
 
-Appendix C.  Document Updates
+Appendix C.  YANG Data Model
+
+   TBD
+
+Appendix D.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-C.1.  Version -12 to -13
+D.1.  Version -12 to -13
 
    *  Defined SCHC compression of the extended OSCORE Option (originally
       defined in draft-ietf-schc-8824-update).
 
-C.2.  Version -11 to -12
+   *  Updated IANA considerations (SCHC-related actions).
+
+   *  Added security considerations about the YANG data model.
+
+D.2.  Version -11 to -12
 
    *  Add multiple additional message flow examples.
 
@@ -3206,7 +3230,7 @@ C.2.  Version -11 to -12
 
    *  Add diagram of KUDOS state machine.
 
-C.3.  Version -10 to -11
+D.3.  Version -10 to -11
 
    *  Extended security considerations.
 
@@ -3221,12 +3245,12 @@ C.3.  Version -10 to -11
    *  Optimization for traversing the state machine upon reception of a
       divergent message.
 
-C.4.  Version -09 to -10
+D.4.  Version -09 to -10
 
    *  Major re-design building on a state machine driving the KUDOS
       execution.
 
-C.5.  Version -08 to -09
+D.5.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -3259,7 +3283,7 @@ C.5.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-C.6.  Version -07 to -08
+D.6.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -3285,7 +3309,7 @@ C.6.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-C.7.  Version -06 to -07
+D.7.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -3299,7 +3323,7 @@ C.7.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-C.8.  Version -05 to -06
+D.8.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -3319,7 +3343,7 @@ C.8.  Version -05 to -06
 
    *  Editorial improvements.
 
-C.9.  Version -04 to -05
+D.9.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -3342,7 +3366,7 @@ C.9.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-C.10.  Version -03 to -04
+D.10.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3368,7 +3392,7 @@ C.10.  Version -03 to -04
 
    *  Editorial improvements.
 
-C.11.  Version -02 to -03
+D.11.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3387,7 +3411,7 @@ C.11.  Version -02 to -03
 
    *  Editorial improvements.
 
-C.12.  Version -01 to -02
+D.12.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3411,7 +3435,7 @@ C.12.  Version -01 to -02
 
    *  Editorial improvements.
 
-C.13.  Version -00 to -01
+D.13.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
