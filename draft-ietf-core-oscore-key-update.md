@@ -1028,7 +1028,7 @@ As discussed in {{Symmetric-Security}}, key update methods built on symmetric ke
 
 ## YANG Module {#sec-security-considerations-yang-module}
 
-The YANG data model defined in {{sec-yang-module}} extends the ietf-schc module defined in {{RFC9363}} and updated in {{Section A of I-D.ietf-schc-8824-update}}.
+The YANG data model defined in {{sec-yang-module}} extends the ietf-schc module defined in {{RFC9363}}, complementing the update to that module made by the YANG data model defined in {{Section A of I-D.ietf-schc-8824-update}}.
 
 Therefore, all the security considerations compiled in {{Section 8 of RFC9363}} also apply to the resulting extended YANG data model.
 
@@ -1974,7 +1974,92 @@ The following illustrates the states and transitions of the KUDOS state machine.
 
 # YANG Data Model # {#sec-yang-module}
 
-TBD
+This appendix defines the ietf-schc-coap-kudos module, which extends the ietf-schc module defined in {{RFC9363}} to include the extended format of the CoAP OSCORE option (see {{ssec-oscore-option-extensions}} of the present document).
+
+This extension complements the update to the ietf-schc module made by the YANG data model defined in {{Appendix A of I-D.ietf-schc-8824-update}}.
+
+~~~~~~~~~~~ yang
+
+module ietf-schc-coap-kudos {
+  yang-version 1.1;
+  namespace "urn:ietf:params:xml:ns:yang:ietf-schc-coap-kudos";
+  prefix schc-coap-kudos;
+
+  import ietf-schc {
+      prefix schc;
+  }
+
+  organization
+    "IETF Constrained RESTful Environments (core) Working Group";
+  contact
+    "WG Web:   <https://datatracker.ietf.org/wg/core/about/>
+     WG List:  <mailto:core@ietf.org>
+     Editor:   Marco Tiloca
+       <mailto:marco.tiloca@ri.se>";
+  description
+    "Copyright (c) 2021 IETF Trust and the persons identified as
+     authors of the code.  All rights reserved.
+     Redistribution and use in source and binary forms, with or
+     without modification, is permitted pursuant to, and subject to
+     the license terms contained in, the Simplified BSD License set
+     forth in Section 4.c of the IETF Trust's Legal Provisions
+     Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
+     This version of this YANG module is part of RFC XXXX
+     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
+     for full legal notices.
+     The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
+     NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
+     'MAY', and 'OPTIONAL' in this document are to be interpreted as
+     described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
+     they appear in all capitals, as shown here.
+     ****************************************************************
+
+     This module extends the ietf-schc module defined in RFC 9363 to
+     include the extended format of the CoAP OSCORE option for using
+     Key Update for OSCORE (KUDOS), as defined in RFC YYYY.";
+
+  revision 2026-03-02 {
+    description
+      "Extended OSCORE fields for Key Update for OSCORE (KUDOS).";
+    reference
+      "RFC YYYY Key Update for OSCORE (KUDOS)
+                (see Sections 4.1 and 5)";
+  }
+
+  // Field ID
+
+  identity fid-coap-option-oscore-x {
+       base "schc:fid-coap-option";
+       description
+         "CoAP option OSCORE x field.";
+       reference
+         "RFC YYYY Key Update for OSCORE (KUDOS)
+                   (see Sections 4.1 and 5)";
+  }
+
+  identity fid-coap-option-oscore-nonce {
+       base "schc:fid-coap-option";
+       description
+         "CoAP option OSCORE nonce field.";
+       reference
+         "RFC YYYY Key Update for OSCORE (KUDOS)
+                   (see Sections 4.1 and 5)";
+  }
+
+  // Function Length
+
+  identity fl-oscore-oscore-nonce-length {
+       base "schc:fl-base-type";
+       description
+         "Size in bytes of the OSCORE nonce corresponding to m+1.";
+       reference
+         "RFC YYYY Key Update for OSCORE (KUDOS) (see Section 5)";
+  }
+}
+
+~~~~~~~~~~~
+{: sourcecode-name="ietf-schc-coap-kudos@2026-03-02.yang" sourcecode-markers="true" #fig-yang-data-model title="SCHC CoAP KUDOS Extension YANG Data Model."}
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
@@ -1986,6 +2071,8 @@ TBD
 * Updated IANA considerations (SCHC-related actions).
 
 * Added security considerations about the YANG data model.
+
+* Added YANG data model.
 
 ## Version -11 to -12 ## {#sec-11-12}
 
