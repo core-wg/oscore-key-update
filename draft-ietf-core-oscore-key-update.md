@@ -41,6 +41,7 @@ normative:
   RFC8613:
   RFC8724:
   RFC8949:
+  RFC9363:
   RFC9528:
   I-D.ietf-schc-8824-update:
 
@@ -1025,6 +1026,12 @@ The nonces exchanged in the KUDOS messages are sent in the clear, so using rando
 
 As discussed in {{Symmetric-Security}}, key update methods built on symmetric key exchange have weaker security properties compared to methods built on ephemeral Diffie-Hellman key exchange. In fact, while the two approaches can co-exist, rekeying with symmetric key exchange is not intended as a substitute for ephemeral Diffie-Hellman key exchange. Peers should periodically perform a key update based on ephemeral Diffie-Hellman key exchange (e.g., by running the EDHOC protocol {{RFC9528}}). The cadence of such periodic key updates should be determined based on how much the two peers and their network environment are constrained, as well as on the maximum amount of time and of exchanged data that are acceptable between two such consecutive key updates.
 
+## YANG Module {#sec-security-considerations-yang-module}
+
+The YANG data model defined in {{sec-yang-module}} extends the ietf-schc module defined in {{RFC9363}} and updated in {{Section A of I-D.ietf-schc-8824-update}}.
+
+Therefore, all the security considerations compiled in {{Section 8 of RFC9363}} also apply to the resulting extended YANG data model.
+
 # IANA Considerations # {#sec-iana}
 
 This document has the following actions for IANA.
@@ -1965,12 +1972,20 @@ The following illustrates the states and transitions of the KUDOS state machine.
      | -----------------------> (Go to BUSY)
 ~~~~~~~~~~~
 
+# YANG Data Model # {#sec-yang-module}
+
+TBD
+
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
 ## Version -12 to -13 ## {#sec-12-13}
 
 * Defined SCHC compression of the extended OSCORE Option (originally defined in draft-ietf-schc-8824-update).
+
+* Updated IANA considerations (SCHC-related actions).
+
+* Added security considerations about the YANG data model.
 
 ## Version -11 to -12 ## {#sec-11-12}
 
