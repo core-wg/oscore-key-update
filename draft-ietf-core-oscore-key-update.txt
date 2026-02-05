@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                         20 October 2025
-Expires: 23 April 2026
+Intended status: Standards Track                         5 February 2026
+Expires: 9 August 2026
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,11 +55,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2026.
+   This Internet-Draft will expire on 9 August 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -103,16 +103,17 @@ Table of Contents
        4.7.4.  Rekeying when Using SCHC with OSCORE
        4.7.5.  Combining KUDOS with Access Control
      4.8.  Signaling KUDOS support in EDHOC
-   5.  Security Considerations
-   6.  IANA Considerations
-     6.1.  OSCORE Flag Bits Registry
-     6.2.  CoAP Option Numbers Registry
-     6.3.  EDHOC External Authorization Data Registry
-     6.4.  The Well-Known URI Registry
-     6.5.  Resource Type (rt=) Link Target Attribute Values Registry
-   7.  References
-     7.1.  Normative References
-     7.2.  Informative References
+   5.  CoAP Header Compression with SCHC
+   6.  Security Considerations
+   7.  IANA Considerations
+     7.1.  OSCORE Flag Bits Registry
+     7.2.  CoAP Option Numbers Registry
+     7.3.  EDHOC External Authorization Data Registry
+     7.4.  The Well-Known URI Registry
+     7.5.  Resource Type (rt=) Link Target Attribute Values Registry
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Appendix A.  Examples
      A.1.  Successful KUDOS Execution Initiated with a Request Message
      A.2.  Successful KUDOS Execution Initiated with a Response
@@ -128,18 +129,19 @@ Table of Contents
            Messages
    Appendix B.  KUDOS State Machine
    Appendix C.  Document Updates
-     C.1.  Version -11 to -12
-     C.2.  Version -10 to -11
-     C.3.  Version -09 to -10
-     C.4.  Version -08 to -09
-     C.5.  Version -07 to -08
-     C.6.  Version -06 to -07
-     C.7.  Version -05 to -06
-     C.8.  Version -04 to -05
-     C.9.  Version -03 to -04
-     C.10. Version -02 to -03
-     C.11. Version -01 to -02
-     C.12. Version -00 to -01
+     C.1.  Version -12 to -13
+     C.2.  Version -11 to -12
+     C.3.  Version -10 to -11
+     C.4.  Version -09 to -10
+     C.5.  Version -08 to -09
+     C.6.  Version -07 to -08
+     C.7.  Version -06 to -07
+     C.8.  Version -05 to -06
+     C.9.  Version -04 to -05
+     C.10. Version -03 to -04
+     C.11. Version -02 to -03
+     C.12. Version -01 to -02
+     C.13. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -168,7 +170,7 @@ Table of Contents
    *  With reference to the "OSCORE Flag Bits" registry defined in
       Section 13.7 of [RFC8613] as part of the "Constrained RESTful
       Environments (CoRE) Parameters" registry group, it updates the
-      entries with Bit Position 0 and 1 (see Section 6), both of which
+      entries with Bit Position 0 and 1 (see Section 7), both of which
       were originally marked as "Reserved".
 
       In particular, it defines and registers the usage of the OSCORE
@@ -405,7 +407,7 @@ Table of Contents
       bit, called "Extension-1 Flag", in the first byte of the OSCORE
       Option containing the OSCORE flag bits.  The registration of this
       flag bit in the "OSCORE Flag Bits" registry is specified in
-      Section 6.1.
+      Section 7.1.
 
       When the Extension-1 Flag is set to 1, the second byte of the
       OSCORE Option MUST include the OSCORE flag bits 8-15.
@@ -414,7 +416,7 @@ Table of Contents
       "Nonce Flag", 'd', in the second byte of the OSCORE Option
       containing the OSCORE flag bits 8-15.  The registration of this
       flag bit in the "OSCORE Flag Bits" registry is specified in
-      Section 6.1.
+      Section 7.1.
 
       When it is set to 1, the compressed COSE object contains a field
       'x' and a field 'nonce', to be used for the steps defined in
@@ -1027,8 +1029,8 @@ Table of Contents
    different types of resources at the recipient CoAP server:
 
    *  The well-known KUDOS resource at /.well-known/kudos (see
-      Section 6.4), or an alternative KUDOS resource with resource type
-      "core.kudos" (see Section 4.7.3 and Section 6.5).
+      Section 7.4), or an alternative KUDOS resource with resource type
+      "core.kudos" (see Section 4.7.3 and Section 7.5).
 
       In such a case, no application processing is expected at the CoAP
       server and the plain CoAP request composed before OSCORE
@@ -1166,7 +1168,7 @@ Table of Contents
    *  As an exception to the nonces being generated as random values
       (see Section 4.3.1), a peer that is a CAPABLE device MAY use a
       value obtained from a monotonically incremented counter as nonce.
-      Related privacy implications are described in Section 5.
+      Related privacy implications are described in Section 6.
 
       In such a case, the peer MUST enforce measures to ensure freshness
       of the nonce values.  For example, the peer can use the same
@@ -1592,7 +1594,7 @@ Table of Contents
 
 4.7.2.  Resource Type core.kudos
 
-   The "core.kudos" resource type registered in Section 6.5 is defined
+   The "core.kudos" resource type registered in Section 7.5 is defined
    to ensure a means for clients to send KUDOS requests without
    incurring any side effects.  Specifically, a resource of this type
    does not pertain to any real application, which ensures that no
@@ -1610,7 +1612,7 @@ Table of Contents
    application processing on the server, then a request sent as a KUDOS
    message can target a KUDOS resource with resource type "core.kudos"
    (see Section 4.7.2), e.g., at the Uri-Path "/.well-known/kudos" (see
-   Section 6.4).  An alternative KUDOS resource can be discovered, e.g.,
+   Section 7.4).  An alternative KUDOS resource can be discovered, e.g.,
    by using a resource directory [RFC9176], by using the resource type
    "core.kudos" as filter criterion.
 
@@ -1619,7 +1621,9 @@ Table of Contents
    In the interest of rekeying, the following points must be taken into
    account when using the Static Context Header Compression and
    fragmentation (SCHC) framework [RFC8724] for compressing CoAP
-   messages protected with OSCORE, as defined in [RFC8824].
+   messages protected with OSCORE, as defined in
+   [I-D.ietf-schc-8824-update] and further discussed in Section 5 of the
+   present document.
 
    The SCHC compression of the 'Partial IV' field in the OSCORE Option
    value has implications for the frequency of rekeying.  That is, if
@@ -1631,8 +1635,8 @@ Table of Contents
    to rekey is only 2^3 - 1 = 7.
 
    Furthermore, any time the SCHC context Rules are updated on an OSCORE
-   endpoint, that endpoint must perform a rekeying (see Section 9 of
-   [RFC8824]).
+   endpoint, that endpoint must perform a rekeying (see Section 12 of
+   [I-D.ietf-schc-8824-update]).
 
    That is, the use of SCHC plays a role in triggering KUDOS executions
    and in affecting their cadence.  Hence, the employed SCHC Rules and
@@ -1679,7 +1683,7 @@ Table of Contents
    encoded as a CBOR byte string.
 
    This document defines a new EDHOC EAD item KUDOS_EAD and registers
-   its 'ead_label' in Section 6.3.  By including this EAD item in an
+   its 'ead_label' in Section 7.3.  By including this EAD item in an
    outgoing EDHOC message, a sender peer can indicate whether it
    supports KUDOS and in which modes, as well as query the other peer
    about its support.  Note that peers do not have to use this EDHOC EAD
@@ -1814,7 +1818,143 @@ Table of Contents
        Figure 4: Example of EDHOC Execution with Signaling of Support
            for KUDOS (the EDHOC Responder Does Not Support KUDOS)
 
-5.  Security Considerations
+5.  CoAP Header Compression with SCHC
+
+   In order to compress the header of CoAP messages, it is possible to
+   use the Static Context Header Compression and fragmentation (SCHC)
+   framework [RFC8724].  In particular, Section 6.4 of
+   [I-D.ietf-schc-8824-update] specifies how to use SCHC for compressing
+   headers of CoAP messages also when messages are protected with
+   OSCORE.
+
+   The following Figure 5 builds on Figure 1 from Section 4.1 of the
+   present document and accordingly extends Figure 4 from Section 6.4 of
+   [I-D.ietf-schc-8824-update].
+
+  0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
+ +-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
+ |1|0|0|h|k|  n  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | d | Partial IV (if any) |
+ +-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
+ |                                               |                     |
+ |<------------------- flags ------------------->|<------- piv ------->|
+
+
+  <- 1 byte -> <--------- s bytes --------->
+ +------------+----------------------------+
+ | s (if any) |    kid context (if any)    |
+ +------------+----------------------------+
+ |                                         |
+ |<--------------- kid_ctx --------------->|
+
+
+  <------ 1 byte -----> <-- m + 1 bytes -->
+ +---------------------+-------------------+
+ |     x (if any)      |  nonce (if any)   |
+ +---------------------+-------------------+
+ |<-------- x -------->|<----- nonce ----->|
+ |                     |
+ |   0 1 2 3 4 5 6 7   |
+ |  +-+-+-+-+-+-+-+-+  |
+ |  |0|z|b|p|   m   |  |
+ |  +-+-+-+-+-+-+-+-+  |
+
+
+ +---------------------+
+ |   kid (if any) ...  |
+ +---------------------+
+ |                     |
+ |<------- kid ------->|
+
+      Figure 5: The Extended OSCORE Option Value with Superimposed
+                     Subfields for SCHC Compression
+
+   Like described in Section 6.4 of [I-D.ietf-schc-8824-update], the
+   description of a SCHC compression Rule needs to identify the OSCORE
+   Option value and its inner fields.
+
+   In order to take into account the possible use of KUDOS, SCHC
+   discerns six distinct pieces of information within the extended
+   OSCORE Option value shown in Figure 5 above: the flag bits, the
+   Partial IV, the kid context prepended by its size s, the x byte, the
+   nonce, and the kid.  The SCHC Rule splits the OSCORE Option value
+   into six corresponding Field Descriptors, in order to separately
+   compress those pieces of information as distinct subfields:
+
+   *  flags
+
+   *  piv
+
+   *  kid_ctx
+
+   *  x
+
+   *  nonce
+
+   *  kid
+
+   In Figure 5, the six subfields are superimposed on the shown extended
+   format of the OSCORE Option value.
+
+   Consistent with what is defined in Section 6.4 of
+   [I-D.ietf-schc-8824-update], if a SCHC Rule is intended to compress a
+   CoAP message that specifies the OSCORE Option as per Figure 5, then
+   the related Field Descriptors must be listed in the same order
+   according to which the corresponding pieces of information appear in
+   the OSCORE Option value.
+
+   As to the x subfield and the nonce subfield, the following applies.
+
+   *  For the x subfield, if both endpoints using SCHC know the value,
+      then the corresponding Field Descriptor in the SCHC Rule describes
+      the TV set to that value, with the MO set to "equal" and the CDA
+      set to "not-sent".  This models the following cases:
+
+      -  The x subfield is not present, and thus TV is set to b''.
+
+      -  Given a fixed z bit of the x subfield as denoting either a
+         divergent or convergent KUDOS message, the two endpoints run
+         KUDOS with a pre-agreed size of the nonce subfield as per the
+         value encoded by m within the x subfield, as well as with a
+         pre-agreed combination of its modes of operation, as per the
+         bits b and p of the x subfield.
+
+         Under the assumed pre-agreements above, this requires two
+         distinct SCHC Rules, whose respective TV is set to a value that
+         reflects the z bit as set or not set, respectively.
+
+      As an alternative that is more flexible to changes in the value of
+      the x subfield, the corresponding Field Descriptor in the SCHC
+      Rule does not set the TV, while it sets the MO to "ignore" and the
+      CDA to "value-sent".  In the same spirit, the Rule may also use a
+      "match-mapping" MO to compress this subfield, in case the two
+      endpoints pre-agree on a set of alternative ways to run KUDOS,
+      with respect to the size of the nonce subfield and the combination
+      of the KUDOS modes of operation to use.
+
+   *  If the nonce subfield is present, then the corresponding Field
+      Descriptor in the SCHC Rule has the TV not set, while the MO is
+      set to "ignore" and the CDA is set to "value-sent".
+
+      For the value of the nonce subfield, SCHC MUST NOT send it as
+      variable-length data in the Compression Residue.  As a result,
+      SCHC does not send the size of the residue resulting from the
+      compression of the nonce subfield, which is otherwise requested
+      for variable-size fields when the CDA specified in the Field
+      Descriptor is "value-sent" or LSB (see Section 7.4.2 of
+      [RFC8724]).
+
+      Instead, SCHC MUST use the value encoded by m within the x
+      subfield to define the size of the Compression Residue.  SCHC
+      designates a specific function, "osc.x.m", that the Rule MUST use
+      to complete the Field Descriptor.  During the decompression, this
+      function returns the length of the nonce subfield in bytes, as the
+      value encoded by m within the x subfield, plus 1.
+
+      This construct avoids ambiguity with the value m within the x
+      subfield and results in a more efficient compression of the nonce
+      subfield.
+
+6.  Security Considerations
 
    Depending on the specific key update procedure used to establish a
    new OSCORE Security Context, the related security considerations also
@@ -1872,14 +2012,14 @@ Table of Contents
    and of exchanged data that are acceptable between two such
    consecutive key updates.
 
-6.  IANA Considerations
+7.  IANA Considerations
 
    This document has the following actions for IANA.
 
    Note to RFC Editor: Please replace all occurrences of "[RFC-XXXX]"
    with the RFC number of this specification and delete this paragraph.
 
-6.1.  OSCORE Flag Bits Registry
+7.1.  OSCORE Flag Bits Registry
 
    IANA is asked to add the following entries to the "OSCORE Flag Bits"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -1949,13 +2089,13 @@ Table of Contents
 
               Table 4: Update in the OSCORE Flag Bits Registry
 
-6.2.  CoAP Option Numbers Registry
+7.2.  CoAP Option Numbers Registry
 
    IANA is asked to add this document as a reference for the OSCORE
    Option in the "CoAP Option Numbers" registry within the "Constrained
    RESTful Environments (CoRE) Parameters" registry group.
 
-6.3.  EDHOC External Authorization Data Registry
+7.3.  EDHOC External Authorization Data Registry
 
    IANA is asked to add the following entry to the "EDHOC External
    Authorization Data" registry defined in Section 10.5 of [RFC9528]
@@ -1973,7 +2113,7 @@ Table of Contents
                 Table 5: Registrations in the EDHOC External
                         Authorization Data Registry
 
-6.4.  The Well-Known URI Registry
+7.4.  The Well-Known URI Registry
 
    IANA is asked to add the 'kudos' well-known URI to the Well-Known
    URIs registry as defined by [RFC8615].
@@ -1986,7 +2126,7 @@ Table of Contents
 
    *  Related information: None
 
-6.5.  Resource Type (rt=) Link Target Attribute Values Registry
+7.5.  Resource Type (rt=) Link Target Attribute Values Registry
 
    IANA is requested to add the resource type "core.kudos" to the
    "Resource Type (rt=) Link Target Attribute Values" registry under the
@@ -1998,9 +2138,17 @@ Table of Contents
 
    *  Reference: [RFC-XXXX]
 
-7.  References
+8.  References
 
-7.1.  Normative References
+8.1.  Normative References
+
+   [I-D.ietf-schc-8824-update]
+              Tiloca, M., Toutain, L., Martínez, I., and A. Minaburo,
+              "Static Context Header Compression (SCHC) for the
+              Constrained Application Protocol (CoAP)", Work in
+              Progress, Internet-Draft, draft-ietf-schc-8824-update-07,
+              1 December 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-schc-8824-update-07>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -2031,6 +2179,12 @@ Table of Contents
               (OSCORE)", RFC 8613, DOI 10.17487/RFC8613, July 2019,
               <https://www.rfc-editor.org/rfc/rfc8613>.
 
+   [RFC8724]  Minaburo, A., Toutain, L., Gomez, C., Barthel, D., and JC.
+              Zuniga, "SCHC: Generic Framework for Static Context Header
+              Compression and Fragmentation", RFC 8724,
+              DOI 10.17487/RFC8724, April 2020,
+              <https://www.rfc-editor.org/rfc/rfc8724>.
+
    [RFC8949]  Bormann, C. and P. Hoffman, "Concise Binary Object
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
@@ -2041,7 +2195,7 @@ Table of Contents
               DOI 10.17487/RFC9528, March 2024,
               <https://www.rfc-editor.org/rfc/rfc9528>.
 
-7.2.  Informative References
+8.2.  Informative References
 
    [I-D.ietf-ace-edhoc-oscore-profile]
               Selander, G., Mattsson, J. P., Tiloca, M., and R. Höglund,
@@ -2056,16 +2210,16 @@ Table of Contents
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
               Work in Progress, Internet-Draft, draft-ietf-core-oscore-
-              key-limits-05, 7 July 2025,
+              key-limits-06, 7 January 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              oscore-key-limits-05>.
+              oscore-key-limits-06>.
 
    [I-D.irtf-cfrg-aead-limits]
               Günther, F., Thomson, M., and C. A. Wood, "Usage Limits on
               AEAD Algorithms", Work in Progress, Internet-Draft, draft-
-              irtf-cfrg-aead-limits-10, 8 April 2025,
+              irtf-cfrg-aead-limits-11, 4 December 2025,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              aead-limits-10>.
+              aead-limits-11>.
 
    [LwM2M]    Open Mobile Alliance, "Lightweight Machine to Machine
               Technical Specification - Core, Approved Version 1.2, OMA-
@@ -2111,18 +2265,6 @@ Table of Contents
    [RFC8615]  Nottingham, M., "Well-Known Uniform Resource Identifiers
               (URIs)", RFC 8615, DOI 10.17487/RFC8615, May 2019,
               <https://www.rfc-editor.org/rfc/rfc8615>.
-
-   [RFC8724]  Minaburo, A., Toutain, L., Gomez, C., Barthel, D., and JC.
-              Zuniga, "SCHC: Generic Framework for Static Context Header
-              Compression and Fragmentation", RFC 8724,
-              DOI 10.17487/RFC8724, April 2020,
-              <https://www.rfc-editor.org/rfc/rfc8724>.
-
-   [RFC8824]  Minaburo, A., Toutain, L., and R. Andreasen, "Static
-              Context Header Compression (SCHC) for the Constrained
-              Application Protocol (CoAP)", RFC 8824,
-              DOI 10.17487/RFC8824, June 2021,
-              <https://www.rfc-editor.org/rfc/rfc8824>.
 
    [RFC9031]  Vučinić, M., Ed., Simon, J., Pister, K., and M.
               Richardson, "Constrained Join Protocol (CoJP) for 6TiSCH",
@@ -3006,7 +3148,12 @@ Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-C.1.  Version -11 to -12
+C.1.  Version -12 to -13
+
+   *  Defined SCHC compression of the extended OSCORE Option (originally
+      defined in draft-ietf-schc-8824-update).
+
+C.2.  Version -11 to -12
 
    *  Add multiple additional message flow examples.
 
@@ -3014,7 +3161,7 @@ C.1.  Version -11 to -12
 
    *  Add diagram of KUDOS state machine.
 
-C.2.  Version -10 to -11
+C.3.  Version -10 to -11
 
    *  Extended security considerations.
 
@@ -3029,12 +3176,12 @@ C.2.  Version -10 to -11
    *  Optimization for traversing the state machine upon reception of a
       divergent message.
 
-C.3.  Version -09 to -10
+C.4.  Version -09 to -10
 
    *  Major re-design building on a state machine driving the KUDOS
       execution.
 
-C.4.  Version -08 to -09
+C.5.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -3067,7 +3214,7 @@ C.4.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-C.5.  Version -07 to -08
+C.6.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -3093,7 +3240,7 @@ C.5.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-C.6.  Version -06 to -07
+C.7.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -3107,7 +3254,7 @@ C.6.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-C.7.  Version -05 to -06
+C.8.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -3127,7 +3274,7 @@ C.7.  Version -05 to -06
 
    *  Editorial improvements.
 
-C.8.  Version -04 to -05
+C.9.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -3150,7 +3297,7 @@ C.8.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-C.9.  Version -03 to -04
+C.10.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3176,7 +3323,7 @@ C.9.  Version -03 to -04
 
    *  Editorial improvements.
 
-C.10.  Version -02 to -03
+C.11.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3195,7 +3342,7 @@ C.10.  Version -02 to -03
 
    *  Editorial improvements.
 
-C.11.  Version -01 to -02
+C.12.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3219,7 +3366,7 @@ C.11.  Version -01 to -02
 
    *  Editorial improvements.
 
-C.12.  Version -00 to -01
+C.13.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
