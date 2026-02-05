@@ -835,7 +835,7 @@ If a client wishes to run the KUDOS procedure without triggering any application
 
 ### Rekeying when Using SCHC with OSCORE
 
-In the interest of rekeying, the following points must be taken into account when using the Static Context Header Compression and fragmentation (SCHC) framework {{RFC8724}} for compressing CoAP messages protected with OSCORE, as defined in {{I-D.ietf-schc-8824-update}} and further discussed in {{schc}} of the present document.
+In the interest of rekeying, the following points must be taken into account when using the Static Context Header Compression and fragmentation (SCHC) framework {{RFC8724}} for compressing CoAP messages protected with OSCORE, as defined in {{I-D.ietf-schc-8824-update}} and further specified in {{schc}} of the present document.
 
 The SCHC compression of the 'Partial IV' field in the OSCORE Option value has implications for the frequency of rekeying. That is, if the 'Partial IV' field is compressed, the communicating peers must perform rekeying more often, as the available Sender Sequence Number space that is used for the Partial IV becomes effectively smaller due to the compression. For instance, if only 3 bits of the Partial IV are sent, then the maximum Partial IV that can be used before having to rekey is only 2<sup>3</sup> - 1 = 7.
 
