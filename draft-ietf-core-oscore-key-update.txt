@@ -1622,7 +1622,7 @@ Table of Contents
    account when using the Static Context Header Compression and
    fragmentation (SCHC) framework [RFC8724] for compressing CoAP
    messages protected with OSCORE, as defined in
-   [I-D.ietf-schc-8824-update] and further discussed in Section 5 of the
+   [I-D.ietf-schc-8824-update] and further specified in Section 5 of the
    present document.
 
    The SCHC compression of the 'Partial IV' field in the OSCORE Option
