@@ -111,6 +111,7 @@ Table of Contents
      7.3.  EDHOC External Authorization Data Registry
      7.4.  The Well-Known URI Registry
      7.5.  Resource Type (rt=) Link Target Attribute Values Registry
+     7.6.  SCHC Compression of CoAP Fields
    8.  References
      8.1.  Normative References
      8.2.  Informative References
@@ -2128,15 +2129,59 @@ Table of Contents
 
 7.5.  Resource Type (rt=) Link Target Attribute Values Registry
 
-   IANA is requested to add the resource type "core.kudos" to the
-   "Resource Type (rt=) Link Target Attribute Values" registry under the
-   registry group "Constrained RESTful Environments (CoRE) Parameters".
+   IANA is asked to add the resource type "core.kudos" to the "Resource
+   Type (rt=) Link Target Attribute Values" registry under the registry
+   group "Constrained RESTful Environments (CoRE) Parameters".
 
    *  Value: "core.kudos"
 
    *  Description: KUDOS resource.
 
    *  Reference: [RFC-XXXX]
+
+7.6.  SCHC Compression of CoAP Fields
+
+   IANA is asked to add the following two entries to the "SCHC
+   Compression of CoAP Fields" registry defined in
+   [I-D.ietf-schc-8824-update], within the "Static Context Header
+   Compression (SCHC) Parameters" registry group.
+
+   *  Field: CoAP.option(9).x
+
+   *  Decription: CoAP option OSCORE (subfield x) [RFC-XXXX]
+
+   *  Reference: [RFC-XXXX]
+
+      Consistent with what is defined in Section 13.4.2 of
+      [I-D.ietf-schc-8824-update], this entry has to be added
+      immediately after the entry whose value in the "Field" column is
+      "CoAP.option(9).kid_ctx".
+
+      Note to RFC Editor: Once the registration above is completed,
+      please delete the paragraph immediately preceding this note.
+      Then, please delete this note.
+
+
+
+   *  Field: CoAP.option(9).nonce
+
+   *  Decription: CoAP option OSCORE (subfield nonce) [RFC-XXXX]
+
+   *  Reference: [RFC-XXXX]
+
+      Consistent with what is defined in Section 13.4.2 of
+      [I-D.ietf-schc-8824-update], this entry has to be added
+      immediately before the entry whose value in the "Field" column is
+      "CoAP.option(9).kid".
+
+      Note to RFC Editor: Once the registration above is completed,
+      please delete the paragraph immediately preceding this note.
+      Then, please delete this note.
+
+   In the same registry, IANA is asked to update the two entries whose
+   value in the "Field" column is "CoAP.option(9)" and
+   "CoAP.option(9).flags".  For both those entries, the value of the
+   "Description" column is updated by adding a reference to [RFC-XXXX].
 
 8.  References
 
