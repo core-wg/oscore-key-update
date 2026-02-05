@@ -39,8 +39,10 @@ normative:
   RFC7252:
   RFC7641:
   RFC8613:
+  RFC8724:
   RFC8949:
   RFC9528:
+  I-D.ietf-schc-8824-update:
 
 informative:
   RFC8446:
@@ -51,8 +53,6 @@ informative:
   RFC9203:
   RFC9176:
   RFC8615:
-  RFC8724:
-  RFC8824:
   RFC7967:
   RFC4086:
   I-D.irtf-cfrg-aead-limits:
@@ -835,11 +835,11 @@ If a client wishes to run the KUDOS procedure without triggering any application
 
 ### Rekeying when Using SCHC with OSCORE
 
-In the interest of rekeying, the following points must be taken into account when using the Static Context Header Compression and fragmentation (SCHC) framework {{RFC8724}} for compressing CoAP messages protected with OSCORE, as defined in {{RFC8824}}.
+In the interest of rekeying, the following points must be taken into account when using the Static Context Header Compression and fragmentation (SCHC) framework {{RFC8724}} for compressing CoAP messages protected with OSCORE, as defined in {{I-D.ietf-schc-8824-update}} and further discussed in {{schc}} of the present document.
 
 The SCHC compression of the 'Partial IV' field in the OSCORE Option value has implications for the frequency of rekeying. That is, if the 'Partial IV' field is compressed, the communicating peers must perform rekeying more often, as the available Sender Sequence Number space that is used for the Partial IV becomes effectively smaller due to the compression. For instance, if only 3 bits of the Partial IV are sent, then the maximum Partial IV that can be used before having to rekey is only 2<sup>3</sup> - 1 = 7.
 
-Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, that endpoint must perform a rekeying (see {{Section 9 of RFC8824}}).
+Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, that endpoint must perform a rekeying (see {{Section 12 of I-D.ietf-schc-8824-update}}).
 
 That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the employed SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain expected from message compression.
 
@@ -932,6 +932,84 @@ Initiator                                         Responder
 |                                                         |
 ~~~~~~~~~~~
 {: #fig-edhoc-ead-example-2 title="Example of EDHOC Execution with Signaling of Support for KUDOS (the EDHOC Responder Does Not Support KUDOS)" artwork-align="center"}
+
+# CoAP Header Compression with SCHC # {#schc}
+
+In order to compress the header of CoAP messages, it is possible to use the Static Context Header Compression and fragmentation (SCHC) framework {{RFC8724}}. In particular, {{Section 6.4 of I-D.ietf-schc-8824-update}} specifies how to use SCHC for compressing headers of CoAP messages also when messages are protected with OSCORE.
+
+The following {{fig-oscore-option-schc}} builds on {{fig-oscore-option}} from {{ssec-oscore-option-extensions}} of the present document and accordingly extends Figure 4 from {{Section 6.4 of I-D.ietf-schc-8824-update}}.
+
+~~~~~~~~~~~
+ 0 1 2 3 4 5 6 7  8   9   10  11  12  13  14  15 <----- n bytes ----->
++-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
+|1|0|0|h|k|  n  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | d | Partial IV (if any) |
++-+-+-+-+-+-+-+-+---+---+---+---+---+---+---+---+---------------------+
+|                                               |                     |
+|<------------------- flags ------------------->|<------- piv ------->|
+
+
+ <- 1 byte -> <--------- s bytes --------->
++------------+----------------------------+
+| s (if any) |    kid context (if any)    |
++------------+----------------------------+
+|                                         |
+|<--------------- kid_ctx --------------->|
+
+
+ <------ 1 byte -----> <-- m + 1 bytes -->
++---------------------+-------------------+
+|     x (if any)      |  nonce (if any)   |
++---------------------+-------------------+
+|<-------- x -------->|<----- nonce ----->|
+|                     |
+|   0 1 2 3 4 5 6 7   |
+|  +-+-+-+-+-+-+-+-+  |
+|  |0|z|b|p|   m   |  |
+|  +-+-+-+-+-+-+-+-+  |
+
+
++---------------------+
+|   kid (if any) ...  |
++---------------------+
+|                     |
+|<------- kid ------->|
+~~~~~~~~~~~
+{: #fig-oscore-option-schc title="The Extended OSCORE Option Value with Superimposed Subfields for SCHC Compression" artwork-align="center"}
+
+Like described in {{Section 6.4 of I-D.ietf-schc-8824-update}}, the description of a SCHC compression Rule needs to identify the OSCORE Option value and its inner fields.
+
+In order to take into account the possible use of KUDOS, SCHC discerns six distinct pieces of information within the extended OSCORE Option value shown in {{fig-oscore-option-schc}} above: the flag bits, the Partial IV, the kid context prepended by its size s, the x byte, the nonce, and the kid. The SCHC Rule splits the OSCORE Option value into six corresponding Field Descriptors, in order to separately compress those pieces of information as distinct subfields:
+
+* flags
+* piv
+* kid_ctx
+* x
+* nonce
+* kid
+
+In {{fig-oscore-option-schc}}, the six subfields are superimposed on the shown extended format of the OSCORE Option value.
+
+Consistent with what is defined in {{Section 6.4 of I-D.ietf-schc-8824-update}}, if a SCHC Rule is intended to compress a CoAP message that specifies the OSCORE Option as per {{fig-oscore-option-schc}}, then the related Field Descriptors must be listed in the same order according to which the corresponding pieces of information appear in the OSCORE Option value.
+
+As to the x subfield and the nonce subfield, the following applies.
+
+* For the x subfield, if both endpoints using SCHC know the value, then the corresponding Field Descriptor in the SCHC Rule describes the TV set to that value, with the MO set to "equal" and the CDA set to "not-sent". This models the following cases:
+
+  - The x subfield is not present, and thus TV is set to b''.
+
+  - Given a fixed z bit of the x subfield as denoting either a divergent or convergent KUDOS message, the two endpoints run KUDOS with a pre-agreed size of the nonce subfield as per the value encoded by m within the x subfield, as well as with a pre-agreed combination of its modes of operation, as per the bits b and p of the x subfield.
+
+    Under the assumed pre-agreements above, this requires two distinct SCHC Rules, whose respective TV is set to a value that reflects the z bit as set or not set, respectively.
+
+  As an alternative that is more flexible to changes in the value of the x subfield, the corresponding Field Descriptor in the SCHC Rule does not set the TV, while it sets the MO to "ignore" and the CDA to "value-sent". In the same spirit, the Rule may also use a "match-mapping" MO to compress this subfield, in case the two endpoints pre-agree on a set of alternative ways to run KUDOS, with respect to the size of the nonce subfield and the combination of the KUDOS modes of operation to use.
+
+* If the nonce subfield is present, then the corresponding Field Descriptor in the SCHC Rule has the TV not set, while the MO is set to "ignore" and the CDA is set to "value-sent".
+
+  For the value of the nonce subfield, SCHC MUST NOT send it as variable-length data in the Compression Residue. As a result, SCHC does not send the size of the residue resulting from the compression of the nonce subfield, which is otherwise requested for variable-size fields when the CDA specified in the Field Descriptor is "value-sent" or LSB (see {{Section 7.4.2 of RFC8724}}).
+
+  Instead, SCHC MUST use the value encoded by m within the x subfield to define the size of the Compression Residue. SCHC designates a specific function, "osc.x.m", that the Rule MUST use to complete the Field Descriptor. During the decompression, this function returns the length of the nonce subfield in bytes, as the value encoded by m within the x subfield, plus 1.
+
+  This construct avoids ambiguity with the value m within the x subfield and results in a more efficient compression of the nonce subfield.
 
 # Security Considerations {#sec-cons}
 
@@ -1865,6 +1943,10 @@ The following illustrates the states and transitions of the KUDOS state machine.
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -12 to -13 ## {#sec-12-13}
+
+* Defined SCHC compression of the extended OSCORE Option (originally defined in draft-ietf-schc-8824-update).
 
 ## Version -11 to -12 ## {#sec-11-12}
 
