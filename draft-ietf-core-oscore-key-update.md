@@ -1078,13 +1078,37 @@ IANA is asked to add the 'kudos' well-known URI to the Well-Known URIs registry 
 
 ## Resource Type (rt=) Link Target Attribute Values Registry {#rt-kudos}
 
-IANA is requested to add the resource type "core.kudos" to the "Resource Type (rt=) Link Target Attribute Values" registry under the registry group "Constrained RESTful Environments (CoRE) Parameters".
+IANA is asked to add the resource type "core.kudos" to the "Resource Type (rt=) Link Target Attribute Values" registry under the registry group "Constrained RESTful Environments (CoRE) Parameters".
 
 -  Value: "core.kudos"
 
 -  Description: KUDOS resource.
 
 -  Reference: {{&SELF}}
+
+## SCHC Compression of CoAP Fields {#schc-coap-fields}
+
+IANA is asked to add the following two entries to the "SCHC Compression of CoAP Fields" registry defined in {{I-D.ietf-schc-8824-update}}, within the "Static Context Header Compression (SCHC) Parameters" registry group.
+
+* Field: CoAP.option(9).x
+* Decription: CoAP option OSCORE (subfield x) {{&SELF}}
+* Reference: {{&SELF}}
+
+  Consistent with what is defined in {{Section 13.4.2 of I-D.ietf-schc-8824-update}}, this entry has to be added immediately after the entry whose value in the "Field" column is "CoAP.option(9).kid_ctx".
+
+  Note to RFC Editor: Once the registration above is completed, please delete the paragraph immediately preceding this note. Then, please delete this note.
+
+<br>
+
+* Field: CoAP.option(9).nonce
+* Decription: CoAP option OSCORE (subfield nonce) {{&SELF}}
+* Reference: {{&SELF}}
+
+  Consistent with what is defined in {{Section 13.4.2 of I-D.ietf-schc-8824-update}}, this entry has to be added immediately before the entry whose value in the "Field" column is "CoAP.option(9).kid".
+
+  Note to RFC Editor: Once the registration above is completed, please delete the paragraph immediately preceding this note. Then, please delete this note.
+
+In the same registry, IANA is asked to update the two entries whose value in the "Field" column is "CoAP.option(9)" and "CoAP.option(9).flags". For both those entries, the value of the "Description" column is updated by adding a reference to {{&SELF}}.
 
 --- back
 
