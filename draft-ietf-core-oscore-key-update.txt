@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                        27 February 2026
-Expires: 31 August 2026
+Intended status: Standards Track                            2 March 2026
+Expires: 3 September 2026
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 August 2026.
+   This Internet-Draft will expire on 3 September 2026.
 
 Copyright Notice
 
@@ -129,6 +129,8 @@ Table of Contents
            Message, where KUDOS Response #1 is Lost
      A.6.  Successful KUDOS Execution Completed using two Request
            Messages
+     A.7.  Successful KUDOS Execution Initiated with a Request
+           Message, Final Response is Lost
    Appendix B.  KUDOS State Machine
    Appendix C.  YANG Data Model
    Appendix D.  Document Updates
@@ -2266,9 +2268,9 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-09, 20 October 2025,
+              draft-ietf-ace-edhoc-oscore-profile-10, 1 March 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-09>.
+              edhoc-oscore-profile-10>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
@@ -3153,6 +3155,111 @@ Protect with CTX_NEW    +.....---------------->|
                         |                      | State: IDLE (0,0)
                         |                      |
 
+A.7.  Successful KUDOS Execution Initiated with a Request Message, Final
+      Response is Lost
+
+KUDOS status:                                         KUDOS status:
+- CTX_OLD: -,-                                        - CTX_OLD: -,-
+- State: IDLE (0,0)                                   - State: IDLE (0,0)
+
+                     Client                  Server
+                   (initiator)            (responder)
+                        |                      |
+Generate N1, X1         |                      |
+                        |                      |
+CTX_TEMP = updateCtx(   |                      |
+        X1 | N1,        |                      |
+        0x,             |                      |
+        CTX_OLD )       |                      |
+                        |                      |
+                        |      Request #1      |
+Protect with CTX_TEMP   +--------------------->| /.well-known/kudos
+                        | OSCORE {             |
+KUDOS status:           |  ...                 | CTX_TEMP = updateCtx(
+CTX_OLD: X1, N1         |  Partial IV: 0       |         0x,
+State: BUSY (1,0)       |  d flag: 1           |         X1 | N1,
+                        |  x: X1               |         CTX_OLD )
+                        |  nonce: N1           | Verify with CTX_TEMP
+                        | }                    |
+                        |                      | KUDOS status:
+                        |                      | CTX_OLD: -,-
+                        |                      | State: BUSY (0,1)
+                        |                      |
+                        |                      | Generate N2, X2
+                        |                      |
+                        |                      | CTX_NEW = updateCtx(
+                        |                      |           X2 | N2,
+                        |                      |           X1 | N1,
+                        |                      |           CTX_OLD )
+                        |                      |
+                        |      Response #1     |
+                        |<---------------------+ Protect with CTX_NEW
+                        | OSCORE {             |
+CTX_NEW = updateCtx(    |  Partial IV: 0       | KUDOS status:
+          X1 | N1,      |  d flag: 1           | CTX_OLD: X2, N2
+          X2 | N2,      |  x: X2               | State: PENDING (1,1)
+          CTX_OLD )     |  nonce: N2           |
+Verify with CTX_NEW     | }                    |
+/ key confirmation /    |                      |
+Pre-IDLE steps:         |                      |
+Delete CTX_TEMP         |                      |
+Delete CTX_OLD, X1, N1  |                      |
+                        |                      |
+KUDOS status:           |                      |
+CTX_NEW: -, -           |                      |
+State: IDLE (0,0)       |                      |
+
+The key update process ends here.
+Both peers now use CTX_NEW.
+
+                        |                      |
+                        |      Request #2      |
+Protect with CTX_NEW    +--------------------->| /temp
+                        | OSCORE {             |
+                        |  Partial IV: 1       |
+                        | }                    | Verify with CTX_NEW
+                        | Encrypted Payload {  |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+                        |      Response #2     |
+                        |      <-- LOST -------+ Protect with CTX_NEW
+                        | OSCORE {             |
+                        |  Partial IV: 0       |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  Application Payload |
+                        | }                    |
+
+                (client times out and retransmits)
+
+                        |                      |
+                        |      Request #3      |
+Protect with CTX_NEW    +--------------------->| /temp
+                        | OSCORE {             |
+                        |  Partial IV: 2       |
+                        | }                    | Verify with CTX_NEW
+                        | Encrypted Payload {  |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+                        |      Response #3     |
+                        |<---------------------+ Protect with CTX_NEW
+Verify with CTX_NEW     | OSCORE {             |
+                        |  Partial IV: 1       |
+                        | }                    |
+                        | Encrypted Payload {  |
+                        |  Application Payload |
+                        | }                    |
+                        |                      |
+                        |                      | Pre-IDLE steps:
+                        |                      | Delete CTX_TEMP
+                        |                      | Delete CTX_OLD, X2, N2
+                        |                      |
+                        |                      | KUDOS status:
+                        |                      | CTX_NEW: -,-
+                        |                      | State: IDLE (0,0)
+
 Appendix B.  KUDOS State Machine
 
    The following illustrates the states and transitions of the KUDOS
@@ -3316,6 +3423,8 @@ D.1.  Version -12 to -13
    *  Added YANG data model.
 
    *  General editorial improvements.
+
+   *  Add further message flow examples.
 
 D.2.  Version -11 to -12
 
