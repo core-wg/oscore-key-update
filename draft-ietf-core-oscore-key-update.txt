@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            2 March 2026
-Expires: 3 September 2026
+Intended status: Standards Track                             3 June 2026
+Expires: 5 December 2026
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 September 2026.
+   This Internet-Draft will expire on 5 December 2026.
 
 Copyright Notice
 
@@ -2206,9 +2206,9 @@ Table of Contents
               Tiloca, M., Toutain, L., Martínez, I., and A. Minaburo,
               "Static Context Header Compression (SCHC) for the
               Constrained Application Protocol (CoAP)", Work in
-              Progress, Internet-Draft, draft-ietf-schc-8824-update-07,
-              1 December 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-schc-8824-update-07>.
+              Progress, Internet-Draft, draft-ietf-schc-8824-update-08,
+              3 June 2026, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-schc-8824-update-08>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
