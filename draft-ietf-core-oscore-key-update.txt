@@ -134,19 +134,20 @@ Table of Contents
    Appendix B.  KUDOS State Machine
    Appendix C.  YANG Data Model
    Appendix D.  Document Updates
-     D.1.  Version -12 to -13
-     D.2.  Version -11 to -12
-     D.3.  Version -10 to -11
-     D.4.  Version -09 to -10
-     D.5.  Version -08 to -09
-     D.6.  Version -07 to -08
-     D.7.  Version -06 to -07
-     D.8.  Version -05 to -06
-     D.9.  Version -04 to -05
-     D.10. Version -03 to -04
-     D.11. Version -02 to -03
-     D.12. Version -01 to -02
-     D.13. Version -00 to -01
+     D.1.  Version -13 to -14
+     D.2.  Version -12 to -13
+     D.3.  Version -11 to -12
+     D.4.  Version -10 to -11
+     D.5.  Version -09 to -10
+     D.6.  Version -08 to -09
+     D.7.  Version -07 to -08
+     D.8.  Version -06 to -07
+     D.9.  Version -05 to -06
+     D.10. Version -04 to -05
+     D.11. Version -03 to -04
+     D.12. Version -02 to -03
+     D.13. Version -01 to -02
+     D.14. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -3325,7 +3326,7 @@ Appendix C.  YANG Data Model
    the YANG data model defined in Appendix A of
    [I-D.ietf-schc-8824-update].
 
-   <CODE BEGINS> file "ietf-schc-coap-kudos@2026-03-02.yang"
+   <CODE BEGINS> file "ietf-schc-coap-kudos@2026-07-06.yang"
    module ietf-schc-coap-kudos {
      yang-version 1.1;
      namespace "urn:ietf:params:xml:ns:yang:ietf-schc-coap-kudos";
@@ -3365,7 +3366,7 @@ Appendix C.  YANG Data Model
         include the extended format of the CoAP OSCORE option for using
         Key Update for OSCORE (KUDOS), as defined in RFC YYYY.";
 
-     revision 2026-03-02 {
+     revision 2026-07-06 {
        description
          "Extended OSCORE fields for Key Update for OSCORE (KUDOS).";
        reference
@@ -3398,7 +3399,7 @@ Appendix C.  YANG Data Model
      identity fl-oscore-oscore-nonce-length {
           base "schc:fl-base-type";
           description
-            "Size in bytes of the OSCORE nonce corresponding to m+1.";
+            "Size in bytes of the OSCORE nonce, equal to m+1.";
           reference
             "RFC YYYY Key Update for OSCORE (KUDOS) (see Section 5)";
      }
@@ -3411,7 +3412,11 @@ Appendix D.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-D.1.  Version -12 to -13
+D.1.  Version -13 to -14
+
+   *  Editorial update in the YANG data model.
+
+D.2.  Version -12 to -13
 
    *  Defined SCHC compression of the extended OSCORE Option (originally
       defined in draft-ietf-schc-8824-update).
@@ -3426,7 +3431,7 @@ D.1.  Version -12 to -13
 
    *  Add further message flow examples.
 
-D.2.  Version -11 to -12
+D.3.  Version -11 to -12
 
    *  Add multiple additional message flow examples.
 
@@ -3434,7 +3439,7 @@ D.2.  Version -11 to -12
 
    *  Add diagram of KUDOS state machine.
 
-D.3.  Version -10 to -11
+D.4.  Version -10 to -11
 
    *  Extended security considerations.
 
@@ -3449,12 +3454,12 @@ D.3.  Version -10 to -11
    *  Optimization for traversing the state machine upon reception of a
       divergent message.
 
-D.4.  Version -09 to -10
+D.5.  Version -09 to -10
 
    *  Major re-design building on a state machine driving the KUDOS
       execution.
 
-D.5.  Version -08 to -09
+D.6.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -3487,7 +3492,7 @@ D.5.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-D.6.  Version -07 to -08
+D.7.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -3513,7 +3518,7 @@ D.6.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-D.7.  Version -06 to -07
+D.8.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -3527,7 +3532,7 @@ D.7.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-D.8.  Version -05 to -06
+D.9.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -3547,7 +3552,7 @@ D.8.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.9.  Version -04 to -05
+D.10.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -3570,7 +3575,7 @@ D.9.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-D.10.  Version -03 to -04
+D.11.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3596,7 +3601,7 @@ D.10.  Version -03 to -04
 
    *  Editorial improvements.
 
-D.11.  Version -02 to -03
+D.12.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3615,7 +3620,7 @@ D.11.  Version -02 to -03
 
    *  Editorial improvements.
 
-D.12.  Version -01 to -02
+D.13.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3639,7 +3644,7 @@ D.12.  Version -01 to -02
 
    *  Editorial improvements.
 
-D.13.  Version -00 to -01
+D.14.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
