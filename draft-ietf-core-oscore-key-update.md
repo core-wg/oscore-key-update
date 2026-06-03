@@ -2126,7 +2126,7 @@ module ietf-schc-coap-kudos {
      include the extended format of the CoAP OSCORE option for using
      Key Update for OSCORE (KUDOS), as defined in RFC YYYY.";
 
-  revision 2026-03-02 {
+  revision 2026-07-06 {
     description
       "Extended OSCORE fields for Key Update for OSCORE (KUDOS).";
     reference
@@ -2159,17 +2159,21 @@ module ietf-schc-coap-kudos {
   identity fl-oscore-oscore-nonce-length {
        base "schc:fl-base-type";
        description
-         "Size in bytes of the OSCORE nonce corresponding to m+1.";
+         "Size in bytes of the OSCORE nonce, equal to m+1.";
        reference
          "RFC YYYY Key Update for OSCORE (KUDOS) (see Section 5)";
   }
 }
 
 ~~~~~~~~~~~
-{: sourcecode-name="ietf-schc-coap-kudos@2026-03-02.yang" sourcecode-markers="true" #fig-yang-data-model title="SCHC CoAP KUDOS Extension YANG Data Model."}
+{: sourcecode-name="ietf-schc-coap-kudos@2026-07-06.yang" sourcecode-markers="true" #fig-yang-data-model title="SCHC CoAP KUDOS Extension YANG Data Model."}
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -13 to -14 ## {#sec-13-14}
+
+* Editorial update in the YANG data model.
 
 ## Version -12 to -13 ## {#sec-12-13}
 
