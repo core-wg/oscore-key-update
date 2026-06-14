@@ -2085,6 +2085,8 @@ This appendix defines the ietf-schc-coap-kudos module, which extends the ietf-sc
 
 This extension complements the update to the ietf-schc module made by the YANG data model defined in {{Appendix A of I-D.ietf-schc-8824-update}}.
 
+Note to RFC Editor: In the YANG data model below, please replace all occurrences of "XXXX" with the RFC number of this specification and delete this paragraph.
+
 ~~~~~~~~~~~ yang
 
 module ietf-schc-coap-kudos {
@@ -2104,33 +2106,32 @@ module ietf-schc-coap-kudos {
      Editor:   Marco Tiloca
        <mailto:marco.tiloca@ri.se>";
   description
-    "Copyright (c) 2021 IETF Trust and the persons identified as
-     authors of the code.  All rights reserved.
-     Redistribution and use in source and binary forms, with or
-     without modification, is permitted pursuant to, and subject to
-     the license terms contained in, the Simplified BSD License set
-     forth in Section 4.c of the IETF Trust's Legal Provisions
-     Relating to IETF Documents
-     (https://trustee.ietf.org/license-info).
-     This version of this YANG module is part of RFC XXXX
-     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
-     for full legal notices.
-     The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
-     NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
-     'MAY', and 'OPTIONAL' in this document are to be interpreted as
-     described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
-     they appear in all capitals, as shown here.
-     ****************************************************************
+    "This module extends the ietf-schc module defined in RFC 9363 to
+     include the extended format of the CoAP OSCORE Option for using
+     Key Update for OSCORE (KUDOS), as defined in RFC XXXX.
 
-     This module extends the ietf-schc module defined in RFC 9363 to
-     include the extended format of the CoAP OSCORE option for using
-     Key Update for OSCORE (KUDOS), as defined in RFC YYYY.";
+     Copyright (c) 2026 IETF Trust and the persons identified
+     as authors of the code.  All rights reserved.
+
+     Redistribution and use in source and binary forms, with
+     or without modification, is permitted pursuant to, and
+     subject to the license terms contained in, the Revised
+     BSD License set forth in Section 4.c of the IETF Trust's
+     Legal Provisions Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
+
+     This version of this YANG module is part of RFC XXXX; see
+     the RFC itself for full legal notices.
+
+     All revisions of IETF and IANA-maintained modules can be found
+     in the 'YANG Parameters' registry group
+     (https://www.iana.org/assignments/yang-parameters).";
 
   revision 2026-07-06 {
     description
       "Extended OSCORE fields for Key Update for OSCORE (KUDOS).";
     reference
-      "RFC YYYY Key Update for OSCORE (KUDOS)
+      "RFC XXXX Key Update for OSCORE (KUDOS)
                 (see Sections 4.1 and 5)";
   }
 
@@ -2141,7 +2142,7 @@ module ietf-schc-coap-kudos {
        description
          "CoAP option OSCORE x field.";
        reference
-         "RFC YYYY Key Update for OSCORE (KUDOS)
+         "RFC XXXX Key Update for OSCORE (KUDOS)
                    (see Sections 4.1 and 5)";
   }
 
@@ -2150,7 +2151,7 @@ module ietf-schc-coap-kudos {
        description
          "CoAP option OSCORE nonce field.";
        reference
-         "RFC YYYY Key Update for OSCORE (KUDOS)
+         "RFC XXXX Key Update for OSCORE (KUDOS)
                    (see Sections 4.1 and 5)";
   }
 
@@ -2161,7 +2162,7 @@ module ietf-schc-coap-kudos {
        description
          "Size in bytes of the OSCORE nonce, equal to m+1.";
        reference
-         "RFC YYYY Key Update for OSCORE (KUDOS) (see Section 5)";
+         "RFC XXXX Key Update for OSCORE (KUDOS) (see Section 5)";
   }
 }
 
@@ -2173,7 +2174,13 @@ module ietf-schc-coap-kudos {
 
 ## Version -13 to -14 ## {#sec-13-14}
 
-* Editorial update in the YANG data model.
+* YANG data model:
+
+  * Updated legal boilerplate.
+
+  * Consistent use of placeholders for RFC numbers.
+
+  * Editorial updates.
 
 ## Version -12 to -13 ## {#sec-12-13}
 
