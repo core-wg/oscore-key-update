@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            14 June 2026
-Expires: 16 December 2026
+Intended status: Standards Track                            30 June 2026
+Expires: 1 January 2027
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 December 2026.
+   This Internet-Draft will expire on 1 January 2027.
 
 Copyright Notice
 
@@ -3341,22 +3341,16 @@ Appendix C.  YANG Data Model
      }
 
      organization
-       "IETF Constrained RESTful Environments (core) Working Group";
+       "IETF CORE (Constrained RESTful Environments) Working Group";
      contact
-       "WG Web:   <https://datatracker.ietf.org/wg/core/about/>
-        WG List:  <mailto:core@ietf.org>
+       "WG Web:   https://datatracker.ietf.org/wg/core
+        WG List:  CORE <mailto:core@ietf.org>
         Editor:   Marco Tiloca
-          <mailto:marco.tiloca@ri.se>";
+                  <mailto:marco.tiloca@ri.se>";
      description
        "This module extends the ietf-schc module defined in RFC 9363 to
         include the extended format of the CoAP OSCORE Option for using
         Key Update for OSCORE (KUDOS), as defined in RFC XXXX.
-
-        The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
-        NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
-        'MAY', and 'OPTIONAL' in this document are to be interpreted as
-        described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
-        they appear in all capitals, as shown here.
 
         Copyright (c) 2026 IETF Trust and the persons identified
         as authors of the code.  All rights reserved.
@@ -3368,12 +3362,12 @@ Appendix C.  YANG Data Model
         Legal Provisions Relating to IETF Documents
         (https://trustee.ietf.org/license-info).
 
-        This version of this YANG module is part of RFC XXXX; see
-        the RFC itself for full legal notices.
+        All revisions of IETF and IANA published modules can be found
+        at the YANG Parameters registry group
+        (https://www.iana.org/assignments/yang-parameters).
 
-        All revisions of IETF and IANA-maintained modules can be found
-        in the 'YANG Parameters' registry group
-        (https://www.iana.org/assignments/yang-parameters).";
+        This version of this YANG module is part of RFC XXXX; see
+        the RFC itself for full legal notices.";
 
      revision 2026-07-06 {
        description
@@ -3405,7 +3399,7 @@ Appendix C.  YANG Data Model
 
      // Function Length
 
-     identity fl-oscore-oscore-nonce-length {
+     identity fl-oscore-nonce-length {
           base "schc:fl-base-type";
           description
             "Size in bytes of the OSCORE nonce, equal to m+1.";
@@ -3425,7 +3419,7 @@ D.1.  Version -13 to -14
 
    *  YANG data model:
 
-      -  Updated legal boilerplate.
+      -  Updated legal boilerplate and other metadata.
 
       -  Consistent use of placeholders for RFC numbers.
 
