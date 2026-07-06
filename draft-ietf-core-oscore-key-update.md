@@ -2172,6 +2172,14 @@ module ietf-schc-coap-kudos {
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
+## Version -14 to -15 ## {#sec-14-15}
+
+* Remove redundant YANG data model.
+
+* Editorial improvements.
+
+* Added section "Implementation Status".
+
 ## Version -13 to -14 ## {#sec-13-14}
 
 * YANG data model:
