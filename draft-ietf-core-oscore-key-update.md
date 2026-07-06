@@ -54,7 +54,6 @@ informative:
   RFC9203:
   RFC9176:
   RFC8615:
-  RFC7967:
   RFC4086:
   I-D.irtf-cfrg-aead-limits:
   I-D.ietf-core-oscore-key-limits:
@@ -203,7 +202,7 @@ The key update procedure has the following properties:
 
 This document extends the use of the OSCORE Option originally defined in {{RFC8613}} as follows:
 
-* This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in {{iana-cons-flag-bits}}.
+* This document defines the usage of the eighth least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in {{iana-cons-flag-bits}}.
 
   When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option MUST include the OSCORE flag bits 8-15.
 
@@ -380,7 +379,7 @@ N1, N2, X1, and X2 are used by the peers to build the 'input1' and 'input2' valu
 
 Specifically, the input to updateCtx() is built as follows, where \| denotes byte concatenation:
 
-* When deriving CTX\_TEMP to protect a divergent outgoing message, input1 is X1 \| N1 and input2 is 0x.
+* When deriving CTX\_TEMP to protect a divergent outgoing message, input1 is X1 \| N1 and input2 is 0x, where 0x denotes the empty byte string.
 * When deriving CTX\_TEMP to unprotect a divergent incoming message, input1 is X2 \| N2 and input2 is 0x.
 * When deriving CTX\_NEW to protect or unprotect a convergent message, input1 is X1 \| N1 and input2 is X2 \| N2.
 
@@ -544,7 +543,7 @@ While in **PENDING**, the following applies:
 
 When a peer is in the **PENDING** state and receives a divergent message, an optimization can be applied to avoid unnecessary state transitions and cryptographic derivations. It builds on comparing the just received divergent message MSG\_A with a previously received divergent message MSG\_B that originally caused the latest transition to **PENDING** or **BUSY**. Normally the reception of MSG\_A would move the peer to **BUSY** state.
 
-If the two messages MSG\_A and MSG\_B contain the same X byte and Nonce from the other peer, then the peer stays in **PENDING**. Otherwise, the peer moves to **BUSY** upon reception of the divergent message MSG_\A, as normal.
+If the two messages MSG\_A and MSG\_B contain the same X byte and Nonce from the other peer, then the peer stays in **PENDING**. Otherwise, the peer moves to **BUSY** upon reception of the divergent message MSG\_A, as normal.
 
 If upon reception of MSG\_A, CTX\_NEW is not usable to protect outgoing messages (e.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_TEMP), the peer moves to **BUSY**, as normal.
 
@@ -786,7 +785,7 @@ Since the JRC uses ID Context values as identifiers of network nodes, namely "pl
 
 ### Communication Overhead
 
-Each KUDOS messages results in communication overhead. This is determined by the following, additional information conveyed in the OSCORE Option (see {{ssec-oscore-option-extensions}}).
+Each KUDOS message results in communication overhead. This is determined by the following, additional information conveyed in the OSCORE Option (see {{ssec-oscore-option-extensions}}).
 
 * The second byte of the OSCORE Option value.
 
@@ -883,7 +882,7 @@ In the following cases, the recipient peer silently ignores the KUDOS\_EAD item 
 
 * The recipient peer does not support the KUDOS\_EAD item.
 
-* The KUDOS\_EAD item is included in EDHOC message\_1 with 'ead\_value' different than ASK
+* The KUDOS\_EAD item is included in EDHOC message\_1 with 'ead\_value' different than ASK.
 
 * The KUDOS\_EAD item is included in EDHOC message\_2 or message\_3 with 'ead\_value' ASK.
 
@@ -1591,7 +1590,7 @@ Verify with CTX_NEW'    | OSCORE {             |
 
 ## Successful KUDOS Execution Initiated with a Request Message, where KUDOS Response #1 is Lost
 
-The server's first response is dropped by the network, thus the client retries and both sides end up deriving the same a CTX_NEW.
+The server's first response is dropped by the network, thus the client retries and both sides end up deriving the same CTX\_NEW.
 
 ~~~~~~~~~~~ aasvg
 
