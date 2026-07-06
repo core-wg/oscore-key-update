@@ -1532,7 +1532,7 @@ The LwM2M Client, the LwM2M Server, and the LwM2M Bootstrap server are also requ
 <p id="section-4.1-1">This document extends the use of the OSCORE Option originally defined in <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as follows:<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-2.1">
-            <p id="section-4.1-2.1.1">This document defines the usage of the eight least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in <a href="#iana-cons-flag-bits" class="auto internal xref">Section 7.1</a>.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.1.1">This document defines the usage of the eighth least significant bit, called "Extension-1 Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. The registration of this flag bit in the "OSCORE Flag Bits" registry is specified in <a href="#iana-cons-flag-bits" class="auto internal xref">Section 7.1</a>.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.1.2">
 When the Extension-1 Flag is set to 1, the second byte of the OSCORE Option <span class="bcp14">MUST</span> include the OSCORE flag bits 8-15.<a href="#section-4.1-2.1.2" class="pilcrow">¶</a></p>
 </li>
@@ -1732,7 +1732,7 @@ KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
 <p id="section-4.3.1-5">Specifically, the input to updateCtx() is built as follows, where | denotes byte concatenation:<a href="#section-4.3.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.3.1-6.1">
-              <p id="section-4.3.1-6.1.1">When deriving CTX_TEMP to protect a divergent outgoing message, input1 is X1 | N1 and input2 is 0x.<a href="#section-4.3.1-6.1.1" class="pilcrow">¶</a></p>
+              <p id="section-4.3.1-6.1.1">When deriving CTX_TEMP to protect a divergent outgoing message, input1 is X1 | N1 and input2 is 0x, where 0x denotes the empty byte string.<a href="#section-4.3.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.3.1-6.2">
               <p id="section-4.3.1-6.2.1">When deriving CTX_TEMP to unprotect a divergent incoming message, input1 is X2 | N2 and input2 is 0x.<a href="#section-4.3.1-6.2.1" class="pilcrow">¶</a></p>
@@ -2020,7 +2020,7 @@ KUDOS-Expand(CTX_IN.MasterSecret, ExpandLabel, key_length) =
 <a href="#section-4.3.4" class="section-number selfRef">4.3.4. </a><a href="#name-optimization-upon-receiving" class="section-name selfRef">Optimization upon Receiving a Divergent Message while in PENDING</a>
           </h4>
 <p id="section-4.3.4-1">When a peer is in the <strong>PENDING</strong> state and receives a divergent message, an optimization can be applied to avoid unnecessary state transitions and cryptographic derivations. It builds on comparing the just received divergent message MSG_A with a previously received divergent message MSG_B that originally caused the latest transition to <strong>PENDING</strong> or <strong>BUSY</strong>. Normally the reception of MSG_A would move the peer to <strong>BUSY</strong> state.<a href="#section-4.3.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.3.4-2">If the two messages MSG_A and MSG_B contain the same X byte and Nonce from the other peer, then the peer stays in <strong>PENDING</strong>. Otherwise, the peer moves to <strong>BUSY</strong> upon reception of the divergent message MSG_\A, as normal.<a href="#section-4.3.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.3.4-2">If the two messages MSG_A and MSG_B contain the same X byte and Nonce from the other peer, then the peer stays in <strong>PENDING</strong>. Otherwise, the peer moves to <strong>BUSY</strong> upon reception of the divergent message MSG_A, as normal.<a href="#section-4.3.4-2" class="pilcrow">¶</a></p>
 <p id="section-4.3.4-3">If upon reception of MSG_A, CTX_NEW is not usable to protect outgoing messages (e.g., this happens upon eventually exhausting the Sender Sequence Number values of CTX_TEMP), the peer moves to <strong>BUSY</strong>, as normal.<a href="#section-4.3.4-3" class="pilcrow">¶</a></p>
 <p id="section-4.3.4-4">This optimization avoids repeated cryptographic operations and redundant transitions in the state machine when divergent messages originate from the same peer and carry identical X byte and Nonce.<a href="#section-4.3.4-4" class="pilcrow">¶</a></p>
 <p id="section-4.3.4-5">To determine whether message MSG_A and MSG_B are equivalent, the peer <span class="bcp14">MUST</span>:<a href="#section-4.3.4-5" class="pilcrow">¶</a></p>
@@ -2342,7 +2342,7 @@ An example of such an in-band procedure is the EDHOC and OSCORE profile of ACE <
           <h4 id="name-communication-overhead">
 <a href="#section-4.7.1" class="section-number selfRef">4.7.1. </a><a href="#name-communication-overhead" class="section-name selfRef">Communication Overhead</a>
           </h4>
-<p id="section-4.7.1-1">Each KUDOS messages results in communication overhead. This is determined by the following, additional information conveyed in the OSCORE Option (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>).<a href="#section-4.7.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.7.1-1">Each KUDOS message results in communication overhead. This is determined by the following, additional information conveyed in the OSCORE Option (see <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a>).<a href="#section-4.7.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.7.1-2.1">
               <p id="section-4.7.1-2.1.1">The second byte of the OSCORE Option value.<a href="#section-4.7.1-2.1.1" class="pilcrow">¶</a></p>
@@ -2525,7 +2525,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
             <p id="section-4.8-9.1.1">The recipient peer does not support the KUDOS_EAD item.<a href="#section-4.8-9.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.8-9.2">
-            <p id="section-4.8-9.2.1">The KUDOS_EAD item is included in EDHOC message_1 with 'ead_value' different than ASK<a href="#section-4.8-9.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.8-9.2.1">The KUDOS_EAD item is included in EDHOC message_1 with 'ead_value' different than ASK.<a href="#section-4.8-9.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.8-9.3">
             <p id="section-4.8-9.3.1">The KUDOS_EAD item is included in EDHOC message_2 or message_3 with 'ead_value' ASK.<a href="#section-4.8-9.3.1" class="pilcrow">¶</a></p>
@@ -3060,10 +3060,6 @@ Note to RFC Editor: Once the registration above is completed, please delete the 
 <dt id="RFC7554">[RFC7554]</dt>
         <dd>
 <span class="refAuthor">Watteyne, T., Ed.</span>, <span class="refAuthor">Palattella, M.</span>, and <span class="refAuthor">L. Grieco</span>, <span class="refTitle">"Using IEEE 802.15.4e Time-Slotted Channel Hopping (TSCH) in the Internet of Things (IoT): Problem Statement"</span>, <span class="seriesInfo">RFC 7554</span>, <span class="seriesInfo">DOI 10.17487/RFC7554</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7554">https://www.rfc-editor.org/rfc/rfc7554</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC7967">[RFC7967]</dt>
-        <dd>
-<span class="refAuthor">Bhattacharyya, A.</span>, <span class="refAuthor">Bandyopadhyay, S.</span>, <span class="refAuthor">Pal, A.</span>, and <span class="refAuthor">T. Bose</span>, <span class="refTitle">"Constrained Application Protocol (CoAP) Option for No Server Response"</span>, <span class="seriesInfo">RFC 7967</span>, <span class="seriesInfo">DOI 10.17487/RFC7967</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7967">https://www.rfc-editor.org/rfc/rfc7967</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8180">[RFC8180]</dt>
         <dd>
@@ -4438,7 +4434,7 @@ Note to RFC Editor: Once the registration above is completed, please delete the 
         <h3 id="name-successful-kudos-execution-init">
 <a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-successful-kudos-execution-init" class="section-name selfRef">Successful KUDOS Execution Initiated with a Request Message, where KUDOS Response #1 is Lost</a>
         </h3>
-<p id="appendix-A.5-1">The server's first response is dropped by the network, thus the client retries and both sides end up deriving the same a CTX_NEW.<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.5-1">The server's first response is dropped by the network, thus the client retries and both sides end up deriving the same CTX_NEW.<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
 <div id="appendix-A.5-2">
           <div class="alignLeft art-svg artwork" id="appendix-A.5-2.1">
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="2240" width="616" viewBox="0 0 616 2240" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">

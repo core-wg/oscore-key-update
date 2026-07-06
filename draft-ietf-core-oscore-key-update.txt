@@ -411,7 +411,7 @@ Table of Contents
    This document extends the use of the OSCORE Option originally defined
    in [RFC8613] as follows:
 
-   *  This document defines the usage of the eight least significant
+   *  This document defines the usage of the eighth least significant
       bit, called "Extension-1 Flag", in the first byte of the OSCORE
       Option containing the OSCORE flag bits.  The registration of this
       flag bit in the "OSCORE Flag Bits" registry is specified in
@@ -740,7 +740,8 @@ Table of Contents
    denotes byte concatenation:
 
    *  When deriving CTX_TEMP to protect a divergent outgoing message,
-      input1 is X1 | N1 and input2 is 0x.
+      input1 is X1 | N1 and input2 is 0x, where 0x denotes the empty
+      byte string.
 
    *  When deriving CTX_TEMP to unprotect a divergent incoming message,
       input1 is X2 | N2 and input2 is 0x.
@@ -970,7 +971,7 @@ Table of Contents
 
    If the two messages MSG_A and MSG_B contain the same X byte and Nonce
    from the other peer, then the peer stays in *PENDING*. Otherwise, the
-   peer moves to *BUSY* upon reception of the divergent message MSG_\A,
+   peer moves to *BUSY* upon reception of the divergent message MSG_A,
    as normal.
 
    If upon reception of MSG_A, CTX_NEW is not usable to protect outgoing
@@ -1530,7 +1531,7 @@ Table of Contents
 
 4.7.1.  Communication Overhead
 
-   Each KUDOS messages results in communication overhead.  This is
+   Each KUDOS message results in communication overhead.  This is
    determined by the following, additional information conveyed in the
    OSCORE Option (see Section 4.1).
 
@@ -1750,7 +1751,7 @@ Table of Contents
    *  The recipient peer does not support the KUDOS_EAD item.
 
    *  The KUDOS_EAD item is included in EDHOC message_1 with 'ead_value'
-      different than ASK
+      different than ASK.
 
    *  The KUDOS_EAD item is included in EDHOC message_2 or message_3
       with 'ead_value' ASK.
@@ -2315,11 +2316,6 @@ Table of Contents
               DOI 10.17487/RFC7554, May 2015,
               <https://www.rfc-editor.org/rfc/rfc7554>.
 
-   [RFC7967]  Bhattacharyya, A., Bandyopadhyay, S., Pal, A., and T.
-              Bose, "Constrained Application Protocol (CoAP) Option for
-              No Server Response", RFC 7967, DOI 10.17487/RFC7967,
-              August 2016, <https://www.rfc-editor.org/rfc/rfc7967>.
-
    [RFC8180]  Vilajosana, X., Ed., Pister, K., and T. Watteyne, "Minimal
               IPv6 over the TSCH Mode of IEEE 802.15.4e (6TiSCH)
               Configuration", BCP 210, RFC 8180, DOI 10.17487/RFC8180,
@@ -2836,7 +2832,7 @@ A.5.  Successful KUDOS Execution Initiated with a Request Message, where
       KUDOS Response #1 is Lost
 
    The server's first response is dropped by the network, thus the
-   client retries and both sides end up deriving the same a CTX_NEW.
+   client retries and both sides end up deriving the same CTX_NEW.
 
 KUDOS status:                                         KUDOS status:
 - CTX_OLD: -,-                                        - CTX_OLD: -,-
