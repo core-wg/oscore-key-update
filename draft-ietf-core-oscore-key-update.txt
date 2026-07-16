@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                             6 July 2026
-Expires: 7 January 2027
+Intended status: Standards Track                            16 July 2026
+Expires: 17 January 2027
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2027.
+   This Internet-Draft will expire on 17 January 2027.
 
 Copyright Notice
 
@@ -104,18 +104,20 @@ Table of Contents
        4.7.5.  Combining KUDOS with Access Control
      4.8.  Signaling KUDOS support in EDHOC
    5.  CoAP Header Compression with SCHC
-   6.  Security Considerations
-     6.1.  YANG Module
-   7.  IANA Considerations
-     7.1.  OSCORE Flag Bits Registry
-     7.2.  CoAP Option Numbers Registry
-     7.3.  EDHOC External Authorization Data Registry
-     7.4.  The Well-Known URI Registry
-     7.5.  Resource Type (rt=) Link Target Attribute Values Registry
-     7.6.  SCHC Compression of CoAP Fields
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
+   6.  Implementation Status
+     6.1.  Implementation #1
+     6.2.  Implementation #2
+   7.  Security Considerations
+   8.  IANA Considerations
+     8.1.  OSCORE Flag Bits Registry
+     8.2.  CoAP Option Numbers Registry
+     8.3.  EDHOC External Authorization Data Registry
+     8.4.  The Well-Known URI Registry
+     8.5.  Resource Type (rt=) Link Target Attribute Values Registry
+     8.6.  SCHC Compression of CoAP Fields
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Appendix A.  Examples
      A.1.  Successful KUDOS Execution Initiated with a Request Message
      A.2.  Successful KUDOS Execution Initiated with a Response
@@ -132,23 +134,21 @@ Table of Contents
      A.7.  Successful KUDOS Execution Initiated with a Request
            Message, Final Response is Lost
    Appendix B.  KUDOS State Machine
-   Appendix C.  YANG Data Model
-   Appendix D.  Document Updates
-     D.1.  Version -14 to -15
-     D.2.  Version -13 to -14
-     D.3.  Version -12 to -13
-     D.4.  Version -11 to -12
-     D.5.  Version -10 to -11
-     D.6.  Version -09 to -10
-     D.7.  Version -08 to -09
-     D.8.  Version -07 to -08
-     D.9.  Version -06 to -07
-     D.10. Version -05 to -06
-     D.11. Version -04 to -05
-     D.12. Version -03 to -04
-     D.13. Version -02 to -03
-     D.14. Version -01 to -02
-     D.15. Version -00 to -01
+   Appendix C.  Document Updates
+     C.1.  Version -13 to -14
+     C.2.  Version -12 to -13
+     C.3.  Version -11 to -12
+     C.4.  Version -10 to -11
+     C.5.  Version -09 to -10
+     C.6.  Version -08 to -09
+     C.7.  Version -07 to -08
+     C.8.  Version -06 to -07
+     C.9.  Version -05 to -06
+     C.10. Version -04 to -05
+     C.11. Version -03 to -04
+     C.12. Version -02 to -03
+     C.13. Version -01 to -02
+     C.14. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -178,7 +178,7 @@ Table of Contents
    *  With reference to the "OSCORE Flag Bits" registry defined in
       Section 13.7 of [RFC8613] as part of the "Constrained RESTful
       Environments (CoRE) Parameters" registry group, it updates the
-      entries with Bit Position 0 and 1 (see Section 7), both of which
+      entries with Bit Position 0 and 1 (see Section 8), both of which
       were originally marked as "Reserved".
 
       In particular, it defines and registers the usage of the OSCORE
@@ -415,7 +415,7 @@ Table of Contents
       bit, called "Extension-1 Flag", in the first byte of the OSCORE
       Option containing the OSCORE flag bits.  The registration of this
       flag bit in the "OSCORE Flag Bits" registry is specified in
-      Section 7.1.
+      Section 8.1.
 
       When the Extension-1 Flag is set to 1, the second byte of the
       OSCORE Option MUST include the OSCORE flag bits 8-15.
@@ -424,7 +424,7 @@ Table of Contents
       "Nonce Flag", 'd', in the second byte of the OSCORE Option
       containing the OSCORE flag bits 8-15.  The registration of this
       flag bit in the "OSCORE Flag Bits" registry is specified in
-      Section 7.1.
+      Section 8.1.
 
       When it is set to 1, the compressed COSE object contains a field
       'x' and a field 'nonce', to be used for the steps defined in
@@ -1038,8 +1038,8 @@ Table of Contents
    different types of resources at the recipient CoAP server:
 
    *  The well-known KUDOS resource at /.well-known/kudos (see
-      Section 7.4), or an alternative KUDOS resource with resource type
-      "core.kudos" (see Section 4.7.3 and Section 7.5).
+      Section 8.4), or an alternative KUDOS resource with resource type
+      "core.kudos" (see Section 4.7.3 and Section 8.5).
 
       In such a case, no application processing is expected at the CoAP
       server and the plain CoAP request composed before OSCORE
@@ -1177,7 +1177,7 @@ Table of Contents
    *  As an exception to the nonces being generated as random values
       (see Section 4.3.1), a peer that is a CAPABLE device MAY use a
       value obtained from a monotonically incremented counter as nonce.
-      Related privacy implications are described in Section 6.
+      Related privacy implications are described in Section 7.
 
       In such a case, the peer MUST enforce measures to ensure freshness
       of the nonce values.  For example, the peer can use the same
@@ -1603,7 +1603,7 @@ Table of Contents
 
 4.7.2.  Resource Type core.kudos
 
-   The "core.kudos" resource type registered in Section 7.5 is defined
+   The "core.kudos" resource type registered in Section 8.5 is defined
    to ensure a means for clients to send KUDOS requests without
    incurring any side effects.  Specifically, a resource of this type
    does not pertain to any real application, which ensures that no
@@ -1621,7 +1621,7 @@ Table of Contents
    application processing on the server, then a request sent as a KUDOS
    message can target a KUDOS resource with resource type "core.kudos"
    (see Section 4.7.2), e.g., at the Uri-Path "/.well-known/kudos" (see
-   Section 7.4).  An alternative KUDOS resource can be discovered, e.g.,
+   Section 8.4).  An alternative KUDOS resource can be discovered, e.g.,
    by using a resource directory [RFC9176], by using the resource type
    "core.kudos" as filter criterion.
 
@@ -1692,7 +1692,7 @@ Table of Contents
    encoded as a CBOR byte string.
 
    This document defines a new EDHOC EAD item KUDOS_EAD and registers
-   its 'ead_label' in Section 7.3.  By including this EAD item in an
+   its 'ead_label' in Section 8.3.  By including this EAD item in an
    outgoing EDHOC message, a sender peer can indicate whether it
    supports KUDOS and in which modes, as well as query the other peer
    about its support.  Note that peers do not have to use this EDHOC EAD
@@ -1963,7 +1963,103 @@ Table of Contents
       subfield and results in a more efficient compression of the nonce
       subfield.
 
-6.  Security Considerations
+6.  Implementation Status
+
+   This section is to be removed before publishing as an RFC.
+
+   Note to RFC Editor: when deleting this section, please also delete
+   RFC 7942 from the references of this document.
+
+   (Boilerplate as per Section 2.1 of [RFC7942]:)
+
+   This section records the status of known implementations of the
+   protocol defined by this specification at the time of posting of this
+   Internet-Draft, and is based on a proposal described in [RFC7942].
+   The description of implementations in this section is intended to
+   assist the IETF in its decision processes in progressing drafts to
+   RFCs.  Please note that the listing of any individual implementation
+   here does not imply endorsement by the IETF.  Furthermore, no effort
+   has been spent to verify the information presented here that was
+   supplied by IETF contributors.  This is not intended as, and must not
+   be construed to be, a catalog of available implementations or their
+   features.  Readers are advised to note that other implementations may
+   exist.
+
+   According to [RFC7942], "this will allow reviewers and working groups
+   to assign due consideration to documents that have the benefit of
+   running code, which may serve as evidence of valuable experimentation
+   and feedback that have made the implemented protocols more mature.
+   It is up to the individual working groups to use this information as
+   they see fit".
+
+6.1.  Implementation #1
+
+   *  Responsible organization: RISE Research Institutes of Sweden AB
+
+   *  Implementation's name: KUDOS in Californium
+
+   *  Available at: https://github.com/rikard-sics/californium/tree/
+      oscore_kudos
+
+   *  Description: Implementation in Java, based on the Californium CoAP
+      library, see:
+
+      -  https://github.com/eclipse-californium/californium
+
+   *  Implementation's level of maturity: Prototype
+
+   *  The implementation supports:
+
+      -  The FS mode and the no-FS mode.
+
+   *  The implementation does not support:
+
+      -  Preservation of observations.
+
+   *  Version compatibility: From version -13 onwards.
+
+   *  Licensing: Eclipse Distribution License 1.0 / Eclipse Public
+      License 2.0.
+
+   *  Contact information: Rikard Höglund - rikard.hoglund@ri.se
+
+   *  Information last updated on: 2026-07-06
+
+6.2.  Implementation #2
+
+   *  Responsible organization: University of Murcia (Spain)
+
+   *  Implementation's name: cKUDOS
+
+   *  Available at: https://github.com/francislopezg/cKUDOS
+
+   *  Description: Implementation in C, based on the uOSCORE-uEDHOC
+      library, see:
+
+      -  https://github.com/eriptic/uoscore-uedhoc
+
+   *  Implementation's level of maturity: Prototype
+
+   *  The implementation supports:
+
+      -  The no-FS mode.
+
+   *  The implementation does not support:
+
+      -  Preservation of observations.
+
+      -  The FS mode.
+
+   *  Version compatibility: From version -13 onwards.
+
+   *  Licensing: Following Apache 2.0 license.
+
+   *  Contact information: Francisco López-Gómez -
+      francisco.lopezg@um.es
+
+   *  Information last updated on: 2026-07-06
+
+7.  Security Considerations
 
    Depending on the specific key update procedure used to establish a
    new OSCORE Security Context, the related security considerations also
@@ -2021,24 +2117,14 @@ Table of Contents
    and of exchanged data that are acceptable between two such
    consecutive key updates.
 
-6.1.  YANG Module
-
-   The YANG data model defined in Appendix C extends the ietf-schc
-   module defined in [RFC9363], complementing the update to that module
-   made by the YANG data model defined in Appendix A of
-   [I-D.ietf-schc-8824-update].
-
-   Therefore, all the security considerations compiled in Section 8 of
-   [RFC9363] also apply to the resulting extended YANG data model.
-
-7.  IANA Considerations
+8.  IANA Considerations
 
    This document has the following actions for IANA.
 
    Note to RFC Editor: Please replace all occurrences of "[RFC-XXXX]"
    with the RFC number of this specification and delete this paragraph.
 
-7.1.  OSCORE Flag Bits Registry
+8.1.  OSCORE Flag Bits Registry
 
    IANA is asked to add the following entries to the "OSCORE Flag Bits"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -2108,13 +2194,13 @@ Table of Contents
 
               Table 4: Update in the OSCORE Flag Bits Registry
 
-7.2.  CoAP Option Numbers Registry
+8.2.  CoAP Option Numbers Registry
 
    IANA is asked to add this document as a reference for the OSCORE
    Option in the "CoAP Option Numbers" registry within the "Constrained
    RESTful Environments (CoRE) Parameters" registry group.
 
-7.3.  EDHOC External Authorization Data Registry
+8.3.  EDHOC External Authorization Data Registry
 
    IANA is asked to add the following entry to the "EDHOC External
    Authorization Data" registry defined in Section 10.5 of [RFC9528]
@@ -2132,7 +2218,7 @@ Table of Contents
                 Table 5: Registrations in the EDHOC External
                         Authorization Data Registry
 
-7.4.  The Well-Known URI Registry
+8.4.  The Well-Known URI Registry
 
    IANA is asked to add the 'kudos' well-known URI to the Well-Known
    URIs registry as defined by [RFC8615].
@@ -2145,7 +2231,7 @@ Table of Contents
 
    *  Related information: None
 
-7.5.  Resource Type (rt=) Link Target Attribute Values Registry
+8.5.  Resource Type (rt=) Link Target Attribute Values Registry
 
    IANA is asked to add the resource type "core.kudos" to the "Resource
    Type (rt=) Link Target Attribute Values" registry under the registry
@@ -2157,7 +2243,7 @@ Table of Contents
 
    *  Reference: [RFC-XXXX]
 
-7.6.  SCHC Compression of CoAP Fields
+8.6.  SCHC Compression of CoAP Fields
 
    IANA is asked to add the following two entries to the "SCHC
    Compression of CoAP Fields" registry defined in
@@ -2201,17 +2287,17 @@ Table of Contents
    "CoAP.option(9).flags".  For both those entries, the value of the
    "Description" column is updated by adding a reference to [RFC-XXXX].
 
-8.  References
+9.  References
 
-8.1.  Normative References
+9.1.  Normative References
 
    [I-D.ietf-schc-8824-update]
               Tiloca, M., Toutain, L., Martínez, I., and A. Minaburo,
               "Static Context Header Compression (SCHC) for the
               Constrained Application Protocol (CoAP)", Work in
-              Progress, Internet-Draft, draft-ietf-schc-8824-update-08,
-              3 June 2026, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-schc-8824-update-08>.
+              Progress, Internet-Draft, draft-ietf-schc-8824-update-09,
+              6 July 2026, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-schc-8824-update-09>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -2263,7 +2349,7 @@ Table of Contents
               DOI 10.17487/RFC9528, March 2024,
               <https://www.rfc-editor.org/rfc/rfc9528>.
 
-8.2.  Informative References
+9.2.  Informative References
 
    [I-D.ietf-ace-edhoc-oscore-profile]
               Selander, G., Mattsson, J. P., Tiloca, M., and R. Höglund,
@@ -2271,16 +2357,16 @@ Table of Contents
               Security for Constrained Environments (OSCORE) Profile for
               Authentication and Authorization for Constrained
               Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-10, 1 March 2026,
+              draft-ietf-ace-edhoc-oscore-profile-11, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-10>.
+              edhoc-oscore-profile-11>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
               Work in Progress, Internet-Draft, draft-ietf-core-oscore-
-              key-limits-06, 7 January 2026,
+              key-limits-07, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              oscore-key-limits-06>.
+              oscore-key-limits-07>.
 
    [I-D.irtf-cfrg-aead-limits]
               Günther, F., Thomson, M., and C. A. Wood, "Usage Limits on
@@ -2315,6 +2401,11 @@ Table of Contents
               Internet of Things (IoT): Problem Statement", RFC 7554,
               DOI 10.17487/RFC7554, May 2015,
               <https://www.rfc-editor.org/rfc/rfc7554>.
+
+   [RFC7942]  Sheffer, Y. and A. Farrel, "Improving Awareness of Running
+              Code: The Implementation Status Section", BCP 205,
+              RFC 7942, DOI 10.17487/RFC7942, July 2016,
+              <https://www.rfc-editor.org/rfc/rfc7942>.
 
    [RFC8180]  Vilajosana, X., Ed., Pister, K., and T. Watteyne, "Minimal
               IPv6 over the TSCH Mode of IEEE 802.15.4e (6TiSCH)
@@ -3312,107 +3403,11 @@ Appendix B.  KUDOS State Machine
        | Revert to using CTX_NEW as CTX_OLD, or continue using CTX_OLD
        | -----------------------> (Go to BUSY)
 
-Appendix C.  YANG Data Model
-
-   This appendix defines the ietf-schc-coap-kudos module, which extends
-   the ietf-schc module defined in [RFC9363] to include the extended
-   format of the CoAP OSCORE option (see Section 4.1 of the present
-   document).
-
-   This extension complements the update to the ietf-schc module made by
-   the YANG data model defined in Appendix A of
-   [I-D.ietf-schc-8824-update].
-
-   Note to RFC Editor: In the YANG data model below, please replace all
-   occurrences of "XXXX" with the RFC number of this specification and
-   delete this paragraph.
-
-   <CODE BEGINS> file "ietf-schc-coap-kudos@2026-07-06.yang"
-   module ietf-schc-coap-kudos {
-     yang-version 1.1;
-     namespace "urn:ietf:params:xml:ns:yang:ietf-schc-coap-kudos";
-     prefix schc-coap-kudos;
-
-     import ietf-schc {
-         prefix schc;
-     }
-
-     organization
-       "IETF CORE (Constrained RESTful Environments) Working Group";
-     contact
-       "WG Web:   https://datatracker.ietf.org/wg/core
-        WG List:  CORE <mailto:core@ietf.org>
-        Editor:   Marco Tiloca
-                  <mailto:marco.tiloca@ri.se>";
-     description
-       "This module extends the ietf-schc module defined in RFC 9363 to
-        include the extended format of the CoAP OSCORE Option for using
-        Key Update for OSCORE (KUDOS), as defined in RFC XXXX.
-
-        Copyright (c) 2026 IETF Trust and the persons identified
-        as authors of the code.  All rights reserved.
-
-        Redistribution and use in source and binary forms, with
-        or without modification, is permitted pursuant to, and
-        subject to the license terms contained in, the Revised
-        BSD License set forth in Section 4.c of the IETF Trust's
-        Legal Provisions Relating to IETF Documents
-        (https://trustee.ietf.org/license-info).
-
-        All revisions of IETF and IANA published modules can be found
-        at the YANG Parameters registry group
-        (https://www.iana.org/assignments/yang-parameters).
-
-        This version of this YANG module is part of RFC XXXX; see
-        the RFC itself for full legal notices.";
-
-     revision 2026-07-06 {
-       description
-         "Extended OSCORE fields for Key Update for OSCORE (KUDOS).";
-       reference
-         "RFC XXXX Key Update for OSCORE (KUDOS)
-                   (see Sections 4.1 and 5)";
-     }
-
-     // Field ID
-
-     identity fid-coap-option-oscore-x {
-          base "schc:fid-coap-option";
-          description
-            "CoAP option OSCORE x field.";
-          reference
-            "RFC XXXX Key Update for OSCORE (KUDOS)
-                      (see Sections 4.1 and 5)";
-     }
-
-     identity fid-coap-option-oscore-nonce {
-          base "schc:fid-coap-option";
-          description
-            "CoAP option OSCORE nonce field.";
-          reference
-            "RFC XXXX Key Update for OSCORE (KUDOS)
-                      (see Sections 4.1 and 5)";
-     }
-
-     // Function Length
-
-     identity fl-oscore-nonce-length {
-          base "schc:fl-base-type";
-          description
-            "Size in bytes of the OSCORE nonce, equal to m+1.";
-          reference
-            "RFC XXXX Key Update for OSCORE (KUDOS) (see Section 5)";
-     }
-   }
-   <CODE ENDS>
-
-            Figure 6: SCHC CoAP KUDOS Extension YANG Data Model.
-
-Appendix D.  Document Updates
+Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-D.1.  Version -14 to -15
+C.1.  Version -13 to -14
 
    *  Remove redundant YANG data model.
 
@@ -3420,17 +3415,9 @@ D.1.  Version -14 to -15
 
    *  Added section "Implementation Status".
 
-D.2.  Version -13 to -14
+   *  Updated legal boilerplate and other metadata.
 
-   *  YANG data model:
-
-      -  Updated legal boilerplate and other metadata.
-
-      -  Consistent use of placeholders for RFC numbers.
-
-      -  Editorial updates.
-
-D.3.  Version -12 to -13
+C.2.  Version -12 to -13
 
    *  Defined SCHC compression of the extended OSCORE Option (originally
       defined in draft-ietf-schc-8824-update).
@@ -3445,7 +3432,7 @@ D.3.  Version -12 to -13
 
    *  Add further message flow examples.
 
-D.4.  Version -11 to -12
+C.3.  Version -11 to -12
 
    *  Add multiple additional message flow examples.
 
@@ -3453,7 +3440,7 @@ D.4.  Version -11 to -12
 
    *  Add diagram of KUDOS state machine.
 
-D.5.  Version -10 to -11
+C.4.  Version -10 to -11
 
    *  Extended security considerations.
 
@@ -3468,12 +3455,12 @@ D.5.  Version -10 to -11
    *  Optimization for traversing the state machine upon reception of a
       divergent message.
 
-D.6.  Version -09 to -10
+C.5.  Version -09 to -10
 
    *  Major re-design building on a state machine driving the KUDOS
       execution.
 
-D.7.  Version -08 to -09
+C.6.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -3506,7 +3493,7 @@ D.7.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-D.8.  Version -07 to -08
+C.7.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -3532,7 +3519,7 @@ D.8.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-D.9.  Version -06 to -07
+C.8.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -3546,7 +3533,7 @@ D.9.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-D.10.  Version -05 to -06
+C.9.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -3566,7 +3553,7 @@ D.10.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.11.  Version -04 to -05
+C.10.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -3589,7 +3576,7 @@ D.11.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-D.12.  Version -03 to -04
+C.11.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3615,7 +3602,7 @@ D.12.  Version -03 to -04
 
    *  Editorial improvements.
 
-D.13.  Version -02 to -03
+C.12.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3634,7 +3621,7 @@ D.13.  Version -02 to -03
 
    *  Editorial improvements.
 
-D.14.  Version -01 to -02
+C.13.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3658,7 +3645,7 @@ D.14.  Version -01 to -02
 
    *  Editorial improvements.
 
-D.15.  Version -00 to -01
+C.14.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 
