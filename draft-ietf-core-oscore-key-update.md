@@ -1011,6 +1011,75 @@ As to the x subfield and the nonce subfield, the following applies.
 
   This construct avoids ambiguity with the value m within the x subfield and results in a more efficient compression of the nonce subfield.
 
+# Implementation Status # {#sec-implementation-status}
+{:removeinrfc}
+
+Note to RFC Editor: when deleting this section, please also delete RFC 7942 from the references of this document.
+
+{::boilerplate rfc7942info}
+
+## Implementation \#1 # {#sec-implementation-1}
+
+* Responsible organization: RISE Research Institutes of Sweden AB
+
+* Implementation's name: KUDOS in Californium
+
+* Available at: https://github.com/rikard-sics/californium/tree/oscore_kudos
+
+* Description: Implementation in Java, based on the Californium CoAP library, see:
+
+  * https://github.com/eclipse-californium/californium
+
+* Implementation's level of maturity: Prototype
+
+* The implementation supports:
+
+  * The FS mode and the no-FS mode.
+
+* The implementation does not support:
+
+  * Preservation of observations.
+
+* Version compatibility: From version -13 onwards.
+
+* Licensing: Eclipse Distribution License 1.0 / Eclipse Public License 2.0.
+
+* Contact information: Rikard Höglund - rikard.hoglund@ri.se
+
+* Information last updated on: 2026-07-06
+
+## Implementation \#2 # {#sec-implementation-2}
+
+* Responsible organization: University of Murcia (Spain)
+
+* Implementation's name: cKUDOS
+
+* Available at: https://github.com/francislopezg/cKUDOS
+
+* Description: Implementation in C, based on the uOSCORE-uEDHOC library, see:
+
+  * https://github.com/eriptic/uoscore-uedhoc
+
+* Implementation's level of maturity: Prototype
+
+* The implementation supports:
+
+  * The no-FS mode.
+
+* The implementation does not support:
+
+  * Preservation of observations.
+
+  * The FS mode.
+
+* Version compatibility: From version -13 onwards.
+
+* Licensing: Following Apache 2.0 license.
+
+* Contact information: Francisco López-Gómez - francisco.lopezg@um.es
+
+* Information last updated on: 2026-07-06
+
 # Security Considerations {#sec-cons}
 
 Depending on the specific key update procedure used to establish a new OSCORE Security Context, the related security considerations also apply.
@@ -1024,12 +1093,6 @@ Overall, the size of the nonces N1 and N2 should be set such that the security l
 The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy. Instead, if counter values are used (see {{key-material-handling}}), this can leak information such as the frequency according to which two peers perform a key update.
 
 As discussed in {{Symmetric-Security}}, key update methods built on symmetric key exchange have weaker security properties compared to methods built on ephemeral Diffie-Hellman key exchange. In fact, while the two approaches can co-exist, rekeying with symmetric key exchange is not intended as a substitute for ephemeral Diffie-Hellman key exchange. Peers should periodically perform a key update based on ephemeral Diffie-Hellman key exchange (e.g., by running the EDHOC protocol {{RFC9528}}). The cadence of such periodic key updates should be determined based on how much the two peers and their network environment are constrained, as well as on the maximum amount of time and of exchanged data that are acceptable between two such consecutive key updates.
-
-## YANG Module {#sec-security-considerations-yang-module}
-
-The YANG data model defined in {{sec-yang-module}} extends the ietf-schc module defined in {{RFC9363}}, complementing the update to that module made by the YANG data model defined in {{Section A of I-D.ietf-schc-8824-update}}.
-
-Therefore, all the security considerations compiled in {{Section 8 of RFC9363}} also apply to the resulting extended YANG data model.
 
 # IANA Considerations # {#sec-iana}
 
@@ -2078,100 +2141,10 @@ The following illustrates the states and transitions of the KUDOS state machine.
      | -----------------------> (Go to BUSY)
 ~~~~~~~~~~~
 
-# YANG Data Model # {#sec-yang-module}
-
-This appendix defines the ietf-schc-coap-kudos module, which extends the ietf-schc module defined in {{RFC9363}} to include the extended format of the CoAP OSCORE option (see {{ssec-oscore-option-extensions}} of the present document).
-
-This extension complements the update to the ietf-schc module made by the YANG data model defined in {{Appendix A of I-D.ietf-schc-8824-update}}.
-
-Note to RFC Editor: In the YANG data model below, please replace all occurrences of "XXXX" with the RFC number of this specification and delete this paragraph.
-
-~~~~~~~~~~~ yang
-
-module ietf-schc-coap-kudos {
-  yang-version 1.1;
-  namespace "urn:ietf:params:xml:ns:yang:ietf-schc-coap-kudos";
-  prefix schc-coap-kudos;
-
-  import ietf-schc {
-      prefix schc;
-  }
-
-  organization
-    "IETF CORE (Constrained RESTful Environments) Working Group";
-  contact
-    "WG Web:   https://datatracker.ietf.org/wg/core
-     WG List:  CORE <mailto:core@ietf.org>
-     Editor:   Marco Tiloca
-               <mailto:marco.tiloca@ri.se>";
-  description
-    "This module extends the ietf-schc module defined in RFC 9363 to
-     include the extended format of the CoAP OSCORE Option for using
-     Key Update for OSCORE (KUDOS), as defined in RFC XXXX.
-
-     Copyright (c) 2026 IETF Trust and the persons identified
-     as authors of the code.  All rights reserved.
-
-     Redistribution and use in source and binary forms, with
-     or without modification, is permitted pursuant to, and
-     subject to the license terms contained in, the Revised
-     BSD License set forth in Section 4.c of the IETF Trust's
-     Legal Provisions Relating to IETF Documents
-     (https://trustee.ietf.org/license-info).
-
-     All revisions of IETF and IANA published modules can be found
-     at the YANG Parameters registry group
-     (https://www.iana.org/assignments/yang-parameters).
-
-     This version of this YANG module is part of RFC XXXX; see
-     the RFC itself for full legal notices.";
-
-  revision 2026-07-06 {
-    description
-      "Extended OSCORE fields for Key Update for OSCORE (KUDOS).";
-    reference
-      "RFC XXXX Key Update for OSCORE (KUDOS)
-                (see Sections 4.1 and 5)";
-  }
-
-  // Field ID
-
-  identity fid-coap-option-oscore-x {
-       base "schc:fid-coap-option";
-       description
-         "CoAP option OSCORE x field.";
-       reference
-         "RFC XXXX Key Update for OSCORE (KUDOS)
-                   (see Sections 4.1 and 5)";
-  }
-
-  identity fid-coap-option-oscore-nonce {
-       base "schc:fid-coap-option";
-       description
-         "CoAP option OSCORE nonce field.";
-       reference
-         "RFC XXXX Key Update for OSCORE (KUDOS)
-                   (see Sections 4.1 and 5)";
-  }
-
-  // Function Length
-
-  identity fl-oscore-nonce-length {
-       base "schc:fl-base-type";
-       description
-         "Size in bytes of the OSCORE nonce, equal to m+1.";
-       reference
-         "RFC XXXX Key Update for OSCORE (KUDOS) (see Section 5)";
-  }
-}
-
-~~~~~~~~~~~
-{: sourcecode-name="ietf-schc-coap-kudos@2026-07-06.yang" sourcecode-markers="true" #fig-yang-data-model title="SCHC CoAP KUDOS Extension YANG Data Model."}
-
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
-## Version -14 to -15 ## {#sec-14-15}
+## Version -13 to -14 ## {#sec-13-14}
 
 * Remove redundant YANG data model.
 
@@ -2179,15 +2152,7 @@ module ietf-schc-coap-kudos {
 
 * Added section "Implementation Status".
 
-## Version -13 to -14 ## {#sec-13-14}
-
-* YANG data model:
-
-  * Updated legal boilerplate and other metadata.
-
-  * Consistent use of placeholders for RFC numbers.
-
-  * Editorial updates.
+* Updated legal boilerplate and other metadata.
 
 ## Version -12 to -13 ## {#sec-12-13}
 
