@@ -5,8 +5,8 @@
 CoRE Working Group                                            R. Höglund
 Internet-Draft                                                 M. Tiloca
 Updates: 8613 (if approved)                                      RISE AB
-Intended status: Standards Track                            16 July 2026
-Expires: 17 January 2027
+Intended status: Standards Track                         27 October 2026
+Expires: 30 April 2027
 
 
                      Key Update for OSCORE (KUDOS)
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 January 2027.
+   This Internet-Draft will expire on 30 April 2027.
 
 Copyright Notice
 
@@ -102,7 +102,7 @@ Table of Contents
        4.7.3.  Well-Known KUDOS Resource
        4.7.4.  Rekeying when Using SCHC with OSCORE
        4.7.5.  Combining KUDOS with Access Control
-     4.8.  Signaling KUDOS support in EDHOC
+     4.8.  Signaling KUDOS Support in LAKE
    5.  CoAP Header Compression with SCHC
    6.  Implementation Status
      6.1.  Implementation #1
@@ -135,20 +135,21 @@ Table of Contents
            Message, Final Response is Lost
    Appendix B.  KUDOS State Machine
    Appendix C.  Document Updates
-     C.1.  Version -13 to -14
-     C.2.  Version -12 to -13
-     C.3.  Version -11 to -12
-     C.4.  Version -10 to -11
-     C.5.  Version -09 to -10
-     C.6.  Version -08 to -09
-     C.7.  Version -07 to -08
-     C.8.  Version -06 to -07
-     C.9.  Version -05 to -06
-     C.10. Version -04 to -05
-     C.11. Version -03 to -04
-     C.12. Version -02 to -03
-     C.13. Version -01 to -02
-     C.14. Version -00 to -01
+     C.1.  Version -14 to -15
+     C.2.  Version -13 to -14
+     C.3.  Version -12 to -13
+     C.4.  Version -11 to -12
+     C.5.  Version -10 to -11
+     C.6.  Version -09 to -10
+     C.7.  Version -08 to -09
+     C.8.  Version -07 to -08
+     C.9.  Version -06 to -07
+     C.10. Version -05 to -06
+     C.11. Version -04 to -05
+     C.12. Version -03 to -04
+     C.13. Version -02 to -03
+     C.14. Version -01 to -02
+     C.15. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -204,8 +205,14 @@ Table of Contents
 
    Readers are expected to be familiar with the terms and concepts
    related to CoAP [RFC7252], Observe [RFC7641], Concise Binary Object
-   Representation (CBOR) [RFC8949], OSCORE [RFC8613], and Ephemeral
-   Diffie-Hellman Over COSE (EDHOC) [RFC9528].
+   Representation (CBOR) [RFC8949], OSCORE [RFC8613], and Lightweight
+   Authenticated Key Exchange (LAKE) [RFC9528].
+
+   This document uses the acronym LAKE, expanded to Lightweight
+   Authenticated Key Exchange, to denote the protocol specified as EDHOC
+   in [RFC9528].  Identifiers defined literally in [RFC9528] or in IANA
+   registries (e.g., the names of the EDHOC registries themselves) are
+   unchanged.
 
    This document additionally defines the following terminology.
 
@@ -290,9 +297,9 @@ Table of Contents
 
       This procedure does not provide forward secrecy.
 
-   *  The two peers can run the EDHOC key exchange protocol based on
-      Diffie-Hellman and defined in [RFC9528], in order to establish a
-      shared pseudo-random secret key in a mutually authenticated way.
+   *  The two peers can run the LAKE protocol [RFC9528] in order to
+      establish a shared pseudo-random secret key in a mutually
+      authenticated way.
 
       Then, the two peers can use the established pseudo-random key to
       derive external application keys.  This allows the two peers to
@@ -301,15 +308,15 @@ Table of Contents
 
       This procedure additionally provides forward secrecy.
 
-      EDHOC also specifies an optional function, namely EDHOC_KeyUpdate,
+      LAKE also specifies an optional function, namely EDHOC_KeyUpdate,
       to perform a key update in a more efficient way than re-running
-      EDHOC.  The two communicating peers call EDHOC_KeyUpdate with
+      LAKE.  The two communicating peers call EDHOC_KeyUpdate with
       equivalent input, which results in the derivation of a new shared
       pseudo-random secret key.  Usage of EDHOC_KeyUpdate preserves
       forward secrecy.
 
-      Note that EDHOC may be run standalone or as part of other
-      workflows, such as when using the EDHOC and OSCORE profile of ACE
+      Note that LAKE may be run standalone or as part of other
+      workflows, such as when using the LAKE and OSCORE profile of ACE
       [I-D.ietf-ace-edhoc-oscore-profile].
 
    *  If one peer is acting as LwM2M Client and the other peer as LwM2M
@@ -1189,7 +1196,7 @@ Table of Contents
 
    As a general rule, once successfully generated a new OSCORE Security
    Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS
-   execution, or it has been established through the EDHOC protocol
+   execution, or it has been established through the LAKE protocol
    [RFC9528]), a peer considers the Master Secret and Master Salt of CTX
    as Latest Master Secret and Latest Master Salt.  After that:
 
@@ -1342,9 +1349,9 @@ Table of Contents
       considers that keying material as the Latest material with peer B
       and stores it only in volatile memory.
 
-      An example of such an in-band procedure is the EDHOC and OSCORE
+      An example of such an in-band procedure is the LAKE and OSCORE
       profile of ACE [I-D.ietf-ace-edhoc-oscore-profile], according to
-      which the two peers run the EDHOC protocol [RFC9528] for
+      which the two peers run the LAKE protocol [RFC9528] for
       establishing an OSCORE Security Context to associate with access
       rights.  This in-band procedure may occur multiple times over the
       device's lifetime.
@@ -1657,7 +1664,7 @@ Table of Contents
 
    A resource at the server might be following the enforcement of access
    control means on the request.  For example, when combining KUDOS with
-   the EDHOC and OSCORE profile of ACE
+   the LAKE and OSCORE profile of ACE
    [I-D.ietf-ace-edhoc-oscore-profile], certain considerations must be
    taken into account to ensure proper access control behavior:
 
@@ -1680,107 +1687,107 @@ Table of Contents
    profile of ACE [RFC9203], this is because KUDOS changes the OSCORE
    Master Secret, which is used as proof-of-possession key in that
    profile.  However, as described above, KUDOS is compatible with the
-   EDHOC and OSCORE profile of ACE [I-D.ietf-ace-edhoc-oscore-profile].
+   LAKE and OSCORE profile of ACE [I-D.ietf-ace-edhoc-oscore-profile].
 
-4.8.  Signaling KUDOS support in EDHOC
+4.8.  Signaling KUDOS Support in LAKE
 
-   The EDHOC protocol defines the transport of additional External
-   Authorization Data (EAD) within an optional EAD field of the EDHOC
+   The LAKE protocol defines the transport of additional External
+   Authorization Data (EAD) within an optional EAD field of the LAKE
    messages (see Section 3.8 of [RFC9528]).  An EAD field is composed of
    one or multiple EAD items, each of which specifies an identifying
    'ead_label' encoded as a CBOR integer and an optional 'ead_value'
    encoded as a CBOR byte string.
 
-   This document defines a new EDHOC EAD item KUDOS_EAD and registers
-   its 'ead_label' in Section 8.3.  By including this EAD item in an
-   outgoing EDHOC message, a sender peer can indicate whether it
-   supports KUDOS and in which modes, as well as query the other peer
-   about its support.  Note that peers do not have to use this EDHOC EAD
-   item to be able to run KUDOS with each other, irrespective of the
-   modes that they support.  A KUDOS peer MUST only use the EDHOC EAD
-   item KUDOS_EAD as non-critical.  That is, when included in an EDHOC
-   message, its 'ead_label' MUST be used with positive sign.  The
-   possible values of the 'ead_value' are as follows:
+   This document defines a new LAKE EAD item KUDOS_EAD and registers its
+   'ead_label' in Section 8.3.  By including this EAD item in an
+   outgoing LAKE message, a sender peer can indicate whether it supports
+   KUDOS and in which modes, as well as query the other peer about its
+   support.  Note that peers do not have to use this LAKE EAD item to be
+   able to run KUDOS with each other, irrespective of the modes that
+   they support.  A KUDOS peer MUST only use the LAKE EAD item KUDOS_EAD
+   as non-critical.  That is, when included in a LAKE message, its
+   'ead_label' MUST be used with positive sign.  The possible values of
+   the 'ead_value' are as follows:
 
-     +======+==========+=============================================+
-     | Name | Value    | Description                                 |
-     +======+==========+=============================================+
-     | ASK  | h''      | Used only in EDHOC message_1.  It asks the  |
-     |      | (0x40)   | recipient peer to specify in EDHOC          |
-     |      |          | message_2 whether it supports KUDOS.        |
-     +------+----------+---------------------------------------------+
-     | NONE | h'00'    | Used only in EDHOC message_2 and message_3. |
-     |      | (0x4100) | It specifies that the sender peer does not  |
-     |      |          | support KUDOS.                              |
-     +------+----------+---------------------------------------------+
-     | FULL | h'01'    | Used only in EDHOC message_2 and message_3. |
-     |      | (0x4101) | It specifies that the sender peer supports  |
-     |      |          | KUDOS in FS mode and no-FS mode.            |
-     +------+----------+---------------------------------------------+
-     | PART | h'02'    | Used only in EDHOC message_2 and message_3. |
-     |      | (0x4102) | It specifies that the sender peer supports  |
-     |      |          | KUDOS in no-FS mode only.                   |
-     +------+----------+---------------------------------------------+
+     +======+==========+============================================+
+     | Name | Value    | Description                                |
+     +======+==========+============================================+
+     | ASK  | h''      | Used only in LAKE message_1.  It asks the  |
+     |      | (0x40)   | recipient peer to specify in LAKE          |
+     |      |          | message_2 whether it supports KUDOS.       |
+     +------+----------+--------------------------------------------+
+     | NONE | h'00'    | Used only in LAKE message_2 and message_3. |
+     |      | (0x4100) | It specifies that the sender peer does not |
+     |      |          | support KUDOS.                             |
+     +------+----------+--------------------------------------------+
+     | FULL | h'01'    | Used only in LAKE message_2 and message_3. |
+     |      | (0x4101) | It specifies that the sender peer supports |
+     |      |          | KUDOS in FS mode and no-FS mode.           |
+     +------+----------+--------------------------------------------+
+     | PART | h'02'    | Used only in LAKE message_2 and message_3. |
+     |      | (0x4102) | It specifies that the sender peer supports |
+     |      |          | KUDOS in no-FS mode only.                  |
+     +------+----------+--------------------------------------------+
 
-              Table 2: Values for the EDHOC EAD Item KUDOS_EAD
+             Table 2: Values for the LAKE EAD Item KUDOS_EAD
 
-   When the KUDOS_EAD item is included in EDHOC message_1 with
+   When the KUDOS_EAD item is included in LAKE message_1 with
    'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item
-   MUST specify whether it supports KUDOS in EDHOC message_2.
+   MUST specify whether it supports KUDOS in LAKE message_2.
 
-   When the KUDOS_EAD item is not included in EDHOC message_1 with
+   When the KUDOS_EAD item is not included in LAKE message_1 with
    'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item
-   MAY still specify whether it supports KUDOS in EDHOC message_2.
+   MAY still specify whether it supports KUDOS in LAKE message_2.
 
-   When the KUDOS_EAD item is included in EDHOC message_2 with
+   When the KUDOS_EAD item is included in LAKE message_2 with
    'ead_value' FULL or PART, a recipient peer that supports the
-   KUDOS_EAD item SHOULD specify whether it supports KUDOS in EDHOC
+   KUDOS_EAD item SHOULD specify whether it supports KUDOS in LAKE
    message_3.  An exception applies in case, based on application
    policies or other context information, the recipient peer that
-   receives EDHOC message_2 already knows that the sender peer is
+   receives LAKE message_2 already knows that the sender peer is
    supposed to have such knowledge.
 
-   When the KUDOS_EAD item is included in EDHOC message_2 with
+   When the KUDOS_EAD item is included in LAKE message_2 with
    'ead_value' NONE, a recipient peer that supports the KUDOS_EAD item
-   MUST NOT specify whether it supports KUDOS in EDHOC message_3.
+   MUST NOT specify whether it supports KUDOS in LAKE message_3.
 
    In the following cases, the recipient peer silently ignores the
-   KUDOS_EAD item specified in the received EDHOC message and does not
-   include a KUDOS_EAD item in the next EDHOC message it sends (if any).
+   KUDOS_EAD item specified in the received LAKE message and does not
+   include a KUDOS_EAD item in the next LAKE message it sends (if any).
 
    *  The recipient peer does not support the KUDOS_EAD item.
 
-   *  The KUDOS_EAD item is included in EDHOC message_1 with 'ead_value'
+   *  The KUDOS_EAD item is included in LAKE message_1 with 'ead_value'
       different than ASK.
 
-   *  The KUDOS_EAD item is included in EDHOC message_2 or message_3
-      with 'ead_value' ASK.
+   *  The KUDOS_EAD item is included in LAKE message_2 or message_3 with
+      'ead_value' ASK.
 
-   *  The KUDOS_EAD item is included in EDHOC message_4.
+   *  The KUDOS_EAD item is included in LAKE message_4.
 
-   That is, by specifying 'ead_value' ASK in EDHOC message_1, a peer A
+   That is, by specifying 'ead_value' ASK in LAKE message_1, a peer A
    can indicate to the other peer B that it wishes to know if B supports
-   KUDOS and in what mode(s).  In the following EDHOC message_2, the
-   peer B indicates whether it supports KUDOS and in what mode(s), by
+   KUDOS and in what mode(s).  In the following LAKE message_2, the peer
+   B indicates whether it supports KUDOS and in what mode(s), by
    specifying either NONE, FULL, or PART as 'ead_value'.  Specifying the
-   'ead_value' FULL or PART in EDHOC message_2 also asks A to indicate
-   whether it supports KUDOS in EDHOC message_3.
+   'ead_value' FULL or PART in LAKE message_2 also asks A to indicate
+   whether it supports KUDOS in LAKE message_3.
 
    To further illustrate the signaling process defined above, the
-   following presents two examples of EDHOC execution where only the new
+   following presents two examples of LAKE execution where only the new
    KUDOS_EAD item is shown when present, assuming that no other EAD
    items are used by the two peers.
 
-   In the example shown in Figure 3, the EDHOC Initiator asks the EDHOC
-   Responder about its support for KUDOS ('ead_value' = ASK).  In EDHOC
+   In the example shown in Figure 3, the LAKE Initiator asks the LAKE
+   Responder about its support for KUDOS ('ead_value' = ASK).  In LAKE
    message_2, the Responder indicates that it supports both the FS and
-   no-FS mode of KUDOS ('ead_value' = FULL).  Finally, in EDHOC
+   no-FS mode of KUDOS ('ead_value' = FULL).  Finally, in LAKE
    message_3, the Initiator indicates that it also supports both the FS
-   and no-FS mode of KUDOS ('ead_value' = FULL).  After the EDHOC
+   and no-FS mode of KUDOS ('ead_value' = FULL).  After the LAKE
    execution has been successfully completed, both peers are aware that
    they both support KUDOS, in the FS and no-FS modes.
 
-        EDHOC                                                 EDHOC
+        LAKE                                                   LAKE
         Initiator                                         Responder
         |                                                         |
         |                EAD_1: (TBD_LABEL, ASK)                  |
@@ -1796,20 +1803,20 @@ Table of Contents
         |                        message_3                        |
         |                                                         |
 
-       Figure 3: Example of EDHOC Execution with Signaling of Support
-                    for KUDOS (Both Peers Support KUDOS)
+     Figure 3: Example of LAKE Execution with Signaling of Support for
+                      KUDOS (Both Peers Support KUDOS)
 
-   In the example shown in Figure 4, the EDHOC Initiator asks the EDHOC
-   Responder about its support for KUDOS ('ead_value' = ASK).  In EDHOC
+   In the example shown in Figure 4, the LAKE Initiator asks the LAKE
+   Responder about its support for KUDOS ('ead_value' = ASK).  In LAKE
    message_2, the Responder indicates that it does not support KUDOS at
-   all ('ead_value' = NONE).  Finally, in EDHOC message_3, the Initiator
+   all ('ead_value' = NONE).  Finally, in LAKE message_3, the Initiator
    does not include the KUDOS_EAD item, since it already knows that
-   using KUDOS with the other peer will not be possible.  After the
-   EDHOC execution has been successfully completed, the Initiator is
-   aware that the Responder does not support KUDOS, which the two peers
-   are not going to use with each other.
+   using KUDOS with the other peer will not be possible.  After the LAKE
+   execution has been successfully completed, the Initiator is aware
+   that the Responder does not support KUDOS, which the two peers are
+   not going to use with each other.
 
-        EDHOC                                                 EDHOC
+        LAKE                                                   LAKE
         Initiator                                         Responder
         |                                                         |
         |                EAD_1: (TBD_LABEL, ASK)                  |
@@ -1824,8 +1831,8 @@ Table of Contents
         |                        message_3                        |
         |                                                         |
 
-       Figure 4: Example of EDHOC Execution with Signaling of Support
-           for KUDOS (the EDHOC Responder Does Not Support KUDOS)
+     Figure 4: Example of LAKE Execution with Signaling of Support for
+             KUDOS (the LAKE Responder Does Not Support KUDOS)
 
 5.  CoAP Header Compression with SCHC
 
@@ -2110,7 +2117,7 @@ Table of Contents
    while the two approaches can co-exist, rekeying with symmetric key
    exchange is not intended as a substitute for ephemeral Diffie-Hellman
    key exchange.  Peers should periodically perform a key update based
-   on ephemeral Diffie-Hellman key exchange (e.g., by running the EDHOC
+   on ephemeral Diffie-Hellman key exchange (e.g., by running the LAKE
    protocol [RFC9528]).  The cadence of such periodic key updates should
    be determined based on how much the two peers and their network
    environment are constrained, as well as on the maximum amount of time
@@ -2295,9 +2302,9 @@ Table of Contents
               Tiloca, M., Toutain, L., Martínez, I., and A. Minaburo,
               "Static Context Header Compression (SCHC) for the
               Constrained Application Protocol (CoAP)", Work in
-              Progress, Internet-Draft, draft-ietf-schc-8824-update-09,
-              6 July 2026, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-schc-8824-update-09>.
+              Progress, Internet-Draft, draft-ietf-schc-8824-update-10,
+              26 July 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-schc-8824-update-10>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -2353,27 +2360,28 @@ Table of Contents
 
    [I-D.ietf-ace-edhoc-oscore-profile]
               Selander, G., Mattsson, J. P., Tiloca, M., and R. Höglund,
-              "Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object
-              Security for Constrained Environments (OSCORE) Profile for
-              Authentication and Authorization for Constrained
-              Environments (ACE)", Work in Progress, Internet-Draft,
-              draft-ietf-ace-edhoc-oscore-profile-11, 6 July 2026,
+              "Lightweight Authenticated Key Exchange (LAKE) and Object
+              Security for Constrained RESTful Environments (OSCORE)
+              Profile of the Authentication and Authorization for
+              Constrained Environments (ACE) Framework", Work in
+              Progress, Internet-Draft, draft-ietf-ace-edhoc-oscore-
+              profile-12, 22 October 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-
-              edhoc-oscore-profile-11>.
+              edhoc-oscore-profile-12>.
 
    [I-D.ietf-core-oscore-key-limits]
               Höglund, R. and M. Tiloca, "Key Usage Limits for OSCORE",
               Work in Progress, Internet-Draft, draft-ietf-core-oscore-
-              key-limits-07, 6 July 2026,
+              key-limits-08, 7 September 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              oscore-key-limits-07>.
+              oscore-key-limits-08>.
 
    [I-D.irtf-cfrg-aead-limits]
               Günther, F., Thomson, M., and C. A. Wood, "Usage Limits on
               AEAD Algorithms", Work in Progress, Internet-Draft, draft-
-              irtf-cfrg-aead-limits-11, 4 December 2025,
+              irtf-cfrg-aead-limits-13, 3 September 2026,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              aead-limits-11>.
+              aead-limits-13>.
 
    [LwM2M]    Open Mobile Alliance, "Lightweight Machine to Machine
               Technical Specification - Core, Approved Version 1.2, OMA-
@@ -3407,7 +3415,11 @@ Appendix C.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-C.1.  Version -13 to -14
+C.1.  Version -14 to -15
+
+   *  Renamed EDHOC to LAKE as appropriate.
+
+C.2.  Version -13 to -14
 
    *  Remove redundant YANG data model.
 
@@ -3417,7 +3429,7 @@ C.1.  Version -13 to -14
 
    *  Updated legal boilerplate and other metadata.
 
-C.2.  Version -12 to -13
+C.3.  Version -12 to -13
 
    *  Defined SCHC compression of the extended OSCORE Option (originally
       defined in draft-ietf-schc-8824-update).
@@ -3432,7 +3444,7 @@ C.2.  Version -12 to -13
 
    *  Add further message flow examples.
 
-C.3.  Version -11 to -12
+C.4.  Version -11 to -12
 
    *  Add multiple additional message flow examples.
 
@@ -3440,7 +3452,7 @@ C.3.  Version -11 to -12
 
    *  Add diagram of KUDOS state machine.
 
-C.4.  Version -10 to -11
+C.5.  Version -10 to -11
 
    *  Extended security considerations.
 
@@ -3455,12 +3467,12 @@ C.4.  Version -10 to -11
    *  Optimization for traversing the state machine upon reception of a
       divergent message.
 
-C.5.  Version -09 to -10
+C.6.  Version -09 to -10
 
    *  Major re-design building on a state machine driving the KUDOS
       execution.
 
-C.6.  Version -08 to -09
+C.7.  Version -08 to -09
 
    *  Merge text about avoiding in-transit requests during a key update
       into a single subsection.
@@ -3493,7 +3505,7 @@ C.6.  Version -08 to -09
    *  Stressed usefulness of core.kudos for safe KUDOS requests without
       side effects.
 
-C.7.  Version -07 to -08
+C.8.  Version -07 to -08
 
    *  Add note about usage of the CoAP No-Response Option.
 
@@ -3519,7 +3531,7 @@ C.7.  Version -07 to -08
 
    *  Extended security considerations with reference to relevant paper.
 
-C.8.  Version -06 to -07
+C.9.  Version -06 to -07
 
    *  Removed material about the ID update procedure, which has been
       split out into a separate draft.
@@ -3533,7 +3545,7 @@ C.8.  Version -06 to -07
 
    *  Enable sending KUDOS messages as regular application messages.
 
-C.9.  Version -05 to -06
+C.10.  Version -05 to -06
 
    *  Mandate support for both the forward and reverse message flow.
 
@@ -3553,7 +3565,7 @@ C.9.  Version -05 to -06
 
    *  Editorial improvements.
 
-C.10.  Version -04 to -05
+C.11.  Version -04 to -05
 
    *  Note on client retransmissions if KUDOS execution fails in reverse
       message flow.
@@ -3576,7 +3588,7 @@ C.10.  Version -04 to -05
 
    *  Clarifications and editorial improvements.
 
-C.11.  Version -03 to -04
+C.12.  Version -03 to -04
 
    *  Removed content about key usage limits.
 
@@ -3602,7 +3614,7 @@ C.11.  Version -03 to -04
 
    *  Editorial improvements.
 
-C.12.  Version -02 to -03
+C.13.  Version -02 to -03
 
    *  Use of the OSCORE flag bit 0 to signal more flag bits.
 
@@ -3621,7 +3633,7 @@ C.12.  Version -02 to -03
 
    *  Editorial improvements.
 
-C.13.  Version -01 to -02
+C.14.  Version -01 to -02
 
    *  Extended terminology.
 
@@ -3645,7 +3657,7 @@ C.13.  Version -01 to -02
 
    *  Editorial improvements.
 
-C.14.  Version -00 to -01
+C.15.  Version -00 to -01
 
    *  Recommendation on limits for CCM_8.  Details in Appendix.
 

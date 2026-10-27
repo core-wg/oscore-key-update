@@ -10,23 +10,23 @@
 <meta content="
        Communications with the Constrained Application Protocol (CoAP) can be protected end-to-end at the application-layer by using the security protocol Object Security for Constrained RESTful Environments (OSCORE). Under some circumstances, two CoAP endpoints need to update their OSCORE keying material before communications can securely continue, e.g., due to approaching key usage limits. This document defines Key Update for OSCORE (KUDOS), a lightweight key update procedure that two CoAP endpoints can use to update their OSCORE keying material by establishing a new OSCORE Security Context. Accordingly, this document updates the use of the OSCORE flag bits in the CoAP OSCORE Option as well as the protection of CoAP response messages with OSCORE. Also, it deprecates the key update procedure specified in Appendix B.2 of RFC 8613. Therefore, this document updates RFC 8613. 
     " name="description">
-<meta content="xml2rfc 3.34.0" name="generator">
+<meta content="xml2rfc 3.34.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-key-update-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.34.0
-    Python 3.14.5
-    ConfigArgParse 1.7.5
+  xml2rfc 3.34.1
+    Python 3.14.8
+    ConfigArgParse 1.8.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.13.4
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.2
+    wcwidth 0.9.2
 -->
 <link href="draft-ietf-core-oscore-key-update.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -62,7 +62,6 @@
   src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: italic;
@@ -111,7 +110,6 @@
   src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: normal;
@@ -176,7 +174,6 @@
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
 }
 
 @font-face {
@@ -1045,11 +1042,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Key Update for OSCORE (KUDOS)</td>
-<td class="right">July 2026</td>
+<td class="right">October 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Höglund &amp; Tiloca</td>
-<td class="center">Expires 17 January 2027</td>
+<td class="center">Expires 30 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1062,12 @@ svg {
 <a href="https://www.rfc-editor.org/rfc/rfc8613" class="eref">8613</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-16" class="published">16 July 2026</time>
+<time datetime="2026-10-27" class="published">27 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-17">17 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-30">30 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1119,7 +1116,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 30 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1243,7 +1240,7 @@ svg {
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.8">
-                <p id="section-toc.1-1.4.2.8.1"><a href="#section-4.8" class="auto internal xref">4.8</a>.  <a href="#name-signaling-kudos-support-in-" class="internal xref">Signaling KUDOS support in EDHOC</a></p>
+                <p id="section-toc.1-1.4.2.8.1"><a href="#section-4.8" class="auto internal xref">4.8</a>.  <a href="#name-signaling-kudos-support-in-" class="internal xref">Signaling KUDOS Support in LAKE</a></p>
 </li>
             </ul>
 </li>
@@ -1331,46 +1328,49 @@ svg {
             <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
-                <p id="section-toc.1-1.12.2.1.1"><a href="#appendix-C.1" class="auto internal xref">C.1</a>.  <a href="#name-version-13-to-14" class="internal xref">Version -13 to -14</a></p>
+                <p id="section-toc.1-1.12.2.1.1"><a href="#appendix-C.1" class="auto internal xref">C.1</a>.  <a href="#name-version-14-to-15" class="internal xref">Version -14 to -15</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
-                <p id="section-toc.1-1.12.2.2.1"><a href="#appendix-C.2" class="auto internal xref">C.2</a>.  <a href="#name-version-12-to-13" class="internal xref">Version -12 to -13</a></p>
+                <p id="section-toc.1-1.12.2.2.1"><a href="#appendix-C.2" class="auto internal xref">C.2</a>.  <a href="#name-version-13-to-14" class="internal xref">Version -13 to -14</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.3">
-                <p id="section-toc.1-1.12.2.3.1"><a href="#appendix-C.3" class="auto internal xref">C.3</a>.  <a href="#name-version-11-to-12" class="internal xref">Version -11 to -12</a></p>
+                <p id="section-toc.1-1.12.2.3.1"><a href="#appendix-C.3" class="auto internal xref">C.3</a>.  <a href="#name-version-12-to-13" class="internal xref">Version -12 to -13</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.4">
-                <p id="section-toc.1-1.12.2.4.1"><a href="#appendix-C.4" class="auto internal xref">C.4</a>.  <a href="#name-version-10-to-11" class="internal xref">Version -10 to -11</a></p>
+                <p id="section-toc.1-1.12.2.4.1"><a href="#appendix-C.4" class="auto internal xref">C.4</a>.  <a href="#name-version-11-to-12" class="internal xref">Version -11 to -12</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.5">
-                <p id="section-toc.1-1.12.2.5.1"><a href="#appendix-C.5" class="auto internal xref">C.5</a>.  <a href="#name-version-09-to-10" class="internal xref">Version -09 to -10</a></p>
+                <p id="section-toc.1-1.12.2.5.1"><a href="#appendix-C.5" class="auto internal xref">C.5</a>.  <a href="#name-version-10-to-11" class="internal xref">Version -10 to -11</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.6">
-                <p id="section-toc.1-1.12.2.6.1"><a href="#appendix-C.6" class="auto internal xref">C.6</a>.  <a href="#name-version-08-to-09" class="internal xref">Version -08 to -09</a></p>
+                <p id="section-toc.1-1.12.2.6.1"><a href="#appendix-C.6" class="auto internal xref">C.6</a>.  <a href="#name-version-09-to-10" class="internal xref">Version -09 to -10</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.7">
-                <p id="section-toc.1-1.12.2.7.1"><a href="#appendix-C.7" class="auto internal xref">C.7</a>.  <a href="#name-version-07-to-08" class="internal xref">Version -07 to -08</a></p>
+                <p id="section-toc.1-1.12.2.7.1"><a href="#appendix-C.7" class="auto internal xref">C.7</a>.  <a href="#name-version-08-to-09" class="internal xref">Version -08 to -09</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.8">
-                <p id="section-toc.1-1.12.2.8.1"><a href="#appendix-C.8" class="auto internal xref">C.8</a>.  <a href="#name-version-06-to-07" class="internal xref">Version -06 to -07</a></p>
+                <p id="section-toc.1-1.12.2.8.1"><a href="#appendix-C.8" class="auto internal xref">C.8</a>.  <a href="#name-version-07-to-08" class="internal xref">Version -07 to -08</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.9">
-                <p id="section-toc.1-1.12.2.9.1"><a href="#appendix-C.9" class="auto internal xref">C.9</a>.  <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
+                <p id="section-toc.1-1.12.2.9.1"><a href="#appendix-C.9" class="auto internal xref">C.9</a>.  <a href="#name-version-06-to-07" class="internal xref">Version -06 to -07</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.10">
-                <p id="section-toc.1-1.12.2.10.1"><a href="#appendix-C.10" class="auto internal xref">C.10</a>. <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
+                <p id="section-toc.1-1.12.2.10.1"><a href="#appendix-C.10" class="auto internal xref">C.10</a>. <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.11">
-                <p id="section-toc.1-1.12.2.11.1"><a href="#appendix-C.11" class="auto internal xref">C.11</a>. <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
+                <p id="section-toc.1-1.12.2.11.1"><a href="#appendix-C.11" class="auto internal xref">C.11</a>. <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.12">
-                <p id="section-toc.1-1.12.2.12.1"><a href="#appendix-C.12" class="auto internal xref">C.12</a>. <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
+                <p id="section-toc.1-1.12.2.12.1"><a href="#appendix-C.12" class="auto internal xref">C.12</a>. <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.13">
-                <p id="section-toc.1-1.12.2.13.1"><a href="#appendix-C.13" class="auto internal xref">C.13</a>. <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+                <p id="section-toc.1-1.12.2.13.1"><a href="#appendix-C.13" class="auto internal xref">C.13</a>. <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.14">
-                <p id="section-toc.1-1.12.2.14.1"><a href="#appendix-C.14" class="auto internal xref">C.14</a>. <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
+                <p id="section-toc.1-1.12.2.14.1"><a href="#appendix-C.14" class="auto internal xref">C.14</a>. <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.15">
+                <p id="section-toc.1-1.12.2.15.1"><a href="#appendix-C.15" class="auto internal xref">C.15</a>. <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
 </li>
             </ul>
 </li>
@@ -1415,17 +1415,18 @@ In particular, it defines and registers the usage of the OSCORE flag bit with Bi
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">Readers are expected to be familiar with the terms and concepts related to CoAP <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, Observe <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>, Concise Binary Object Representation (CBOR) <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>, OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, and Ephemeral Diffie-Hellman Over COSE (EDHOC) <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
-<p id="section-1.1-3">This document additionally defines the following terminology.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">Readers are expected to be familiar with the terms and concepts related to CoAP <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, Observe <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>, Concise Binary Object Representation (CBOR) <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>, OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, and Lightweight Authenticated Key Exchange (LAKE) <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1-3">This document uses the acronym LAKE, expanded to Lightweight Authenticated Key Exchange, to denote the protocol specified as EDHOC in <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>. Identifiers defined literally in <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span> or in IANA registries (e.g., the names of the EDHOC registries themselves) are unchanged.<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">This document additionally defines the following terminology.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-4.1">
-            <p id="section-1.1-4.1.1">FS mode: the KUDOS execution mode that achieves forward secrecy (see <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>).<a href="#section-1.1-4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-1.1-5.1">
+            <p id="section-1.1-5.1.1">FS mode: the KUDOS execution mode that achieves forward secrecy (see <a href="#ssec-derive-ctx" class="auto internal xref">Section 4.3</a>).<a href="#section-1.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.2">
-            <p id="section-1.1-4.2.1">No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see <a href="#no-fs-mode" class="auto internal xref">Section 4.4</a>).<a href="#section-1.1-4.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-1.1-5.2">
+            <p id="section-1.1-5.2.1">No-FS mode: the KUDOS execution mode that does not achieve forward secrecy (see <a href="#no-fs-mode" class="auto internal xref">Section 4.4</a>).<a href="#section-1.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-4.3">
-            <p id="section-1.1-4.3.1">Equilibrium: The situation where a peer has no execution of KUDOS currently ongoing with the other KUDOS peer for updating one of their OSCORE Security Contexts.<a href="#section-1.1-4.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-1.1-5.3">
+            <p id="section-1.1-5.3.1">Equilibrium: The situation where a peer has no execution of KUDOS currently ongoing with the other KUDOS peer for updating one of their OSCORE Security Contexts.<a href="#section-1.1-5.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1459,15 +1460,15 @@ When a CoAP client uploads an access token to a CoAP server as an access credent
 This procedure does not provide forward secrecy.<a href="#section-2-5.2.3" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-2-5.3">
-          <p id="section-2-5.3.1">The two peers can run the EDHOC key exchange protocol based on Diffie-Hellman and defined in <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>, in order to establish a shared pseudo-random secret key in a mutually authenticated way.<a href="#section-2-5.3.1" class="pilcrow">¶</a></p>
+          <p id="section-2-5.3.1">The two peers can run the LAKE protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span> in order to establish a shared pseudo-random secret key in a mutually authenticated way.<a href="#section-2-5.3.1" class="pilcrow">¶</a></p>
 <p id="section-2-5.3.2">
 Then, the two peers can use the established pseudo-random key to derive external application keys. This allows the two peers to securely derive an OSCORE Master Secret and an OSCORE Master Salt, from which an OSCORE Security Context can be established.<a href="#section-2-5.3.2" class="pilcrow">¶</a></p>
 <p id="section-2-5.3.3">
 This procedure additionally provides forward secrecy.<a href="#section-2-5.3.3" class="pilcrow">¶</a></p>
 <p id="section-2-5.3.4">
-EDHOC also specifies an optional function, namely EDHOC_KeyUpdate, to perform a key update in a more efficient way than re-running EDHOC. The two communicating peers call EDHOC_KeyUpdate with equivalent input, which results in the derivation of a new shared pseudo-random secret key. Usage of EDHOC_KeyUpdate preserves forward secrecy.<a href="#section-2-5.3.4" class="pilcrow">¶</a></p>
+LAKE also specifies an optional function, namely EDHOC_KeyUpdate, to perform a key update in a more efficient way than re-running LAKE. The two communicating peers call EDHOC_KeyUpdate with equivalent input, which results in the derivation of a new shared pseudo-random secret key. Usage of EDHOC_KeyUpdate preserves forward secrecy.<a href="#section-2-5.3.4" class="pilcrow">¶</a></p>
 <p id="section-2-5.3.5">
-Note that EDHOC may be run standalone or as part of other workflows, such as when using the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-2-5.3.5" class="pilcrow">¶</a></p>
+Note that LAKE may be run standalone or as part of other workflows, such as when using the LAKE and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-2-5.3.5" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-2-5.4">
           <p id="section-2-5.4.1">If one peer is acting as LwM2M Client and the other peer as LwM2M Server, according to the OMA Lightweight Machine to Machine Core specification <span>[<a href="#LwM2M" class="cite xref">LwM2M</a>]</span>, then the LwM2M Client peer may take the initiative to bootstrap again with the LwM2M Bootstrap Server, and again receive an OSCORE Security Context. Alternatively, the LwM2M Server can instruct the LwM2M Client to initiate this procedure.<a href="#section-2-5.4.1" class="pilcrow">¶</a></p>
@@ -2156,7 +2157,7 @@ In such a case, the plain CoAP request composed before OSCORE protection can inc
 In such a case, the peer <span class="bcp14">MUST</span> enforce measures to ensure freshness of the nonce values. For example, the peer can use the same procedure described in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.1.1" class="relref">Appendix B.1.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> for handling the OSCORE Sender Sequence Number values. These measures require regularly storing the used counter values in non-volatile memory, which makes non-CAPABLE devices unable to safely use counter values as nonce values.<a href="#section-4.4.1-5.6.2" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-4.4.1-6">As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS execution, or it has been established through the EDHOC protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:<a href="#section-4.4.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.4.1-6">As a general rule, once successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS execution, or it has been established through the LAKE protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>), a peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:<a href="#section-4.4.1-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.4.1-7.1">
               <p id="section-4.4.1-7.1.1">If the peer is a CAPABLE device, it <span class="bcp14">MUST</span> store Latest Master Secret and Latest Master Salt on disk, with the exception of possible temporary OSCORE Security Contexts used during a key update procedure, such as CTX_TEMP used during the KUDOS execution. That is, the OSCORE Master Secret and Master Salt from such temporary Security Contexts are not stored on disk.<a href="#section-4.4.1-7.1.1" class="pilcrow">¶</a></p>
@@ -2242,7 +2243,7 @@ Note that, if the peer A is a CAPABLE device, it is able to remember that the pe
             <li class="normal" id="section-4.4.3-5.2">
               <p id="section-4.4.3-5.2.1">Peer A establishes OSCORE keying material associated with peer B through an in-band procedure run with peer B. Then, peer A considers that keying material as the Latest material with peer B and stores it only in volatile memory.<a href="#section-4.4.3-5.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.4.3-5.2.2">
-An example of such an in-band procedure is the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>, according to which the two peers run the EDHOC protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span> for establishing an OSCORE Security Context to associate with access rights. This in-band procedure may occur multiple times over the device's lifetime.<a href="#section-4.4.3-5.2.2" class="pilcrow">¶</a></p>
+An example of such an in-band procedure is the LAKE and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>, according to which the two peers run the LAKE protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span> for establishing an OSCORE Security Context to associate with access rights. This in-band procedure may occur multiple times over the device's lifetime.<a href="#section-4.4.3-5.2.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.4.3-5.3">
               <p id="section-4.4.3-5.3.1">Peer A runs KUDOS in FS mode with peer B, thereby achieving forward secrecy for subsequent key update epochs, as long as the OSCORE keying material was originally established with forward secrecy. Peer A stores each newly derived Security Context in volatile memory.<a href="#section-4.4.3-5.3.1" class="pilcrow">¶</a></p>
@@ -2446,7 +2447,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
           </h4>
 <p id="section-4.7.4-1">In the interest of rekeying, the following points must be taken into account when using the Static Context Header Compression and fragmentation (SCHC) framework <span>[<a href="#RFC8724" class="cite xref">RFC8724</a>]</span> for compressing CoAP messages protected with OSCORE, as defined in <span>[<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span> and further specified in <a href="#schc" class="auto internal xref">Section 5</a> of the present document.<a href="#section-4.7.4-1" class="pilcrow">¶</a></p>
 <p id="section-4.7.4-2">The SCHC compression of the 'Partial IV' field in the OSCORE Option value has implications for the frequency of rekeying. That is, if the 'Partial IV' field is compressed, the communicating peers must perform rekeying more often, as the available Sender Sequence Number space that is used for the Partial IV becomes effectively smaller due to the compression. For instance, if only 3 bits of the Partial IV are sent, then the maximum Partial IV that can be used before having to rekey is only 2<sup>3</sup> - 1 = 7.<a href="#section-4.7.4-2" class="pilcrow">¶</a></p>
-<p id="section-4.7.4-3">Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, that endpoint must perform a rekeying (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09#section-12" class="relref">Section 12</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>).<a href="#section-4.7.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.7.4-3">Furthermore, any time the SCHC context Rules are updated on an OSCORE endpoint, that endpoint must perform a rekeying (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10#section-12" class="relref">Section 12</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>).<a href="#section-4.7.4-3" class="pilcrow">¶</a></p>
 <p id="section-4.7.4-4">That is, the use of SCHC plays a role in triggering KUDOS executions and in affecting their cadence. Hence, the employed SCHC Rules and their update policies should ensure that the KUDOS executions occurring as their side effect do not significantly impair the gain expected from message compression.<a href="#section-4.7.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2455,7 +2456,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
           <h4 id="name-combining-kudos-with-access">
 <a href="#section-4.7.5" class="section-number selfRef">4.7.5. </a><a href="#name-combining-kudos-with-access" class="section-name selfRef">Combining KUDOS with Access Control</a>
           </h4>
-<p id="section-4.7.5-1">A resource at the server might be following the enforcement of access control means on the request. For example, when combining KUDOS with the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>, certain considerations must be taken into account to ensure proper access control behavior:<a href="#section-4.7.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.7.5-1">A resource at the server might be following the enforcement of access control means on the request. For example, when combining KUDOS with the LAKE and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>, certain considerations must be taken into account to ensure proper access control behavior:<a href="#section-4.7.5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.7.5-2.1">
               <p id="section-4.7.5-2.1.1">A KUDOS request that targets a non-KUDOS resource <span class="bcp14">MUST</span> trigger standard ACE-based access control checks.<a href="#section-4.7.5-2.1.1" class="pilcrow">¶</a></p>
@@ -2466,7 +2467,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
           </ul>
 <p id="section-4.7.5-3">To support this, the path of any KUDOS resource can be included in the ACE access control exclusion list (i.e., the "do not enforce access control" list). The same principles have to be applied if other means are used to enforce access control.<a href="#section-4.7.5-3" class="pilcrow">¶</a></p>
 <p id="section-4.7.5-4">In some deployment scenarios, an ACE Access Token may be bound to both CTX_OLD and CTX_NEW, allowing it to be valid and still usable after the execution of a KUDOS procedure.<a href="#section-4.7.5-4" class="pilcrow">¶</a></p>
-<p id="section-4.7.5-5">It is important to note that KUDOS is not compatible with the OSCORE profile of ACE <span>[<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>, this is because KUDOS changes the OSCORE Master Secret, which is used as proof-of-possession key in that profile. However, as described above, KUDOS is compatible with the EDHOC and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-4.7.5-5" class="pilcrow">¶</a></p>
+<p id="section-4.7.5-5">It is important to note that KUDOS is not compatible with the OSCORE profile of ACE <span>[<a href="#RFC9203" class="cite xref">RFC9203</a>]</span>, this is because KUDOS changes the OSCORE Master Secret, which is used as proof-of-possession key in that profile. However, as described above, KUDOS is compatible with the LAKE and OSCORE profile of ACE <span>[<a href="#I-D.ietf-ace-edhoc-oscore-profile" class="cite xref">I-D.ietf-ace-edhoc-oscore-profile</a>]</span>.<a href="#section-4.7.5-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2474,15 +2475,15 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 <div id="edhoc-ead-signaling">
 <section id="section-4.8">
         <h3 id="name-signaling-kudos-support-in-">
-<a href="#section-4.8" class="section-number selfRef">4.8. </a><a href="#name-signaling-kudos-support-in-" class="section-name selfRef">Signaling KUDOS support in EDHOC</a>
+<a href="#section-4.8" class="section-number selfRef">4.8. </a><a href="#name-signaling-kudos-support-in-" class="section-name selfRef">Signaling KUDOS Support in LAKE</a>
         </h3>
-<p id="section-4.8-1">The EDHOC protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the EDHOC messages (see <span><a href="https://rfc-editor.org/rfc/rfc9528#section-3.8" class="relref">Section 3.8</a> of [<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer and an optional 'ead_value' encoded as a CBOR byte string.<a href="#section-4.8-1" class="pilcrow">¶</a></p>
-<p id="section-4.8-2">This document defines a new EDHOC EAD item KUDOS_EAD and registers its 'ead_label' in <a href="#iana-edhoc-aad" class="auto internal xref">Section 8.3</a>. By including this EAD item in an outgoing EDHOC message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this EDHOC EAD item to be able to run KUDOS with each other, irrespective of the modes that they support. A KUDOS peer <span class="bcp14">MUST</span> only use the EDHOC EAD item KUDOS_EAD as non-critical. That is, when included in an EDHOC message, its 'ead_label' <span class="bcp14">MUST</span> be used with positive sign. The possible values of the 'ead_value' are as follows:<a href="#section-4.8-2" class="pilcrow">¶</a></p>
-<span id="name-values-for-the-edhoc-ead-it"></span><div id="_table-kudos-ead">
+<p id="section-4.8-1">The LAKE protocol defines the transport of additional External Authorization Data (EAD) within an optional EAD field of the LAKE messages (see <span><a href="https://rfc-editor.org/rfc/rfc9528#section-3.8" class="relref">Section 3.8</a> of [<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>). An EAD field is composed of one or multiple EAD items, each of which specifies an identifying 'ead_label' encoded as a CBOR integer and an optional 'ead_value' encoded as a CBOR byte string.<a href="#section-4.8-1" class="pilcrow">¶</a></p>
+<p id="section-4.8-2">This document defines a new LAKE EAD item KUDOS_EAD and registers its 'ead_label' in <a href="#iana-edhoc-aad" class="auto internal xref">Section 8.3</a>. By including this EAD item in an outgoing LAKE message, a sender peer can indicate whether it supports KUDOS and in which modes, as well as query the other peer about its support. Note that peers do not have to use this LAKE EAD item to be able to run KUDOS with each other, irrespective of the modes that they support. A KUDOS peer <span class="bcp14">MUST</span> only use the LAKE EAD item KUDOS_EAD as non-critical. That is, when included in a LAKE message, its 'ead_label' <span class="bcp14">MUST</span> be used with positive sign. The possible values of the 'ead_value' are as follows:<a href="#section-4.8-2" class="pilcrow">¶</a></p>
+<span id="name-values-for-the-lake-ead-ite"></span><div id="_table-kudos-ead">
 <table class="center" id="table-2">
           <caption>
 <a href="#table-2" class="selfRef">Table 2</a>:
-<a href="#name-values-for-the-edhoc-ead-it" class="selfRef">Values for the EDHOC EAD Item KUDOS_EAD</a>
+<a href="#name-values-for-the-lake-ead-ite" class="selfRef">Values for the LAKE EAD Item KUDOS_EAD</a>
           </caption>
 <thead>
             <tr>
@@ -2495,49 +2496,49 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
             <tr>
               <td class="text-left" rowspan="1" colspan="1">ASK</td>
               <td class="text-left" rowspan="1" colspan="1">h'' (0x40)</td>
-              <td class="text-left" rowspan="1" colspan="1">Used only in EDHOC message_1. It asks the recipient peer to specify in EDHOC message_2 whether it supports KUDOS.</td>
+              <td class="text-left" rowspan="1" colspan="1">Used only in LAKE message_1. It asks the recipient peer to specify in LAKE message_2 whether it supports KUDOS.</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">NONE</td>
               <td class="text-left" rowspan="1" colspan="1">h'00' (0x4100)</td>
-              <td class="text-left" rowspan="1" colspan="1">Used only in EDHOC message_2 and message_3. It specifies that the sender peer does not support KUDOS.</td>
+              <td class="text-left" rowspan="1" colspan="1">Used only in LAKE message_2 and message_3. It specifies that the sender peer does not support KUDOS.</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">FULL</td>
               <td class="text-left" rowspan="1" colspan="1">h'01' (0x4101)</td>
-              <td class="text-left" rowspan="1" colspan="1">Used only in EDHOC message_2 and message_3. It specifies that the sender peer supports KUDOS in FS mode and no-FS mode.</td>
+              <td class="text-left" rowspan="1" colspan="1">Used only in LAKE message_2 and message_3. It specifies that the sender peer supports KUDOS in FS mode and no-FS mode.</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">PART</td>
               <td class="text-left" rowspan="1" colspan="1">h'02' (0x4102)</td>
-              <td class="text-left" rowspan="1" colspan="1">Used only in EDHOC message_2 and message_3. It specifies that the sender peer supports KUDOS in no-FS mode only.</td>
+              <td class="text-left" rowspan="1" colspan="1">Used only in LAKE message_2 and message_3. It specifies that the sender peer supports KUDOS in no-FS mode only.</td>
             </tr>
           </tbody>
         </table>
 </div>
-<p id="section-4.8-4">When the KUDOS_EAD item is included in EDHOC message_1 with 'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">MUST</span> specify whether it supports KUDOS in EDHOC message_2.<a href="#section-4.8-4" class="pilcrow">¶</a></p>
-<p id="section-4.8-5">When the KUDOS_EAD item is not included in EDHOC message_1 with 'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">MAY</span> still specify whether it supports KUDOS in EDHOC message_2.<a href="#section-4.8-5" class="pilcrow">¶</a></p>
-<p id="section-4.8-6">When the KUDOS_EAD item is included in EDHOC message_2 with 'ead_value' FULL or PART, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">SHOULD</span> specify whether it supports KUDOS in EDHOC message_3. An exception applies in case, based on application policies or other context information, the recipient peer that receives EDHOC message_2 already knows that the sender peer is supposed to have such knowledge.<a href="#section-4.8-6" class="pilcrow">¶</a></p>
-<p id="section-4.8-7">When the KUDOS_EAD item is included in EDHOC message_2 with 'ead_value' NONE, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">MUST NOT</span> specify whether it supports KUDOS in EDHOC message_3.<a href="#section-4.8-7" class="pilcrow">¶</a></p>
-<p id="section-4.8-8">In the following cases, the recipient peer silently ignores the KUDOS_EAD item specified in the received EDHOC message and does not include a KUDOS_EAD item in the next EDHOC message it sends (if any).<a href="#section-4.8-8" class="pilcrow">¶</a></p>
+<p id="section-4.8-4">When the KUDOS_EAD item is included in LAKE message_1 with 'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">MUST</span> specify whether it supports KUDOS in LAKE message_2.<a href="#section-4.8-4" class="pilcrow">¶</a></p>
+<p id="section-4.8-5">When the KUDOS_EAD item is not included in LAKE message_1 with 'ead_value' ASK, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">MAY</span> still specify whether it supports KUDOS in LAKE message_2.<a href="#section-4.8-5" class="pilcrow">¶</a></p>
+<p id="section-4.8-6">When the KUDOS_EAD item is included in LAKE message_2 with 'ead_value' FULL or PART, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">SHOULD</span> specify whether it supports KUDOS in LAKE message_3. An exception applies in case, based on application policies or other context information, the recipient peer that receives LAKE message_2 already knows that the sender peer is supposed to have such knowledge.<a href="#section-4.8-6" class="pilcrow">¶</a></p>
+<p id="section-4.8-7">When the KUDOS_EAD item is included in LAKE message_2 with 'ead_value' NONE, a recipient peer that supports the KUDOS_EAD item <span class="bcp14">MUST NOT</span> specify whether it supports KUDOS in LAKE message_3.<a href="#section-4.8-7" class="pilcrow">¶</a></p>
+<p id="section-4.8-8">In the following cases, the recipient peer silently ignores the KUDOS_EAD item specified in the received LAKE message and does not include a KUDOS_EAD item in the next LAKE message it sends (if any).<a href="#section-4.8-8" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.8-9.1">
             <p id="section-4.8-9.1.1">The recipient peer does not support the KUDOS_EAD item.<a href="#section-4.8-9.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.8-9.2">
-            <p id="section-4.8-9.2.1">The KUDOS_EAD item is included in EDHOC message_1 with 'ead_value' different than ASK.<a href="#section-4.8-9.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.8-9.2.1">The KUDOS_EAD item is included in LAKE message_1 with 'ead_value' different than ASK.<a href="#section-4.8-9.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.8-9.3">
-            <p id="section-4.8-9.3.1">The KUDOS_EAD item is included in EDHOC message_2 or message_3 with 'ead_value' ASK.<a href="#section-4.8-9.3.1" class="pilcrow">¶</a></p>
+            <p id="section-4.8-9.3.1">The KUDOS_EAD item is included in LAKE message_2 or message_3 with 'ead_value' ASK.<a href="#section-4.8-9.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.8-9.4">
-            <p id="section-4.8-9.4.1">The KUDOS_EAD item is included in EDHOC message_4.<a href="#section-4.8-9.4.1" class="pilcrow">¶</a></p>
+            <p id="section-4.8-9.4.1">The KUDOS_EAD item is included in LAKE message_4.<a href="#section-4.8-9.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.8-10">That is, by specifying 'ead_value' ASK in EDHOC message_1, a peer A can indicate to the other peer B that it wishes to know if B supports KUDOS and in what mode(s). In the following EDHOC message_2, the peer B indicates whether it supports KUDOS and in what mode(s), by specifying either NONE, FULL, or PART as 'ead_value'. Specifying the 'ead_value' FULL or PART in EDHOC message_2 also asks A to indicate whether it supports KUDOS in EDHOC message_3.<a href="#section-4.8-10" class="pilcrow">¶</a></p>
-<p id="section-4.8-11">To further illustrate the signaling process defined above, the following presents two examples of EDHOC execution where only the new KUDOS_EAD item is shown when present, assuming that no other EAD items are used by the two peers.<a href="#section-4.8-11" class="pilcrow">¶</a></p>
-<p id="section-4.8-12">In the example shown in <a href="#fig-edhoc-ead-example-1" class="auto internal xref">Figure 3</a>, the EDHOC Initiator asks the EDHOC Responder about its support for KUDOS ('ead_value' = ASK). In EDHOC message_2, the Responder indicates that it supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). Finally, in EDHOC message_3, the Initiator indicates that it also supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). After the EDHOC execution has been successfully completed, both peers are aware that they both support KUDOS, in the FS and no-FS modes.<a href="#section-4.8-12" class="pilcrow">¶</a></p>
-<span id="name-example-of-edhoc-execution-"></span><div id="fig-edhoc-ead-example-1">
+<p id="section-4.8-10">That is, by specifying 'ead_value' ASK in LAKE message_1, a peer A can indicate to the other peer B that it wishes to know if B supports KUDOS and in what mode(s). In the following LAKE message_2, the peer B indicates whether it supports KUDOS and in what mode(s), by specifying either NONE, FULL, or PART as 'ead_value'. Specifying the 'ead_value' FULL or PART in LAKE message_2 also asks A to indicate whether it supports KUDOS in LAKE message_3.<a href="#section-4.8-10" class="pilcrow">¶</a></p>
+<p id="section-4.8-11">To further illustrate the signaling process defined above, the following presents two examples of LAKE execution where only the new KUDOS_EAD item is shown when present, assuming that no other EAD items are used by the two peers.<a href="#section-4.8-11" class="pilcrow">¶</a></p>
+<p id="section-4.8-12">In the example shown in <a href="#fig-edhoc-ead-example-1" class="auto internal xref">Figure 3</a>, the LAKE Initiator asks the LAKE Responder about its support for KUDOS ('ead_value' = ASK). In LAKE message_2, the Responder indicates that it supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). Finally, in LAKE message_3, the Initiator indicates that it also supports both the FS and no-FS mode of KUDOS ('ead_value' = FULL). After the LAKE execution has been successfully completed, both peers are aware that they both support KUDOS, in the FS and no-FS modes.<a href="#section-4.8-12" class="pilcrow">¶</a></p>
+<span id="name-example-of-lake-execution-w"></span><div id="fig-edhoc-ead-example-1">
 <figure id="figure-3">
           <div id="section-4.8-13.1">
             <div class="alignCenter art-svg artwork" id="section-4.8-13.1.1">
@@ -2551,8 +2552,8 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
                 <polygon class="arrowhead" points="472,96 460,90.4 460,101.6" fill="black" transform="rotate(0,464,96)"></polygon>
                 <polygon class="arrowhead" points="24,160 12,154.4 12,165.6" fill="black" transform="rotate(180,16,160)"></polygon>
                 <g class="text">
-                  <text x="24" y="36">EDHOC</text>
-                  <text x="456" y="36">EDHOC</text>
+                  <text x="20" y="36">LAKE</text>
+                  <text x="460" y="36">LAKE</text>
                   <text x="40" y="52">Initiator</text>
                   <text x="440" y="52">Responder</text>
                   <text x="164" y="84">EAD_1:</text>
@@ -2572,11 +2573,11 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 </div>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-example-of-edhoc-execution-" class="selfRef">Example of EDHOC Execution with Signaling of Support for KUDOS (Both Peers Support KUDOS)</a>
+<a href="#name-example-of-lake-execution-w" class="selfRef">Example of LAKE Execution with Signaling of Support for KUDOS (Both Peers Support KUDOS)</a>
           </figcaption></figure>
 </div>
-<p id="section-4.8-14">In the example shown in <a href="#fig-edhoc-ead-example-2" class="auto internal xref">Figure 4</a>, the EDHOC Initiator asks the EDHOC Responder about its support for KUDOS ('ead_value' = ASK). In EDHOC message_2, the Responder indicates that it does not support KUDOS at all ('ead_value' = NONE). Finally, in EDHOC message_3, the Initiator does not include the KUDOS_EAD item, since it already knows that using KUDOS with the other peer will not be possible. After the EDHOC execution has been successfully completed, the Initiator is aware that the Responder does not support KUDOS, which the two peers are not going to use with each other.<a href="#section-4.8-14" class="pilcrow">¶</a></p>
-<span id="name-example-of-edhoc-execution-w"></span><div id="fig-edhoc-ead-example-2">
+<p id="section-4.8-14">In the example shown in <a href="#fig-edhoc-ead-example-2" class="auto internal xref">Figure 4</a>, the LAKE Initiator asks the LAKE Responder about its support for KUDOS ('ead_value' = ASK). In LAKE message_2, the Responder indicates that it does not support KUDOS at all ('ead_value' = NONE). Finally, in LAKE message_3, the Initiator does not include the KUDOS_EAD item, since it already knows that using KUDOS with the other peer will not be possible. After the LAKE execution has been successfully completed, the Initiator is aware that the Responder does not support KUDOS, which the two peers are not going to use with each other.<a href="#section-4.8-14" class="pilcrow">¶</a></p>
+<span id="name-example-of-lake-execution-wi"></span><div id="fig-edhoc-ead-example-2">
 <figure id="figure-4">
           <div id="section-4.8-15.1">
             <div class="alignCenter art-svg artwork" id="section-4.8-15.1.1">
@@ -2590,8 +2591,8 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
                 <polygon class="arrowhead" points="472,96 460,90.4 460,101.6" fill="black" transform="rotate(0,464,96)"></polygon>
                 <polygon class="arrowhead" points="24,160 12,154.4 12,165.6" fill="black" transform="rotate(180,16,160)"></polygon>
                 <g class="text">
-                  <text x="24" y="36">EDHOC</text>
-                  <text x="456" y="36">EDHOC</text>
+                  <text x="20" y="36">LAKE</text>
+                  <text x="460" y="36">LAKE</text>
                   <text x="40" y="52">Initiator</text>
                   <text x="440" y="52">Responder</text>
                   <text x="164" y="84">EAD_1:</text>
@@ -2608,7 +2609,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 </div>
 </div>
 <figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
-<a href="#name-example-of-edhoc-execution-w" class="selfRef">Example of EDHOC Execution with Signaling of Support for KUDOS (the EDHOC Responder Does Not Support KUDOS)</a>
+<a href="#name-example-of-lake-execution-wi" class="selfRef">Example of LAKE Execution with Signaling of Support for KUDOS (the LAKE Responder Does Not Support KUDOS)</a>
           </figcaption></figure>
 </div>
 </section>
@@ -2620,8 +2621,8 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
       <h2 id="name-coap-header-compression-wit">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-coap-header-compression-wit" class="section-name selfRef">CoAP Header Compression with SCHC</a>
       </h2>
-<p id="section-5-1">In order to compress the header of CoAP messages, it is possible to use the Static Context Header Compression and fragmentation (SCHC) framework <span>[<a href="#RFC8724" class="cite xref">RFC8724</a>]</span>. In particular, <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span> specifies how to use SCHC for compressing headers of CoAP messages also when messages are protected with OSCORE.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">The following <a href="#fig-oscore-option-schc" class="auto internal xref">Figure 5</a> builds on <a href="#fig-oscore-option" class="auto internal xref">Figure 1</a> from <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a> of the present document and accordingly extends Figure 4 from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-1">In order to compress the header of CoAP messages, it is possible to use the Static Context Header Compression and fragmentation (SCHC) framework <span>[<a href="#RFC8724" class="cite xref">RFC8724</a>]</span>. In particular, <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span> specifies how to use SCHC for compressing headers of CoAP messages also when messages are protected with OSCORE.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">The following <a href="#fig-oscore-option-schc" class="auto internal xref">Figure 5</a> builds on <a href="#fig-oscore-option" class="auto internal xref">Figure 1</a> from <a href="#ssec-oscore-option-extensions" class="auto internal xref">Section 4.1</a> of the present document and accordingly extends Figure 4 from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <span id="name-the-extended-oscore-option-v"></span><div id="fig-oscore-option-schc">
 <figure id="figure-5">
         <div class="alignCenter art-text artwork" id="section-5-3.1">
@@ -2665,7 +2666,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 <a href="#name-the-extended-oscore-option-v" class="selfRef">The Extended OSCORE Option Value with Superimposed Subfields for SCHC Compression</a>
         </figcaption></figure>
 </div>
-<p id="section-5-4">Like described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, the description of a SCHC compression Rule needs to identify the OSCORE Option value and its inner fields.<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-5-4">Like described in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, the description of a SCHC compression Rule needs to identify the OSCORE Option value and its inner fields.<a href="#section-5-4" class="pilcrow">¶</a></p>
 <p id="section-5-5">In order to take into account the possible use of KUDOS, SCHC discerns six distinct pieces of information within the extended OSCORE Option value shown in <a href="#fig-oscore-option-schc" class="auto internal xref">Figure 5</a> above: the flag bits, the Partial IV, the kid context prepended by its size s, the x byte, the nonce, and the kid. The SCHC Rule splits the OSCORE Option value into six corresponding Field Descriptors, in order to separately compress those pieces of information as distinct subfields:<a href="#section-5-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-6.1">
@@ -2688,7 +2689,7 @@ This takes into account the fact that OSCORE-protected CoAP response messages no
 </li>
       </ul>
 <p id="section-5-7">In <a href="#fig-oscore-option-schc" class="auto internal xref">Figure 5</a>, the six subfields are superimposed on the shown extended format of the OSCORE Option value.<a href="#section-5-7" class="pilcrow">¶</a></p>
-<p id="section-5-8">Consistent with what is defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, if a SCHC Rule is intended to compress a CoAP message that specifies the OSCORE Option as per <a href="#fig-oscore-option-schc" class="auto internal xref">Figure 5</a>, then the related Field Descriptors must be listed in the same order according to which the corresponding pieces of information appear in the OSCORE Option value.<a href="#section-5-8" class="pilcrow">¶</a></p>
+<p id="section-5-8">Consistent with what is defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10#section-6.4" class="relref">Section 6.4</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, if a SCHC Rule is intended to compress a CoAP message that specifies the OSCORE Option as per <a href="#fig-oscore-option-schc" class="auto internal xref">Figure 5</a>, then the related Field Descriptors must be listed in the same order according to which the corresponding pieces of information appear in the OSCORE Option value.<a href="#section-5-8" class="pilcrow">¶</a></p>
 <p id="section-5-9">As to the x subfield and the nonce subfield, the following applies.<a href="#section-5-9" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-10.1">
@@ -2873,7 +2874,7 @@ to use this information as they see fit".<a href="#section-6-5" class="pilcrow">
 <p id="section-7-3">Considering the birthday paradox and a nonce size of 8 bytes, the average collision for each nonce will happen after the generation of 2<sup>32</sup> (X, nonce) pairs generated by a given peer (see <a href="#ssec-nonces-x-bytes" class="auto internal xref">Section 4.3.1</a>), which is considerably more than the number of such pairs that a peer is expected to generate throughout the update of a given OSCORE Security Context using KUDOS (in fact, that number is expected to typically be 1). Yet, determining the appropriate nonce size also ought to take into account the possible use of KUDOS in no-FS mode (see <a href="#no-fs-mode" class="auto internal xref">Section 4.4</a>), in which case every execution in no-FS mode between two given peers considers the same CTX_BOOTSTRAP as the OSCORE Security Context to update (see <a href="#no-fs-signaling" class="auto internal xref">Section 4.4.2</a>), hence raising the chances of reusing a nonce.<a href="#section-7-3" class="pilcrow">¶</a></p>
 <p id="section-7-4">Overall, the size of the nonces N1 and N2 should be set such that the security level is harmonized with other components of the deployment. Considering the constraints of embedded implementations, there might be a need for allowing N1 and N2 values that have a size smaller than the recommended one. This is acceptable, provided that safety, reliability, and robustness within the system can still be assured. That is, if nonces with a smaller size are used and thus a collision will occur on average after fewer KUDOS executions that aim to update a given OSCORE Security Context, care must be taken to ensure that this does not pose significant problems, e.g., considering as benchmark a constrained server operating at a capacity of one request per second.<a href="#section-7-4" class="pilcrow">¶</a></p>
 <p id="section-7-5">The nonces exchanged in the KUDOS messages are sent in the clear, so using random nonces is preferable for maintaining privacy. Instead, if counter values are used (see <a href="#key-material-handling" class="auto internal xref">Section 4.4.1</a>), this can leak information such as the frequency according to which two peers perform a key update.<a href="#section-7-5" class="pilcrow">¶</a></p>
-<p id="section-7-6">As discussed in <span>[<a href="#Symmetric-Security" class="cite xref">Symmetric-Security</a>]</span>, key update methods built on symmetric key exchange have weaker security properties compared to methods built on ephemeral Diffie-Hellman key exchange. In fact, while the two approaches can co-exist, rekeying with symmetric key exchange is not intended as a substitute for ephemeral Diffie-Hellman key exchange. Peers should periodically perform a key update based on ephemeral Diffie-Hellman key exchange (e.g., by running the EDHOC protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>). The cadence of such periodic key updates should be determined based on how much the two peers and their network environment are constrained, as well as on the maximum amount of time and of exchanged data that are acceptable between two such consecutive key updates.<a href="#section-7-6" class="pilcrow">¶</a></p>
+<p id="section-7-6">As discussed in <span>[<a href="#Symmetric-Security" class="cite xref">Symmetric-Security</a>]</span>, key update methods built on symmetric key exchange have weaker security properties compared to methods built on ephemeral Diffie-Hellman key exchange. In fact, while the two approaches can co-exist, rekeying with symmetric key exchange is not intended as a substitute for ephemeral Diffie-Hellman key exchange. Peers should periodically perform a key update based on ephemeral Diffie-Hellman key exchange (e.g., by running the LAKE protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>). The cadence of such periodic key updates should be determined based on how much the two peers and their network environment are constrained, as well as on the maximum amount of time and of exchanged data that are acceptable between two such consecutive key updates.<a href="#section-7-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-iana">
@@ -3079,7 +3080,7 @@ to use this information as they see fit".<a href="#section-6-5" class="pilcrow">
           <li class="normal" id="section-8.6-2.3">
             <p id="section-8.6-2.3.1">Reference: [RFC-XXXX]<a href="#section-8.6-2.3.1" class="pilcrow">¶</a></p>
 <p id="section-8.6-2.3.2">
-Consistent with what is defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09#section-13.4.2" class="relref">Section 13.4.2</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, this entry has to be added immediately after the entry whose value in the "Field" column is "CoAP.option(9).kid_ctx".<a href="#section-8.6-2.3.2" class="pilcrow">¶</a></p>
+Consistent with what is defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10#section-13.4.2" class="relref">Section 13.4.2</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, this entry has to be added immediately after the entry whose value in the "Field" column is "CoAP.option(9).kid_ctx".<a href="#section-8.6-2.3.2" class="pilcrow">¶</a></p>
 <p id="section-8.6-2.3.3">
 Note to RFC Editor: Once the registration above is completed, please delete the paragraph immediately preceding this note. Then, please delete this note.<a href="#section-8.6-2.3.3" class="pilcrow">¶</a></p>
 </li>
@@ -3095,7 +3096,7 @@ Note to RFC Editor: Once the registration above is completed, please delete the 
           <li class="normal" id="section-8.6-4.3">
             <p id="section-8.6-4.3.1">Reference: [RFC-XXXX]<a href="#section-8.6-4.3.1" class="pilcrow">¶</a></p>
 <p id="section-8.6-4.3.2">
-Consistent with what is defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09#section-13.4.2" class="relref">Section 13.4.2</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, this entry has to be added immediately before the entry whose value in the "Field" column is "CoAP.option(9).kid".<a href="#section-8.6-4.3.2" class="pilcrow">¶</a></p>
+Consistent with what is defined in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10#section-13.4.2" class="relref">Section 13.4.2</a> of [<a href="#I-D.ietf-schc-8824-update" class="cite xref">I-D.ietf-schc-8824-update</a>]</span>, this entry has to be added immediately before the entry whose value in the "Field" column is "CoAP.option(9).kid".<a href="#section-8.6-4.3.2" class="pilcrow">¶</a></p>
 <p id="section-8.6-4.3.3">
 Note to RFC Editor: Once the registration above is completed, please delete the paragraph immediately preceding this note. Then, please delete this note.<a href="#section-8.6-4.3.3" class="pilcrow">¶</a></p>
 </li>
@@ -3118,7 +3119,7 @@ Note to RFC Editor: Once the registration above is completed, please delete the 
 <dl class="references">
 <dt id="I-D.ietf-schc-8824-update">[I-D.ietf-schc-8824-update]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Toutain, L.</span>, <span class="refAuthor">Martínez, I.</span>, and <span class="refAuthor">A. Minaburo</span>, <span class="refTitle">"Static Context Header Compression (SCHC) for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-schc-8824-update-09</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09">https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Toutain, L.</span>, <span class="refAuthor">Martínez, I.</span>, and <span class="refAuthor">A. Minaburo</span>, <span class="refTitle">"Static Context Header Compression (SCHC) for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-schc-8824-update-10</span>, <time datetime="2026-07-26" class="refDate">26 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10">https://datatracker.ietf.org/doc/html/draft-ietf-schc-8824-update-10</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -3171,15 +3172,15 @@ Note to RFC Editor: Once the registration above is completed, please delete the 
 <dl class="references">
 <dt id="I-D.ietf-ace-edhoc-oscore-profile">[I-D.ietf-ace-edhoc-oscore-profile]</dt>
         <dd>
-<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Ephemeral Diffie-Hellman Over COSE (EDHOC) and Object Security for Constrained Environments (OSCORE) Profile for Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-11</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-11">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-11</a>&gt;</span>. </dd>
+<span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Tiloca, M.</span>, and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"Lightweight Authenticated Key Exchange (LAKE) and Object Security for Constrained RESTful Environments (OSCORE) Profile of the Authentication and Authorization for Constrained Environments (ACE) Framework"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-edhoc-oscore-profile-12</span>, <time datetime="2026-10-22" class="refDate">22 October 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-12">https://datatracker.ietf.org/doc/html/draft-ietf-ace-edhoc-oscore-profile-12</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-key-limits">[I-D.ietf-core-oscore-key-limits]</dt>
         <dd>
-<span class="refAuthor">Höglund, R.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Usage Limits for OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-key-limits-07</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-07">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Höglund, R.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Usage Limits for OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-key-limits-08</span>, <time datetime="2026-09-07" class="refDate">7 September 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-08">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-key-limits-08</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.irtf-cfrg-aead-limits">[I-D.irtf-cfrg-aead-limits]</dt>
         <dd>
-<span class="refAuthor">Günther, F.</span>, <span class="refAuthor">Thomson, M.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"Usage Limits on AEAD Algorithms"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-aead-limits-11</span>, <time datetime="2025-12-04" class="refDate">4 December 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-11">https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-11</a>&gt;</span>. </dd>
+<span class="refAuthor">Günther, F.</span>, <span class="refAuthor">Thomson, M.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"Usage Limits on AEAD Algorithms"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-aead-limits-13</span>, <time datetime="2026-09-03" class="refDate">3 September 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-13">https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-13</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="LwM2M">[LwM2M]</dt>
         <dd>
@@ -5694,428 +5695,440 @@ Verify with CTX_NEW     | OSCORE {             |
 <a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-document-updates" class="section-name selfRef">Document Updates</a>
       </h2>
 <p id="appendix-C-1">This section is to be removed before publishing as an RFC.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
-<div id="sec-13-14">
+<div id="sec-14-15">
 <section id="appendix-C.1">
-        <h3 id="name-version-13-to-14">
-<a href="#appendix-C.1" class="section-number selfRef">C.1. </a><a href="#name-version-13-to-14" class="section-name selfRef">Version -13 to -14</a>
+        <h3 id="name-version-14-to-15">
+<a href="#appendix-C.1" class="section-number selfRef">C.1. </a><a href="#name-version-14-to-15" class="section-name selfRef">Version -14 to -15</a>
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-C.1-1.1">
-            <p id="appendix-C.1-1.1.1">Remove redundant YANG data model.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-C.1-1.1.1">Renamed EDHOC to LAKE as appropriate.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.1-1.2">
-            <p id="appendix-C.1-1.2.1">Editorial improvements.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="sec-13-14">
+<section id="appendix-C.2">
+        <h3 id="name-version-13-to-14">
+<a href="#appendix-C.2" class="section-number selfRef">C.2. </a><a href="#name-version-13-to-14" class="section-name selfRef">Version -13 to -14</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-C.2-1.1">
+            <p id="appendix-C.2-1.1.1">Remove redundant YANG data model.<a href="#appendix-C.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.1-1.3">
-            <p id="appendix-C.1-1.3.1">Added section "Implementation Status".<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.2">
+            <p id="appendix-C.2-1.2.1">Editorial improvements.<a href="#appendix-C.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.1-1.4">
-            <p id="appendix-C.1-1.4.1">Updated legal boilerplate and other metadata.<a href="#appendix-C.1-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.2-1.3">
+            <p id="appendix-C.2-1.3.1">Added section "Implementation Status".<a href="#appendix-C.2-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.2-1.4">
+            <p id="appendix-C.2-1.4.1">Updated legal boilerplate and other metadata.<a href="#appendix-C.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-12-13">
-<section id="appendix-C.2">
+<section id="appendix-C.3">
         <h3 id="name-version-12-to-13">
-<a href="#appendix-C.2" class="section-number selfRef">C.2. </a><a href="#name-version-12-to-13" class="section-name selfRef">Version -12 to -13</a>
+<a href="#appendix-C.3" class="section-number selfRef">C.3. </a><a href="#name-version-12-to-13" class="section-name selfRef">Version -12 to -13</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.2-1.1">
-            <p id="appendix-C.2-1.1.1">Defined SCHC compression of the extended OSCORE Option (originally defined in draft-ietf-schc-8824-update).<a href="#appendix-C.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.3-1.1">
+            <p id="appendix-C.3-1.1.1">Defined SCHC compression of the extended OSCORE Option (originally defined in draft-ietf-schc-8824-update).<a href="#appendix-C.3-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.2-1.2">
-            <p id="appendix-C.2-1.2.1">Updated IANA considerations (SCHC-related actions).<a href="#appendix-C.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.3-1.2">
+            <p id="appendix-C.3-1.2.1">Updated IANA considerations (SCHC-related actions).<a href="#appendix-C.3-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.2-1.3">
-            <p id="appendix-C.2-1.3.1">Added security considerations about the YANG data model.<a href="#appendix-C.2-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.3-1.3">
+            <p id="appendix-C.3-1.3.1">Added security considerations about the YANG data model.<a href="#appendix-C.3-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.2-1.4">
-            <p id="appendix-C.2-1.4.1">Added YANG data model.<a href="#appendix-C.2-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.3-1.4">
+            <p id="appendix-C.3-1.4.1">Added YANG data model.<a href="#appendix-C.3-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.2-1.5">
-            <p id="appendix-C.2-1.5.1">General editorial improvements.<a href="#appendix-C.2-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.3-1.5">
+            <p id="appendix-C.3-1.5.1">General editorial improvements.<a href="#appendix-C.3-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.2-1.6">
-            <p id="appendix-C.2-1.6.1">Add further message flow examples.<a href="#appendix-C.2-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.3-1.6">
+            <p id="appendix-C.3-1.6.1">Add further message flow examples.<a href="#appendix-C.3-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-11-12">
-<section id="appendix-C.3">
+<section id="appendix-C.4">
         <h3 id="name-version-11-to-12">
-<a href="#appendix-C.3" class="section-number selfRef">C.3. </a><a href="#name-version-11-to-12" class="section-name selfRef">Version -11 to -12</a>
+<a href="#appendix-C.4" class="section-number selfRef">C.4. </a><a href="#name-version-11-to-12" class="section-name selfRef">Version -11 to -12</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.3-1.1">
-            <p id="appendix-C.3-1.1.1">Add multiple additional message flow examples.<a href="#appendix-C.3-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.4-1.1">
+            <p id="appendix-C.4-1.1.1">Add multiple additional message flow examples.<a href="#appendix-C.4-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.2">
-            <p id="appendix-C.3-1.2.1">Editorial improvements.<a href="#appendix-C.3-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.2">
+            <p id="appendix-C.4-1.2.1">Editorial improvements.<a href="#appendix-C.4-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.3-1.3">
-            <p id="appendix-C.3-1.3.1">Add diagram of KUDOS state machine.<a href="#appendix-C.3-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.4-1.3">
+            <p id="appendix-C.4-1.3.1">Add diagram of KUDOS state machine.<a href="#appendix-C.4-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-10-11">
-<section id="appendix-C.4">
+<section id="appendix-C.5">
         <h3 id="name-version-10-to-11">
-<a href="#appendix-C.4" class="section-number selfRef">C.4. </a><a href="#name-version-10-to-11" class="section-name selfRef">Version -10 to -11</a>
+<a href="#appendix-C.5" class="section-number selfRef">C.5. </a><a href="#name-version-10-to-11" class="section-name selfRef">Version -10 to -11</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.4-1.1">
-            <p id="appendix-C.4-1.1.1">Extended security considerations.<a href="#appendix-C.4-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.5-1.1">
+            <p id="appendix-C.5-1.1.1">Extended security considerations.<a href="#appendix-C.5-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.2">
-            <p id="appendix-C.4-1.2.1">Clarifications and editorial improvements.<a href="#appendix-C.4-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.2">
+            <p id="appendix-C.5-1.2.1">Clarifications and editorial improvements.<a href="#appendix-C.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.3">
-            <p id="appendix-C.4-1.3.1">Updates to IANA considerations according to IANA early reviews.<a href="#appendix-C.4-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.3">
+            <p id="appendix-C.5-1.3.1">Updates to IANA considerations according to IANA early reviews.<a href="#appendix-C.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.4">
-            <p id="appendix-C.4-1.4.1">Extended section about updated protection of CoAP responses.<a href="#appendix-C.4-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.4">
+            <p id="appendix-C.5-1.4.1">Extended section about updated protection of CoAP responses.<a href="#appendix-C.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.5">
-            <p id="appendix-C.4-1.5.1">Discussion about combining usage of KUDOS with profiles of ACE.<a href="#appendix-C.4-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.5">
+            <p id="appendix-C.5-1.5.1">Discussion about combining usage of KUDOS with profiles of ACE.<a href="#appendix-C.5-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.4-1.6">
-            <p id="appendix-C.4-1.6.1">Optimization for traversing the state machine upon reception of a divergent message.<a href="#appendix-C.4-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.5-1.6">
+            <p id="appendix-C.5-1.6.1">Optimization for traversing the state machine upon reception of a divergent message.<a href="#appendix-C.5-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-09-10">
-<section id="appendix-C.5">
+<section id="appendix-C.6">
         <h3 id="name-version-09-to-10">
-<a href="#appendix-C.5" class="section-number selfRef">C.5. </a><a href="#name-version-09-to-10" class="section-name selfRef">Version -09 to -10</a>
+<a href="#appendix-C.6" class="section-number selfRef">C.6. </a><a href="#name-version-09-to-10" class="section-name selfRef">Version -09 to -10</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.5-1.1">
-            <p id="appendix-C.5-1.1.1">Major re-design building on a state machine driving the KUDOS execution.<a href="#appendix-C.5-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.6-1.1">
+            <p id="appendix-C.6-1.1.1">Major re-design building on a state machine driving the KUDOS execution.<a href="#appendix-C.6-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-08-09">
-<section id="appendix-C.6">
+<section id="appendix-C.7">
         <h3 id="name-version-08-to-09">
-<a href="#appendix-C.6" class="section-number selfRef">C.6. </a><a href="#name-version-08-to-09" class="section-name selfRef">Version -08 to -09</a>
+<a href="#appendix-C.7" class="section-number selfRef">C.7. </a><a href="#name-version-08-to-09" class="section-name selfRef">Version -08 to -09</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.6-1.1">
-            <p id="appendix-C.6-1.1.1">Merge text about avoiding in-transit requests during a key update into a single subsection.<a href="#appendix-C.6-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.7-1.1">
+            <p id="appendix-C.7-1.1.1">Merge text about avoiding in-transit requests during a key update into a single subsection.<a href="#appendix-C.7-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.2">
-            <p id="appendix-C.6-1.2.1">Improved error handling.<a href="#appendix-C.6-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.2">
+            <p id="appendix-C.7-1.2.1">Improved error handling.<a href="#appendix-C.7-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.3">
-            <p id="appendix-C.6-1.3.1">Editorial improvements and clarifications.<a href="#appendix-C.6-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.3">
+            <p id="appendix-C.7-1.3.1">Editorial improvements and clarifications.<a href="#appendix-C.7-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.4">
-            <p id="appendix-C.6-1.4.1">State that the EDHOC EAD item must be used as non-critical.<a href="#appendix-C.6-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.4">
+            <p id="appendix-C.7-1.4.1">State that the EDHOC EAD item must be used as non-critical.<a href="#appendix-C.7-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.5">
-            <p id="appendix-C.6-1.5.1">Extended description and updates values for KUDOS communication overhead.<a href="#appendix-C.6-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.5">
+            <p id="appendix-C.7-1.5.1">Extended description and updates values for KUDOS communication overhead.<a href="#appendix-C.7-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.6">
-            <p id="appendix-C.6-1.6.1">Introduce special case when non-CAPABLE devices may operate in FS Mode.<a href="#appendix-C.6-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.6">
+            <p id="appendix-C.7-1.6.1">Introduce special case when non-CAPABLE devices may operate in FS Mode.<a href="#appendix-C.7-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.7">
-            <p id="appendix-C.6-1.7.1">Add parameter for signaling KUDOS support when using the ACE OSCORE profile.<a href="#appendix-C.6-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.7">
+            <p id="appendix-C.7-1.7.1">Add parameter for signaling KUDOS support when using the ACE OSCORE profile.<a href="#appendix-C.7-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.8">
-            <p id="appendix-C.6-1.8.1">Enable using the reverse message flow for peers that are only CoAP servers.<a href="#appendix-C.6-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.8">
+            <p id="appendix-C.7-1.8.1">Enable using the reverse message flow for peers that are only CoAP servers.<a href="#appendix-C.7-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.9">
-            <p id="appendix-C.6-1.9.1">Further clarifications about achieving key confirmation and deletion of old contexts.<a href="#appendix-C.6-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.9">
+            <p id="appendix-C.7-1.9.1">Further clarifications about achieving key confirmation and deletion of old contexts.<a href="#appendix-C.7-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.10">
-            <p id="appendix-C.6-1.10.1">Restructure distribution of content about FS and no-FS mode.<a href="#appendix-C.6-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.10">
+            <p id="appendix-C.7-1.10.1">Restructure distribution of content about FS and no-FS mode.<a href="#appendix-C.7-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.11">
-            <p id="appendix-C.6-1.11.1">Warn of consequences of running KUDOS with insufficient margin.<a href="#appendix-C.6-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.11">
+            <p id="appendix-C.7-1.11.1">Warn of consequences of running KUDOS with insufficient margin.<a href="#appendix-C.7-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.6-1.12">
-            <p id="appendix-C.6-1.12.1">Stressed usefulness of core.kudos for safe KUDOS requests without side effects.<a href="#appendix-C.6-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.7-1.12">
+            <p id="appendix-C.7-1.12.1">Stressed usefulness of core.kudos for safe KUDOS requests without side effects.<a href="#appendix-C.7-1.12.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-07-08">
-<section id="appendix-C.7">
+<section id="appendix-C.8">
         <h3 id="name-version-07-to-08">
-<a href="#appendix-C.7" class="section-number selfRef">C.7. </a><a href="#name-version-07-to-08" class="section-name selfRef">Version -07 to -08</a>
+<a href="#appendix-C.8" class="section-number selfRef">C.8. </a><a href="#name-version-07-to-08" class="section-name selfRef">Version -07 to -08</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.7-1.1">
-            <p id="appendix-C.7-1.1.1">Add note about usage of the CoAP No-Response Option.<a href="#appendix-C.7-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.8-1.1">
+            <p id="appendix-C.8-1.1.1">Add note about usage of the CoAP No-Response Option.<a href="#appendix-C.8-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.2">
-            <p id="appendix-C.7-1.2.1">Avoid problems for two simultaneously started key updates.<a href="#appendix-C.7-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.2">
+            <p id="appendix-C.8-1.2.1">Avoid problems for two simultaneously started key updates.<a href="#appendix-C.8-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.3">
-            <p id="appendix-C.7-1.3.1">Set Notification Number to be uninitialized for new OSCORE Security Contexts.<a href="#appendix-C.7-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.3">
+            <p id="appendix-C.8-1.3.1">Set Notification Number to be uninitialized for new OSCORE Security Contexts.<a href="#appendix-C.8-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.4">
-            <p id="appendix-C.7-1.4.1">Handle corner case for responder that reached its key usage limits.<a href="#appendix-C.7-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.4">
+            <p id="appendix-C.8-1.4.1">Handle corner case for responder that reached its key usage limits.<a href="#appendix-C.8-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.5">
-            <p id="appendix-C.7-1.5.1">Re-organizing main section about Forward Secrecy mode into subsections.<a href="#appendix-C.7-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.5">
+            <p id="appendix-C.8-1.5.1">Re-organizing main section about Forward Secrecy mode into subsections.<a href="#appendix-C.8-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.6">
-            <p id="appendix-C.7-1.6.1">IANA considerations for CoAP Option Numbers Registry to refer to this draft for the OSCORE option.<a href="#appendix-C.7-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.6">
+            <p id="appendix-C.8-1.6.1">IANA considerations for CoAP Option Numbers Registry to refer to this draft for the OSCORE option.<a href="#appendix-C.8-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.7">
-            <p id="appendix-C.7-1.7.1">Use AASVG in diagrams.<a href="#appendix-C.7-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.7">
+            <p id="appendix-C.8-1.7.1">Use AASVG in diagrams.<a href="#appendix-C.8-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.8">
-            <p id="appendix-C.7-1.8.1">Use actual tables instead of figures.<a href="#appendix-C.7-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.8">
+            <p id="appendix-C.8-1.8.1">Use actual tables instead of figures.<a href="#appendix-C.8-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.9">
-            <p id="appendix-C.7-1.9.1">Clarifications and editorial improvements.<a href="#appendix-C.7-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.9">
+            <p id="appendix-C.8-1.9.1">Clarifications and editorial improvements.<a href="#appendix-C.8-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.7-1.10">
-            <p id="appendix-C.7-1.10.1">Extended security considerations with reference to relevant paper.<a href="#appendix-C.7-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.8-1.10">
+            <p id="appendix-C.8-1.10.1">Extended security considerations with reference to relevant paper.<a href="#appendix-C.8-1.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-06-07">
-<section id="appendix-C.8">
+<section id="appendix-C.9">
         <h3 id="name-version-06-to-07">
-<a href="#appendix-C.8" class="section-number selfRef">C.8. </a><a href="#name-version-06-to-07" class="section-name selfRef">Version -06 to -07</a>
+<a href="#appendix-C.9" class="section-number selfRef">C.9. </a><a href="#name-version-06-to-07" class="section-name selfRef">Version -06 to -07</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.8-1.1">
-            <p id="appendix-C.8-1.1.1">Removed material about the ID update procedure, which has been split out into a separate draft.<a href="#appendix-C.8-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.9-1.1">
+            <p id="appendix-C.9-1.1.1">Removed material about the ID update procedure, which has been split out into a separate draft.<a href="#appendix-C.9-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.8-1.2">
-            <p id="appendix-C.8-1.2.1">Allow non-random nonces for CAPABLE devices.<a href="#appendix-C.8-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.9-1.2">
+            <p id="appendix-C.9-1.2.1">Allow non-random nonces for CAPABLE devices.<a href="#appendix-C.9-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.8-1.3">
-            <p id="appendix-C.8-1.3.1">Editorial improvements.<a href="#appendix-C.8-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.9-1.3">
+            <p id="appendix-C.9-1.3.1">Editorial improvements.<a href="#appendix-C.9-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.8-1.4">
-            <p id="appendix-C.8-1.4.1">Permit flexible message flow with KUDOS messages as any request/response.<a href="#appendix-C.8-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.9-1.4">
+            <p id="appendix-C.9-1.4.1">Permit flexible message flow with KUDOS messages as any request/response.<a href="#appendix-C.9-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.8-1.5">
-            <p id="appendix-C.8-1.5.1">Enable sending KUDOS messages as regular application messages.<a href="#appendix-C.8-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.9-1.5">
+            <p id="appendix-C.9-1.5.1">Enable sending KUDOS messages as regular application messages.<a href="#appendix-C.9-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-05-06">
-<section id="appendix-C.9">
+<section id="appendix-C.10">
         <h3 id="name-version-05-to-06">
-<a href="#appendix-C.9" class="section-number selfRef">C.9. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
+<a href="#appendix-C.10" class="section-number selfRef">C.10. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.9-1.1">
-            <p id="appendix-C.9-1.1.1">Mandate support for both the forward and reverse message flow.<a href="#appendix-C.9-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.10-1.1">
+            <p id="appendix-C.10-1.1.1">Mandate support for both the forward and reverse message flow.<a href="#appendix-C.10-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.9-1.2">
-            <p id="appendix-C.9-1.2.1">Mention the EDHOC and OSCORE profile of ACE as method for rekeying.<a href="#appendix-C.9-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.10-1.2">
+            <p id="appendix-C.10-1.2.1">Mention the EDHOC and OSCORE profile of ACE as method for rekeying.<a href="#appendix-C.10-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.9-1.3">
-            <p id="appendix-C.9-1.3.1">Clarify definition of KUDOS (request/response) message.<a href="#appendix-C.9-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.10-1.3">
+            <p id="appendix-C.10-1.3.1">Clarify definition of KUDOS (request/response) message.<a href="#appendix-C.10-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.9-1.4">
-            <p id="appendix-C.9-1.4.1">Further extend the OSCORE option to transport N1 in the second KUDOS message as a request.<a href="#appendix-C.9-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.10-1.4">
+            <p id="appendix-C.10-1.4.1">Further extend the OSCORE option to transport N1 in the second KUDOS message as a request.<a href="#appendix-C.10-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.9-1.5">
-            <p id="appendix-C.9-1.5.1">Mandate support for the no-FS mode on CAPABLE devices.<a href="#appendix-C.9-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.10-1.5">
+            <p id="appendix-C.10-1.5.1">Mandate support for the no-FS mode on CAPABLE devices.<a href="#appendix-C.10-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.9-1.6">
-            <p id="appendix-C.9-1.6.1">Explain when KUDOS fails during selection of mode.<a href="#appendix-C.9-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.10-1.6">
+            <p id="appendix-C.10-1.6.1">Explain when KUDOS fails during selection of mode.<a href="#appendix-C.10-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.9-1.7">
-            <p id="appendix-C.9-1.7.1">Explicitly forbid using old keying material after reboot.<a href="#appendix-C.9-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.10-1.7">
+            <p id="appendix-C.10-1.7.1">Explicitly forbid using old keying material after reboot.<a href="#appendix-C.10-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.9-1.8">
-            <p id="appendix-C.9-1.8.1">Editorial improvements.<a href="#appendix-C.9-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.10-1.8">
+            <p id="appendix-C.10-1.8.1">Editorial improvements.<a href="#appendix-C.10-1.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-04-05">
-<section id="appendix-C.10">
+<section id="appendix-C.11">
         <h3 id="name-version-04-to-05">
-<a href="#appendix-C.10" class="section-number selfRef">C.10. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
+<a href="#appendix-C.11" class="section-number selfRef">C.11. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.10-1.1">
-            <p id="appendix-C.10-1.1.1">Note on client retransmissions if KUDOS execution fails in reverse message flow.<a href="#appendix-C.10-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.11-1.1">
+            <p id="appendix-C.11-1.1.1">Note on client retransmissions if KUDOS execution fails in reverse message flow.<a href="#appendix-C.11-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.2">
-            <p id="appendix-C.10-1.2.1">Specify what information needs to be written to non-volatile memory to handle reboots.<a href="#appendix-C.10-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.2">
+            <p id="appendix-C.11-1.2.1">Specify what information needs to be written to non-volatile memory to handle reboots.<a href="#appendix-C.11-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.3">
-            <p id="appendix-C.10-1.3.1">Extended recommendations and considerations on minimum size of nonces N1 &amp; N2.<a href="#appendix-C.10-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.3">
+            <p id="appendix-C.11-1.3.1">Extended recommendations and considerations on minimum size of nonces N1 &amp; N2.<a href="#appendix-C.11-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.4">
-            <p id="appendix-C.10-1.4.1">Arbitrary maximum size of the Recipient-ID Option.<a href="#appendix-C.10-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.4">
+            <p id="appendix-C.11-1.4.1">Arbitrary maximum size of the Recipient-ID Option.<a href="#appendix-C.11-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.5">
-            <p id="appendix-C.10-1.5.1">Detailed lifecycle of the OSCORE IDs update procedure.<a href="#appendix-C.10-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.5">
+            <p id="appendix-C.11-1.5.1">Detailed lifecycle of the OSCORE IDs update procedure.<a href="#appendix-C.11-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.6">
-            <p id="appendix-C.10-1.6.1">Described examples of OSCORE IDs update procedure.<a href="#appendix-C.10-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.6">
+            <p id="appendix-C.11-1.6.1">Described examples of OSCORE IDs update procedure.<a href="#appendix-C.11-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.7">
-            <p id="appendix-C.10-1.7.1">Examples of OSCORE IDs update procedure integrated in KUDOS.<a href="#appendix-C.10-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.7">
+            <p id="appendix-C.11-1.7.1">Examples of OSCORE IDs update procedure integrated in KUDOS.<a href="#appendix-C.11-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.8">
-            <p id="appendix-C.10-1.8.1">Considerations about using SCHC for CoAP with OSCORE.<a href="#appendix-C.10-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.8">
+            <p id="appendix-C.11-1.8.1">Considerations about using SCHC for CoAP with OSCORE.<a href="#appendix-C.11-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.10-1.9">
-            <p id="appendix-C.10-1.9.1">Clarifications and editorial improvements.<a href="#appendix-C.10-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.11-1.9">
+            <p id="appendix-C.11-1.9.1">Clarifications and editorial improvements.<a href="#appendix-C.11-1.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-03-04">
-<section id="appendix-C.11">
+<section id="appendix-C.12">
         <h3 id="name-version-03-to-04">
-<a href="#appendix-C.11" class="section-number selfRef">C.11. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
+<a href="#appendix-C.12" class="section-number selfRef">C.12. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.11-1.1">
-            <p id="appendix-C.11-1.1.1">Removed content about key usage limits.<a href="#appendix-C.11-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.12-1.1">
+            <p id="appendix-C.12-1.1.1">Removed content about key usage limits.<a href="#appendix-C.12-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.2">
-            <p id="appendix-C.11-1.2.1">Use of "forward message flow" and "reverse message flow".<a href="#appendix-C.11-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.2">
+            <p id="appendix-C.12-1.2.1">Use of "forward message flow" and "reverse message flow".<a href="#appendix-C.12-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.3">
-            <p id="appendix-C.11-1.3.1">Update to RFC 8613 extended to include protection of responses.<a href="#appendix-C.11-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.3">
+            <p id="appendix-C.12-1.3.1">Update to RFC 8613 extended to include protection of responses.<a href="#appendix-C.12-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.4">
-            <p id="appendix-C.11-1.4.1">Include EDHOC_KeyUpdate() in the methods for rekeying.<a href="#appendix-C.11-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.4">
+            <p id="appendix-C.12-1.4.1">Include EDHOC_KeyUpdate() in the methods for rekeying.<a href="#appendix-C.12-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.5">
-            <p id="appendix-C.11-1.5.1">Describe reasons for using the OSCORE ID update procedure.<a href="#appendix-C.11-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.5">
+            <p id="appendix-C.12-1.5.1">Describe reasons for using the OSCORE ID update procedure.<a href="#appendix-C.12-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.6">
-            <p id="appendix-C.11-1.6.1">Clarifications on deletion of CTX_OLD and CTX_NEW.<a href="#appendix-C.11-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.6">
+            <p id="appendix-C.12-1.6.1">Clarifications on deletion of CTX_OLD and CTX_NEW.<a href="#appendix-C.12-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.7">
-            <p id="appendix-C.11-1.7.1">Added new section on preventing deadlocks.<a href="#appendix-C.11-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.7">
+            <p id="appendix-C.12-1.7.1">Added new section on preventing deadlocks.<a href="#appendix-C.12-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.8">
-            <p id="appendix-C.11-1.8.1">Clarified that peers can decide to run KUDOS at any point.<a href="#appendix-C.11-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.8">
+            <p id="appendix-C.12-1.8.1">Clarified that peers can decide to run KUDOS at any point.<a href="#appendix-C.12-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.9">
-            <p id="appendix-C.11-1.9.1">Defined preservation of observations beyond OSCORE ID updates.<a href="#appendix-C.11-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.9">
+            <p id="appendix-C.12-1.9.1">Defined preservation of observations beyond OSCORE ID updates.<a href="#appendix-C.12-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.10">
-            <p id="appendix-C.11-1.10.1">Revised discussion section, including also communication overhead.<a href="#appendix-C.11-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.10">
+            <p id="appendix-C.12-1.10.1">Revised discussion section, including also communication overhead.<a href="#appendix-C.12-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.11">
-            <p id="appendix-C.11-1.11.1">Defined a well-known KUDOS resource and a KUDOS resource type.<a href="#appendix-C.11-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.11">
+            <p id="appendix-C.12-1.11.1">Defined a well-known KUDOS resource and a KUDOS resource type.<a href="#appendix-C.12-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.11-1.12">
-            <p id="appendix-C.11-1.12.1">Editorial improvements.<a href="#appendix-C.11-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.12-1.12">
+            <p id="appendix-C.12-1.12.1">Editorial improvements.<a href="#appendix-C.12-1.12.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-02-03">
-<section id="appendix-C.12">
+<section id="appendix-C.13">
         <h3 id="name-version-02-to-03">
-<a href="#appendix-C.12" class="section-number selfRef">C.12. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
+<a href="#appendix-C.13" class="section-number selfRef">C.13. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.12-1.1">
-            <p id="appendix-C.12-1.1.1">Use of the OSCORE flag bit 0 to signal more flag bits.<a href="#appendix-C.12-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.13-1.1">
+            <p id="appendix-C.13-1.1.1">Use of the OSCORE flag bit 0 to signal more flag bits.<a href="#appendix-C.13-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.12-1.2">
-            <p id="appendix-C.12-1.2.1">In UpdateCtx(), open for future key derivation different than HKDF.<a href="#appendix-C.12-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.13-1.2">
+            <p id="appendix-C.13-1.2.1">In UpdateCtx(), open for future key derivation different than HKDF.<a href="#appendix-C.13-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.12-1.3">
-            <p id="appendix-C.12-1.3.1">Simplified updateCtx() to use only Expand(); used to be METHOD 2.<a href="#appendix-C.12-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.13-1.3">
+            <p id="appendix-C.13-1.3.1">Simplified updateCtx() to use only Expand(); used to be METHOD 2.<a href="#appendix-C.13-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.12-1.4">
-            <p id="appendix-C.12-1.4.1">Included the Partial IV if the second KUDOS message is a response.<a href="#appendix-C.12-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.13-1.4">
+            <p id="appendix-C.13-1.4.1">Included the Partial IV if the second KUDOS message is a response.<a href="#appendix-C.13-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.12-1.5">
-            <p id="appendix-C.12-1.5.1">Added signaling of support for KUDOS in EDHOC.<a href="#appendix-C.12-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.13-1.5">
+            <p id="appendix-C.13-1.5.1">Added signaling of support for KUDOS in EDHOC.<a href="#appendix-C.13-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.12-1.6">
-            <p id="appendix-C.12-1.6.1">Clarifications on terminology and reasons for rekeying.<a href="#appendix-C.12-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.13-1.6">
+            <p id="appendix-C.13-1.6.1">Clarifications on terminology and reasons for rekeying.<a href="#appendix-C.13-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.12-1.7">
-            <p id="appendix-C.12-1.7.1">Updated IANA considerations.<a href="#appendix-C.12-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.13-1.7">
+            <p id="appendix-C.13-1.7.1">Updated IANA considerations.<a href="#appendix-C.13-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.12-1.8">
-            <p id="appendix-C.12-1.8.1">Editorial improvements.<a href="#appendix-C.12-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.13-1.8">
+            <p id="appendix-C.13-1.8.1">Editorial improvements.<a href="#appendix-C.13-1.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-01-02">
-<section id="appendix-C.13">
+<section id="appendix-C.14">
         <h3 id="name-version-01-to-02">
-<a href="#appendix-C.13" class="section-number selfRef">C.13. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
+<a href="#appendix-C.14" class="section-number selfRef">C.14. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.13-1.1">
-            <p id="appendix-C.13-1.1.1">Extended terminology.<a href="#appendix-C.13-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.14-1.1">
+            <p id="appendix-C.14-1.1.1">Extended terminology.<a href="#appendix-C.14-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.2">
-            <p id="appendix-C.13-1.2.1">Moved procedure for preserving observations across key updates to main body.<a href="#appendix-C.13-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.2">
+            <p id="appendix-C.14-1.2.1">Moved procedure for preserving observations across key updates to main body.<a href="#appendix-C.14-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.3">
-            <p id="appendix-C.13-1.3.1">Moved procedure to update OSCORE Sender/Recipient IDs to main body.<a href="#appendix-C.13-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.3">
+            <p id="appendix-C.14-1.3.1">Moved procedure to update OSCORE Sender/Recipient IDs to main body.<a href="#appendix-C.14-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.4">
-            <p id="appendix-C.13-1.4.1">Moved key update without forward secrecy section to main body.<a href="#appendix-C.13-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.4">
+            <p id="appendix-C.14-1.4.1">Moved key update without forward secrecy section to main body.<a href="#appendix-C.14-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.5">
-            <p id="appendix-C.13-1.5.1">Define signaling bits present in the 'x' byte.<a href="#appendix-C.13-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.5">
+            <p id="appendix-C.14-1.5.1">Define signaling bits present in the 'x' byte.<a href="#appendix-C.14-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.6">
-            <p id="appendix-C.13-1.6.1">Modifications and alignment of updateCtx() with EDHOC.<a href="#appendix-C.13-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.6">
+            <p id="appendix-C.14-1.6.1">Modifications and alignment of updateCtx() with EDHOC.<a href="#appendix-C.14-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.7">
-            <p id="appendix-C.13-1.7.1">Rules for deletion of old EDHOC keys PRK_out and PRK_exporter.<a href="#appendix-C.13-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.7">
+            <p id="appendix-C.14-1.7.1">Rules for deletion of old EDHOC keys PRK_out and PRK_exporter.<a href="#appendix-C.14-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.8">
-            <p id="appendix-C.13-1.8.1">Describe CBOR wrapping of involved nonces with examples.<a href="#appendix-C.13-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.8">
+            <p id="appendix-C.14-1.8.1">Describe CBOR wrapping of involved nonces with examples.<a href="#appendix-C.14-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.9">
-            <p id="appendix-C.13-1.9.1">Renamed 'id detail' to 'nonce'.<a href="#appendix-C.13-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.9">
+            <p id="appendix-C.14-1.9.1">Renamed 'id detail' to 'nonce'.<a href="#appendix-C.14-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.13-1.10">
-            <p id="appendix-C.13-1.10.1">Editorial improvements.<a href="#appendix-C.13-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.14-1.10">
+            <p id="appendix-C.14-1.10.1">Editorial improvements.<a href="#appendix-C.14-1.10.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-00-01">
-<section id="appendix-C.14">
+<section id="appendix-C.15">
         <h3 id="name-version-00-to-01">
-<a href="#appendix-C.14" class="section-number selfRef">C.14. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
+<a href="#appendix-C.15" class="section-number selfRef">C.15. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-C.14-1.1">
-            <p id="appendix-C.14-1.1.1">Recommendation on limits for CCM_8. Details in Appendix.<a href="#appendix-C.14-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C.15-1.1">
+            <p id="appendix-C.15-1.1.1">Recommendation on limits for CCM_8. Details in Appendix.<a href="#appendix-C.15-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.14-1.2">
-            <p id="appendix-C.14-1.2.1">Improved message processing, also covering corner cases.<a href="#appendix-C.14-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.15-1.2">
+            <p id="appendix-C.15-1.2.1">Improved message processing, also covering corner cases.<a href="#appendix-C.15-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.14-1.3">
-            <p id="appendix-C.14-1.3.1">Example of method to estimate and not store 'count_q'.<a href="#appendix-C.14-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.15-1.3">
+            <p id="appendix-C.15-1.3.1">Example of method to estimate and not store 'count_q'.<a href="#appendix-C.15-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.14-1.4">
-            <p id="appendix-C.14-1.4.1">Added procedure to update OSCORE Sender/Recipient IDs.<a href="#appendix-C.14-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.15-1.4">
+            <p id="appendix-C.15-1.4.1">Added procedure to update OSCORE Sender/Recipient IDs.<a href="#appendix-C.15-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.14-1.5">
-            <p id="appendix-C.14-1.5.1">Added method for preserving observations across key updates.<a href="#appendix-C.14-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.15-1.5">
+            <p id="appendix-C.15-1.5.1">Added method for preserving observations across key updates.<a href="#appendix-C.15-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-C.14-1.6">
-            <p id="appendix-C.14-1.6.1">Added key update without forward secrecy.<a href="#appendix-C.14-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-C.15-1.6">
+            <p id="appendix-C.15-1.6.1">Added key update without forward secrecy.<a href="#appendix-C.15-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
