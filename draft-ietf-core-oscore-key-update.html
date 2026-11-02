@@ -2254,7 +2254,7 @@ An example of such an in-band procedure is the LAKE and OSCORE profile of ACE <s
               <p id="section-4.4.3-5.3.1">Peer A runs KUDOS in FS mode with peer B, thereby achieving forward secrecy for subsequent key update epochs, as long as the OSCORE keying material was originally established with forward secrecy. Peer A stores each newly derived Security Context in volatile memory.<a href="#section-4.4.3-5.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-4.4.3-6">As long as peer A does not reboot, executions of KUDOS rely on the Latest material stored in volatile memory. If peer A reboots, no OSCORE keying material associated with the peer B will be retained, as peer A is non-CAPABLE and therefore stores it only in volatile memory. Consequently, peer A must first establish new OSCORE keying material to use as Latest material with peer B, before running KUDOS again with peer B. This can be accomplished by running the in-band procedure again mentioned above.<a href="#section-4.4.3-6" class="pilcrow">¶</a></p>
+<p id="section-4.4.3-6">As long as peer A does not reboot, executions of KUDOS rely on the Latest material stored in volatile memory. If peer A reboots, no OSCORE keying material associated with the peer B will be retained, as peer A is non-CAPABLE and therefore stores it only in volatile memory. Consequently, peer A must first establish new OSCORE keying material to use as Latest material with peer B, before running KUDOS again with peer B. This can be accomplished by re-running the in-band procedure mentioned above.<a href="#section-4.4.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

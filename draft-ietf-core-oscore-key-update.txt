@@ -1378,8 +1378,8 @@ Table of Contents
    as peer A is non-CAPABLE and therefore stores it only in volatile
    memory.  Consequently, peer A must first establish new OSCORE keying
    material to use as Latest material with peer B, before running KUDOS
-   again with peer B.  This can be accomplished by running the in-band
-   procedure again mentioned above.
+   again with peer B.  This can be accomplished by re-running the in-
+   band procedure mentioned above.
 
 4.5.  Preserving Observations Across Key Updates
 
