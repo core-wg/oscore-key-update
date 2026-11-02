@@ -157,7 +157,7 @@ Table of Contents
 
    The security protocol Object Security for Constrained RESTful
    Environments (OSCORE) [RFC8613] provides end-to-end protection at the
-   application layer for messages exchanged with the Constrained
+   application-layer for messages exchanged with the Constrained
    Application Protocol (CoAP) [RFC7252].  In particular, OSCORE ensures
    message confidentiality and integrity, replay protection, and binding
    of response to request between a sender and a recipient.
@@ -580,7 +580,7 @@ Table of Contents
 
  function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
-  // Encoded as per Section 3 of RFC8446, i.e., each
+  // Encoded as per Section 3 of RFC8446, i.e., here each
   // variable-length field is prefixed by a 1-byte length
   struct {
       uint16 length = key_length;
