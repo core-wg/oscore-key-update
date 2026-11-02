@@ -358,7 +358,7 @@ Table of Contents
    |  Sequence Number as Partial IV in the response and use it to build
    |  the AEAD nonce to protect the response.
    |  
-   |  This prevents the server from using the same AEAD (nonce, key)
+   |  This prevents the server from using the same AEAD (key, nonce)
    |  pair for two responses, protected with different OSCORE Security
    |  Contexts.
    |  
@@ -406,7 +406,7 @@ Table of Contents
       Context are preserved in the new OSCORE Security Context.
 
    *  It is robust against a peer rebooting and loss of state, avoiding
-      the reuse of AEAD (nonce, key) pairs also in such cases.
+      the reuse of AEAD (key, nonce) pairs also in such cases.
 
    *  It typically completes in one round trip by exchanging two OSCORE-
       protected CoAP messages.  The two peers achieve mutual key
@@ -1133,8 +1133,8 @@ Table of Contents
 4.4.1.  Handling and Use of Keying Material
 
    In the following, a device is denoted as "CAPABLE" if it is able to
-   store information in non-volatile memory (e.g., in flash memory),
-   beyond a one-time-only writing occurring at manufacturing or
+   store information in non-volatile memory (e.g., on disk), beyond a
+   one-time-only writing occurring at manufacturing or
    (re-)commissioning time.  If that is not the case, the device is
    denoted as "non-CAPABLE".
 
@@ -1142,14 +1142,13 @@ Table of Contents
 
    *  Bootstrap Master Secret and Bootstrap Master Salt.  If pre-
       provisioned during manufacturing or (re-)commissioning, these
-      OSCORE Master Secret and Master Salt are initially stored in
-      persistent storage and are never going to be overwritten by the
-      device.
+      OSCORE Master Secret and Master Salt are initially stored on disk
+      and are never going to be overwritten by the device.
 
    *  Latest Master Secret and Latest Master Salt.  These OSCORE Master
       Secret and Master Salt can be dynamically updated by the device.
-      In case of reboot, they are lost unless they have been stored in
-      persistent storage.
+      In case of reboot, they are lost unless they have been stored on
+      disk.
 
    Note that:
 
@@ -1171,8 +1170,8 @@ Table of Contents
          another.
 
       -  In order to run KUDOS in no-FS mode, a peer must have Bootstrap
-         Master Secret and Bootstrap Master Salt available as stored in
-         persistent storage.
+         Master Secret and Bootstrap Master Salt available as stored on
+         disk.
 
    *  A peer that is a non-CAPABLE device MUST support the no-FS mode,
       with the exception described in Section 4.4.3 for non-CAPABLE
@@ -1203,12 +1202,11 @@ Table of Contents
    that:
 
    *  If the peer is a CAPABLE device, it MUST store Latest Master
-      Secret and Latest Master Salt in persistent storage, with the
-      exception of possible temporary OSCORE Security Contexts used
-      during a key update procedure, such as CTX_TEMP used during the
-      KUDOS execution.  That is, the OSCORE Master Secret and Master
-      Salt from such temporary Security Contexts are not stored in
-      persistent storage.
+      Secret and Latest Master Salt on disk, with the exception of
+      possible temporary OSCORE Security Contexts used during a key
+      update procedure, such as CTX_TEMP used during the KUDOS
+      execution.  That is, the OSCORE Master Secret and Master Salt from
+      such temporary Security Contexts are not stored on disk.
 
    *  The peer MUST store Latest Master Secret and Latest Master Salt in
       volatile memory, thus making them available to OSCORE message
@@ -1292,10 +1290,10 @@ Table of Contents
          KUDOS in FS mode).
 
          Note that, if the peer A is a CAPABLE device, it is able to
-         store such information about the other peer B in persistent
-         storage and it MUST do so.  From then on, the peer A will
-         perform every execution of KUDOS with the peer B in no-FS mode,
-         including after a possible reboot.
+         store such information about the other peer B on disk and it
+         MUST do so.  From then on, the peer A will perform every
+         execution of KUDOS with the peer B in no-FS mode, including
+         after a possible reboot.
 
       -  While the peer A is running KUDOS with another peer B without
          knowing its capabilities, the peer A receives a KUDOS message
@@ -1312,12 +1310,12 @@ Table of Contents
 
       Note that, if the peer A is a CAPABLE device, it is able to
       remember that the peer B is also a CAPABLE device and thus to
-      store such information in persistent storage, which it MUST do.
-      This ensures that the peer A will perform every execution of KUDOS
-      with the peer B in FS mode.  This also prevents a possible
-      downgrade attack aimed at making A believe that B is a non-CAPABLE
-      device, hence at making A run KUDOS in no-FS mode although the FS
-      mode can actually be used by both peers.
+      store such information on disk, which it MUST do.  This ensures
+      that the peer A will perform every execution of KUDOS with the
+      peer B in FS mode.  This also prevents a possible downgrade attack
+      aimed at making A believe that B is a non-CAPABLE device, hence at
+      making A run KUDOS in no-FS mode although the FS mode can actually
+      be used by both peers.
 
 4.4.3.  Non-CAPABLE Devices Operating in FS Mode
 
@@ -3421,6 +3419,10 @@ Appendix C.  Document Updates
 C.1.  Version -14 to -15
 
    *  Renamed EDHOC to LAKE as appropriate.
+
+   *  Editorial improvements and clarifications.
+
+   *  Updates reflecting lessons learned from prior interop.
 
 C.2.  Version -13 to -14
 

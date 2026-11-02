@@ -1490,7 +1490,7 @@ The LwM2M Client, the LwM2M Server, and the LwM2M Bootstrap server are also requ
 <p id="section-3-1">The protection of CoAP responses with OSCORE is updated, by adding the following text at the end of step 3 of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3" class="relref">Section 8.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> as well as before the text "Then, go to 4." of <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.3.1" class="relref">Section 8.3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <blockquote id="section-3-2">
         <p id="section-3-2.1">If the server is using a different Security Context for the response compared to what was used to verify the request (e.g., due to an occurred key update), then the server <span class="bcp14">MUST</span> take the second alternative. That is, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response.<a href="#section-3-2.1" class="pilcrow">¶</a></p>
-<p id="section-3-2.2">This prevents the server from using the same AEAD (nonce, key) pair for two responses, protected with different OSCORE Security Contexts.<a href="#section-3-2.2" class="pilcrow">¶</a></p>
+<p id="section-3-2.2">This prevents the server from using the same AEAD (key, nonce) pair for two responses, protected with different OSCORE Security Contexts.<a href="#section-3-2.2" class="pilcrow">¶</a></p>
 <p id="section-3-2.3">An exception is the procedure in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-B.2" class="relref">Appendix B.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, which is secure although not complying with the above. The reason is that, in that procedure, the server uses the new OSCORE Security Context only and solely to protect the outgoing response (response #1), and no other message is protected with that OSCORE Security Context. Other procedures where that holds would also remain secure.<a href="#section-3-2.3" class="pilcrow">¶</a></p>
 </blockquote>
 </section>
@@ -1519,7 +1519,7 @@ The LwM2M Client, the LwM2M Server, and the LwM2M Bootstrap server are also requ
           <p id="section-4-6.4.1">The same Sender and Recipient IDs used in the old OSCORE Security Context are preserved in the new OSCORE Security Context.<a href="#section-4-6.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-6.5">
-          <p id="section-4-6.5.1">It is robust against a peer rebooting and loss of state, avoiding the reuse of AEAD (nonce, key) pairs also in such cases.<a href="#section-4-6.5.1" class="pilcrow">¶</a></p>
+          <p id="section-4-6.5.1">It is robust against a peer rebooting and loss of state, avoiding the reuse of AEAD (key, nonce) pairs also in such cases.<a href="#section-4-6.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-6.6">
           <p id="section-4-6.6.1">It typically completes in one round trip by exchanging two OSCORE-protected CoAP messages. The two peers achieve mutual key confirmation in a following exchange, which is protected with the newly established OSCORE Security Context.<a href="#section-4-6.6.1" class="pilcrow">¶</a></p>
@@ -2116,14 +2116,14 @@ In such a case, the plain CoAP request composed before OSCORE protection can inc
           <h4 id="name-handling-and-use-of-keying-">
 <a href="#section-4.4.1" class="section-number selfRef">4.4.1. </a><a href="#name-handling-and-use-of-keying-" class="section-name selfRef">Handling and Use of Keying Material</a>
           </h4>
-<p id="section-4.4.1-1">In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., in flash memory), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time. If that is not the case, the device is denoted as "non-CAPABLE".<a href="#section-4.4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.4.1-1">In the following, a device is denoted as "CAPABLE" if it is able to store information in non-volatile memory (e.g., on disk), beyond a one-time-only writing occurring at manufacturing or (re-)commissioning time. If that is not the case, the device is denoted as "non-CAPABLE".<a href="#section-4.4.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.4.1-2">The following terms are used to refer to OSCORE keying material.<a href="#section-4.4.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.4.1-3.1">
-              <p id="section-4.4.1-3.1.1">Bootstrap Master Secret and Bootstrap Master Salt. If pre-provisioned during manufacturing or (re-)commissioning, these OSCORE Master Secret and Master Salt are initially stored in persistent storage and are never going to be overwritten by the device.<a href="#section-4.4.1-3.1.1" class="pilcrow">¶</a></p>
+              <p id="section-4.4.1-3.1.1">Bootstrap Master Secret and Bootstrap Master Salt. If pre-provisioned during manufacturing or (re-)commissioning, these OSCORE Master Secret and Master Salt are initially stored on disk and are never going to be overwritten by the device.<a href="#section-4.4.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.4.1-3.2">
-              <p id="section-4.4.1-3.2.1">Latest Master Secret and Latest Master Salt. These OSCORE Master Secret and Master Salt can be dynamically updated by the device. In case of reboot, they are lost unless they have been stored in persistent storage.<a href="#section-4.4.1-3.2.1" class="pilcrow">¶</a></p>
+              <p id="section-4.4.1-3.2.1">Latest Master Secret and Latest Master Salt. These OSCORE Master Secret and Master Salt can be dynamically updated by the device. In case of reboot, they are lost unless they have been stored on disk.<a href="#section-4.4.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-4.4.1-4">Note that:<a href="#section-4.4.1-4" class="pilcrow">¶</a></p>
@@ -2141,7 +2141,7 @@ In such a case, the plain CoAP request composed before OSCORE protection can inc
                   <p id="section-4.4.1-5.3.2.1.1">In order to run KUDOS in FS mode, a peer must be a CAPABLE device. It follows that two peers have to both be CAPABLE devices in order to be able to run KUDOS in FS mode with one another.<a href="#section-4.4.1-5.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-4.4.1-5.3.2.2">
-                  <p id="section-4.4.1-5.3.2.2.1">In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored in persistent storage.<a href="#section-4.4.1-5.3.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-4.4.1-5.3.2.2.1">In order to run KUDOS in no-FS mode, a peer must have Bootstrap Master Secret and Bootstrap Master Salt available as stored on disk.<a href="#section-4.4.1-5.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -2160,7 +2160,7 @@ In such a case, the peer <span class="bcp14">MUST</span> enforce measures to ens
 <p id="section-4.4.1-6">As a general rule, once a peer has successfully generated a new OSCORE Security Context CTX (e.g., CTX is the CTX_NEW resulting from a KUDOS execution, or it has been established through the LAKE protocol <span>[<a href="#RFC9528" class="cite xref">RFC9528</a>]</span>), the peer considers the Master Secret and Master Salt of CTX as Latest Master Secret and Latest Master Salt. After that:<a href="#section-4.4.1-6" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.4.1-7.1">
-              <p id="section-4.4.1-7.1.1">If the peer is a CAPABLE device, it <span class="bcp14">MUST</span> store Latest Master Secret and Latest Master Salt in persistent storage, with the exception of possible temporary OSCORE Security Contexts used during a key update procedure, such as CTX_TEMP used during the KUDOS execution. That is, the OSCORE Master Secret and Master Salt from such temporary Security Contexts are not stored in persistent storage.<a href="#section-4.4.1-7.1.1" class="pilcrow">¶</a></p>
+              <p id="section-4.4.1-7.1.1">If the peer is a CAPABLE device, it <span class="bcp14">MUST</span> store Latest Master Secret and Latest Master Salt on disk, with the exception of possible temporary OSCORE Security Contexts used during a key update procedure, such as CTX_TEMP used during the KUDOS execution. That is, the OSCORE Master Secret and Master Salt from such temporary Security Contexts are not stored on disk.<a href="#section-4.4.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-4.4.1-7.2">
               <p id="section-4.4.1-7.2.1">The peer <span class="bcp14">MUST</span> store Latest Master Secret and Latest Master Salt in volatile memory, thus making them available to OSCORE message processing and possible key update procedures.<a href="#section-4.4.1-7.2.1" class="pilcrow">¶</a></p>
@@ -2212,7 +2212,7 @@ A. Delete CTX_BOOTSTRAP.<a href="#section-4.4.2-4.2.5" class="pilcrow">¶</a></p
 <li class="normal" id="section-4.4.2-6.2.2.1">
                   <p id="section-4.4.2-6.2.2.1.1">The peer A is running KUDOS with another peer B, which A has learned to be a non-CAPABLE device (and hence not able to run KUDOS in FS mode).<a href="#section-4.4.2-6.2.2.1.1" class="pilcrow">¶</a></p>
 <p id="section-4.4.2-6.2.2.1.2">
-Note that, if the peer A is a CAPABLE device, it is able to store such information about the other peer B in persistent storage and it <span class="bcp14">MUST</span> do so. From then on, the peer A will perform every execution of KUDOS with the peer B in no-FS mode, including after a possible reboot.<a href="#section-4.4.2-6.2.2.1.2" class="pilcrow">¶</a></p>
+Note that, if the peer A is a CAPABLE device, it is able to store such information about the other peer B on disk and it <span class="bcp14">MUST</span> do so. From then on, the peer A will perform every execution of KUDOS with the peer B in no-FS mode, including after a possible reboot.<a href="#section-4.4.2-6.2.2.1.2" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-4.4.2-6.2.2.2">
                   <p id="section-4.4.2-6.2.2.2.1">While the peer A is running KUDOS with another peer B without knowing its capabilities, the peer A receives a KUDOS message where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1.<a href="#section-4.4.2-6.2.2.2.1" class="pilcrow">¶</a></p>
@@ -2222,7 +2222,7 @@ Note that, if the peer A is a CAPABLE device, it is able to store such informati
             <li class="normal" id="section-4.4.2-6.3">
               <p id="section-4.4.2-6.3.1">If a peer A is a CAPABLE device and has learned that another peer B is also a CAPABLE device (and hence able to run KUDOS in FS mode), then the peer A <span class="bcp14">MUST NOT</span> run KUDOS with the peer B in no-FS mode. If the peer A receives a KUDOS message from the peer B where the 'p' bit of the 'x' byte in the OSCORE Option value is set to 1, then the peer A <span class="bcp14">MUST</span> ignore the message for the sake of KUDOS processing, but processes it as a CoAP message.<a href="#section-4.4.2-6.3.1" class="pilcrow">¶</a></p>
 <p id="section-4.4.2-6.3.2">
-Note that, if the peer A is a CAPABLE device, it is able to remember that the peer B is also a CAPABLE device and thus to store such information in persistent storage, which it <span class="bcp14">MUST</span> do. This ensures that the peer A will perform every execution of KUDOS with the peer B in FS mode. This also prevents a possible downgrade attack aimed at making A believe that B is a non-CAPABLE device, hence at making A run KUDOS in no-FS mode although the FS mode can actually be used by both peers.<a href="#section-4.4.2-6.3.2" class="pilcrow">¶</a></p>
+Note that, if the peer A is a CAPABLE device, it is able to remember that the peer B is also a CAPABLE device and thus to store such information on disk, which it <span class="bcp14">MUST</span> do. This ensures that the peer A will perform every execution of KUDOS with the peer B in FS mode. This also prevents a possible downgrade attack aimed at making A believe that B is a non-CAPABLE device, hence at making A run KUDOS in no-FS mode although the FS mode can actually be used by both peers.<a href="#section-4.4.2-6.3.2" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -5888,6 +5888,12 @@ Note to RFC Editor: Once the registration above is completed, please delete the 
 <ul class="normal">
 <li class="normal" id="appendix-C.1-1.1">
             <p id="appendix-C.1-1.1.1">Renamed EDHOC to LAKE as appropriate.<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.2">
+            <p id="appendix-C.1-1.2.1">Editorial improvements and clarifications.<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.3">
+            <p id="appendix-C.1-1.3.1">Updates reflecting lessons learned from prior interop.<a href="#appendix-C.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
