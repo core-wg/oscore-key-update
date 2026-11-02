@@ -580,6 +580,8 @@ Table of Contents
 
  function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
+  // Encoded as per Section 3 of RFC8446, i.e., each
+  // variable-length field is prefixed by a 1-byte length
   struct {
       uint16 length = key_length;
       opaque label<7..255> = "oscore " + Label;
@@ -597,11 +599,11 @@ Table of Contents
 
    In order to be agnostic of the order according to which the nonce
    values were exchanged, the binary representations of input1_cbor and
-   input2_cbor are sorted in lexicographical order before they are
-   concatenated.  That is, with | denoting byte concatenation, X_N MUST
-   take input1_cbor | input2_cbor if input1_cbor comes before
-   input2_cbor in lexicographical order, or input2_cbor | input1_cbor
-   otherwise.
+   input2_cbor are sorted in lexicographical order, specifically
+   shortlex order, before they are concatenated.  That is, with |
+   denoting byte concatenation, X_N MUST take input1_cbor | input2_cbor
+   if input1_cbor comes before input2_cbor in lexicographical order, or
+   input2_cbor | input1_cbor otherwise.
 
    After that, the updateCtx() function derives the new values of the
    Master Salt and Master Secret for the Security Context CTX_OUT.  In
@@ -635,13 +637,20 @@ Table of Contents
 
    After that, the newly computed Master Secret and Master Salt are used
    to derive a new Security Context CTX_OUT, as per Section 3.2 of
-   [RFC8613].  Any other parameter required for that derivation takes
-   the same value as in the Security Context CTX_IN.
+   [RFC8613].  Any other input parameter required for that derivation
+   (i.e., the Sender ID, the Recipient ID, the ID Context, the AEAD
+   Algorithm, and the HKDF Algorithm) takes the same value as in the
+   Security Context CTX_IN.  Consequently, the Sender Key, the Recipient
+   Key, and the Common IV of CTX_OUT are derived from the new Master
+   Secret and Master Salt, and thus differ from those of CTX_IN.
 
    Note that the following holds for the newly derived CTX_OUT:
 
    *  In its Sender Context, the Sender Sequence Number is initialized
       to 0 as per Section 3.2.2 of [RFC8613].
+
+   *  In its Recipient Context, the Replay Window is initialized as
+      empty, i.e., no Partial IV is considered as already received.
 
    *  If the peer that has derived CTX_OUT supports CoAP Observe
       [RFC7641], the Notification Number used for the replay protection
