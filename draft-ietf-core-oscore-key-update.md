@@ -313,6 +313,8 @@ function updateCtx(input1, input2, CTX_IN):
 
 function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
+ // Encoded as per Section 3 of RFC8446, i.e., each
+ // variable-length field is prefixed by a 1-byte length
  struct {
      uint16 length = key_length;
      opaque label<7..255> = "oscore " + Label;
@@ -325,7 +327,7 @@ function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
 The updateCtx() function builds the two CBOR byte strings input1\_cbor and input2\_cbor, whose values are the input parameters input1 and input2, respectively. Then, it builds X\_N as the byte concatenation of input1\_cbor and input2\_cbor.
 
-In order to be agnostic of the order according to which the nonce values were exchanged, the binary representations of input1\_cbor and input2\_cbor are sorted in lexicographical order before they are concatenated. That is, with \| denoting byte concatenation, X\_N MUST take input1\_cbor \| input2\_cbor if input1\_cbor comes before input2\_cbor in lexicographical order, or input2\_cbor \| input1\_cbor otherwise.
+In order to be agnostic of the order according to which the nonce values were exchanged, the binary representations of input1\_cbor and input2\_cbor are sorted in lexicographical order, specifically shortlex order, before they are concatenated. That is, with \| denoting byte concatenation, X\_N MUST take input1\_cbor \| input2\_cbor if input1\_cbor comes before input2\_cbor in lexicographical order, or input2\_cbor \| input1\_cbor otherwise.
 
 After that, the updateCtx() function derives the new values of the Master Salt and Master Secret for the Security Context CTX\_OUT. In particular, the new Master Salt takes X\_N as value. Instead, the new Master Secret is derived through a KUDOS-Expand step that is invoked through the KUDOS_Expand_Label() function. The latter takes as input the Master Secret value from the Security Context CTX\_IN, the literal string "key update", X\_N, and the length of the Master Secret in bytes.
 
@@ -341,11 +343,13 @@ If a future specification updates {{RFC8613}} by admitting different key derivat
 
 When an HKDF Algorithm is used, the derivation of new values follows the same approach used in TLS 1.3, which is also based on HKDF-Expand (see {{Section 7.1 of RFC8446}}) and is used for computing new keying material in case of key update (see {{Section 4.6.3 of RFC8446}}).
 
-After that, the newly computed Master Secret and Master Salt are used to derive a new Security Context CTX\_OUT, as per {{Section 3.2 of RFC8613}}. Any other parameter required for that derivation takes the same value as in the Security Context CTX\_IN.
+After that, the newly computed Master Secret and Master Salt are used to derive a new Security Context CTX\_OUT, as per {{Section 3.2 of RFC8613}}. Any other input parameter required for that derivation (i.e., the Sender ID, the Recipient ID, the ID Context, the AEAD Algorithm, and the HKDF Algorithm) takes the same value as in the Security Context CTX\_IN. Consequently, the Sender Key, the Recipient Key, and the Common IV of CTX\_OUT are derived from the new Master Secret and Master Salt, and thus differ from those of CTX\_IN.
 
 Note that the following holds for the newly derived CTX\_OUT:
 
 * In its Sender Context, the Sender Sequence Number is initialized to 0 as per {{Section 3.2.2 of RFC8613}}.
+
+* In its Recipient Context, the Replay Window is initialized as empty, i.e., no Partial IV is considered as already received.
 
 * If the peer that has derived CTX\_OUT supports CoAP Observe {{RFC7641}}, the Notification Number used for the replay protection of Observe notifications (see {{Section 7.4.1 of RFC8613}}) is left as not initialized.
 
