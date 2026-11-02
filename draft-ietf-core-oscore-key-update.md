@@ -89,7 +89,7 @@ Communications with the Constrained Application Protocol (CoAP) can be protected
 
 # Introduction # {#intro}
 
-The security protocol Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} provides end-to-end protection at the application layer for messages exchanged with the Constrained Application Protocol (CoAP) {{RFC7252}}. In particular, OSCORE ensures message confidentiality and integrity, replay protection, and binding of response to request between a sender and a recipient.
+The security protocol Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} provides end-to-end protection at the application-layer for messages exchanged with the Constrained Application Protocol (CoAP) {{RFC7252}}. In particular, OSCORE ensures message confidentiality and integrity, replay protection, and binding of response to request between a sender and a recipient.
 
 Under some circumstances, two CoAP endpoints using OSCORE may need to update their shared keying material in order to ensure that their communications remain secure. Among other reasons, approaching key usage limits {{I-D.irtf-cfrg-aead-limits}}{{I-D.ietf-core-oscore-key-limits}} requires updating the OSCORE keying material before communications can securely continue.
 
@@ -313,7 +313,7 @@ function updateCtx(input1, input2, CTX_IN):
 
 function KUDOS_Expand_Label(master_secret, Label, X_N, key_length):
 
- // Encoded as per Section 3 of RFC8446, i.e., each
+ // Encoded as per Section 3 of RFC8446, i.e., here each
  // variable-length field is prefixed by a 1-byte length
  struct {
      uint16 length = key_length;
